@@ -4,53 +4,57 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <span class="govuk-caption-xl">Apprenticeship training course</span>
-                <h1 class="govuk-heading-xl">
-                    @Model.Title <span class="das-no-wrap">(level @Model.Level)</span>
-                </h1>
-                    
-                    <p class="govuk-body-l">@Model.OverviewOfRole</p>
-                    
-                    <dl class="govuk-summary-list">
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Level</dt>
-                            <dd class="govuk-summary-list__value">@Model.Level</dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Typical duration</dt>
-                            <dd class="govuk-summary-list__value">@Model.TypicalDuration months</dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Sector</dt>
-                            <dd class="govuk-summary-list__value">@Model.Sector</dd>
-                        </div>
-                        <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Maximum funding</dt>
-                            <dd class="govuk-summary-list__value">
-                                @Model.MaximumFunding <br/>
-                                <span class="govuk-!-font-size-16 das-text--muted">Maximum amount government will fund <br/>
-                                    for apprenticeship training.</span>
-                            </dd>
-                        </div>
-                        @if (Model.TypicalJobTitles.Any())
-                        {
-                            <div class="govuk-summary-list__row">
-                                <dt class="govuk-summary-list__key">Typical job title@(Model.TypicalJobTitles.Count > 1 ? "s" :"")</dt>
-                                <dd class="govuk-summary-list__value">
-                                    <ul class="govuk-list @(Model.TypicalJobTitles.Count > 1? "govuk-list--bullet" :"")">
-                                        @foreach (var jobTitle in Model.TypicalJobTitles)
-                                        {
-                                            <li>@jobTitle</li>    
-                                        }
-                                    </ul>
-                                </dd>
-                            </div>    
-                        }
-                        
-                        @if (Model.CoreSkills.Any())
-                        {
-                            <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Skills</dt>
-                            <dd class="govuk-summary-list__value">
+            <h1 class="govuk-heading-xl">
+                @Model.Title <span class="das-no-wrap">(level @Model.Level)</span>
+            </h1>
+
+            <p class="govuk-body-l">@Model.OverviewOfRole</p>
+
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Level</dt>
+                    <dd class="govuk-summary-list__value">@Model.Level</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Typical duration</dt>
+                    <dd class="govuk-summary-list__value">@Model.TypicalDuration months</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Sector</dt>
+                    <dd class="govuk-summary-list__value">@Model.Sector</dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">Maximum funding</dt>
+                    <dd class="govuk-summary-list__value">
+                        @Model.MaximumFunding <br />
+                        <span class="govuk-!-font-size-16 das-text--muted">
+                            Maximum amount government will fund <br />
+                            for apprenticeship training.
+                        </span>
+                    </dd>
+                </div>
+                @if (Model.TypicalJobTitles.Any())
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Typical job title@(Model.TypicalJobTitles.Count > 1 ? "s" : "")</dt>
+                        <dd class="govuk-summary-list__value">
+                            <ul class="govuk-list @(Model.TypicalJobTitles.Count > 1? "govuk-list--bullet" :"")">
+                                @foreach (var jobTitle in Model.TypicalJobTitles)
+                                {
+                                    <li>@jobTitle</li>
+
+                                }
+                            </ul>
+                        </dd>
+                    </div>
+
+                }
+
+                @if (Model.CoreSkills.Any())
+                {
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key">Skills</dt>
+                        <dd class="govuk-summary-list__value">
                             <details class="govuk-details govuk-!-margin-top-1" data-module="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
@@ -59,26 +63,43 @@
                                 </summary>
                                 <div class="govuk-details__text">
                                     <ul class="govuk-list govuk-list--bullet">
-                                    @foreach (var skill in Model.CoreSkills)
-                                    {
-                                        <li><span>@skill</span></li>    
-                                    }
+                                        @foreach (var skill in Model.CoreSkills)
+                                        {
+                                            <li><span>@skill</span></li>
+
+                                        }
                                     </ul>
                                 </div>
-                                </details>
-                            </dd>
-                        </div>
-                        }
-                    </dl>
-            
-                    <p class="govuk-body-s govuk-!-margin-bottom-6">
-                        Full information on <a class="govuk-link govuk-link--no-visited-state" href="@Model.ExternalCourseUrl" target="_blank" rel="external" >@Model.TitleAndLevel</a> is available from the Institute for Apprenticeships and Technical Education.
-                    </p>
-            
-            
-                <div class="govuk-grid-column-one-third">
-                    
-                </div>
+                            </details>
+                        </dd>
+                    </div>
+                }
+            </dl>
+
+            <p class="govuk-body-s govuk-!-margin-bottom-6">
+                Full information on <a class="govuk-link govuk-link--no-visited-state" href="@Model.ExternalCourseUrl" target="_blank" rel="external">@Model.TitleAndLevel</a> is available from the Institute for Apprenticeships and Technical Education.
+            </p>
+            <div class="fat-panel fat-panel-blocked govuk-!-margin-bottom-8">
+                <h2 class="govuk-heading-l">Find training providers for this course</h2>
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Location of apprenticeship</h2>
+                <p class="govuk-body">Check if a provider can offer this training for the apprenticeship location.</p>
+                <form action="providers" method="GET" class="govuk-!-width-three-quarters">
+                    <div class="govuk-form-group">
+                        <label for="search-location" class="govuk-label">
+                            <span class="govuk-!-font-weight-bol">Enter location</span>
+                        </label>
+                        <input type="search" id="search-location" name="location" title="Search" class="govuk-input govuk-input-background">
+                    </div>
+                    <button class="govuk-button location-submit" data-module="govuk-button">
+                        View providers for this course
+                    </button>
+                    <input type="hidden" name="standard">
+                </form>
+            </div>
+
+            <div class="govuk-grid-column-one-third">
+
+            </div>
         </div>
     </div>
 </main>
