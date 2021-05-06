@@ -18,6 +18,14 @@
         "providersAtLocation": 4,
         "totalProviders": 3
     },
+    "location": {
+        "name":"Coventry",
+        "location": {
+            "geoPoint": [
+                51.289916,
+                -0.773876
+            ]}
+    },
     "shortlistItemCount" : 11,
     "trainingCourseProvider": {
         "providerId": 1001,
