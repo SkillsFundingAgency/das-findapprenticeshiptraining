@@ -9,10 +9,11 @@ namespace SFA.DAS.FAT.Web.Models
         public ProviderViewModel Provider { get; set; }
         public ProviderCoursesViewModel AdditionalCourses { get; set; }
         public string Location { get ; set ; }
-        public int TotalProviders { get ; set ; }
+        public int ProvidersAtLocation { get ; set ; }
         public Dictionary<string, string> GetCourseProvidersRequest { get; set; } = new Dictionary<string, string>();
         public int ShortlistItemCount { get ; set ; }
         public string BannerUpdateMessage { get ; set ; }
+        public int TotalProviders { get ; set ; }
 
         public static implicit operator CourseProviderViewModel(GetCourseProviderResult provider)
         {
@@ -21,8 +22,9 @@ namespace SFA.DAS.FAT.Web.Models
                 Provider = provider.Provider,
                 Course = provider.Course,
                 AdditionalCourses = provider.AdditionalCourses,
-                TotalProviders = provider.ProvidersAtLocation,
-                ShortlistItemCount = provider.ShortlistItemCount
+                ProvidersAtLocation = provider.ProvidersAtLocation,
+                ShortlistItemCount = provider.ShortlistItemCount,
+                TotalProviders = provider.TotalProviders
             };
         }
     }
