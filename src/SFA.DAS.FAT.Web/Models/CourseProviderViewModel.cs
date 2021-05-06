@@ -14,6 +14,7 @@ namespace SFA.DAS.FAT.Web.Models
         public int ShortlistItemCount { get ; set ; }
         public string BannerUpdateMessage { get ; set ; }
         public int TotalProviders { get ; set ; }
+        public string HelpFindingCourseUrl { get ; set ; }
 
         public static implicit operator CourseProviderViewModel(GetCourseProviderResult provider)
         {

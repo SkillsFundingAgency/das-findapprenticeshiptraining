@@ -13,5 +13,6 @@ namespace SFA.DAS.FAT.Application.Courses.Queries.GetProvider
         public int ProvidersAtLocation { get ; set ; }
         public int ShortlistItemCount { get ; set ; }
         public int TotalProviders { get ; set ; }
+        public bool ShowEmployerDemand { get ; set ; }
     }
 }
