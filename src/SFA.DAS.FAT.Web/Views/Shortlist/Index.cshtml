@@ -63,12 +63,18 @@
                             @if (Model.IsOneTable)
                             {
                                 <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                <p class="govuk-body govuk-!-margin-bottom-6">
+                                <p class="govuk-body govuk-!-margin-bottom-2">
                                     <a asp-route="@RouteNames.CourseProviders" 
                                        asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
                                        asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
                                        class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                 </p>
+                                if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
+                                {
+                                    <p class="govuk-body govuk-!-margin-bottom-0">
+                                        <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-link govuk-link--no-visited-state">Get help with finding a training provider</a>
+                                    </p>    
+                                }
                             }
                             else
                             {

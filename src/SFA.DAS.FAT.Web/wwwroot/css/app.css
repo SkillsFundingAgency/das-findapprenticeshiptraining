@@ -228,3 +228,10 @@
         line-height: 1.31579;
     }
 }
+
+
+@media (min-width: 40.0625em) {
+    .js-enabled .das-show-hide__button {
+        display: none;
+    }
+}
