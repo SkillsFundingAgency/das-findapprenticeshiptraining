@@ -192,7 +192,7 @@
 
             if (Model.Provider.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound) != null)
             {
-                <p id="course_provider_not_available" class="govuk-body das-text--error das-text--error-icon">This training provider does not offer this course at the apprenticeship location.</p>
+                <p id="course_provider_not_available" class="govuk-body das-text--error das-text--error-icon">This training provider does not offer @Model.Course.TitleAndLevel at the apprenticeship location.</p>
                 
                 if (Model.ProvidersAtLocation > 0)
                 {
@@ -213,7 +213,7 @@
     
                     <form method="GET" asp-route="@RouteNames.CourseProviders" asp-all-route-data="@routeData" class="govuk-!-width-three-quarters">
                         <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
-                            View training providers
+                            View training provider@((Model.ProvidersAtLocation == 1 ?"":"s"))
                         </button>
                     </form>
                 }
