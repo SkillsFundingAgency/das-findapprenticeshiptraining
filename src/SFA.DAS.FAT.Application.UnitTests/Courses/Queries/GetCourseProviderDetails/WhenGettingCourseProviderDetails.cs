@@ -69,6 +69,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviderDet
             actual.Location.Should().Be(courseProviderResponse.Location.Name);
             actual.LocationGeoPoint.Should().BeEquivalentTo(courseProviderResponse.Location.LocationPoint.GeoPoint);
             actual.ProvidersAtLocation.Should().Be(courseProviderResponse.ProvidersCount.ProvidersAtLocation);
+            actual.TotalProviders.Should().Be(courseProviderResponse.ProvidersCount.TotalProviders);
             actual.ShortlistItemCount.Should().Be(courseProviderResponse.ShortlistItemCount);
         }
 
@@ -97,6 +98,8 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviderDet
             Assert.IsNull(actual.Location);
             Assert.IsNull(actual.LocationGeoPoint);
             Assert.AreEqual(0, actual.ShortlistItemCount);
+            Assert.AreEqual(0, actual.TotalProviders);
+            Assert.AreEqual(0, actual.ProvidersAtLocation);
         }
     }
 }
