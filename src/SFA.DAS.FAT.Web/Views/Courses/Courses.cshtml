@@ -24,34 +24,33 @@
                     </div>
                     @if (Model.ShowFilterOptions)
                     {
-                <div class="das-filter__selected-filters">
-                    <div class="das-filter__selected-header">
-                        <h3 class="das-filter__selected-heading">Selected filters</h3>
-                        <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear <span class="govuk-visually-hidden">the selected filters</span></a>
-                    </div>
-                    @if (!string.IsNullOrEmpty(Model.Keyword))
-                    {
-                        <h4 class="das-filter__selected-sub-heading">Keywords</h4>
-                        <a asp-querystring="@Model.ClearKeywordLink" title="Clear this filter '@Model.Keyword'" class="das-filter__tag das-breakable">&lsquo;@Model.Keyword&rsquo;</a>
-                    }
-                    @if (Model.ClearLevelLinks.Any())
-                    {
-                        <h4 class="das-filter__selected-sub-heading">Qualification level</h4>
-                        @foreach (var levelLink in Model.ClearLevelLinks)
-                        {
-                            <a class="das-filter__tag" asp-querystring="@levelLink.Value" title="Clear this level filter @levelLink.Key">@levelLink.Key</a>
-                        }
-                    }
-                    @if (Model.ClearSectorLinks.Any())
-                    {
-                        <h4 class="das-filter__selected-sub-heading">Apprenticeship category</h4>
-                        @foreach (var filterLink in Model.ClearSectorLinks)
-                        {
-                            <a class="das-filter__tag" asp-querystring="@filterLink.Value" title="Clear this sector filter @filterLink.Key">@filterLink.Key</a>
-                        }
-                    }
-                </div>
-
+                        <div class="das-filter__selected-filters">
+                            <div class="das-filter__selected-header">
+                                <h3 class="das-filter__selected-heading">Selected filters</h3>
+                                <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear <span class="govuk-visually-hidden">the selected filters</span></a>
+                            </div>
+                            @if (!string.IsNullOrEmpty(Model.Keyword))
+                            {
+                                <h4 class="das-filter__selected-sub-heading">Apprenticeship training course</h4>
+                                <a asp-querystring="@Model.ClearKeywordLink" title="Clear this filter '@Model.Keyword'" class="das-filter__tag das-breakable">&lsquo;@Model.Keyword&rsquo;</a>
+                            }
+                            @if (Model.ClearLevelLinks.Any())
+                            {
+                                <h4 class="das-filter__selected-sub-heading">Qualification level</h4>
+                                @foreach (var levelLink in Model.ClearLevelLinks)
+                                {
+                                    <a class="das-filter__tag" asp-querystring="@levelLink.Value" title="Clear this level filter @levelLink.Key">@levelLink.Key</a>
+                                }
+                            }
+                            @if (Model.ClearSectorLinks.Any())
+                            {
+                                <h4 class="das-filter__selected-sub-heading">Apprenticeship category</h4>
+                                @foreach (var filterLink in Model.ClearSectorLinks)
+                                {
+                                    <a class="das-filter__tag" asp-querystring="@filterLink.Value" title="Clear this sector filter @filterLink.Key">@filterLink.Key</a>
+                                }
+                            }
+                        </div>
                     }
                     <div class="das-filter__body das-!-show--from-tablet" id="fat-filter-options">
                         <form asp-route="@RouteNames.Courses" method="GET">
@@ -117,38 +116,41 @@
             @if (Model.Courses.Count > 0)
             {
 
-                if (!string.IsNullOrEmpty(Model.Keyword))
+                if (Model.Courses.Count > 1)
                 {
-                    if (Model.OrderBy == OrderBy.Relevance)
+                    if (!string.IsNullOrEmpty(Model.Keyword))
                     {
-                        <p class="govuk-body govuk-!-margin-bottom-6">
-                            Sort by:
+                        if (Model.OrderBy == OrderBy.Relevance)
+                        {
+                            <p class="govuk-body govuk-!-margin-bottom-6">
+                                Sort by:
 
-                            <span class="govuk-!-font-weight-bold">Relevance</span>,
-                            <a id="sort-by-name" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByName">Name</a>
+                                <span class="govuk-!-font-weight-bold">Relevance</span>,
+                                <a id="sort-by-name" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByName">Name</a>
 
-                        </p>
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="govuk-body govuk-!-margin-bottom-6">
+                                Sort by:
+
+                                <a id="sort-by-relevance" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByRelevance">Relevance</a>,
+                                <span class="govuk-!-font-weight-bold">Name</span>
+
+                            </p>
+                        }
+
                     }
                     else
                     {
                         <p class="govuk-body govuk-!-margin-bottom-6">
-                            Sort by:
-
-                            <a id="sort-by-relevance" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByRelevance">Relevance</a>,
+                            Sorted by:
                             <span class="govuk-!-font-weight-bold">Name</span>
-
                         </p>
                     }
-
                 }
-                else
-                {
-                    <p class="govuk-body govuk-!-margin-bottom-6">
-                        Sorted by:
-                        <span class="govuk-!-font-weight-bold">Name</span>
-                    </p>
-                }
-
+                
                 <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 ">
 
                 <div class="das-search-results">
@@ -173,9 +175,10 @@
             }
             else
             {
-                <p class="govuk-body govuk-!-margin-bottom-6">
+                <p class="govuk-body govuk-!-margin-top-4">
                     No apprenticeship training courses for the selected filters.
                 </p>
+                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear filters</a></p>
             }
         </div>
     </div>
