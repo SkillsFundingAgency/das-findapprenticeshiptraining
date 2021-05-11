@@ -46,6 +46,7 @@ namespace SFA.DAS.FAT.Web.Models
         public string OrderByName => BuildOrderByLink(OrderBy.Name);
         public string OrderByRelevance => BuildOrderByLink(OrderBy.Relevance);
         public int ShortlistItemCount { get ; set ; }
+        public string Location { get ; set ; }
 
         private string GetTotalMessage()
         {

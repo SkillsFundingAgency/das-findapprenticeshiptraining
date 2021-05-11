@@ -157,7 +157,7 @@
                         {
                             <li class="das-search-results__list-item">
                                 <h2 class="govuk-heading-m das-search-results__heading">
-                                    <a class="das-search-results__link" id="standard-@course.Id" asp-route-id="@course.Id" asp-route="@RouteNames.CourseDetails">
+                                    <a class="das-search-results__link" id="standard-@course.Id" asp-route-id="@course.Id" asp-route-location="@Model.Location" asp-route="@RouteNames.CourseDetails">
                                         @course.Title <span class="das-no-wrap">(level @course.Level)</span>
                                     </a>
                                 </h2>
