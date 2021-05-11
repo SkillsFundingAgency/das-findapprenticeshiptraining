@@ -207,13 +207,14 @@
                     
                     var routeData = new Dictionary<string, string>
                     {
-                        {"location", Model.Location},
+                        {"Location", Model.Location},
                         {"id", Model.Course.Id.ToString()},
                     };
     
-                    <form method="GET" asp-route="@RouteNames.CourseProviders" asp-all-route-data="@routeData" class="govuk-!-width-three-quarters">
+                    <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
+                        <input type="hidden" name="Location" value="@Model.Location"/>
                         <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
-                            View training provider@((Model.ProvidersAtLocation == 1 ?"":"s"))
+                            View training provider@((Model.ProvidersAtLocation == 1 ? "" : "s"))
                         </button>
                     </form>
                 }
@@ -229,6 +230,7 @@
                     {
                         <p class="govuk-body">@Model.TotalProviders providers available at other locations.</p>
                         <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
+                            <input type="hidden" name="Location" value="-1"/>
                             <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
                                 View all providers for this course
                             </button>
