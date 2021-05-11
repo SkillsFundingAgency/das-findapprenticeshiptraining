@@ -18,7 +18,6 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
     {
         [Test, AutoData]
         public async Task Then_The_Endpoint_Is_Called(
-            WhenCallingPostOnTheApiClient.PostData postContent,
             int id,
             FindApprenticeshipTrainingApi config)
         {
@@ -52,7 +51,6 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
         
         [Test, AutoData]
         public void Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown(
-            WhenCallingPostOnTheApiClient.PostData postContent,
             int id,
             FindApprenticeshipTrainingApi config)
         {

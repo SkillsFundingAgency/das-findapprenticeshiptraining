@@ -16,7 +16,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.Course.Should().BeEquivalentTo((CourseViewModel)source.Course);
             actual.AdditionalCourses.Should().BeEquivalentTo((ProviderCoursesViewModel)source.AdditionalCourses);
             actual.Provider.Should().BeEquivalentTo((ProviderViewModel)source.Provider);
-            actual.TotalProviders.Should().Be(source.ProvidersAtLocation);
+            actual.ProvidersAtLocation.Should().Be(source.ProvidersAtLocation);
+            actual.TotalProviders.Should().Be(source.TotalProviders);
             actual.ShortlistItemCount.Should().Be(source.ShortlistItemCount);
         }
 

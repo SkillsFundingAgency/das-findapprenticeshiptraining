@@ -18,6 +18,8 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 
@@ -477,6 +479,91 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actualModel = actual.Model as CourseProviderViewModel;
             Assert.IsNotNull(actualModel);
             actualModel.BannerUpdateMessage.Should().BeEmpty();
+        }
+        
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled_And_Show_Demand_Is_Returned(
+            int providerId,
+            int courseId,
+            string location,
+            string removed,
+            GetCourseProviderResult response,
+            ShortlistCookieItem shortlistCookieItem,
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IDataProtector> protector,
+            [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+            [Greedy] CoursesController controller)
+        {
+            //Arrange
+            config.Object.Value.EmployerDemandFeatureToggle = true;
+            response.ShowEmployerDemand = true;
+            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
+            response.Location=string.Empty;
+            response.LocationGeoPoint = null;
+            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
+                    c.ProviderId.Equals(providerId) 
+                    && c.CourseId.Equals(courseId) 
+                    && c.Location.Equals(location)
+                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+                ), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+                .Returns(shortlistCookieItem);
+            
+            //Act
+            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
+            
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualModel = actual.Model as CourseProviderViewModel;
+            Assert.IsNotNull(actualModel);
+            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/enter-apprenticeship-details");
+        }
+        
+        [Test, MoqAutoData]
+        public async Task Then_The_Help_Url_Set_If_Feature_Disabled(
+            int providerId,
+            int courseId,
+            string location,
+            string removed,
+            GetCourseProviderResult response,
+            ShortlistCookieItem shortlistCookieItem,
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IDataProtector> protector,
+            [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+            [Greedy] CoursesController controller)
+        {
+            //Arrange
+            config.Object.Value.EmployerDemandFeatureToggle = false;
+            response.ShowEmployerDemand = true;
+            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
+            response.Location=string.Empty;
+            response.LocationGeoPoint = null;
+            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
+                    c.ProviderId.Equals(providerId) 
+                    && c.CourseId.Equals(courseId) 
+                    && c.Location.Equals(location)
+                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+                ), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+                .Returns(shortlistCookieItem);
+            
+            //Act
+            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
+            
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualModel = actual.Model as CourseProviderViewModel;
+            Assert.IsNotNull(actualModel);
+            actualModel.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
         }
     }
 }

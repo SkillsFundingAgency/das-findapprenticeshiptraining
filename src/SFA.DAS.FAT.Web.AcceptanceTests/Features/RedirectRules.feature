@@ -77,6 +77,6 @@ Feature: FAT v1 Redirect Rules
   Scenario: Navigate from v1 provider standard detail page
     Given I navigate to the following url: /Provider/Detail?ukprn=1001&standardCode=2&Postcode=coventry
     Then an http status code of 200 is returned
-    And the page content includes the following: This training provider does not offer this course at the apprenticeship location
+    And the page content includes the following: This training provider does not offer Software developer (level 4) at the apprenticeship location
     And the page content includes the following: There are 4 training providers for
     
