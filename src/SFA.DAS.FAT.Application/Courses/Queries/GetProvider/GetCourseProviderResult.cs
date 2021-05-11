@@ -12,5 +12,7 @@ namespace SFA.DAS.FAT.Application.Courses.Queries.GetProvider
         public List<double> LocationGeoPoint { get ; set ; }
         public int ProvidersAtLocation { get ; set ; }
         public int ShortlistItemCount { get ; set ; }
+        public int TotalProviders { get ; set ; }
+        public bool ShowEmployerDemand { get ; set ; }
     }
 }
