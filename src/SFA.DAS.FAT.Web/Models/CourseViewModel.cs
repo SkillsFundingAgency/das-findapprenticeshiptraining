@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
@@ -37,7 +37,7 @@ namespace SFA.DAS.FAT.Web.Models
             {
                 Id = course.Id,
                 Sector = course.Route,
-                CoreSkills = string.IsNullOrEmpty(course.CoreSkillsCount) ? new List<string>() : course.CoreSkillsCount.Split("|").ToList(),
+                CoreSkills = course.CoreSkills ?? new List<string>(),
                 Title = course.Title,
                 TitleAndLevel = $"{course.Title} (level {course.Level})",
                 Level = course.Level,
