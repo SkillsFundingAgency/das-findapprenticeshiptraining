@@ -10,7 +10,7 @@
     "typicalDuration": 24,
     "route": "Health and science",
     "typicalJobTitles": [ "Laboratory Technician", "Laboratory Assistant (prefixed by sector)." ],
-    "coreSkillsCount": "Work safely in a laboratory, maintaining excellent housekeeping whilst following appropriate safety, environment and risk management systems.|Follow quality procedures to meet the requirements of quality standards relevant to the workplace.|Prepare for laboratory tasks using the appropriate scientific techniques, procedures and methods|Perform laboratory tasks following specified methodologies, such as Standard Operating Procedures.|Use of specified instrumentation and laboratory equipment, including calibration where required.|Produce reliable, accurate data and keep accurate records of laboratory work undertaken and results.|Analyse, interpret and evaluate data and identify results requiring further investigation seeking advice of senior colleagues as appropriate.|Communicate scientific information appropriately, including the use of Laboratory Information Management systems, either digital or paper based.|Apply scientific techniques for data presentation. e.g. statistics|Recognise problems and apply appropriate scientific methods to identify causes and achieve solutions.|Participate in continuous business performance improvement.",
+    "coreSkills": [""],
     "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/laboratory-technician/",
     "integratedDegree": "",
     "sectorSubjectAreaTier2Description": "Engineering",

@@ -11,7 +11,7 @@
       "typicalDuration": 24,
       "route": "Digital",
       "typicalJobTitles": [ "Network Technician", "Network Engineer" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/network-engineer/",
       "integratedDegree": ""
     },
@@ -26,7 +26,7 @@
       "typicalDuration": 24,
       "route": "Digital",
       "typicalJobTitles": [ "Web Developer", "Application Developer" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/software-developer/",
       "integratedDegree": ""
     },
@@ -41,7 +41,7 @@
       "typicalDuration": 42,
       "route": "Construction",
       "typicalJobTitles": [ "Installation Electrician", "Maintenance Electrician", "Electrician" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/installation-electrician-maintenance-electrician/",
       "integratedDegree": ""
     },
@@ -56,7 +56,7 @@
       "typicalDuration": 30,
       "route": "Engineering and manufacturing",
       "typicalJobTitles": [ "linesman", "lineman", "lineswoman", "linewoman" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/power-network-craftsperson/",
       "integratedDegree": ""
     },
@@ -71,7 +71,7 @@
       "typicalDuration": 12,
       "route": "Legal, finance and accounting",
       "typicalJobTitles": [ "finance worker" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/financial-services-administrator/",
       "integratedDegree": ""
     },
@@ -86,7 +86,7 @@
       "typicalDuration": 60,
       "route": "Engineering and manufacturing",
       "typicalJobTitles": [ "Control Support Engineer", "Technical Support Engineer", "Maintenance Technician" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/control-technical-support-engineer-degree/",
       "integratedDegree": "non-integrated degree"
     },
@@ -101,7 +101,7 @@
       "typicalDuration": 60,
       "route": "Engineering and manufacturing",
       "typicalJobTitles": [ "electrician", "electrical engineer", "electrical technical support engineer", "electronic technical support engineer", "electronic support engineer", "electrical support engineer", "support engineer", "technical support engineer" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/electrical-electronic-technical-support-engineer-degree/",
       "integratedDegree": "non-integrated degree"
     },
@@ -116,7 +116,7 @@
       "typicalDuration": 60,
       "route": "Engineering and manufacturing",
       "typicalJobTitles": [ "Manufacturing engineer" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/manufacturing-engineer-degree/",
       "integratedDegree": "non-integrated degree"
     },
@@ -131,7 +131,7 @@
       "typicalDuration": 60,
       "route": "Engineering and manufacturing",
       "typicalJobTitles": [ "designer", "product designer", "product development engineer" ],
-      "coreSkillsCount": null,
+      "coreSkills": null,
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/product-design-and-development-engineer-degree/",
       "integratedDegree": "non-integrated degree"
     },
@@ -146,7 +146,7 @@
       "typicalDuration": 24,
       "route": "Health and science",
       "typicalJobTitles": [ "Laboratory Technician", "Laboratory Assistant (prefixed by sector)." ],
-      "coreSkillsCount": "Work safely in a laboratory, maintaining excellent housekeeping whilst following appropriate safety, environment and risk management systems.|Follow quality procedures to meet the requirements of quality standards relevant to the workplace.|Prepare for laboratory tasks using the appropriate scientific techniques, procedures and methods|Perform laboratory tasks following specified methodologies, such as Standard Operating Procedures.|Use of specified instrumentation and laboratory equipment, including calibration where required.|Produce reliable, accurate data and keep accurate records of laboratory work undertaken and results.|Analyse, interpret and evaluate data and identify results requiring further investigation seeking advice of senior colleagues as appropriate.|Communicate scientific information appropriately, including the use of Laboratory Information Management systems, either digital or paper based.|Apply scientific techniques for data presentation. e.g. statistics|Recognise problems and apply appropriate scientific methods to identify causes and achieve solutions.|Participate in continuous business performance improvement.",
+      "coreSkills": ["Work safely in a laboratory, maintaining excellent housekeeping whilst following appropriate safety, environment and risk management systems.","Follow quality procedures to meet the requirements of quality standards relevant to the workplace.","Prepare for laboratory tasks using the appropriate scientific techniques, procedures and methods","Perform laboratory tasks following specified methodologies, such as Standard Operating Procedures.","Use of specified instrumentation and laboratory equipment, including calibration where required.|Produce reliable, accurate data and keep accurate records of laboratory work undertaken and results.","Analyse, interpret and evaluate data and identify results requiring further investigation seeking advice of senior colleagues as appropriate.","Communicate scientific information appropriately, including the use of Laboratory Information Management systems, either digital or paper based.","Apply scientific techniques for data presentation. e.g. statistics","Recognise problems and apply appropriate scientific methods to identify causes and achieve solutions.","Participate in continuous business performance improvement."],
       "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/laboratory-technician/",
       "integratedDegree": ""
     }],
