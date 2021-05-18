@@ -155,7 +155,7 @@
             
             @if (Model.TotalFiltered == 0)
             {
-                if (Model.HasLocation)
+                if (Model.HasLocation && !Model.HasDeliveryModes && !Model.HasProviderRatings)
                 {
                     <p class="govuk-body">You can either:</p>
                     
