@@ -96,6 +96,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 CourseId = id,
                 Lat = location?.Lat ?? 0,
                 Lon = location?.Lon ?? 0,
+                LocationName = location?.Name,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 

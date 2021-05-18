@@ -21,6 +21,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Services
             int courseId,
             double lat,
             double lon,
+            string locationName,
             string baseUrl,
             Guid shortlistUserId,
             TrainingCourse response,
@@ -30,12 +31,12 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Services
         {
             //Arrange
             
-            var courseApiRequest = new GetCourseApiRequest(config.Object.Value.BaseUrl, courseId, lat, lon, shortlistUserId);
+            var courseApiRequest = new GetCourseApiRequest(config.Object.Value.BaseUrl, courseId, lat, lon, locationName, shortlistUserId);
             apiClient.Setup(x=>x.Get<TrainingCourse>(
                 It.Is<GetCourseApiRequest>(request => request.GetUrl.Equals(courseApiRequest.GetUrl)))).ReturnsAsync(response);
             
             //Act
-            var actual = await courseService.GetCourse(courseId, lat, lon, shortlistUserId);
+            var actual = await courseService.GetCourse(courseId, lat, lon, locationName, shortlistUserId);
             
             //Assert
             actual.Should().BeEquivalentTo(response);
