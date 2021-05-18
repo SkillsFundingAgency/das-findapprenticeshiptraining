@@ -11,7 +11,7 @@ namespace SFA.DAS.FAT.Domain.Courses
         public string OverviewOfRole { get; set; }
         public string Route { get; set; }
         public string IntegratedDegree { get; set; }
-        public string CoreSkillsCount { get ; set ; }
+        public List<string> CoreSkills { get; set; }
         public List<string> TypicalJobTitles { get ; set ; }
         public string StandardPageUrl { get ; set ; }
         public int TypicalDuration { get ; set ; }

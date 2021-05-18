@@ -10,7 +10,7 @@
         "typicalDuration": 24,
         "route": "Digital",
       "typicalJobTitles": [ "Web Developer", "Application Developer" ],
-        "coreSkillsCount": null,
+        "coreSkills": null,
         "standardPageUrl": "https://www.instituteforapprenticeships.org/apprenticeship-standards/software-developer/",
         "integratedDegree": ""
     },
