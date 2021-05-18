@@ -45,6 +45,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                         && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
                         && c.Lat.Equals(locationCookieItem.Lat)
                         && c.Lon.Equals(locationCookieItem.Lon)
+                        && c.LocationName.Equals(locationCookieItem.Name)
                         ),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             
@@ -64,7 +65,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_A_Location_Cookie_The_Lat_Lon_Are_Passed_To_The_Query(
+        public async Task Then_If_There_Is_A_Location_Cookie_The_Lat_Lon_And_Name_Are_Passed_To_The_Query(
             int standardCode,
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
@@ -84,6 +85,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                         c.CourseId.Equals(standardCode)
                         && c.Lat.Equals(locationCookieItem.Lat)
                         && c.Lon.Equals(locationCookieItem.Lon)
+                        && c.LocationName.Equals(locationCookieItem.Name)
                         && c.ShortlistUserId == null
                         ),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);

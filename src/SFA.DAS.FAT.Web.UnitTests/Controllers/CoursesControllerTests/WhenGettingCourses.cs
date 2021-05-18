@@ -48,7 +48,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Keyword_And_Sectors_And_Levels_Are_Added_To_The_Query_And_Returned_To_The_View(
+        public async Task Then_The_Keyword_And_Sectors_And_Levels_And_Location_Are_Added_To_The_Query_And_Returned_To_The_View(
             GetCoursesRequest request,
             GetCoursesResult response,
             [Frozen] Mock<IMediator> mediator,
@@ -64,6 +64,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns((ShortlistCookieItem)null);
+            
 
             //Act
             var actual = await controller.Courses(request);
@@ -83,16 +84,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             actualModel.Total.Should().Be(response.Total);
             actualModel.TotalFiltered.Should().Be(response.TotalFiltered);
             actualModel.ShortlistItemCount.Should().Be(response.ShortlistItemCount);
+            actualModel.Location.Should().Be(request.Location);
         }
 
         [Test, MoqAutoData]
         public async Task Then_Any_Sectors_In_The_Request_Are_Marked_As_Selected_On_The_ViewModel(
             GetCoursesRequest request,
             GetCoursesResult response,
+            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CoursesController controller)
         {
             //Arrange
+            request.Location = "";
             response.Sectors.Add(new Sector
             {
                 Route = request.Sectors.First()
@@ -106,6 +110,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                         => c.Keyword.Equals(request.Keyword)
                            && c.RouteIds.Equals(request.Sectors)),It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+            locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns((LocationCookieItem)null);
 
             //Act
             var actual = await controller.Courses(request);
@@ -119,6 +124,38 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.AreEqual(2, actualModel.Sectors.Count(sector=>sector.Selected));
             Assert.IsNotNull(actualModel.Sectors.SingleOrDefault(c=>c.Route.Equals(request.Sectors.First())));
             Assert.IsNotNull(actualModel.Sectors.SingleOrDefault(c=>c.Route.Equals(request.Sectors.Skip(1).First())));
+            actualModel.Location.Should().BeEmpty();
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Location_Cookie_Is_Checked_And_Added_To_Model(
+            GetCoursesRequest request,
+            GetCoursesResult response,
+            LocationCookieItem cookieItem,
+            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] CoursesController controller)
+        {
+            //Arrange
+            request.Location = string.Empty;
+            mediator.Setup(x => 
+                    x.Send(It.Is<GetCoursesQuery>(c 
+                        => c.Keyword.Equals(request.Keyword)
+                           && c.RouteIds.Equals(request.Sectors)
+                           && c.Levels.Equals(request.Levels)),It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+            locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(cookieItem);
+            
+            //Act
+            var actual = await controller.Courses(request);
+            
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualResult = actual as ViewResult;
+            Assert.IsNotNull(actualResult);
+            var actualModel = actualResult.Model as CoursesViewModel;
+            Assert.IsNotNull(actualModel);
+            actualModel.Location.Should().Be(cookieItem.Name);
         }
     }
 }

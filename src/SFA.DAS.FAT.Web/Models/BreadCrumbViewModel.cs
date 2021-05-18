@@ -7,6 +7,7 @@ namespace SFA.DAS.FAT.Web.Models
         public BreadCrumbLevel Level { get; set; }
         public string CourseId { get; set; }
         public string CourseDescription { get; set; }
+        public string Location { get; set; }
         public Dictionary<string, string> ProvidersFilters { get; set; }
     }
 

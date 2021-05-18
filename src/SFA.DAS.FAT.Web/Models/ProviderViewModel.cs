@@ -296,7 +296,7 @@ namespace SFA.DAS.FAT.Web.Models
         BlockRelease = 2,
         [Description("Not Found")]
         NotFound = 3,
-        [Description("National")]
+        [Description("National coverage")]
         National = 4,
     }
 
