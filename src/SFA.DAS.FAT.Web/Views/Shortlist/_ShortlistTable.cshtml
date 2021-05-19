@@ -83,7 +83,7 @@
                 <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@shortlistItem.Id">
                     <input type="hidden" name="routeName" value="@RouteNames.ShortList"/>
                     <input type="hidden" name="providerName" value="@shortlistItem.Provider.Name"/>
-                    <button id="remove-shortlistitem-@shortlistItem.Id" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="das-visually-hidden">@shortlistItem.Provider.Name</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
+                    <button id="remove-shortlistitem-@shortlistItem.Id" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="govuk-visually-hidden">@shortlistItem.Provider.Name</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
                 </form>
             </td>
         </tr>
