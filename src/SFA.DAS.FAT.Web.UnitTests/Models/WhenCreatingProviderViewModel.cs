@@ -330,7 +330,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             var dayReleaseDeliveryMode = actual.DeliveryModes.Single(model =>
                 model.DeliveryModeType == DeliveryModeType.DayRelease);
-            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($": {distanceInMiles.FormatDistance()} miles away");
+            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($":{distanceInMiles.FormatDistance()} miles away");
             dayReleaseDeliveryMode.IsAvailable.Should().BeTrue();
         }
         
@@ -352,7 +352,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             var dayReleaseDeliveryMode = actual.DeliveryModes.Single(model =>
                 model.DeliveryModeType == DeliveryModeType.DayRelease);
-            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($": 1 mile away");
+            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be(":1 mile away");
             dayReleaseDeliveryMode.IsAvailable.Should().BeTrue();
         }
 
@@ -396,7 +396,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             var blockReleaseDeliveryMode = actual.DeliveryModes.Single(model =>
                 model.DeliveryModeType == DeliveryModeType.BlockRelease);
-            blockReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($": {distanceInMiles:##.#} miles away");
+            blockReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($":{distanceInMiles:##.#} miles away");
             blockReleaseDeliveryMode.IsAvailable.Should().BeTrue();
         }
 
