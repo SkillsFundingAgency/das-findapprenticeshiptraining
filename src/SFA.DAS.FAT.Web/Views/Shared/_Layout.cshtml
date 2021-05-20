@@ -136,13 +136,13 @@
                         @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseList)
                         {
                             <li class="govuk-breadcrumbs__list-item">
-                                <a id="courses-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.Courses">Apprenticeship training courses</a>
+                                <a id="courses-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.Courses" asp-route-location="@breadCrumbViewModel.Location">Apprenticeship training courses</a>
                             </li>
                         }
                         @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseDetails)
                         {
                             <li class="govuk-breadcrumbs__list-item">
-                                <a id="course-detail-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@breadCrumbViewModel.CourseId">@breadCrumbViewModel.CourseDescription</a>
+                                <a id="course-detail-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@breadCrumbViewModel.CourseId" asp-route-location="@breadCrumbViewModel.Location">@breadCrumbViewModel.CourseDescription</a>
                             </li>
                         }
                         @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseProvidersList)

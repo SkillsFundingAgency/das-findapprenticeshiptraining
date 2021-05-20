@@ -55,6 +55,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("", Name = RouteNames.Courses)]
         public async Task<IActionResult> Courses(GetCoursesRequest request)
         {
+            var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
             
             var result = await _mediator.Send(new GetCoursesQuery
@@ -77,7 +78,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
-                ShortlistItemCount = result.ShortlistItemCount
+                ShortlistItemCount = result.ShortlistItemCount,
+                Location = location?.Name ?? ""
             };
 
             return View(viewModel);
@@ -94,6 +96,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 CourseId = id,
                 Lat = location?.Lat ?? 0,
                 Lon = location?.Lon ?? 0,
+                LocationName = location?.Name,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
@@ -122,8 +125,6 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var location = CheckLocation(request.Location);
 
                 var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-
-                
                 
                 var result = await _mediator.Send(new GetCourseProvidersQuery
                 {
@@ -139,8 +140,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var cookieResult =new LocationCookieItem
                 {
                     Name = result.Location,
-                    Lat = result.LocationGeoPoint?.FirstOrDefault() ??0,
-                    Lon = result.LocationGeoPoint?.LastOrDefault() ??0
+                    Lat = result.LocationGeoPoint?.FirstOrDefault() ?? 0,
+                    Lon = result.LocationGeoPoint?.LastOrDefault() ?? 0
                 }; 
                 UpdateLocationCookie(cookieResult);
                 

@@ -13,7 +13,8 @@
     {
         Level = BreadCrumbLevel.CourseProvidersList, 
         CourseId = Model.Course.Id.ToString(),
-        CourseDescription = Model.Course.TitleAndLevel
+        CourseDescription = Model.Course.TitleAndLevel,
+        Location = Model.Location
     };
     ViewData["ShortlistItemCount"] = Model.ShortlistItemCount;
 
@@ -154,7 +155,7 @@
             
             @if (Model.TotalFiltered == 0)
             {
-                if (Model.HasLocation)
+                if (Model.HasLocation && !Model.HasDeliveryModes && !Model.HasProviderRatings)
                 {
                     <p class="govuk-body">You can either:</p>
                     
@@ -173,6 +174,12 @@
             }
             else
             {
+                if (Model.HasLocation && Model.TotalFiltered > 1)
+                {
+                    <p class="govuk-body govuk-!-margin-bottom-6">Sorted by:
+                        <span class="govuk-!-font-weight-bold">Relevance</span>
+                    </p>
+                }
                 <div class="das-highlight govuk-!-margin-top-0 govuk-!-margin-bottom-5">
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Apprenticeship location</h2>
                     @if (Model.HasLocation)

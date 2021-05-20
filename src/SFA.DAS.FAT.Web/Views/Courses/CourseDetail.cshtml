@@ -4,7 +4,11 @@
 
 @{
     ViewData["Title"] = $"{Model.TitleAndLevel} - apprenticeship training course";
-    ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel {Level = BreadCrumbLevel.CourseDetails};
+    ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel
+    {
+        Level = BreadCrumbLevel.CourseDetails,
+        Location = Model.LocationName
+    };
     if (Model.AfterLastStartDate)
     {
         ViewData["Description"] = $"The apprenticeship training course {Model.TitleAndLevel} is no longer available.";
@@ -36,11 +40,11 @@
 
                 <dl class="govuk-summary-list">
                     <div class="govuk-summary-list__row">
-                        <dt class="govuk-summary-list__key">Level</dt>
+                        <dt class="govuk-summary-list__key">Qualification level</dt>
                         <dd class="govuk-summary-list__value">
                             @Model.Level <br />
                             <span class="govuk-!-font-size-16 das-text--muted">
-                                Equivalent to @Model.LevelEquivalent
+                                Equivalent to @(Model.LevelEquivalent).
                             </span>
                         </dd>
                     </div>
@@ -138,7 +142,7 @@
                             }
                         }
                         
-                        @if (Model.HasLocation)
+                        if (Model.HasLocation)
                         {
                             <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Apprenticeship location</h3>
                             <p class="govuk-body"><span class="govuk-!-margin-right-2">@Model.LocationName</span> 
@@ -176,7 +180,7 @@
                                     <p class="govuk-body das-text--success das-text--success-icon">@Model.ProvidersAtLocationCount providers available for this apprenticeship location</p>    
                                 }
                                 
-                                <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id">View providers for this course</a></p>
+                                <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="@Model.LocationName">View providers for this course</a></p>
                             }
                             
                         }
