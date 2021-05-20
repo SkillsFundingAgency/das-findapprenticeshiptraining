@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -219,8 +219,8 @@ namespace SFA.DAS.FAT.Web.Models
             viewModel.IsAvailable =  source != default;
             viewModel.FormattedDistanceInMiles = source != default && deliveryModeType != DeliveryModeType.Workplace
                 ? source.DistanceInMiles.FormatDistance() == "1" 
-                    ? ": 1 mile away" 
-                    : $": {source.DistanceInMiles.FormatDistance()} miles away"
+                    ? ":1 mile away" 
+                    : $":{source.DistanceInMiles.FormatDistance()} miles away"
                 : null;
             viewModel.NationalText = source != default && 
                 source.National && deliveryModeType == DeliveryModeType.Workplace ? "(national)" : null;
