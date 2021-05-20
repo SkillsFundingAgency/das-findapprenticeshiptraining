@@ -19,7 +19,7 @@
     {
         var routeData = new Dictionary<string, string>
         {
-            {"location", shortlistItem.LocationDescription },
+            {"location", shortlistItem.LocationDescription ?? "-1"},
             {"id",shortlistItem.Course.Id.ToString()},
             {"providerId",shortlistItem.Provider.ProviderId.ToString()}
         };
