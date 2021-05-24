@@ -46,7 +46,7 @@
                     @foreach (var mode in shortlistItem.Provider.DeliveryModes)
                     {
                         <li class="das-icon-list__list-item" id="@shortlistItem.Provider.ProviderId-@mode.DeliveryModeType">
-                            @if (mode.IsAvailable && isAvailableAtLocation)
+                            @if (mode.IsAvailable || isAvailableAtLocation)
                             {
                                 <span class="das-icon-list__icon das-icon-list__icon--tick">available</span>
                             }
