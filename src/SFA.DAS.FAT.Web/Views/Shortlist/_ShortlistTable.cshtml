@@ -41,7 +41,7 @@
             <td class="govuk-table__cell app-shortlist-table__cell">
                 <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
                     @{
-                        var isAvailableAtLocation = shortlistItem.Provider.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound) == null;
+                        var isAvailableAtLocation = shortlistItem.Provider.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound) != null;
                     }
                     @foreach (var mode in shortlistItem.Provider.DeliveryModes)
                     {
