@@ -40,13 +40,10 @@
             </th>
             <td class="govuk-table__cell app-shortlist-table__cell">
                 <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @{
-                        var isAvailableAtLocation = shortlistItem.Provider.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound) == null;
-                    }
                     @foreach (var mode in shortlistItem.Provider.DeliveryModes)
                     {
                         <li class="das-icon-list__list-item" id="@shortlistItem.Provider.ProviderId-@mode.DeliveryModeType">
-                            @if (mode.IsAvailable && isAvailableAtLocation || string.IsNullOrEmpty(shortlistItem.LocationDescription) && mode.IsAvailable)
+                            @if (mode.IsAvailable)
                             {
                                 <span class="das-icon-list__icon das-icon-list__icon--tick">available</span>
                             }
@@ -54,7 +51,7 @@
                             {
                                 <span class="das-icon-list__icon das-icon-list__icon--cross">not available</span>
                             }
-                            @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(shortlistItem.LocationDescription) && isAvailableAtLocation ? mode.FormattedDistanceInMiles : "") @mode.NationalText
+                            @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(shortlistItem.LocationDescription) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
                         </li>
                     }
                 </ul>
