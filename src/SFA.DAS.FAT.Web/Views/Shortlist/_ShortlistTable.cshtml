@@ -40,7 +40,7 @@
             </th>
             <td class="govuk-table__cell app-shortlist-table__cell">
                 <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @foreach (var mode in shortlistItem.Provider.DeliveryModes)
+                    @foreach (var mode in shortlistItem.Provider.DeliveryModes.Where(c=>c.DeliveryModeType!=DeliveryModeType.NotFound))
                     {
                         <li class="das-icon-list__list-item" id="@shortlistItem.Provider.ProviderId-@mode.DeliveryModeType">
                             @if (mode.IsAvailable)
