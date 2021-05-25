@@ -352,7 +352,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             var dayReleaseDeliveryMode = actual.DeliveryModes.Single(model =>
                 model.DeliveryModeType == DeliveryModeType.DayRelease);
-            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($": 1 mile away");
+            dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be(": 1 mile away");
             dayReleaseDeliveryMode.IsAvailable.Should().BeTrue();
         }
 

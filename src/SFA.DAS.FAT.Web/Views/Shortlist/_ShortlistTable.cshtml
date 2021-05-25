@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model List<SFA.DAS.FAT.Web.Models.ShortlistItemViewModel>
 
 
@@ -19,7 +20,7 @@
     {
         var routeData = new Dictionary<string, string>
         {
-            {"location", shortlistItem.LocationDescription },
+            {"location", shortlistItem.LocationDescription ?? "-1"},
             {"id",shortlistItem.Course.Id.ToString()},
             {"providerId",shortlistItem.Provider.ProviderId.ToString()}
         };
@@ -50,7 +51,7 @@
                             {
                                 <span class="das-icon-list__icon das-icon-list__icon--cross">not available</span>
                             }
-                            @mode.DeliveryModeType.GetDescription() @(!string.IsNullOrEmpty(shortlistItem.LocationDescription) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
+                            @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(shortlistItem.LocationDescription) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
                         </li>
                     }
                 </ul>
@@ -83,7 +84,7 @@
                 <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@shortlistItem.Id">
                     <input type="hidden" name="routeName" value="@RouteNames.ShortList"/>
                     <input type="hidden" name="providerName" value="@shortlistItem.Provider.Name"/>
-                    <button id="remove-shortlistitem-@shortlistItem.Id" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="das-visually-hidden">@shortlistItem.Provider.Name</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
+                    <button id="remove-shortlistitem-@shortlistItem.Id" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="govuk-visually-hidden">@shortlistItem.Provider.Name</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
                 </form>
             </td>
         </tr>
