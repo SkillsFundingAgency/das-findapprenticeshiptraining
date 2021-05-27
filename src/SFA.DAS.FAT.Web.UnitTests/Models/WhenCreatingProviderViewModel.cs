@@ -401,7 +401,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void And_Has_NotFound_Then_Only_NotFound_Added_To_Delivery_Mode(Provider source)
+        public void And_Has_NotFound_Then_NotFound_And_All_Others_Added_As_Unavailable_To_Delivery_Mode(Provider source)
         {
             // Arrange
             source.DeliveryModes = new List<DeliveryMode>
@@ -416,8 +416,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             var actual = (ProviderViewModel)source;
 
             // Assert
-            actual.DeliveryModes.Count().Should().Be(1);
-            actual.DeliveryModes.ToList().TrueForAll(x => x.DeliveryModeType == DeliveryModeType.NotFound).Should().BeTrue();
+            actual.DeliveryModes.Count().Should().Be(4);
+            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound && c.IsAvailable).Should().NotBeNull();
+            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace && !c.IsAvailable).Should().NotBeNull();
+            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease && !c.IsAvailable).Should().NotBeNull();
+            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease && !c.IsAvailable).Should().NotBeNull();
+            
         }
 
         [Test, AutoData]

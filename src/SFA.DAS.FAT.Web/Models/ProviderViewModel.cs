@@ -176,7 +176,10 @@ namespace SFA.DAS.FAT.Web.Models
             {
                 return new List<DeliveryModeViewModel>
                 {
-                    new DeliveryModeViewModel().Map(notFound, DeliveryModeType.NotFound)
+                    new DeliveryModeViewModel().Map(notFound, DeliveryModeType.NotFound),
+                    new DeliveryModeViewModel().Map(null, DeliveryModeType.Workplace),
+                    new DeliveryModeViewModel().Map(null, DeliveryModeType.DayRelease),
+                    new DeliveryModeViewModel().Map(null, DeliveryModeType.BlockRelease)
                 };
             }
             
