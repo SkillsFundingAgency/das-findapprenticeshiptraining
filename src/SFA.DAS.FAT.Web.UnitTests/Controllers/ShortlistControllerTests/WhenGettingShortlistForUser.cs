@@ -234,7 +234,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
             model.HelpBaseUrl.Should().Be(config.Object.Value.EmployerDemandUrl);
             foreach (var itemViewModel in model.Shortlist)
             {
-                itemViewModel.HelpFindingCourseUrl.Should().Be($"/registerdemand/course/{itemViewModel.Course.Id}/enter-apprenticeship-details");    
+                itemViewModel.HelpFindingCourseUrl.Should().Be($"/registerdemand/course/{itemViewModel.Course.Id}/share-interest");    
             }
             
         }
