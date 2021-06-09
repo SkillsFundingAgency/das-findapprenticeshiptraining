@@ -162,8 +162,10 @@
                     <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
                         <li><a asp-querystring="@Model.ClearLocationLink" class="govuk-link govuk-link--no-visited-state" id="lnk-remove-location-0-results">remove the location</a></li>
                         <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">search for another course</a></li>
-                        <li><a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state">get help with finding a training provider</a></li>
                     </ul>
+
+                    <p class="govuk-!-font-weight-bold">Can't find a training provider?</p>
+                    <p class="govuk-body">We can let other training providers know you are interested in @Model.Course.Title (level @Model.Course.Level)</p>                    
                     
                 }
                 else
