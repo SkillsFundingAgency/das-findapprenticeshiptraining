@@ -164,8 +164,9 @@
                         <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a></li>
                     </ul>
 
-                    <p class="govuk-!-font-weight-bold">Can't find a training provider?</p>
-                    <p class="govuk-body">We can let other training providers know you are interested in @Model.Course.TitleAndLevel</p>                    
+                    <p class="govuk-body"><strong>Can't find a training provider?</strong>
+                      <br>
+                    We can let other training providers know you are interested in @Model.Course.TitleAndLevel</p>                    
                     <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
                 }
                 else
