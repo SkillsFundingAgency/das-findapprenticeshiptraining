@@ -75,7 +75,7 @@ namespace SFA.DAS.FAT.Web.Models
                 CreatedDate = source.CreatedDate,
                 Course = source.Course,
                 Provider = source.Provider,
-                HelpFindingCourseUrl = $"/registerdemand/course/{source.Course.Id}/enter-apprenticeship-details"
+                HelpFindingCourseUrl = $"/registerdemand/course/{source.Course.Id}/share-interest"
             };
         }
     }

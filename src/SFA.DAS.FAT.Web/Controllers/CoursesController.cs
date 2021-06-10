@@ -319,7 +319,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private string BuildHelpFindingCourseUrl(int courseId, bool showDemand)
         {
             return _config.EmployerDemandFeatureToggle && showDemand? 
-                $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/enter-apprenticeship-details" 
+                $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest" 
                 : "https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us";
         }
     }
