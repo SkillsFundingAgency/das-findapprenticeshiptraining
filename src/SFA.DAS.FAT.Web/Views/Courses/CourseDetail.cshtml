@@ -115,15 +115,14 @@
                 <div class="das-highlight">
                 @if (Model.TotalProvidersCount == 0)
                 {
-                    <h2 class="govuk-heading-l" >Training providers</h2>
-                    <p class="govuk-body">There are no training providers available for this course yet.</p>
-                    <p class="govuk-body">You can either:</p>
-                    <p class="govuk-body">
-                        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                            <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">search for another course</a></li>
-                            <li><a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state">get help with finding a training provider</a></li>
-                        </ul>
+                    <h2 class="govuk-heading-l" >No training providers available for this course yet</h2>
+                    <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
+                    <p class="govuk-body>">
+                        <strong>Can't find a training provider?</strong>
+                        <br/>
+                        We can let other training providers know you are interested in @Model.TitleAndLevel.
                     </p>
+                    <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
                 }
                 else
                 {
