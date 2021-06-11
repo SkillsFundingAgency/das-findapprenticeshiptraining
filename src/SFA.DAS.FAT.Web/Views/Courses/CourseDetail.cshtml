@@ -113,20 +113,20 @@
                     Full information on <a class="govuk-link govuk-link--no-visited-state" href="@Model.ExternalCourseUrl" target="_blank" rel="external">@Model.TitleAndLevel</a> is available from the Institute for Apprenticeships and Technical Education.
                 </p>
                 <div class="das-highlight">
-                @if (Model.TotalProvidersCount == 0)
-                {
-                    <h2 class="govuk-heading-l" >No training providers available for this course yet</h2>
-                    <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
-                    <p class="govuk-body>">
-                        <strong>Can't find a training provider?</strong>
-                        <br/>
-                        We can let other training providers know you are interested in @Model.TitleAndLevel.
-                    </p>
-                    <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
-                }
-                else
-                {
-                    
+                    @if (Model.TotalProvidersCount == 0)
+                    {
+                        <h2 class="govuk-heading-l">No training providers available for this course yet</h2>
+                        <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
+                        <p class="govuk-body>">
+                            <strong>Can't find a training provider?</strong>
+                            <br />
+                            We can let other training providers know you are interested in @Model.TitleAndLevel.
+                        </p>
+                        <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
+                    }
+                    else
+                    {
+
                         <h2 class="govuk-heading-l">Find training providers for this course</h2>
                         @if (Model.OtherBodyApprovalRequired)
                         {
@@ -140,32 +140,36 @@
                                 <p class="govuk-body">@Model.TitleAndLevel needs a training provider who is approved by @Model.ApprovalBody.</p>
                             }
                         }
-                        
+
                         if (Model.HasLocation)
                         {
                             <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Apprenticeship location</h3>
-                            <p class="govuk-body"><span class="govuk-!-margin-right-2">@Model.LocationName</span> 
+                            <p class="govuk-body">
+                                <span class="govuk-!-margin-right-2">@Model.LocationName</span>
                                 <a asp-route="@RouteNames.CourseDetails" asp-route-id="@Model.Id" asp-route-location="-1" class="govuk-link govuk-link--no-visited-state">Remove&nbsp;location</a>
                             </p>
-                        
+
                             if (Model.ProvidersAtLocationCount == 0)
                             {
                                 <p class="govuk-body das-text--error das-text--error-icon">There are no training providers available for this course at the apprenticeship location.</p>
-                                <p class="govuk-body">You can either:</p>
-                                <p class="govuk-body">
-                                    <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-0">
-                                        <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">search for another course</a></li>
-                                        <li><a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state">get help with finding a training provider</a></li>
-                                    </ul>
-                                </p>
                                 if (Model.TotalProvidersCount == 1)
                                 {
-                                    <p class="govuk-body">One provider available at other locations.</p>
+                                    <p class="govuk-body"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">One provider available</a> at other locations.</p>
                                 }
                                 else
                                 {
-                                    <p class="govuk-body">@Model.TotalProvidersCount providers available at other locations.</p>    
+                                    <p class="govuk-body"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">@Model.TotalProvidersCount providers available</a> at other locations.</p>
                                 }
+                                <p class="govuk-body">You can either:</p>
+                                <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
+                                <p class="govuk-body">
+                                    <strong>Can't find a training provider?</strong>
+                                    <br/>
+                                    We can let other training providers know you are interested in @Model.TitleAndLevel.
+                                </p>
+                                <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
+                                    
+
                                 <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">View all providers for this course</a></p>
                             }
                             else
@@ -176,12 +180,12 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body das-text--success das-text--success-icon">@Model.ProvidersAtLocationCount providers available for this apprenticeship location</p>    
+                                    <p class="govuk-body das-text--success das-text--success-icon">@Model.ProvidersAtLocationCount providers available for this apprenticeship location</p>
                                 }
-                                
+
                                 <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="@Model.LocationName">View providers for this course</a></p>
                             }
-                            
+
                         }
                         else
                         {
@@ -197,7 +201,7 @@
                                 </button>
                             </form>
                         }
-                }
+                    }
                 </div>
             }
             else
