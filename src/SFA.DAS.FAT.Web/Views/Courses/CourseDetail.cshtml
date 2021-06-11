@@ -122,7 +122,7 @@
                             <br />
                             We can let other training providers know you are interested in @Model.TitleAndLevel.
                         </p>
-                        <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
+                        <a href="@Model.HelpFindingCourseUrl" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>
                     }
                     else
                     {
@@ -154,23 +154,19 @@
                                 <p class="govuk-body das-text--error das-text--error-icon">There are no training providers available for this course at the apprenticeship location.</p>
                                 if (Model.TotalProvidersCount == 1)
                                 {
-                                    <p class="govuk-body"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">One provider available</a> at other locations.</p>
+                                    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">One provider available</a> at other locations.</p>
                                 }
                                 else
                                 {
-                                    <p class="govuk-body"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">@Model.TotalProvidersCount providers available</a> at other locations.</p>
+                                    <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">@Model.TotalProvidersCount providers available</a> at other locations.</p>
                                 }
-                                <p class="govuk-body">You can either:</p>
                                 <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
                                 <p class="govuk-body">
                                     <strong>Can't find a training provider?</strong>
                                     <br/>
                                     We can let other training providers know you are interested in @Model.TitleAndLevel.
                                 </p>
-                                <a href="@Model.HelpFindingCourseUrl" class="govuk-button">Share interest</a>
-                                    
-
-                                <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-button govuk-!-margin-bottom-0" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">View all providers for this course</a></p>
+                                <a href="@Model.HelpFindingCourseUrl" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>
                             }
                             else
                             {
