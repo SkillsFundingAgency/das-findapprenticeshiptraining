@@ -63,11 +63,11 @@
                             @if (Model.IsOneTable)
                             {
                                 <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                <p class="govuk-body govuk-!-margin-bottom-2">
+                                <p class="govuk-body govuk-!-margin-bottom-6">
                                     <a asp-route="@RouteNames.CourseProviders" 
                                        asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
                                        asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
-                                       class="govuk-link govuk-link--no-visited-state govuk-!-margin-bottom-2">Add more training providers</a>
+                                       class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                 </p>
                                 if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
                                 {
@@ -89,11 +89,11 @@
                                     </summary>
                                     <div class="govuk-details__text">
                                         <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                        <p class="govuk-body govuk-!-margin-bottom-2">
+                                        <p class="govuk-body govuk-!-margin-bottom-6">
                                             <a asp-route="@RouteNames.CourseProviders" 
                                                asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
                                                asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
-                                               class="govuk-link govuk-link--no-visited-state govuk-!-margin-bottom-2">Add more training providers</a>
+                                               class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                         </p>
                                         @if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
                                         {
