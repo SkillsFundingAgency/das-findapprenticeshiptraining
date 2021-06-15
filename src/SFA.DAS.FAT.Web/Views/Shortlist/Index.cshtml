@@ -100,7 +100,7 @@
                                             <p class="govuk-body>">
                                                 <strong>Can't find a training provider?</strong>
                                                 <br />
-                                                We can let other training providers know you are interested in @courseTitleGroup.Key (level @courseLevelGroup.Key).
+                                                We can let other training providers know you are interested in @locationGroup.FirstOrDefault().Course.TitleAndLevel.
                                             </p>
                                             <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>    
                                         }
