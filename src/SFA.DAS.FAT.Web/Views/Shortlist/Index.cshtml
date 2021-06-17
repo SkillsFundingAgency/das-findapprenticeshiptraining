@@ -63,7 +63,7 @@
                             @if (Model.IsOneTable)
                             {
                                 <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                <p class="govuk-body govuk-!-margin-bottom-2">
+                                <p class="govuk-body govuk-!-margin-bottom-6">
                                     <a asp-route="@RouteNames.CourseProviders" 
                                        asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
                                        asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
@@ -71,9 +71,12 @@
                                 </p>
                                 if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
                                 {
-                                    <p class="govuk-body govuk-!-margin-bottom-0">
-                                        <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-link govuk-link--no-visited-state">Get help with finding a training provider</a>
-                                    </p>    
+                                    <p class="govuk-body>">
+                                        <strong>Can't find a training provider?</strong>
+                                        <br />
+                                        We can let other training providers know you are interested in @courseTitleGroup.Key (level @courseLevelGroup.Key).
+                                    </p>
+                                    <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>    
                                 }
                             }
                             else
@@ -86,7 +89,7 @@
                                     </summary>
                                     <div class="govuk-details__text">
                                         <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                        <p class="govuk-body govuk-!-margin-bottom-2">
+                                        <p class="govuk-body govuk-!-margin-bottom-6">
                                             <a asp-route="@RouteNames.CourseProviders" 
                                                asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
                                                asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
@@ -94,9 +97,12 @@
                                         </p>
                                         @if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
                                         {
-                                            <p class="govuk-body govuk-!-margin-bottom-0">
-                                                <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-link govuk-link--no-visited-state">Get help with finding a training provider</a>
-                                            </p>    
+                                            <p class="govuk-body>">
+                                                <strong>Can't find a training provider?</strong>
+                                                <br />
+                                                We can let other training providers know you are interested in @locationGroup.FirstOrDefault().Course.TitleAndLevel.
+                                            </p>
+                                            <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-button govuk-!-margin-bottom-0" id="share-interest">Share interest</a>    
                                         }
                                     </div>
                                 </details>
