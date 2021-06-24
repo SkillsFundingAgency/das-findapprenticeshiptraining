@@ -110,7 +110,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
             viewModel.ShortlistItemCount = result.ShortlistItemCount;
-            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, result.ShowEmployerDemand, (short)EntryPoint.entryPoint.CourseDetail);
+            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, result.ShowEmployerDemand, (short)EntryPoint.CourseDetail);
             
             return View(viewModel);
         }
@@ -175,7 +175,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 courseProvidersViewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.entryPoint.Providers);
+                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.Providers);
                 
                 return View(courseProvidersViewModel);
             }
@@ -245,7 +245,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 viewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.entryPoint.ProviderDetail);
+                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.ProviderDetail);
                 
                 return View(viewModel);
             }

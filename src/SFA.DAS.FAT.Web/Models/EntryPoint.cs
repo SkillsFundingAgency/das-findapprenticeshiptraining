@@ -1,18 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace SFA.DAS.FAT.Web.Models
+﻿namespace SFA.DAS.FAT.Web.Models
 {
-    public class EntryPoint
+    public enum EntryPoint
     {
-        public enum entryPoint
-        {
-            Shortlist,
-            CourseDetail,
-            Providers,
-            ProviderDetail,
-        }
+        Shortlist,
+        CourseDetail,
+        Providers,
+        ProviderDetail,
     }
 }
