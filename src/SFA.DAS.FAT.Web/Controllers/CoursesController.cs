@@ -110,7 +110,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
             viewModel.ShortlistItemCount = result.ShortlistItemCount;
-            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, result.ShowEmployerDemand, (short)EntryPoint.CourseDetail);
+            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, result.ShowEmployerDemand, EntryPoint.CourseDetail);
             
             return View(viewModel);
         }
@@ -175,7 +175,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 courseProvidersViewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.Providers);
+                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, result.ShowEmployerDemand, EntryPoint.Providers);
                 
                 return View(courseProvidersViewModel);
             }
@@ -245,7 +245,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 viewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, result.ShowEmployerDemand, (short)EntryPoint.ProviderDetail);
+                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, result.ShowEmployerDemand, EntryPoint.ProviderDetail);
                 
                 return View(viewModel);
             }
@@ -316,8 +316,9 @@ namespace SFA.DAS.FAT.Web.Controllers
             return "";
         }
         
-        private string BuildHelpFindingCourseUrl(int courseId, bool showDemand, short entryPointValue)
+        private string BuildHelpFindingCourseUrl(int courseId, bool showDemand, EntryPoint entryPoint)
         {
+            short entryPointValue = (short)entryPoint;
             return _config.EmployerDemandFeatureToggle && showDemand? 
                 $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest?entrypoint={entryPointValue}" 
                 : "https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us";
