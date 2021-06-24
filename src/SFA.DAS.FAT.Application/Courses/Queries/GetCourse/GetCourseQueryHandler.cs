@@ -32,8 +32,7 @@ namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourse
             {
                 Course = response?.Course, 
                 ProvidersCount = response?.ProvidersCount, 
-                ShortlistItemCount = response?.ShortlistItemCount ?? 0,
-                ShowEmployerDemand = response?.ShowEmployerDemand ?? false
+                ShortlistItemCount = response?.ShortlistItemCount ?? 0
             };
         }
     }

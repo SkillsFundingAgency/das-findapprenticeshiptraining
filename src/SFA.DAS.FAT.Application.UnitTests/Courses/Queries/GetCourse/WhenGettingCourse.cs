@@ -63,7 +63,6 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
             actual.Course.Should().BeEquivalentTo(courseResponse.Course);
             actual.ProvidersCount.Should().BeEquivalentTo(courseResponse.ProvidersCount);
             actual.ShortlistItemCount.Should().Be(courseResponse.ShortlistItemCount);
-            actual.ShowEmployerDemand.Should().Be(courseResponse.ShowEmployerDemand);
         }
         
         [Test, MoqAutoData]
@@ -87,7 +86,6 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
             Assert.IsNull(actual.Course);
             Assert.IsNull(actual.ProvidersCount);
             Assert.AreEqual(0, actual.ShortlistItemCount);
-            Assert.AreEqual(false, actual.ShowEmployerDemand);
         }
     }
 }

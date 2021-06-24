@@ -31,7 +31,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy]CoursesController controller)
         {
             //Arrange
-            response.ShowEmployerDemand = true;
             cookieStorageService
                 .Setup(x => x.Get(Constants.LocationCookieName))
                 .Returns(locationCookieItem);
@@ -166,7 +165,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = true;
-            response.ShowEmployerDemand = true;
             mediator
                 .Setup(x => x.Send(
                     It.Is<GetCourseQuery>(c => c.CourseId.Equals(standardCode)),

@@ -6,12 +6,9 @@ namespace SFA.DAS.FAT.Domain.Courses
     {
         [JsonProperty("trainingCourse")]
         public Course Course { get; set; }
-
         [JsonProperty("providersCount")] 
         public ProvidersCount ProvidersCount { get; set; }
         [JsonProperty("shortlistItemCount")]
         public int ShortlistItemCount { get; set; }
-
-        public bool ShowEmployerDemand { get; set; }
     }
 }

@@ -110,7 +110,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
             viewModel.ShortlistItemCount = result.ShortlistItemCount;
-            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, result.ShowEmployerDemand);
+            viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id);
             
             return View(viewModel);
         }
@@ -175,7 +175,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 courseProvidersViewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, result.ShowEmployerDemand);
+                courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id);
                 
                 return View(courseProvidersViewModel);
             }
@@ -245,7 +245,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 viewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
-                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, result.ShowEmployerDemand);
+                viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id);
                 
                 return View(viewModel);
             }
@@ -316,9 +316,9 @@ namespace SFA.DAS.FAT.Web.Controllers
             return "";
         }
         
-        private string BuildHelpFindingCourseUrl(int courseId, bool showDemand)
+        private string BuildHelpFindingCourseUrl(int courseId)
         {
-            return _config.EmployerDemandFeatureToggle && showDemand? 
+            return _config.EmployerDemandFeatureToggle? 
                 $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest" 
                 : "https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us";
         }
