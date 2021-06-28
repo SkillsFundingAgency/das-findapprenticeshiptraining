@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.CodeAnalysis.CSharp;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.AcceptanceTests.Infrastructure;
-using SFA.DAS.FAT.Web.Models;
 using TechTalk.SpecFlow;
 
 namespace SFA.DAS.FAT.Web.AcceptanceTests.Steps

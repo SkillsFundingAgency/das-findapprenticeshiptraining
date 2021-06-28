@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using AutoFixture;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;

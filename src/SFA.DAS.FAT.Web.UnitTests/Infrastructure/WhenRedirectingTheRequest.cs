@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Net;
-using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Rewrite;

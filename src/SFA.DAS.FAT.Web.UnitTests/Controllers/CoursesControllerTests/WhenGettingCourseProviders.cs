@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -21,7 +20,6 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
-using StructureMap.Query;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
 {
