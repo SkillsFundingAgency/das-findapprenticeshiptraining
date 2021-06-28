@@ -2,9 +2,9 @@
 {
     public enum EntryPoint
     {
-        Shortlist,
-        CourseDetail,
-        Providers,
-        ProviderDetail,
+        Shortlist = 0,
+        CourseDetail = 1,
+        Providers = 2,
+        ProviderDetail = 3,
     }
 }
