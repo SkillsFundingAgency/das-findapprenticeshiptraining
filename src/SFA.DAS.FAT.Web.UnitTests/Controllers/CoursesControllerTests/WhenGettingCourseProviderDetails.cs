@@ -483,7 +483,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         
         
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled_And_Show_Demand_Is_Returned(
+        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
             int providerId,
             int courseId,
             string location,
@@ -500,7 +500,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = true;
-            response.ShowEmployerDemand = true;
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location=string.Empty;
             response.LocationGeoPoint = null;
