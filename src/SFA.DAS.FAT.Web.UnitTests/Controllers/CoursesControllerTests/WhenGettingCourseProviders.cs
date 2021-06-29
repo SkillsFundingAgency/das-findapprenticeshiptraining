@@ -4,7 +4,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -21,7 +20,6 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
-using StructureMap.Query;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
 {
@@ -480,7 +478,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled_And_Show_Demand_Is_Returned(
+        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
             GetCourseProvidersRequest request,
             GetCourseProvidersResult response,
             [Frozen] Mock<IMediator> mediator,
@@ -491,7 +489,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = true;
-            response.ShowEmployerDemand = true;
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
@@ -507,7 +504,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseProvidersViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest");
+            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=2");
         }
         
         [Test, MoqAutoData]
@@ -522,7 +519,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = false;
-            response.ShowEmployerDemand = true;
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(

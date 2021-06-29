@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace SFA.DAS.FAT.Web.Models
+﻿namespace SFA.DAS.FAT.Web.Models
 {
     public class LocationViewModel
     {

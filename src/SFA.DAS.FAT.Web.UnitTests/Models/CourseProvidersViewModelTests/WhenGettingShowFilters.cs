@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using AutoFixture.NUnit3;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Models;
 

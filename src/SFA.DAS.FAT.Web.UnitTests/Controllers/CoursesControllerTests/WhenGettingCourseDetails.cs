@@ -155,7 +155,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled_And_Show_Demand_Is_Returned(
+        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
             int standardCode,
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
@@ -166,7 +166,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = true;
-            response.ShowEmployerDemand = true;
             mediator
                 .Setup(x => x.Send(
                     It.Is<GetCourseQuery>(c => c.CourseId.Equals(standardCode)),
@@ -180,7 +179,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest");
+            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
         }
         
         [Test, MoqAutoData]

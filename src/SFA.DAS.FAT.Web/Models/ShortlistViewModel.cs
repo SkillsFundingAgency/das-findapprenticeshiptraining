@@ -75,7 +75,7 @@ namespace SFA.DAS.FAT.Web.Models
                 CreatedDate = source.CreatedDate,
                 Course = source.Course,
                 Provider = source.Provider,
-                HelpFindingCourseUrl = $"/registerdemand/course/{source.Course.Id}/share-interest"
+                HelpFindingCourseUrl = $"/registerdemand/course/{source.Course.Id}/share-interest?entrypoint={(short)EntryPoint.Shortlist}"
             };
         }
     }
