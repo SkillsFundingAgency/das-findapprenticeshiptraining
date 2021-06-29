@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models

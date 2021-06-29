@@ -3,7 +3,6 @@ using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
 using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
 using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;

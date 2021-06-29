@@ -1,5 +1,4 @@
 ﻿using SFA.DAS.FAT.Domain.Courses;
-using System;
 using System.Collections.Generic;
 
 namespace SFA.DAS.FAT.Web.Models

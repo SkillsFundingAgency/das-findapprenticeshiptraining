@@ -3,7 +3,6 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
@@ -234,7 +233,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
             model.HelpBaseUrl.Should().Be(config.Object.Value.EmployerDemandUrl);
             foreach (var itemViewModel in model.Shortlist)
             {
-                itemViewModel.HelpFindingCourseUrl.Should().Be($"/registerdemand/course/{itemViewModel.Course.Id}/share-interest");    
+                itemViewModel.HelpFindingCourseUrl.Should().Be($"/registerdemand/course/{itemViewModel.Course.Id}/share-interest?entrypoint=0");    
             }
             
         }
