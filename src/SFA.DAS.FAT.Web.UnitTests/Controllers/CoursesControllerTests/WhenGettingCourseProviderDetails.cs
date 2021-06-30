@@ -539,7 +539,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         {
             //Arrange
             config.Object.Value.EmployerDemandFeatureToggle = false;
-            response.ShowEmployerDemand = true;
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location=string.Empty;
             response.LocationGeoPoint = null;

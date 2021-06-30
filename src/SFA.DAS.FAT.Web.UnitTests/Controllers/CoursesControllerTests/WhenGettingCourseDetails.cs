@@ -31,7 +31,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy]CoursesController controller)
         {
             //Arrange
-            response.ShowEmployerDemand = true;
             cookieStorageService
                 .Setup(x => x.Get(Constants.LocationCookieName))
                 .Returns(locationCookieItem);

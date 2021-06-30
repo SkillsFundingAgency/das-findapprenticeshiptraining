@@ -318,7 +318,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         
         private string BuildHelpFindingCourseUrl(int courseId, EntryPoint entryPoint)
         {
-            return _config.EmployerDemandFeatureToggle ? 
+            return _config.EmployerDemandFeatureToggle? 
                 $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest?entrypoint={(short)entryPoint}" 
                 : "https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us";
         }
