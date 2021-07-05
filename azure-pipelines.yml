@@ -30,11 +30,6 @@ resources:
     endpoint: "GitHub (SFA)"
 
 steps:
-- task: gittools.gitversion.gitversion-task.GitVersion@5
-  displayName: GitVersion
-  inputs:
-    configFilePath: GitVersion.yml
-    updateAssemblyInfo: true
 
 - task: SonarCloudPrepare@1
   displayName: 'Prepare Sonarcloud analysis configuration'
