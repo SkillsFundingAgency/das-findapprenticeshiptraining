@@ -19,7 +19,7 @@ variables:
     value: "SkillsFundingAgency_das-findapprenticeshiptraining"
 
 pool:
-  name: 'DAS - Continuous Integration'
+  name: 'DAS - Continuous Integration Beta'
 
 resources:
   repositories:
