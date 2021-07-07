@@ -31,6 +31,17 @@ resources:
 
 steps:
 
+- task: gitversion/setup@0
+  displayName: gitversion/setup
+  inputs:
+    versionSpec: 5.x
+
+- task: gitversion/execute@0
+  displayName: gitversion/execute
+  inputs:
+    useConfigFile: true
+    configFilePath: GitVersion.yml
+
 - task: SonarCloudPrepare@1
   displayName: 'Prepare Sonarcloud analysis configuration'
   condition: and(succeeded(), or(eq(variables['Build.SourceBranch'], 'refs/heads/master'),eq(variables['Build.Reason'], 'PullRequest')))
