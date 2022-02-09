@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -30,6 +30,11 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("start", Name = RouteNames.ServiceStart, Order = 1)]
         public IActionResult Index()
         {
+            if (Environment.GetEnvironmentVariable("Environment").Contains("AT"))
+            {
+                return RedirectPermanent("https://www.gov.uk/employers-find-apprenticeship-training");
+            }
+
             return View();
         }
 
