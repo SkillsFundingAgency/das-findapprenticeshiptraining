@@ -196,7 +196,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_If_The_Cache_Object_Exists_Then_It_Is_Returned(
             GetCoursesResult result,
             [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<IDistributedCache> cache)
+            [Frozen] Mock<IDistributedCache> cache,
+            [Frozen] Mock<IConfiguration> configuration)
         {
             //Arrange
             var expectedContent = "<xml></xml>";
@@ -204,7 +205,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             var urlHelper = new Mock<IUrlHelper>();
             cache.Setup(x => x.GetAsync("Sitemap", CancellationToken.None))
                 .ReturnsAsync(Encoding.UTF8.GetBytes(expectedContent));
-            var controller = new HomeController(mediator.Object, cache.Object) {
+            var controller = new HomeController(mediator.Object, cache.Object, configuration.Object) {
                 Url = urlHelper.Object, 
                 ControllerContext = new ControllerContext
                 {
