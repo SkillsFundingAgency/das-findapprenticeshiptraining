@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -9,6 +9,7 @@ using System.Xml;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Infrastructure;
@@ -19,17 +20,24 @@ namespace SFA.DAS.FAT.Web.Controllers
     {
         private readonly IMediator _mediator;
         private IDistributedCache _cache;
+        private IConfiguration _configuration;
 
-        public HomeController (IMediator mediator, IDistributedCache cache)
+        public HomeController (IMediator mediator, IDistributedCache cache, IConfiguration configuration)
         {
             _mediator = mediator;
             _cache = cache;
+            _configuration = configuration;
         }
         
         [Route("", Name = RouteNames.ServiceStartDefault, Order = 0)]
         [Route("start", Name = RouteNames.ServiceStart, Order = 1)]
         public IActionResult Index()
         {
+            if (_configuration["Environment"].Contains("PROD"))
+            {
+                return RedirectPermanent("https://www.gov.uk/employers-find-apprenticeship-training");
+            }
+
             return View();
         }
 

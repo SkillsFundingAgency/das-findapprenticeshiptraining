@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
@@ -34,7 +35,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             string coursesUrl,
             GetCoursesResult result,
             [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<IDistributedCache> cache)
+            [Frozen] Mock<IDistributedCache> cache,
+            [Frozen] Mock<IConfiguration> configuration)
         {
             var httpContext = new DefaultHttpContext();
             var urlHelper = new Mock<IUrlHelper>();
@@ -69,7 +71,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
                     && c.OrderBy.Equals(OrderBy.Name)
                 ), CancellationToken.None))
                 .ReturnsAsync(result);
-            var controller = new HomeController(mediator.Object, cache.Object) {
+            var controller = new HomeController(mediator.Object, cache.Object, configuration.Object) {
                 Url = urlHelper.Object, 
                 ControllerContext = new ControllerContext
                 {
@@ -103,7 +105,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             string courseProvidersUrl,
             GetCoursesResult result,
             [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<IDistributedCache> cache)
+            [Frozen] Mock<IDistributedCache> cache,
+            [Frozen] Mock<IConfiguration> configuration)
         {
             //Arrange
             var httpContext = new DefaultHttpContext();
@@ -118,7 +121,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             cache.Setup(x => x.GetAsync("Sitemap", CancellationToken.None))
                 .ReturnsAsync((byte[]) default);
 
-            var controller = new HomeController(mediator.Object, cache.Object) {
+            var controller = new HomeController(mediator.Object, cache.Object, configuration.Object) {
                 Url = urlHelper.Object, 
                 ControllerContext = new ControllerContext
                 {
@@ -157,7 +160,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             string courseProvidersUrl,
             GetCoursesResult result,
             [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<IDistributedCache> cache)
+            [Frozen] Mock<IDistributedCache> cache,
+            [Frozen] Mock<IConfiguration> configuration)
         {
             //Arrange
             var httpContext = new DefaultHttpContext();
@@ -173,7 +177,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
                     && c.OrderBy.Equals(OrderBy.Name)
                 ), CancellationToken.None))
                 .ReturnsAsync(result);
-            var controller = new HomeController(mediator.Object, cache.Object) {
+            var controller = new HomeController(mediator.Object, cache.Object, configuration.Object) {
                 Url = urlHelper.Object, 
                 ControllerContext = new ControllerContext
                 {
@@ -192,7 +196,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_If_The_Cache_Object_Exists_Then_It_Is_Returned(
             GetCoursesResult result,
             [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<IDistributedCache> cache)
+            [Frozen] Mock<IDistributedCache> cache,
+            [Frozen] Mock<IConfiguration> configuration)
         {
             //Arrange
             var expectedContent = "<xml></xml>";
@@ -200,7 +205,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             var urlHelper = new Mock<IUrlHelper>();
             cache.Setup(x => x.GetAsync("Sitemap", CancellationToken.None))
                 .ReturnsAsync(Encoding.UTF8.GetBytes(expectedContent));
-            var controller = new HomeController(mediator.Object, cache.Object) {
+            var controller = new HomeController(mediator.Object, cache.Object, configuration.Object) {
                 Url = urlHelper.Object, 
                 ControllerContext = new ControllerContext
                 {
