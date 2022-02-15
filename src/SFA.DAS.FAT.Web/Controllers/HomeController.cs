@@ -33,7 +33,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("start", Name = RouteNames.ServiceStart, Order = 1)]
         public IActionResult Index()
         {
-            if (_configuration["Environment"].Contains("PROD"))
+            if (_configuration["Environment"].Equals("PROD"))
             {
                 return RedirectPermanent("https://www.gov.uk/employers-find-apprenticeship-training");
             }
