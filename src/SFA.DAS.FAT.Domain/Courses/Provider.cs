@@ -69,9 +69,22 @@ namespace SFA.DAS.FAT.Domain.Courses
 
     public class FeedbackAttributes
     {
-        public List<string> Strengths { get; set; }
-        public List<string> Weaknesses { get; set; }
+        public List<StrengthDetail> Strengths { get; set; }
+        public List<WeaknessDetail> Weaknesses { get; set; }
     }
+
+    public class StrengthDetail
+    { 
+        public string StrengthName { get; set; }
+        public int StrengthCount { get; set; }
+    }
+
+    public class WeaknessDetail
+    {
+        public string WeaknessName { get; set; }
+        public string WeaknessCount { get; set; }
+    }
+
 
     public class ProviderAddress
     {

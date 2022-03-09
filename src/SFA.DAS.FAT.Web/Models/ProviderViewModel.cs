@@ -38,9 +38,9 @@ namespace SFA.DAS.FAT.Web.Models
         public ProviderRating TotalFeedbackText { get ; set ; }
         public List<FeedBackDetail> FeedbackDetail { get ; set ; }
 
-        public List<string> FeedbackWeaknesses { get ; set ; }
+        public List<WeaknessDetail> FeedbackWeaknesses { get ; set ; }
 
-        public List<string> FeedbackStrengths { get ; set ; }
+        public List<StrengthDetail> FeedbackStrengths { get ; set ; }
 
         public string ProviderDistance { get ; set ; }
         public string ProviderDistanceText { get; set; }
@@ -288,7 +288,6 @@ namespace SFA.DAS.FAT.Web.Models
             return RatingCount == 1 ? "1 review" : $"{RatingCount} reviews";
         }
     }
-    
     public enum DeliveryModeType
     {
         [Description("At apprentice’s workplace")]
