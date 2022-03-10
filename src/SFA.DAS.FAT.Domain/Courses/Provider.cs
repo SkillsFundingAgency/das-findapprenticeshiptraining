@@ -82,7 +82,7 @@ namespace SFA.DAS.FAT.Domain.Courses
     public class WeaknessDetail
     {
         public string WeaknessName { get; set; }
-        public string WeaknessCount { get; set; }
+        public int WeaknessCount { get; set; }
     }
 
 
