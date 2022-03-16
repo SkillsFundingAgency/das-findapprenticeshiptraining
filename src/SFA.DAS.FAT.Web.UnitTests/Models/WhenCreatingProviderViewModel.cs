@@ -33,8 +33,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.NationalOverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.NationalOverallAchievementRate.Value)/100):0%}");
             actual.TotalEmployerResponses.Should().Be(source.Feedback.TotalEmployerResponses);
             actual.TotalFeedbackRating.Should().Be(source.Feedback.TotalFeedbackRating);
-            actual.FeedbackStrengths.Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Strengths);
-            actual.FeedbackWeaknesses.Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Weaknesses);
+            actual.FeedbackAttributeSummary.Select(c => c.StrengthCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.StrengthCount));
+            actual.FeedbackAttributeSummary.Select(c => c.WeaknessCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.FeedbackAttributeDetail.Select(x => x.WeaknessCount));
             actual.ProviderDistance.Should().Be(source.ProviderAddress.DistanceInMiles.FormatDistance());
         }
         
