@@ -94,8 +94,8 @@ namespace SFA.DAS.FAT.Web.Models
                         StrengthCount = entry.StrengthCount,
                         WeaknessCount = entry.WeaknessCount,
                         TotalCount = totalCount,
-                        StrengthPerc = Math.Round((double)entry.StrengthCount / totalCount * 100,2),
-                        WeaknessPerc = Math.Round((double)entry.WeaknessCount / totalCount * 100,2)
+                        StrengthPerc = Math.Round((double)entry.StrengthCount / totalCount * 100, 0),
+                        WeaknessPerc = Math.Round((double)entry.WeaknessCount / totalCount * 100, 0)
                     });
             }
 

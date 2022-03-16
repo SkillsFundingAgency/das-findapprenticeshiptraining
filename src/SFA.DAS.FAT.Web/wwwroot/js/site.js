@@ -204,3 +204,19 @@ var updateShortlistCount = function(remove) {
         shortlistCountsUi.removeClass('app-view-shortlist-link__number-update')
     }, 1000);
 }
+
+function toggleFeedbackChartDiv() {
+    var div = document.getElementById("feedbackChart");
+    var div2 = document.getElementById("feedbackTable");
+
+    div.style.display = "none";
+    div2.style.display = "block";
+}
+
+function toggleFeedbackTableDiv() {
+    var div = document.getElementById("feedbackChart");
+    var div2 = document.getElementById("feedbackTable");
+
+    div.style.display = "block";
+    div2.style.display = "none";
+}
