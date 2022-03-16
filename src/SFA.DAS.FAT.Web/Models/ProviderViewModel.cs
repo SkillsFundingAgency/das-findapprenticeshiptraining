@@ -37,8 +37,7 @@ namespace SFA.DAS.FAT.Web.Models
         public string TotalFeedbackRatingTextProviderDetail { get ; set ; }
         public ProviderRating TotalFeedbackText { get ; set ; }
         public List<FeedBackDetail> FeedbackDetail { get ; set ; }
-
-       public List<FeedbackAttributeDetail> FeedbackAttributeDetails { get ; set ; }
+        public List<FeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public string ProviderDistance { get ; set ; }
         public string ProviderDistanceText { get; set; }
@@ -73,11 +72,45 @@ namespace SFA.DAS.FAT.Web.Models
                 TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(source, true),
                 TotalFeedbackText = (ProviderRating)source.Feedback.TotalFeedbackRating,
                 FeedbackDetail = BuildFeedbackRating(source),
-                FeedbackAttributeDetails = source.Feedback.FeedbackAttributes.FeedbackAttributeDetail,
+                FeedbackAttributeSummary = GenerateAttributeSummary(source.Feedback.FeedbackAttributes.FeedbackAttributeDetail),
                 ProviderDistance = source.ProviderAddress?.DistanceInMiles !=null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
                 ProviderDistanceText =source.ProviderAddress !=null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
                 ProviderAddress = source.ProviderAddress !=null ? BuildProviderAddress(source.ProviderAddress) : ""
             };
+        }
+
+        private static List<FeedbackDetailViewModel> GenerateAttributeSummary(List<FeedbackAttributeDetail> source)
+        {
+            List<FeedbackDetailViewModel> AttributeSummary = new List<FeedbackDetailViewModel>();
+
+            foreach (var entry in source)
+            {
+                int totalCount = entry.StrengthCount + entry.WeaknessCount;
+
+                AttributeSummary.Add(
+                    new FeedbackDetailViewModel
+                    {
+                        AttributeName = entry.AttributeName,
+                        StrengthCount = entry.StrengthCount,
+                        WeaknessCount = entry.WeaknessCount,
+                        TotalCount = totalCount,
+                        StrengthPerc = Math.Round((double)entry.StrengthCount / totalCount * 100,2),
+                        WeaknessPerc = Math.Round((double)entry.WeaknessCount / totalCount * 100,2)
+                    });
+            }
+
+            return AttributeSummary.OrderByDescending(o => o.TotalCount).ToList();
+        }
+
+
+        public class FeedbackDetailViewModel
+        {
+            public string AttributeName { get; set; }
+            public int StrengthCount { get; set; }
+            public int WeaknessCount { get; set; }
+            public int TotalCount { get; set; }
+            public double StrengthPerc { get; set; }
+            public double WeaknessPerc { get; set; }
         }
 
         private static List<FeedBackDetail> BuildFeedbackRating(Provider source)
