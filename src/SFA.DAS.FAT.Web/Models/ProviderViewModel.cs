@@ -72,7 +72,7 @@ namespace SFA.DAS.FAT.Web.Models
                 TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(source, true),
                 TotalFeedbackText = (ProviderRating)source.Feedback.TotalFeedbackRating,
                 FeedbackDetail = BuildFeedbackRating(source),
-                FeedbackAttributeSummary = GenerateAttributeSummary(source.Feedback.FeedbackAttributes.FeedbackAttributeDetail),
+                FeedbackAttributeSummary = GenerateAttributeSummary(source.Feedback.FeedbackAttributes),
                 ProviderDistance = source.ProviderAddress?.DistanceInMiles !=null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
                 ProviderDistanceText =source.ProviderAddress !=null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
                 ProviderAddress = source.ProviderAddress !=null ? BuildProviderAddress(source.ProviderAddress) : ""
@@ -85,17 +85,17 @@ namespace SFA.DAS.FAT.Web.Models
 
             foreach (var entry in source)
             {
-                int totalCount = entry.StrengthCount + entry.WeaknessCount;
+                int totalCount = entry.Strength + entry.Weakness;
 
                 AttributeSummary.Add(
                     new FeedbackDetailViewModel
                     {
                         AttributeName = entry.AttributeName,
-                        StrengthCount = entry.StrengthCount,
-                        WeaknessCount = entry.WeaknessCount,
+                        StrengthCount = entry.Strength,
+                        WeaknessCount = entry.Weakness,
                         TotalCount = totalCount,
-                        StrengthPerc = Math.Round((double)entry.StrengthCount / totalCount * 100, 0),
-                        WeaknessPerc = Math.Round((double)entry.WeaknessCount / totalCount * 100, 0)
+                        StrengthPerc = Math.Round((double)entry.Strength / totalCount * 100, 0),
+                        WeaknessPerc = Math.Round((double)entry.Weakness / totalCount * 100, 0)
                     });
             }
 
