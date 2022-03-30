@@ -204,3 +204,140 @@ var updateShortlistCount = function(remove) {
         shortlistCountsUi.removeClass('app-view-shortlist-link__number-update')
     }, 1000);
 }
+
+
+
+// Feedback Graph
+
+function nodeListForEach(nodes, callback) {
+    if (window.NodeList.prototype.forEach) {
+        return nodes.forEach(callback)
+    }
+    for (var i = 0; i < nodes.length; i++) {
+        callback.call(window, nodes[i], i, nodes);
+    }
+}
+
+function FeedbackGraph(table) {
+    this.table = table
+    this.target = this.table.dataset.target
+    this.label = this.table.dataset.label || "people"
+    this.rows = this.table.querySelectorAll("tbody tr")
+}
+
+FeedbackGraph.prototype.init = function() {
+    if (!document.getElementById(this.target)) 
+        return
+
+    var that = this
+    var rowCount = 0 
+    var legendlistHtml
+    var graphHtml = document.createElement("div")
+        graphHtml.className = "app-graph"
+
+    var graphList = document.createElement("ul")
+        graphList.className = "app-graph__list"
+
+    nodeListForEach(this.rows, function (row) {
+        if (rowCount === 0) {
+            legendlistHtml = that.legendHtml(row)
+        }
+        graphList.appendChild(that.graphRow(row))
+        rowCount++
+    });
+    graphHtml.appendChild(legendlistHtml)
+    graphHtml.appendChild(graphList)
+    document.getElementById(this.target).appendChild(graphHtml)
+}
+
+FeedbackGraph.prototype.legendHtml = function(row) {
+    var legendList = document.createElement('ul')
+        legendList.className = "app-graph-key"
+    var dataCells = row.querySelectorAll("td")
+    var cellCount = 0
+
+    nodeListForEach(dataCells, function (dataCell) {
+        if (isNaN(dataCell.textContent)) {
+
+            var legendListItem = document.createElement("li")
+                legendListItem.className = "app-graph-key__list-item app-graph-key__list-item--colour-" + (cellCount + 1)
+                legendListItem.textContent = dataCell.dataset.label
+
+            legendList.appendChild(legendListItem)
+            cellCount++
+        }
+    });
+    return legendList
+}
+
+FeedbackGraph.prototype.graphRow = function(row) {
+    var that = this
+    var questionText = row.querySelector("th").textContent
+    var dataCells = row.querySelectorAll("td")
+    var graphRowHtml = document.createElement('li')
+    var barsHtml = document.createElement("div")
+    var totalAsked = 0 
+    var barCount = 0
+
+    graphRowHtml.className = "app-graph__list-item"
+    barsHtml.className = "app-graph__chart-wrap"
+
+    nodeListForEach(dataCells, function (dataCell) {
+        if (isNaN(dataCell.textContent)) {
+            var barHtml = that.barHtml(dataCell, barCount+1)
+            if (barHtml !== undefined) {
+                barsHtml.appendChild(barHtml)
+            }
+            barCount++
+        } else {
+            totalAsked = dataCell.textContent
+        }
+    });
+
+    var caption = document.createElement('span')
+        caption.className = "app-graph__caption"
+        caption.textContent = "(selected by " + totalAsked + " " + this.label + ")"
+    
+    var heading = document.createElement('h3')
+        heading.className = "app-graph__label"
+        heading.textContent = questionText
+        heading.appendChild(caption)
+
+        graphRowHtml.appendChild(heading)
+        graphRowHtml.appendChild(barsHtml)
+
+    return (graphRowHtml)
+}
+
+FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
+    var percentage = parseFloat(dataCell.textContent.slice(0, -1));
+    if (percentage === 0) {
+        return;
+    }
+
+    var span1 = document.createElement('span')
+        span1.textContent = percentage + "%"
+        span1.className = "app-graph__figure"
+
+    var span2 = document.createElement('span')
+        span2.className = "app-graph__bar-value app-graph__bar-value--colour-" + barCount
+        span2.style.width = percentage + "%"
+        span2.appendChild(span1)
+
+    var span3 = document.createElement('span')
+        span3.className = "app-graph__bar"
+        span3.appendChild(span2)
+
+    var span4 = document.createElement('span')
+        span4.className = "app-graph__chart"
+        span4.appendChild(span3)
+
+    return(span4)
+
+}
+
+var feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
+nodeListForEach(feedbackGraphs, function (feedbackGraph) {
+  new FeedbackGraph(feedbackGraph).init();
+});
+
