@@ -228,11 +228,12 @@ function FeedbackGraph(table) {
 }
 
 FeedbackGraph.prototype.init = function() {
-    if (!document.getElementById(this.target)) 
+    if (!document.getElementById(this.target)) {
         return
+    }
 
     var that = this
-    var rowCount = 0 
+    var rowCount = 0
     var legendlistHtml
     var graphHtml = document.createElement("div")
         graphHtml.className = "app-graph"
@@ -278,7 +279,7 @@ FeedbackGraph.prototype.graphRow = function(row) {
     var dataCells = row.querySelectorAll("td")
     var graphRowHtml = document.createElement('li')
     var barsHtml = document.createElement("div")
-    var totalAsked = 0 
+    var totalAsked = 0
     var barCount = 0
 
     graphRowHtml.className = "app-graph__list-item"
@@ -299,7 +300,6 @@ FeedbackGraph.prototype.graphRow = function(row) {
     var caption = document.createElement('span')
         caption.className = "app-graph__caption"
         caption.textContent = "(selected by " + totalAsked + " " + this.label + ")"
-    
     var heading = document.createElement('h3')
         heading.className = "app-graph__label"
         heading.textContent = questionText
@@ -352,9 +352,10 @@ ShowHidePanels.prototype.init = function() {
     var panelData = []
     var that = this
     nodeListForEach(this.panels, function (panel) {
-        var panelObj = {}
-        panelObj.id = panel.id
-        panelObj.label = panel.dataset.panelLabel
+        var panelObj = {
+            id: panel.id,
+            label: panel.dataset.panelLabel
+        }
         panelData.push(panelObj)
         that.hidePanel(panel)
     })
@@ -368,7 +369,7 @@ ShowHidePanels.prototype.panelNav = function(panelId, panelData) {
     var that = this
     var buttonWrap = document.createElement('div')
         buttonWrap.className = "govuk-button-group app-show-hide-panel__buttons"
-    var filteredData = panelData.filter(function(item) { 
+    var filteredData = panelData.filter(function(item) {
         return item.id !== panelId
     })
     filteredData.forEach((item) => {
@@ -388,7 +389,7 @@ ShowHidePanels.prototype.showHideButton = function(item) {
 
 ShowHidePanels.prototype.handleButtonClick = function(e) {
     var that = this
-    var targetPanel = e.target.hash.substring(1);
+    var targetPanel = e.target.hash.substring(1)
     nodeListForEach(this.panels, function (panel) {
         if (panel.id !== targetPanel) {
             that.hidePanel(panel)
