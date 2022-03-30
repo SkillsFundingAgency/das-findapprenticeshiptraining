@@ -248,6 +248,32 @@
     max-width: 80%;
 }
 
+.app-graph-key {
+    font-family: "GDS Transport",arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 30px;   
+}
+
+.app-graph-key__list-item {
+    border-left: 24px solid #ccc;
+    line-height: 24px;
+    margin-bottom: 7px;
+    padding-left: 7px;
+}
+
+.app-graph-key__list-item--colour-1 {
+    border-left-color: #28a197;
+}
+
+.app-graph-key__list-item--colour-2 {
+    border-left-color: #d53880;
+}
 
 .app-graph {
     font-family: "GDS Transport",arial,sans-serif;
@@ -329,7 +355,7 @@
     position: relative;
 }
 
-.app-graph__bar-value--2 {
+.app-graph__bar-value--colour-2 {
     background: #d53880;
 }
 
