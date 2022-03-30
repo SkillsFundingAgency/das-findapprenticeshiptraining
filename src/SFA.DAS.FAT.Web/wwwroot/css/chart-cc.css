@@ -17,7 +17,7 @@
     padding-bottom:3px;
   }
 
-  mcBar1 {
+  .mcBar1 {
     color: black;  
     margin-bottom:0;  
     background-color:#28a197; 
@@ -61,3 +61,29 @@
   .divMctHead {
     white-space: nowrap;
   }
+
+[data-tooltip] {
+    position: relative;
+    cursor: pointer;
+    background: black;
+    color: white;
+    font-size: 12px;
+    border-radius: 1em;
+    padding: 0 0.5em;
+}
+
+[data-tooltip]:after {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    bottom: 15px;
+    margin-left: -5px;
+    border: 5px solid black;
+    border-color: black transparent transparent transparent;
+    transition: 0.2s;
+}
+
+[data-tooltip]:hover:before,
+[data-tooltip]:hover:after {
+    opacity: 1;
+}
