@@ -96,68 +96,33 @@
                             </span>
                         </summary>
                         <div class="govuk-details__text">
-                            <div class="govspeak">
-                                
-                                <div id="feedbackChart" class="mc-chart-container" aria-labelledby="mc-chart-not-accessible-2">
-                                    <button onclick="toggleFeedbackChartDiv()" class="govuk-body-s mc-toggle-button"><span class="mc-toggle-text">Change to table and accessible view</span><span class="govuk-visually-hidden mc-toggle-status" role="alert"></span></button>
-                                    <div aria-hidden="true" class="js-barchart-table compact mc-auto-outdent mc-chart mc-multiple">
-                                        <div class="mc-thead" style="white-space: nowrap;">
-                                            <div class="mc-tr">
-                                                <div class="mc-th"></div>
-                                                <div class="mc-th mc-key-header mc-key-1" style="text-align: left; margin-left:0; border-left-color: #28a197;  padding-top:3px; padding-bottom:3px;">Employers that selected this as a "strength"</div>
-                                                <div class="mc-th mc-key-header mc-key-2" style="text-align: left; margin-left:0; margin-bottom:50px; border-left-color: #d53880;  padding-top:3px; padding-bottom:3px;">Employers that selected this as "needs improvement"</div>
-                                            </div>
-                                        </div>
-                                        <div class="mc-tbody">
-
-                                        @foreach (var feedbackItem in Model.Provider.FeedbackAttributeSummary)
-                                        {
-                                            <hr style="margin-top:0; margin-bottom:0; opacity: 0.5;">
-                                            <div class="mc-tr">
-                                                <div class="mc-td mc-key-cell">@feedbackItem.AttributeName<span class="govuk-caption-m" style="font-size: 14px;">(selected by @feedbackItem.TotalCount employers)</span></div>
-                                                <div class="mc-td mc-bar-cell mc-bar-1 mc-bar-indented" style="width: @feedbackItem.StrengthPerc%; color: black;  margin-bottom:0;  background-color:#28a197; padding-top:3px; padding-bottom:3px;"><span style="color: black; margin-left: 100%;">@feedbackItem.StrengthPerc%</span></div>
-                                                <div class="mc-td mc-bar-cell mc-bar-2 mc-bar-indented" style="width: @feedbackItem.WeaknessPerc%;  color: black; margin-bottom:5px;  background-color:#d53880; padding-top:3px; padding-bottom:3px;"><span style="color: black; margin-left: 100%;">@feedbackItem.WeaknessPerc%</span></div>
-                                            </div>
-                                        }
-
-                                            <hr style="margin-top:0; margin-bottom:0; opacity: 0.5;">
-
-                                        </div>
-                                    </div>
-
+                            <div data-show-hide-panels="true">
+                                <div class="app-show-hide-panel" data-panel-label="graph" id="app-emp-feedback-graph">
+                                    <div id="employer-feedback-graph"></div>
                                 </div>
-
-                                
-                                <div id="feedbackTable" class="mc-chart-container" aria-labelledby="mc-chart-not-accessible-2" style="display:none">
-                                    <button onclick="toggleFeedbackTableDiv()" class="govuk-body-s mc-toggle-button"><span class="mc-toggle-text">Change to chart view</span><span class="govuk-visually-hidden mc-toggle-status" role="alert"></span></button>
-                                    <table aria-label="Table view of employer feedback" class="js-barchart-table compact mc-auto-outdent js-barchart-table-init">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">Statement</th>
-
-                                                <th scope="col">Percentage of employers that selected this as a "strength"</th>
-                                                <th scope="col">Percentage of employers that selected this as "needs improvement"</th>
-                                                <th scope="col">Total number of employers that selected this statement</th>
+                                <div class="app-show-hide-panel" data-panel-label="table" id="app-emp-feedback-table">
+                                    <table class="govuk-table das-table--responsive" data-target="employer-feedback-graph" data-label="employers" data-feedback-graph="true">
+                                        <thead class="govuk-table__head">
+                                            <tr class="govuk-table__row">
+                                                <th scope="col" class="govuk-table__header">Statement</th>
+                                                <th scope="col" class="govuk-table__header">Percentage of employers that selected this as a "strength"</th>
+                                                <th scope="col" class="govuk-table__header">Percentage of employers that selected this as "needs improvement"</th>
+                                                <th scope="col" class="govuk-table__header">Total number of employers that selected this statement</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
+                                        <tbody class="govuk-table__body">
                                             @foreach (var feedbackItem in Model.Provider.FeedbackAttributeSummary)
                                             {
-                                            <tr>
-                                                <td>@feedbackItem.AttributeName</td>
-
-                                                <td>@feedbackItem.StrengthPerc%</td>
-                                                <td>@feedbackItem.WeaknessPerc%</td>
-                                                <td>@feedbackItem.TotalCount</td>
+                                            <tr class="govuk-table__row">
+                                                <th class="govuk-table__cell" scope="row">@feedbackItem.AttributeName</th>
+                                                <td class="govuk-table__cell" data-label="Percentage of employers that selected this as a strength">@feedbackItem.StrengthPerc%</td>
+                                                <td class="govuk-table__cell" data-label="Percentage of employers that selected this as needs improvement">@feedbackItem.WeaknessPerc%</td>
+                                                <td class="govuk-table__cell" data-label="Total number of employers that selected this statement">@feedbackItem.TotalCount</td>
                                             </tr>
                                             }
                                         </tbody>
                                     </table>
-                                    
-                                
                                 </div>
-
-
                             </div>
                         </div>
                     </details>

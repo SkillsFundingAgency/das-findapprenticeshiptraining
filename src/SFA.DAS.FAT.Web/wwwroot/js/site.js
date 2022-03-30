@@ -380,7 +380,7 @@ ShowHidePanels.prototype.panelNav = function(panelId, panelData) {
 ShowHidePanels.prototype.showHideButton = function(item) {
     var button = document.createElement('a')
         button.className = 'govuk-button govuk-button--secondary'
-        button.textContent = 'Show ' + item.label
+        button.textContent = 'Show ' + item.label + ' view'
         button.href = '#' + item.id
         button.addEventListener('click', this.handleButtonClick.bind(this))
     return button
