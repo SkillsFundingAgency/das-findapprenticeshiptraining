@@ -208,8 +208,6 @@
     }
 }
 
-
-
 .app-user-content ul {
     font-family: "GDS Transport",arial,sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -365,4 +363,8 @@
     display: inline-block;
     padding: 3px;
     font-size: 90%;
+}
+
+.app-show-hide-panel__hidden {
+    display: none;
 }
