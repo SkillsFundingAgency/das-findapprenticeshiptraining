@@ -207,7 +207,9 @@ var updateShortlistCount = function(remove) {
 
 
 
-// Feedback Graph
+// FEEDBACK GRAPH
+// Generates the html to display
+// feedback graph and populates the target
 
 function nodeListForEach(nodes, callback) {
     if (window.NodeList.prototype.forEach) {
@@ -336,8 +338,84 @@ FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
 
 }
 
+
+
+// SHOW/HIDE PANELS
+
+function ShowHidePanels(container) {
+    this.container = container
+    this.panels = this.container.querySelectorAll('.app-show-hide-panel')
+    this.hideClass = 'app-show-hide-panel__hidden'
+}
+
+ShowHidePanels.prototype.init = function() {
+    var panelData = []
+    var that = this
+    nodeListForEach(this.panels, function (panel) {
+        var panelObj = {}
+        panelObj.id = panel.id
+        panelObj.label = panel.dataset.panelLabel
+        panelData.push(panelObj)
+        that.hidePanel(panel)
+    })
+    nodeListForEach(this.panels, function (panel) {
+        panel.prepend(that.panelNav(panel.id, panelData))
+    })
+    this.showPanel(this.panels[0])
+}
+
+ShowHidePanels.prototype.panelNav = function(panelId, panelData) {
+    var that = this
+    var buttonWrap = document.createElement('div')
+        buttonWrap.className = "govuk-button-group app-show-hide-panel__buttons"
+    var filteredData = panelData.filter(function(item) { 
+        return item.id !== panelId
+    })
+    filteredData.forEach((item) => {
+        buttonWrap.appendChild(that.showHideButton(item))
+    });
+    return buttonWrap
+}
+
+ShowHidePanels.prototype.showHideButton = function(item) {
+    var button = document.createElement('a')
+        button.className = 'govuk-button govuk-button--secondary'
+        button.textContent = 'Show ' + item.label
+        button.href = '#' + item.id
+        button.addEventListener('click', this.handleButtonClick.bind(this))
+    return button
+}
+
+ShowHidePanels.prototype.handleButtonClick = function(e) {
+    var that = this
+    var targetPanel = e.target.hash.substring(1);
+    nodeListForEach(this.panels, function (panel) {
+        if (panel.id !== targetPanel) {
+            that.hidePanel(panel)
+        } else {
+            that.showPanel(panel)
+        }
+    })
+    e.preventDefault()
+}
+
+ShowHidePanels.prototype.hidePanel = function(panel) {
+    panel.classList.add(this.hideClass)
+}
+
+ShowHidePanels.prototype.showPanel = function(panel) {
+    panel.classList.remove(this.hideClass)
+}
+
+
+
+
+var showHidePanels = document.querySelectorAll('[data-show-hide-panels]');
+nodeListForEach(showHidePanels, function (showHidePanel) {
+  new ShowHidePanels(showHidePanel).init();
+});
+
 var feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
 nodeListForEach(feedbackGraphs, function (feedbackGraph) {
   new FeedbackGraph(feedbackGraph).init();
 });
-
