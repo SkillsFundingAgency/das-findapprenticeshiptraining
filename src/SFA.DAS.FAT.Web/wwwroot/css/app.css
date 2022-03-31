@@ -289,7 +289,7 @@
 }
 
 .app-graph__list-item {
-    border-top: 1px solid #b1b4b6;
+    border-top: 1px solid #d9dadb;
 }
 
 @media (min-width: 40.0625em) {
@@ -320,7 +320,7 @@
     .app-graph__label, 
     .app-graph__chart-wrap {
         display: table-cell;
-        border-top: 1px solid #b1b4b6;
+        border-top: 1px solid #d9dadb;
         padding: 10px 0;
     }
 }
