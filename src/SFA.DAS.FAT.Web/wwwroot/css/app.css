@@ -208,8 +208,6 @@
     }
 }
 
-
-
 .app-user-content ul {
     font-family: "GDS Transport",arial,sans-serif;
     -webkit-font-smoothing: antialiased;
@@ -234,4 +232,139 @@
     .js-enabled .das-show-hide__button {
         display: none;
     }
+}
+
+
+.js-enabled .app-data-tabs .govuk-tabs__panel {
+    border: none;
+    padding: 20px 0;
+}
+
+.das-table--responsive .govuk-table__body tr th:before, 
+.das-table--responsive .govuk-table__body tr td:before {
+    text-align: left;
+    max-width: 80%;
+}
+
+.app-graph-key {
+    font-family: "GDS Transport",arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+    list-style: none;
+    padding: 0;
+    margin: 10px 0 30px;   
+}
+
+.app-graph-key__list-item {
+    border-left: 24px solid #ccc;
+    line-height: 24px;
+    margin-bottom: 7px;
+    padding-left: 7px;
+}
+
+.app-graph-key__list-item--colour-1 {
+    border-left-color: #28a197;
+}
+
+.app-graph-key__list-item--colour-2 {
+    border-left-color: #d53880;
+}
+
+.app-graph {
+    font-family: "GDS Transport",arial,sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.25;
+}
+
+.app-graph__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.app-graph__list-item {
+    border-top: 1px solid #d9dadb;
+}
+
+@media (min-width: 40.0625em) {
+    .app-graph__list-item {
+        display: table-row;
+    }
+}
+
+.app-graph__label, 
+.app-graph__chart-wrap {
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.app-graph__label {
+    font-weight: 400;
+    font-size: inherit;
+    margin: 0;
+    padding: 5px 0;
+}
+
+.app-graph__chart-wrap {
+    width: 100%;
+    padding: 5px 0 10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-graph__label, 
+    .app-graph__chart-wrap {
+        display: table-cell;
+        border-top: 1px solid #d9dadb;
+        padding: 10px 0;
+    }
+}
+
+@media (min-width: 40.0625em) {
+    .app-graph__label {
+        padding-right: 10px;
+        text-align: right;
+    }
+}
+
+.app-graph__caption {
+    display: block;
+    font-size: 90%;
+    color: #505a5f;
+}
+
+.app-graph__bar, 
+.app-graph__bar-value {
+    display: block;
+    height: 24px;
+}
+
+.app-graph__bar {
+    margin-right: 45px;
+}
+
+.app-graph__bar-value {
+    background: #28a197;
+    position: relative;
+}
+
+.app-graph__bar-value--colour-2 {
+    background: #d53880;
+}
+
+.app-graph__figure {
+    position: absolute;
+    left: 100%;
+    display: inline-block;
+    padding: 3px;
+    font-size: 90%;
+}
+
+.app-show-hide-panel__hidden {
+    display: none;
 }
