@@ -55,17 +55,33 @@
               "feedbackCount": 8
             }
           ],
-          "feedbackAttributes": {
-            "strengths": [
-              "Providing relevant training at the right time",
-              "Improving apprentice skills",
-              "Onboarding new apprentices"
-            ],
-            "weaknesses": [
-              "Taking on small cohorts (small number of apprentices)",
-              "Improving business outcomes"
-            ]
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "Providing relevant training at the right time",
+              "strength": 12,
+              "weakness": 7
+            },
+            {
+              "attributeName": "Improving apprentice skills",
+              "strength": 19,
+              "weakness": 3
+            },
+            {
+              "attributeName": "Onboarding new apprentices",
+              "strength": 19,
+              "weakness": 3
+            },
+            {
+              "attributeName": "Taking on small cohorts (small number of apprentices)",
+              "strength": 2,
+              "weakness": 11
+            },
+            {
+              "attributeName": "Improving business outcomes",
+              "strength": 0,
+              "weakness": 5
+            }
+          ]
         }
       },
   "providersCount": {

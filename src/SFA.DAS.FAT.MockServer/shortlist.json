@@ -39,10 +39,13 @@
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
-          "feedbackAttributes": {
-            "strengths": [],
-            "weaknesses": []
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "",
+              "strength": 0,
+              "weakness": 0
+            }
+          ]
         },
         "hasLocation": false
       },
@@ -135,10 +138,13 @@
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
-          "feedbackAttributes": {
-            "strengths": [],
-            "weaknesses": []
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "",
+              "strength": 0,
+              "weakness": 0
+            }
+          ]
         },
         "hasLocation": false
       },
@@ -209,10 +215,13 @@
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
-          "feedbackAttributes": {
-            "strengths": [],
-            "weaknesses": []
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "",
+              "strength": 0,
+              "weakness": 0
+            }
+          ]
         },
         "hasLocation": false
       },
@@ -293,10 +302,13 @@
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
-          "feedbackAttributes": {
-            "strengths": [],
-            "weaknesses": []
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "",
+              "strength": 0,
+              "weakness": 0
+            }
+          ]
         },
         "hasLocation": false
       },
@@ -367,10 +379,13 @@
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
-          "feedbackAttributes": {
-            "strengths": [],
-            "weaknesses": []
-          }
+          "feedbackAttributes": [
+            {
+              "attributeName": "",
+              "strength": 0,
+              "weakness": 0
+            }
+          ]
         },
         "hasLocation": false
       },
