@@ -35,14 +35,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -62,14 +61,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -89,14 +87,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -116,14 +113,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -143,14 +139,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -170,14 +165,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -197,14 +191,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -224,14 +217,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -251,14 +243,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -278,14 +269,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -305,14 +295,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {
@@ -332,14 +321,13 @@
         "feedbackDetail": [
 
         ],
-        "feedbackAttributes": {
-          "strengths": [
-
-          ],
-          "weaknesses": [
-
-          ]
-        }
+        "feedbackAttributes": [
+          {
+            "attributeName": "",
+            "strength": 0,
+            "weakness": 0
+          }
+        ]
       },
       "deliveryModes": [
         {

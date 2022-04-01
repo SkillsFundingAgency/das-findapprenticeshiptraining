@@ -37,10 +37,7 @@ namespace SFA.DAS.FAT.Web.Models
         public string TotalFeedbackRatingTextProviderDetail { get ; set ; }
         public ProviderRating TotalFeedbackText { get ; set ; }
         public List<FeedBackDetail> FeedbackDetail { get ; set ; }
-
-        public List<string> FeedbackWeaknesses { get ; set ; }
-
-        public List<string> FeedbackStrengths { get ; set ; }
+        public List<FeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public string ProviderDistance { get ; set ; }
         public string ProviderDistanceText { get; set; }
@@ -57,30 +54,63 @@ namespace SFA.DAS.FAT.Web.Models
             return new ProviderViewModel
             {
                 Name = source.Name,
-                TradingName = !string.IsNullOrEmpty(source.TradingName) && !source.TradingName.Equals(source.Name, StringComparison.CurrentCultureIgnoreCase) ? source.TradingName : null, 
+                TradingName = !string.IsNullOrEmpty(source.TradingName) && !source.TradingName.Equals(source.Name, StringComparison.CurrentCultureIgnoreCase) ? source.TradingName : null,
                 MarketingInfo = source.MarketingInfo,
                 Email = source.Email,
                 Phone = source.Phone,
                 ShortlistId = source.ShortlistId,
-                Website = source.Website,    
+                Website = source.Website,
                 ProviderId = source.ProviderId,
                 OverallCohort = source.OverallCohort,
                 OverallAchievementRate = source.OverallAchievementRate,
-                OverallAchievementRatePercentage = source.OverallAchievementRate.HasValue ? $"{Math.Round(source.OverallAchievementRate.Value)/100:0%}" : "",
-                NationalOverallAchievementRatePercentage = source.NationalOverallAchievementRate.HasValue ? $"{Math.Round(source.NationalOverallAchievementRate.Value)/100:0%}" : "",
-                DeliveryModes = source.DeliveryModes!=null ? BuildDeliveryModes(source.DeliveryModes.ToList()) : new List<DeliveryModeViewModel>(),
+                OverallAchievementRatePercentage = source.OverallAchievementRate.HasValue ? $"{Math.Round(source.OverallAchievementRate.Value) / 100:0%}" : "",
+                NationalOverallAchievementRatePercentage = source.NationalOverallAchievementRate.HasValue ? $"{Math.Round(source.NationalOverallAchievementRate.Value) / 100:0%}" : "",
+                DeliveryModes = source.DeliveryModes != null ? BuildDeliveryModes(source.DeliveryModes.ToList()) : new List<DeliveryModeViewModel>(),
                 TotalFeedbackRating = source.Feedback.TotalFeedbackRating,
                 TotalEmployerResponses = source.Feedback.TotalEmployerResponses,
                 TotalFeedbackRatingText = GetFeedbackRatingText(source, false),
                 TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(source, true),
                 TotalFeedbackText = (ProviderRating)source.Feedback.TotalFeedbackRating,
                 FeedbackDetail = BuildFeedbackRating(source),
-                FeedbackStrengths = source.Feedback.FeedbackAttributes.Strengths,
-                FeedbackWeaknesses = source.Feedback.FeedbackAttributes.Weaknesses,
+                FeedbackAttributeSummary = GenerateAttributeSummary(source.Feedback.FeedbackAttributes),
                 ProviderDistance = source.ProviderAddress?.DistanceInMiles !=null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
                 ProviderDistanceText =source.ProviderAddress !=null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
                 ProviderAddress = source.ProviderAddress !=null ? BuildProviderAddress(source.ProviderAddress) : ""
             };
+        }
+
+        private static List<FeedbackDetailViewModel> GenerateAttributeSummary(List<FeedbackAttributeDetail> source)
+        {
+            List<FeedbackDetailViewModel> AttributeSummary = new List<FeedbackDetailViewModel>();
+
+            foreach (var entry in source)
+            {
+                int totalCount = entry.Strength + entry.Weakness;
+
+                AttributeSummary.Add(
+                    new FeedbackDetailViewModel
+                    {
+                        AttributeName = entry.AttributeName,
+                        StrengthCount = entry.Strength,
+                        WeaknessCount = entry.Weakness,
+                        TotalCount = totalCount,
+                        StrengthPerc = Math.Round((double)entry.Strength / totalCount * 100, 0),
+                        WeaknessPerc = Math.Round((double)entry.Weakness / totalCount * 100, 0)
+                    });
+            }
+
+            return AttributeSummary.OrderByDescending(o => o.TotalCount).ToList();
+        }
+
+
+        public class FeedbackDetailViewModel
+        {
+            public string AttributeName { get; set; }
+            public int StrengthCount { get; set; }
+            public int WeaknessCount { get; set; }
+            public int TotalCount { get; set; }
+            public double StrengthPerc { get; set; }
+            public double WeaknessPerc { get; set; }
         }
 
         private static List<FeedBackDetail> BuildFeedbackRating(Provider source)
@@ -288,7 +318,6 @@ namespace SFA.DAS.FAT.Web.Models
             return RatingCount == 1 ? "1 review" : $"{RatingCount} reviews";
         }
     }
-    
     public enum DeliveryModeType
     {
         [Description("At apprentice’s workplace")]

@@ -42,35 +42,51 @@
             "address1": "test address",
             "distanceInMiles": 1.5
         },
-        "feedback": {
-            "totalEmployerResponses": 6,
-            "totalFeedbackRating": 4,
-            "feedbackDetail": [
-                {
-                    "feedbackName": "Good",
-                    "feedbackCount": 3
-                },
-                {
-                    "feedbackName": "Poor",
-                    "feedbackCount": 1
-                },
-                {
-                    "feedbackName": "Very Poor",
-                    "feedbackCount": 2
-                }
-            ],
-            "feedbackAttributes": {
-                "strengths": [
-                    "Providing relevant training at the right time",
-                    "Improving apprentice skills",
-                    "Onboarding new apprentices"
-                ],
-                "weaknesses": [
-                    "Taking on small cohorts (small number of apprentices)",
-                    "Improving business outcomes"
-                ]
-            }
-        },
+      "feedback": {
+        "totalEmployerResponses": 6,
+        "totalFeedbackRating": 4,
+        "feedbackDetail": [
+          {
+            "feedbackName": "Good",
+            "feedbackCount": 3
+          },
+          {
+            "feedbackName": "Poor",
+            "feedbackCount": 1
+          },
+          {
+            "feedbackName": "Very Poor",
+            "feedbackCount": 2
+          }
+        ],
+        "feedbackAttributes": [
+          {
+            "attributeName": "Providing relevant training at the right time",
+            "strength": 12,
+            "weakness": 7
+          },
+          {
+            "attributeName": "Improving apprentice skills",
+            "strength": 19,
+            "weakness": 3
+          },
+          {
+            "attributeName": "Onboarding new apprentices",
+            "strength": 19,
+            "weakness": 3
+          },
+          {
+            "attributeName": "Taking on small cohorts (small number of apprentices)",
+            "strength": 2,
+            "weakness": 11
+          },
+          {
+            "attributeName": "Improving business outcomes",
+            "strength": 0,
+            "weakness": 5
+          }
+        ]
+      },
         "deliveryModes": [
             {
                 "deliveryModeType": 3
