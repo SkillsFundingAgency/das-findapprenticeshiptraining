@@ -64,29 +64,29 @@
 
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Employer reviews</h2>
                 <p class="govuk-body-l govuk-!-margin-bottom-4">
-                    @if (Model.Provider.TotalFeedbackRating != 0)
+                    @if (Model.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                     {
-                        <span class="das-rating das-rating--@(Model.Provider.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.TotalFeedbackRating out of 4 stars">
+                        <span class="das-rating das-rating--@(Model.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.EmployerFeedback.TotalFeedbackRating out of 4 stars">
                             <span aria-hidden="true" class="das-rating__icon-star"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
                         </span>
-                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.TotalFeedbackText.GetDescription()</span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.EmployerFeedback.TotalFeedbackText.GetDescription()</span>
                     }
 
-                    @if (Model.Provider.TotalFeedbackRating == 0)
+                    @if (Model.Provider.EmployerFeedback.TotalFeedbackRating == 0)
                     {
-                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.TotalFeedbackRatingTextProviderDetail</span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.EmployerFeedback.TotalFeedbackRatingTextProviderDetail</span>
                     }
                     else
                     {
-                        <span class="govuk-body">@Model.Provider.TotalFeedbackRatingTextProviderDetail</span>
+                        <span class="govuk-body">@Model.Provider.EmployerFeedback.TotalFeedbackRatingTextProviderDetail</span>
                     }
                 </p>
 
 
-                if (Model.Provider.TotalFeedbackRating != 0)
+                if (Model.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                 {
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
@@ -110,7 +110,7 @@
                                             </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
-                                            @foreach (var feedbackItem in Model.Provider.FeedbackAttributeSummary)
+                                            @foreach (var feedbackItem in Model.Provider.EmployerFeedback.FeedbackAttributeSummary)
                                             {
                                             <tr class="govuk-table__row">
                                                 <th class="govuk-table__cell" scope="row">@feedbackItem.AttributeName</th>

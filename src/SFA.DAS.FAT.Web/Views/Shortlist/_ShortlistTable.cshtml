@@ -58,17 +58,17 @@
             </td>
             <td class="govuk-table__cell app-shortlist-table__cell">
                 <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @if (shortlistItem.Provider.TotalFeedbackRating != 0)
+                    @if (shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                     {
-                        <span class="das-rating das-rating--@(shortlistItem.Provider.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @shortlistItem.Provider.TotalFeedbackRating out of 4 stars">
+                        <span class="das-rating das-rating--@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating out of 4 stars">
                             <span aria-hidden="true" class="das-rating__icon-star"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
                         </span>    
-                        <span class="das-rating__label--@(shortlistItem.Provider.TotalFeedbackRating > 2 ? "good" : "poor")">@shortlistItem.Provider.TotalFeedbackText.GetDescription()</span>
+                        <span class="das-rating__label--@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@shortlistItem.Provider.EmployerFeedback.TotalFeedbackText.GetDescription()</span>
                     }
-                    <span class="das-text--muted">@shortlistItem.Provider.TotalFeedbackRatingText</span>         
+                    <span class="das-text--muted">@shortlistItem.Provider.EmployerFeedback.TotalFeedbackRatingText</span>         
                 </p>
             </td>
             <td class="govuk-table__cell app-shortlist-table__cell">

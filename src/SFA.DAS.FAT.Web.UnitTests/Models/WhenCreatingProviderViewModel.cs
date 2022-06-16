@@ -25,16 +25,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
                 .Excluding(c=>c.NationalOverallAchievementRate)
                 .Excluding(c=>c.NationalOverallCohort)
                 .Excluding(c => c.DeliveryModes)
-                .Excluding(c=>c.Feedback)
+                .Excluding(c=>c.EmployerFeedback)
                 .Excluding(c => c.ProviderAddress)
             );
 
             actual.OverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.OverallAchievementRate.Value)/100):0%}");
             actual.NationalOverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.NationalOverallAchievementRate.Value)/100):0%}");
-            actual.TotalEmployerResponses.Should().Be(source.Feedback.TotalEmployerResponses);
-            actual.TotalFeedbackRating.Should().Be(source.Feedback.TotalFeedbackRating);
-            actual.FeedbackAttributeSummary.Select(c => c.StrengthCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Select(x => x.Strength));
-            actual.FeedbackAttributeSummary.Select(c => c.WeaknessCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Select(x => x.Weakness));
+            actual.EmployerFeedback.TotalFeedbackResponses.Should().Be(source.EmployerFeedback.TotalEmployerResponses);
+            actual.EmployerFeedback.TotalFeedbackRating.Should().Be(source.EmployerFeedback.TotalFeedbackRating);
+            actual.EmployerFeedback.FeedbackAttributeSummary.Select(c => c.StrengthCount).Should().BeEquivalentTo(source.EmployerFeedback.FeedbackAttributes.Select(x => x.Strength));
+            actual.EmployerFeedback.FeedbackAttributeSummary.Select(c => c.WeaknessCount).Should().BeEquivalentTo(source.EmployerFeedback.FeedbackAttributes.Select(x => x.Weakness));
             actual.ProviderDistance.Should().Be(source.ProviderAddress.DistanceInMiles.FormatDistance());
         }
         
@@ -90,10 +90,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [InlineAutoData(0, "Not yet reviewed (employer reviews)")]
         public void Then_The_Feedback_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = numberOfReviews;
+            source.EmployerFeedback.TotalEmployerResponses = numberOfReviews;
             var actual = (ProviderViewModel) source;    
 
-            actual.TotalFeedbackRatingText.Should().Be(expectedText);
+            actual.EmployerFeedback.TotalFeedbackRatingText.Should().Be(expectedText);
         }
         [Test]
         [InlineAutoData(50, "(50 reviews)")]
@@ -102,10 +102,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [InlineAutoData(0, "Not yet reviewed")]
         public void Then_The_Feedback_Provider_Detail_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = numberOfReviews;
+            source.EmployerFeedback.TotalEmployerResponses = numberOfReviews;
             var actual = (ProviderViewModel) source;    
 
-            actual.TotalFeedbackRatingTextProviderDetail.Should().Be(expectedText);
+            actual.EmployerFeedback.TotalFeedbackRatingTextProviderDetail.Should().Be(expectedText);
         }
 
         [Test]
@@ -115,11 +115,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [InlineAutoData(4, "Excellent")]
         public void Then_The_Feedback_Rating_Is_Mapped_To_The_Description(int feedbackRating,string expected, Provider source)
         {
-            source.Feedback.TotalFeedbackRating = feedbackRating;
+            source.EmployerFeedback.TotalFeedbackRating = feedbackRating;
             
             var actual = (ProviderViewModel) source;
 
-            actual.TotalFeedbackText.GetDescription().Should().Be(expected);
+            actual.EmployerFeedback.TotalFeedbackText.GetDescription().Should().Be(expected);
         }
 
         [Test, AutoData]
@@ -128,11 +128,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             
             var actual = (ProviderViewModel) source;
 
-            actual.FeedbackDetail.Count.Should().Be(4);
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Count.Should().Be(4);
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
         }
 
         [Test]
@@ -142,13 +142,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [InlineAutoData(0, 0, 0.0, "0 reviews")]
         public void Then_The_Text_Is_Generated_For_Number_Of_Reviews_With_Percentage(int numberOfReviews,int totalReviews, double expectedPercentage, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = totalReviews;
-            source.Feedback.FeedbackDetail.FirstOrDefault().FeedbackCount = numberOfReviews;
-            source.Feedback.FeedbackDetail.FirstOrDefault().FeedbackName = "Good";
+            source.EmployerFeedback.TotalEmployerResponses = totalReviews;
+            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackCount = numberOfReviews;
+            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackName = "Good";
             
             var actual = (ProviderViewModel) source;
 
-            var actualFeedbackDetail = actual.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
+            var actualFeedbackDetail = actual.EmployerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
             Assert.IsNotNull(actualFeedbackDetail);
             actualFeedbackDetail.RatingText.Should().Be(expectedText);
             actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
