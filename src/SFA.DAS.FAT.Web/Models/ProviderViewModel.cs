@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
@@ -28,12 +27,7 @@ namespace SFA.DAS.FAT.Web.Models
         public string OverallAchievementRatePercentage { get ; set ; }
         public string NationalOverallAchievementRatePercentage { get ; set ; }
         public IEnumerable<DeliveryModeViewModel> DeliveryModes { get; set; }
-
         public EmployerFeedbackViewModel EmployerFeedback { get; set; }
-
-        //public List<ApprenticeFeedBackDetail> ApprenticeFeedbackDetail { get; set; }
-        //public List<ApprenticeFeedbackDetailViewModel> ApprenticeFeedbackAttributeSummary { get; set; }
-
         public string ProviderDistance { get ; set ; }
         public string ProviderDistanceText { get; set; }
         public string ProviderAddress { get ; set ; }
