@@ -50,99 +50,126 @@
                     </div>
                     @if (Model.ShowSelectedFilters)
                     {
-                        <div class="das-filter__selected-filters">
-                            <div class="das-filter__selected-header">
-                                <h3 class="das-filter__selected-heading">Selected filters</h3>
-                                <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-all-route-data="clearFiltersRouteData" asp-route="@RouteNames.CourseProviders">Clear</a>
-                            </div>
-                            @if (Model.HasLocation)
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Apprenticeship location</h4>
-                                <a asp-querystring="@Model.ClearLocationLink" title="Clear this filter @Model.Location" class="das-filter__tag">@Model.Location</a>
-                            }
-                            @if (Model.HasDeliveryModes)
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Training options</h4>
-                                @foreach (var deliveryModeLink in Model.ClearDeliveryModeLinks)
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@deliveryModeLink.Value" title="Clear this level filter @deliveryModeLink.Key">@deliveryModeLink.Key</a>
-                                }
-                            }
+                <div class="das-filter__selected-filters">
+                    <div class="das-filter__selected-header">
+                        <h3 class="das-filter__selected-heading">Selected filters</h3>
+                        <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-all-route-data="clearFiltersRouteData" asp-route="@RouteNames.CourseProviders">Clear</a>
+                    </div>
+                    @if (Model.HasLocation)
+                    {
+                        <h4 class="das-filter__selected-sub-heading">Apprenticeship location</h4>
+                        <a asp-querystring="@Model.ClearLocationLink" title="Clear this filter @Model.Location" class="das-filter__tag">@Model.Location</a>
+                    }
+                    @if (Model.HasDeliveryModes)
+                    {
+                        <h4 class="das-filter__selected-sub-heading">Training options</h4>
+                        @foreach (var deliveryModeLink in Model.ClearDeliveryModeLinks)
+                        {
+                            <a class="das-filter__tag" asp-querystring="@deliveryModeLink.Value" title="Clear this level filter @deliveryModeLink.Key">@deliveryModeLink.Key</a>
+                        }
+                    }
 
-                            @if (Model.HasProviderRatings)
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Average employer review</h4>
-                                @foreach (var providerRatingLink in Model.ClearProviderRatingLinks)
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@providerRatingLink.Value" title="Clear this level filter @providerRatingLink.Key">@providerRatingLink.Key</a>
-                                }
-                            }
+                    @if (Model.HasEmployerProviderRatings)
+                    {
+                        <h4 class="das-filter__selected-sub-heading">Average employer review</h4>
+                        @foreach (var employerProviderRatingLink in Model.ClearEmployerProviderRatingLinks)
+                        {
+                            <a class="das-filter__tag" asp-querystring="@employerProviderRatingLink.Value" title="Clear this level filter @employerProviderRatingLink.Key">@employerProviderRatingLink.Key</a>
+                        }
+                    }
+                    @if (Model.HasApprenticeProviderRatings)
+                    {
+                        <h4 class="das-filter__selected-sub-heading">Average apprentice review</h4>
+                        @foreach (var apprenticeProviderRatingLink in Model.ClearApprenticeProviderRatingLinks)
+                        {
+                            <a class="das-filter__tag" asp-querystring="@apprenticeProviderRatingLink.Value" title="Clear this level filter @apprenticeProviderRatingLink.Key">@apprenticeProviderRatingLink.Key</a>
+                        }
+                    }
 
-                        </div>
+                </div>
                     }
                     <div class="das-filter__body das-!-show--from-tablet" id="fat-filter-options">
                         <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id">
                             <button type="submit" class="govuk-button" id="filters-submit">Apply filters</button>
                             <div class="govuk-form-group">
-                                <label for="search-location" class="govuk-label"><span class="govuk-!-font-weight-bold govuk-!-font-size-24">Apprenticeship location</span>
+                                <label for="search-location" class="govuk-label">
+                                    <span class="govuk-!-font-weight-bold govuk-!-font-size-24">Apprenticeship location</span>
                                     <p class="govuk-hint">Enter a town, city or postcode</p>
-                                    </label>
+                                </label>
                                 <input type="search" id="search-location" name="location" title="Search" class="govuk-input govuk-!-width-three-quarters" data-submit-on-selection="true" data-default-value="@Model.Location">
                             </div>
-                                <div class="govuk-form-group">
-                                    <fieldset class="govuk-fieldset">
-                                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                            Training options
-                                        </legend>
-                                        <div class="govuk-checkboxes govuk-checkboxes--small">
-                                            @foreach (var mode in Model.DeliveryModes.Where(c=>c.DeliveryModeType!=DeliveryModeType.National))
+                            <div class="govuk-form-group">
+                                <fieldset class="govuk-fieldset">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                        Training options
+                                    </legend>
+                                    <div class="govuk-checkboxes govuk-checkboxes--small">
+                                        @foreach (var mode in Model.DeliveryModes.Where(c => c.DeliveryModeType != DeliveryModeType.National))
+                                        {
+
+                                            <div class="govuk-checkboxes__item">
+                                                <input @(mode.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="deliveryMode-@mode.DeliveryModeType" name="deliveryModes" type="checkbox" value="@mode.DeliveryModeType" />
+                                                <label class="govuk-label govuk-checkboxes__label" for="deliveryMode-@mode.DeliveryModeType">
+                                                    @mode.Description
+                                                </label>
+                                            </div>
+                                            if (mode.DeliveryModeType == DeliveryModeType.Workplace)
                                             {
-                                                
-                                                <div class="govuk-checkboxes__item">
-                                                    <input @(mode.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="deliveryMode-@mode.DeliveryModeType" name="deliveryModes" type="checkbox" value="@mode.DeliveryModeType"/>
-                                                    <label class="govuk-label govuk-checkboxes__label" for="deliveryMode-@mode.DeliveryModeType">
-                                                        @mode.Description
-                                                    </label>
-                                                </div>
-                                                if (mode.DeliveryModeType == DeliveryModeType.Workplace)
-                                                {
-                                                    <div class="govuk-checkboxes__conditional">
-                                                        @{
-                                                              var nationalDeliveryMode = Model.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.National);
-                                                        }
-                                                        <div class="govuk-form-group">
-                                                            <div class="govuk-checkboxes__item">
-                                                                <input @(nationalDeliveryMode.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="deliveryMode-@nationalDeliveryMode.DeliveryModeType" name="deliveryModes" type="checkbox" value="@nationalDeliveryMode.DeliveryModeType">
-                                                                <label class="govuk-label govuk-checkboxes__label" for="deliveryMode-@nationalDeliveryMode.DeliveryModeType">
-                                                                    @nationalDeliveryMode.Description
-                                                                </label>
-                                                            </div>
+                                                <div class="govuk-checkboxes__conditional">
+                                                    @{
+                                                        var nationalDeliveryMode = Model.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.National);
+                                                    }
+                                                    <div class="govuk-form-group">
+                                                        <div class="govuk-checkboxes__item">
+                                                            <input @(nationalDeliveryMode.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="deliveryMode-@nationalDeliveryMode.DeliveryModeType" name="deliveryModes" type="checkbox" value="@nationalDeliveryMode.DeliveryModeType">
+                                                            <label class="govuk-label govuk-checkboxes__label" for="deliveryMode-@nationalDeliveryMode.DeliveryModeType">
+                                                                @nationalDeliveryMode.Description
+                                                            </label>
                                                         </div>
                                                     </div>
-                                                }
+                                                </div>
                                             }
-                                        </div>
-                                    </fieldset>
-                                </div>
+                                        }
+                                    </div>
+                                </fieldset>
+                            </div>
                             <div class="govuk-form-group">
                                 <fieldset class="govuk-fieldset">
                                     <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
                                         Average employer review
                                     </legend>
                                     <div class="govuk-checkboxes govuk-checkboxes--small">
-                                        @foreach (var providerRating in Model.ProviderRatings.OrderByDescending(c=>(int)c.ProviderRatingType) )
+                                        @foreach (var employerProviderRating in Model.EmployerProviderRatings.OrderByDescending(c => (int)c.ProviderRatingType))
                                         {
                                             <div class="govuk-checkboxes__item">
-                                                <input @(providerRating.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="providerRating-@providerRating.ProviderRatingType" name="providerRatings" type="checkbox" value="@providerRating.ProviderRatingType" />
-                                                <label class="govuk-label govuk-checkboxes__label" for="providerRating-@providerRating.ProviderRatingType">
-                                                    @providerRating.Description
+                                                <input @(employerProviderRating.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="employerProviderRating-@employerProviderRating.ProviderRatingType" name="employerProviderRatings" type="checkbox" value="@employerProviderRating.ProviderRatingType" />
+                                                <label class="govuk-label govuk-checkboxes__label" for="employerProviderRating-@employerProviderRating.ProviderRatingType">
+                                                    @employerProviderRating.Description
                                                 </label>
                                             </div>
                                         }
                                     </div>
                                 </fieldset>
                             </div>
-                             <button type="submit" class="govuk-button" id="filters-submit-second">Apply filters</button>
+                            <div class="govuk-form-group">
+                                <fieldset class="govuk-fieldset">
+                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
+                                        Average apprentice review
+                                    </legend>
+                                    <div class="govuk-checkboxes govuk-checkboxes--small">
+                                        @foreach (var apprenticeProviderRating in Model.ApprenticeProviderRatings.OrderByDescending(c => (int)c.ProviderRatingType))
+                                        {
+                                            <div class="govuk-checkboxes__item">
+                                                <input @(apprenticeProviderRating.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="apprenticeProviderRating-@apprenticeProviderRating.ProviderRatingType" name="apprenticeProviderRatings" type="checkbox" value="@apprenticeProviderRating.ProviderRatingType" />
+                                                <label class="govuk-label govuk-checkboxes__label" for="apprenticeProviderRating-@apprenticeProviderRating.ProviderRatingType">
+                                                    @apprenticeProviderRating.Description
+                                                </label>
+                                            </div>
+                                        }
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <button type="submit" class="govuk-button" id="filters-submit-second">Apply filters</button>
                         </form>
                     </div>
                 </div>
@@ -155,7 +182,7 @@
             
             @if (Model.TotalFiltered == 0)
             {
-                if (Model.HasLocation && !Model.HasDeliveryModes && !Model.HasProviderRatings)
+                if (Model.HasLocation && !Model.HasDeliveryModes && !Model.HasEmployerProviderRatings && !Model.HasApprenticeProviderRatings)
                 {
                     <p class="govuk-body">You can try:</p>
                     
@@ -268,10 +295,23 @@
                                             <span aria-hidden="true" class="das-rating__icon-star@(provider.EmployerFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
                                             <span aria-hidden="true" class="das-rating__icon-star@(provider.EmployerFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
                                             <span aria-hidden="true" class="das-rating__icon-star@(provider.EmployerFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
-                                        </span>    
+                                        </span>
                                         <span class="das-rating__label--@(provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@provider.EmployerFeedback.TotalFeedbackText.GetDescription()</span>
                                     }
-                                    <span class="das-text--muted">@provider.EmployerFeedback.TotalFeedbackRatingText</span>         
+                                    <span class="das-text--muted">@provider.EmployerFeedback.TotalFeedbackRatingText</span>
+                                 </p>
+                                 <p class="govuk-!-margin-0 govuk-!-margin-top-2 govuk-!-font-size-16">   
+                                    @if (provider.ApprenticeFeedback.TotalFeedbackRating != 0)
+                                    {
+                                        <span class="das-rating das-rating--@(provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @provider.ApprenticeFeedback.TotalFeedbackRating out of 4 stars">
+                                            <span aria-hidden="true" class="das-rating__icon-star"></span>
+                                            <span aria-hidden="true" class="das-rating__icon-star@(provider.ApprenticeFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                                            <span aria-hidden="true" class="das-rating__icon-star@(provider.ApprenticeFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                                            <span aria-hidden="true" class="das-rating__icon-star@(provider.ApprenticeFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                                        </span>
+                                        <span class="das-rating__label--@(provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@provider.ApprenticeFeedback.TotalFeedbackText.GetDescription()</span>
+                                    }
+                                    <span class="das-text--muted">@provider.ApprenticeFeedback.TotalFeedbackRatingText</span>
                                 </p>
                                 @if (provider.OverallCohort != null)
                                 {

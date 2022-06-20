@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.Models
         public int TotalFeedbackRating { get; set; }
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
-        public ProviderRating TotalFeedbackText { get; set; }
+        public Domain.Courses.ProviderRating TotalFeedbackText { get; set; }
         public List<EmployerFeedBackDetail> FeedbackDetail { get; set; }
         public List<EmployerFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackResponses = employerFeedback.TotalEmployerResponses;
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
-            TotalFeedbackText = (ProviderRating)employerFeedback.TotalFeedbackRating;
+            TotalFeedbackText = (Domain.Courses.ProviderRating)employerFeedback.TotalFeedbackRating;
             FeedbackDetail = BuildEmployerFeedbackRating(employerFeedback);
             FeedbackAttributeSummary = GenerateAttributeSummary(employerFeedback.FeedbackAttributes);
         }
@@ -49,9 +49,9 @@ namespace SFA.DAS.FAT.Web.Models
         private List<EmployerFeedBackDetail> BuildEmployerFeedbackRating(EmployerFeedback employerFeedback)
         {
             var ratingList = new List<EmployerFeedBackDetail>();
-            for (var i = 1; i <= (int)ProviderRating.Excellent; i++)
+            for (var i = 1; i <= (int)Domain.Courses.ProviderRating.Excellent; i++)
             {
-                var rating = (ProviderRating)i;
+                var rating = (Domain.Courses.ProviderRating)i;
                 var feedback = employerFeedback.FeedbackDetail.FirstOrDefault(c => c.FeedbackName.Equals(rating.GetDescription(), StringComparison.CurrentCultureIgnoreCase));
 
                 ratingList.Add(new EmployerFeedBackDetail
@@ -101,7 +101,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         public class EmployerFeedBackDetail
         {
-            public ProviderRating Rating { get; set; }
+            public Domain.Courses.ProviderRating Rating { get; set; }
             public decimal RatingPercentage { get; set; }
             public int RatingCount { get; set; }
             public string RatingText => GetRatingText();

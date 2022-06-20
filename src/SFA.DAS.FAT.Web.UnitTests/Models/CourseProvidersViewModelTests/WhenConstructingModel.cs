@@ -61,10 +61,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         [Test, AutoData]
         public void Then_Builds_Provider_Ratings(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
-            var expectedProviderRatings = new List<ProviderRatingOptionViewModel>();
+            var expectedProviderRatings = new List<EmployerProviderRatingOptionViewModel>();
             foreach (ProviderRating providerRatingType in Enum.GetValues(typeof(ProviderRating)))
             {
-                expectedProviderRatings.Add(new ProviderRatingOptionViewModel
+                expectedProviderRatings.Add(new EmployerProviderRatingOptionViewModel
                 {
                     ProviderRatingType = providerRatingType,
                     Description = providerRatingType.GetDescription(),
@@ -74,7 +74,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
 
             var model = new CourseProvidersViewModel(request, result, providerOrder);
 
-            model.ProviderRatings.Should().BeEquivalentTo(expectedProviderRatings);
+            model.EmployerProviderRatings.Should().BeEquivalentTo(expectedProviderRatings);
         }
     }
 }

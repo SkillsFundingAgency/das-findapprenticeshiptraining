@@ -47,11 +47,12 @@ namespace SFA.DAS.FAT.Application.Courses.Services
         public async Task<TrainingCourseProviders> GetCourseProviders(int courseId,
             string queryLocation,
             IEnumerable<DeliveryModeType> queryDeliveryModes,
-            IEnumerable<ProviderRating> queryProviderRatings,
+            IEnumerable<ProviderRating> queryEmployerProviderRatings,
+            IEnumerable<ProviderRating> queryApprenticeProviderRatings,
             double lat,
             double lon, Guid? shortlistUserId)
         {
-            var request = new GetCourseProvidersApiRequest(_config.BaseUrl, courseId, queryLocation, queryDeliveryModes, queryProviderRatings,0, lat, lon, shortlistUserId);
+            var request = new GetCourseProvidersApiRequest(_config.BaseUrl, courseId, queryLocation, queryDeliveryModes, queryEmployerProviderRatings, queryApprenticeProviderRatings,0, lat, lon, shortlistUserId);
 
             var response = await _apiClient.Get<TrainingCourseProviders>(request);
 

@@ -5,7 +5,7 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Web.Models;
 using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
-using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
+using EmployerProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
 {

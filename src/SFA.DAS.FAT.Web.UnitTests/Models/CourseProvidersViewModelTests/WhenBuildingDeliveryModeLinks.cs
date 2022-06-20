@@ -18,7 +18,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 deliveryMode.Selected = true;
             }
 
-            foreach (var providerRating in model.ProviderRatings)
+            foreach (var providerRating in model.EmployerProviderRatings)
             {
                 providerRating.Selected = false;
             }
@@ -57,7 +57,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 }
             };
             
-            foreach (var providerRating in model.ProviderRatings)
+            foreach (var providerRating in model.EmployerProviderRatings)
             {
                 providerRating.Selected = false;
             }

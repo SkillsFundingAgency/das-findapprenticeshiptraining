@@ -18,7 +18,8 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFiltered = result.TotalFiltered;
             Location = result.Location;
             DeliveryModes = BuildDeliveryModeOptionViewModel(request.DeliveryModes);
-            ProviderRatings = BuildProviderRatingOptionViewModel(request.ProviderRatings);
+            EmployerProviderRatings = BuildEmployerProviderRatingOptionViewModel(request.EmployerProviderRatings);
+            ApprenticeProviderRatings = BuildApprenticeProviderRatingOptionViewModel(request.ApprenticeProviderRatings);
             ShortlistItemCount = result.ShortlistItemCount;
         }
 
@@ -32,15 +33,19 @@ namespace SFA.DAS.FAT.Web.Models
         public string Location { get; set; }
         public string ClearLocationLink => BuildClearLocationFilterLink();
         public Dictionary<string, string> ClearDeliveryModeLinks => BuildClearDeliveryModeLinks();
-        public Dictionary<string, string> ClearProviderRatingLinks => BuildClearProviderRatingLinks();
-        
+        public Dictionary<string, string> ClearEmployerProviderRatingLinks => BuildClearEmployerProviderRatingLinks();
+        public Dictionary<string, string> ClearApprenticeProviderRatingLinks => BuildClearApprenticeProviderRatingLinks();
+
         public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
-        public bool HasProviderRatings => ProviderRatings != null && ProviderRatings.Any(model => model.Selected);
+        public bool HasEmployerProviderRatings => EmployerProviderRatings != null && EmployerProviderRatings.Any(model => model.Selected);
+        public bool HasApprenticeProviderRatings => ApprenticeProviderRatings != null && ApprenticeProviderRatings.Any(model => model.Selected);
+
         public bool HasDeliveryModes => DeliveryModes !=null && DeliveryModes.Any(model => model.Selected);
         public bool ShowSelectedFilters => ShouldShowFilters();
 
         public IEnumerable<DeliveryModeOptionViewModel> DeliveryModes { get; set; }
-        public IEnumerable<ProviderRatingOptionViewModel> ProviderRatings { get; set; }
+        public IEnumerable<EmployerProviderRatingOptionViewModel> EmployerProviderRatings { get; set; }
+        public IEnumerable<ApprenticeProviderRatingOptionViewModel> ApprenticeProviderRatings { get; set; }
         public Dictionary<uint, string> ProviderOrder { get ;}
         public string BannerUpdateMessage { get ; set ; }
         public string HelpFindingCourseUrl { get ; set ; }
@@ -49,7 +54,8 @@ namespace SFA.DAS.FAT.Web.Models
         {
             var result = HasLocation || 
                          HasDeliveryModes ||
-                         HasProviderRatings;
+                         HasEmployerProviderRatings ||
+                         HasApprenticeProviderRatings;
             return result;
         }
 
@@ -63,7 +69,8 @@ namespace SFA.DAS.FAT.Web.Models
             }
 
             var location = BuildLocationLink();
-            var providerRatings = BuildProviderRatingLinks(location);
+            var providerRatings = BuildEmployerProviderRatingLinks(location);
+            var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
 
             foreach (var deliveryMode in DeliveryModes.Where(model => model.Selected))
             {
@@ -78,46 +85,74 @@ namespace SFA.DAS.FAT.Web.Models
                     otherSelected = otherSelected.Where(c => c != DeliveryModeType.National);
                 }
                 
-                var link = $"{location}&deliveryModes={string.Join("&deliveryModes=", otherSelected)}{providerRatings}";
+                var link = $"{location}&deliveryModes={string.Join("&deliveryModes=", otherSelected)}{providerRatings}{apprenticeProviderRating}";
 
                 clearDeliveryModeLinks.Add(deliveryMode.Description, link);
             }
 
             return clearDeliveryModeLinks;
         }
-        private Dictionary<string, string> BuildClearProviderRatingLinks()
+        private Dictionary<string, string> BuildClearEmployerProviderRatingLinks()
         {
             var providerRatingLinks = new Dictionary<string, string>();
 
-            if (ProviderRatings == null)
+            if (EmployerProviderRatings == null)
             {
                 return providerRatingLinks;
             }
 
             var location = BuildLocationLink();
             var deliveryModes = BuildDeliveryModeLinks(location);
+            var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
 
-            foreach (var providerRating in ProviderRatings.Where(model => model.Selected).OrderByDescending(c=>c.ProviderRatingType))
+            foreach (var providerRating in EmployerProviderRatings.Where(model => model.Selected).OrderByDescending(c=>c.ProviderRatingType))
             {
-                var otherSelected = ProviderRatings
+                var otherSelected = EmployerProviderRatings
                     .Where(viewModel =>
                         viewModel.Selected &&
                         viewModel.ProviderRatingType != providerRating.ProviderRatingType)
                     .Select(viewModel => viewModel.ProviderRatingType);
-                var link = $"{location}{deliveryModes}&providerRatings={string.Join("&providerRatings=", otherSelected)}";
+                var link = $"{location}{deliveryModes}&providerRatings={string.Join("&providerRatings=", otherSelected)}{apprenticeProviderRating}";
 
                 providerRatingLinks.Add(providerRating.Description, link);
             }
             return providerRatingLinks;
         }
+        private Dictionary<string, string> BuildClearApprenticeProviderRatingLinks()
+        {
+            var apprenticeProviderRatingLinks = new Dictionary<string, string>();
+
+            if (ApprenticeProviderRatings == null)
+            {
+                return apprenticeProviderRatingLinks;
+            }
+
+            var location = BuildLocationLink();
+            var deliveryModes = BuildDeliveryModeLinks(location);
+            var employerProviderRatings = BuildEmployerProviderRatingLinks(location);
+
+            foreach (var apprenticeProviderRating in ApprenticeProviderRatings.Where(model => model.Selected).OrderByDescending(c => c.ProviderRatingType))
+            {
+                var otherSelected = ApprenticeProviderRatings
+                    .Where(viewModel =>
+                        viewModel.Selected &&
+                        viewModel.ProviderRatingType != apprenticeProviderRating.ProviderRatingType)
+                    .Select(viewModel => viewModel.ProviderRatingType);
+                var link = $"{location}{deliveryModes}{employerProviderRatings}&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", otherSelected)}";
+
+                apprenticeProviderRatingLinks.Add(apprenticeProviderRating.Description, link);
+            }
+            return apprenticeProviderRatingLinks;
+        }
 
         private string BuildClearLocationFilterLink()
         {
             var location = "?location=-1";
-            var providerRatings = BuildProviderRatingLinks(location);
+            var employerProviderRatings = BuildEmployerProviderRatingLinks(location);
+            var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
             var deliveryModeLinks = BuildDeliveryModeLinks(location);
             
-            var link = $"{location}{providerRatings}{deliveryModeLinks}";
+            var link = $"{location}{employerProviderRatings}{deliveryModeLinks}{apprenticeProviderRating}";
 
             return link;
         }
@@ -137,19 +172,28 @@ namespace SFA.DAS.FAT.Web.Models
             return $"?location={HttpUtility.UrlEncode(Location)}";
         }
 
-        private string BuildProviderRatingLinks(string linkToAppendTo)
+        private string BuildEmployerProviderRatingLinks(string linkToAppendTo)
         {
-            if (HasProviderRatings)
+            if (HasEmployerProviderRatings)
             {
-                var providerRatings = ProviderRatings.Where(pr => pr.Selected).Select(pr => pr.ProviderRatingType);
-                return $"{GetSeparator(linkToAppendTo)}providerRatings={string.Join("&providerRatings=", providerRatings)}";
+                var employerProviderRatings = EmployerProviderRatings.Where(pr => pr.Selected).Select(pr => pr.ProviderRatingType);
+                return $"{GetSeparator(linkToAppendTo)}employerProviderRatings={string.Join("&employerProviderRatings=", employerProviderRatings)}";
+            }
+            return null;
+        }
+        private string BuildApprenticeProviderRatingLinks(string linkToAppendTo)
+        {
+            if (HasApprenticeProviderRatings)
+            {
+                var apprenticeProviderRatings = ApprenticeProviderRatings.Where(pr => pr.Selected).Select(pr => pr.ProviderRatingType);
+                return $"{GetSeparator(linkToAppendTo)}apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatings)}";
             }
             return null;
         }
 
         private string GetTotalMessage()
         {
-            var totalToUse = !HasDeliveryModes && !HasProviderRatings
+            var totalToUse = !HasDeliveryModes && !HasEmployerProviderRatings && !HasApprenticeProviderRatings
                 ? Total 
                 : TotalFiltered;
 
@@ -193,22 +237,40 @@ namespace SFA.DAS.FAT.Web.Models
             return deliveryModeOptionViewModels;
         }
 
-        private static IEnumerable<ProviderRatingOptionViewModel> BuildProviderRatingOptionViewModel(IReadOnlyList<ProviderRating> selectedProviderRatingTypes)
+        private static IEnumerable<EmployerProviderRatingOptionViewModel> BuildEmployerProviderRatingOptionViewModel(IReadOnlyList<ProviderRating> selectedProviderRatingTypes)
         {
-            var providerRatingOptionViewModel = new List<ProviderRatingOptionViewModel>();
+            var employerProviderRatingOptionViewModel = new List<EmployerProviderRatingOptionViewModel>();
 
-            foreach (ProviderRating providerRatingType in Enum.GetValues(typeof(ProviderRating)))
+            foreach (ProviderRating employerProviderRatingType in Enum.GetValues(typeof(ProviderRating)))
             {
-                providerRatingOptionViewModel.Add(new ProviderRatingOptionViewModel
+                employerProviderRatingOptionViewModel.Add(new EmployerProviderRatingOptionViewModel
                 {
-                    ProviderRatingType = providerRatingType,
-                    Description = providerRatingType.GetDescription(),
-                    Selected = selectedProviderRatingTypes.Any(type => type == providerRatingType)
+                    ProviderRatingType = employerProviderRatingType,
+                    Description = employerProviderRatingType.GetDescription(),
+                    Selected = selectedProviderRatingTypes.Any(type => type == employerProviderRatingType)
                 });
             }
 
-            return providerRatingOptionViewModel;
+            return employerProviderRatingOptionViewModel;
         }
+
+        private static IEnumerable<ApprenticeProviderRatingOptionViewModel> BuildApprenticeProviderRatingOptionViewModel(IReadOnlyList<ProviderRating> selectedProviderRatingTypes)
+        {
+            var apprenticeProviderRatingOptionViewModel = new List<ApprenticeProviderRatingOptionViewModel>();
+
+            foreach (ProviderRating apprenticeProviderRatingType in Enum.GetValues(typeof(ProviderRating)))
+            {
+                apprenticeProviderRatingOptionViewModel.Add(new ApprenticeProviderRatingOptionViewModel
+                {
+                    ProviderRatingType = apprenticeProviderRatingType,
+                    Description = apprenticeProviderRatingType.GetDescription(),
+                    Selected = selectedProviderRatingTypes.Any(type => type == apprenticeProviderRatingType)
+                });
+            }
+
+            return apprenticeProviderRatingOptionViewModel;
+        }
+
         private static string GetSeparator(string url)
         {
             return string.IsNullOrEmpty(url) ? "?" : "&";

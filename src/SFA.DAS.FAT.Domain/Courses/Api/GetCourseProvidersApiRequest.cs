@@ -10,7 +10,8 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
     {
         private readonly string _location;
         private readonly IEnumerable<DeliveryModeType> _deliveryModeTypes;
-        private readonly IEnumerable<ProviderRating> _providerRatingTypes;
+        private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes;
+        private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes;
 
         private readonly int _sortOrder;
         private readonly double _lat;
@@ -19,8 +20,8 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
         private readonly int _id;
 
         public GetCourseProvidersApiRequest(       string baseUrl, int id, string location,
-            IEnumerable<DeliveryModeType> deliveryModeTypes, IEnumerable<ProviderRating> providerRatingTypes,
-            int sortOrder = 0, double lat = 0, double lon = 0, Guid? shortlistUserId = null)
+            IEnumerable<DeliveryModeType> deliveryModeTypes, IEnumerable<ProviderRating> employerProviderRatingTypes,
+            IEnumerable<ProviderRating> apprenticeProviderRatingTypes, int sortOrder = 0, double lat = 0, double lon = 0, Guid? shortlistUserId = null)
         {
             _location = location;
             _deliveryModeTypes = deliveryModeTypes;
@@ -30,7 +31,8 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
             _shortlistUserId = shortlistUserId;
             BaseUrl = baseUrl;
             _id = id;
-            _providerRatingTypes = providerRatingTypes;
+            _employerProviderRatingTypes = employerProviderRatingTypes;
+            _apprenticeProviderRatingTypes = apprenticeProviderRatingTypes;
         }
 
         public string BaseUrl { get; }
@@ -43,9 +45,13 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
             {
                 buildUrl += $"&deliveryModes={string.Join("&deliveryModes=", _deliveryModeTypes)}";
             }
-            if (_providerRatingTypes != null && _providerRatingTypes.Any())
+            if (_employerProviderRatingTypes != null && _employerProviderRatingTypes.Any())
             {
-                buildUrl += $"&providerRatings={string.Join("&providerRatings=", _providerRatingTypes)}";
+                buildUrl += $"&employerProviderRatings={string.Join("&employerProviderRatings=", _employerProviderRatingTypes)}";
+            }
+            if (_apprenticeProviderRatingTypes != null && _apprenticeProviderRatingTypes.Any())
+            {
+                buildUrl += $"&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", _apprenticeProviderRatingTypes)}";
             }
 
             if (_lat != 0)

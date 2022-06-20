@@ -28,6 +28,7 @@ namespace SFA.DAS.FAT.Web.Models
         public string NationalOverallAchievementRatePercentage { get ; set ; }
         public IEnumerable<DeliveryModeViewModel> DeliveryModes { get; set; }
         public EmployerFeedbackViewModel EmployerFeedback { get; set; }
+        public ApprenticeFeedbackViewModel ApprenticeFeedback { get; set; }
         public string ProviderDistance { get ; set ; }
         public string ProviderDistanceText { get; set; }
         public string ProviderAddress { get ; set ; }
@@ -56,6 +57,7 @@ namespace SFA.DAS.FAT.Web.Models
                 NationalOverallAchievementRatePercentage = source.NationalOverallAchievementRate.HasValue ? $"{Math.Round(source.NationalOverallAchievementRate.Value) / 100:0%}" : "",
                 DeliveryModes = source.DeliveryModes != null ? BuildDeliveryModes(source.DeliveryModes.ToList()) : new List<DeliveryModeViewModel>(),
                 EmployerFeedback = new EmployerFeedbackViewModel(source.EmployerFeedback),
+                ApprenticeFeedback = new ApprenticeFeedbackViewModel(source.ApprenticeFeedback),
                 ProviderDistance = source.ProviderAddress?.DistanceInMiles !=null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
                 ProviderDistanceText =source.ProviderAddress !=null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
                 ProviderAddress = source.ProviderAddress !=null ? BuildProviderAddress(source.ProviderAddress) : ""

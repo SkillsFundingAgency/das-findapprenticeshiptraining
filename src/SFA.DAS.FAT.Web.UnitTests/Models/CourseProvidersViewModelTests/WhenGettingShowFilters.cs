@@ -17,7 +17,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = false;
             };
 
-            foreach (var pr in model.ProviderRatings)
+            foreach (var pr in model.EmployerProviderRatings)
             {
                 pr.Selected = false;
             };
@@ -40,7 +40,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = false;
             };
 
-            foreach (var pr in model.ProviderRatings)
+            foreach (var pr in model.EmployerProviderRatings)
             {
                 pr.Selected = false;
             };
@@ -63,7 +63,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = true;
             };
 
-            foreach (var pr in model.ProviderRatings)
+            foreach (var pr in model.EmployerProviderRatings)
             {
                 pr.Selected = false;
             };
@@ -86,7 +86,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = false;
             };
 
-            foreach (var pr in model.ProviderRatings)
+            foreach (var pr in model.EmployerProviderRatings)
             {
                 pr.Selected = true;
             };
@@ -109,7 +109,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = true;
             };
 
-            foreach (var pr in model.ProviderRatings)
+            foreach (var pr in model.EmployerProviderRatings)
             {
                 pr.Selected = true;
             };

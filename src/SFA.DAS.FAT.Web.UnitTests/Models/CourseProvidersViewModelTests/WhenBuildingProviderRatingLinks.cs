@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         public void And_ProviderRating_Selected_Then_Link_Returned_With_No_DeliveryModes(CourseProvidersViewModel model)
         {
             // Arrange
-            foreach (var providerRating in model.ProviderRatings )
+            foreach (var providerRating in model.EmployerProviderRatings )
             {
                 providerRating.Selected = true;
             }
@@ -23,13 +23,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             }
 
             // Act
-            var links = model.ClearProviderRatingLinks;
+            var links = model.ClearEmployerProviderRatingLinks;
 
             // Assert
-            foreach (var providerRating in model.ProviderRatings.Where(vm => vm.Selected))
+            foreach (var providerRating in model.EmployerProviderRatings.Where(vm => vm.Selected))
             {
                 var link = links.Single(pair => pair.Key == providerRating.Description);
-                var selectedProviderRatings = model.ProviderRatings
+                var selectedProviderRatings = model.EmployerProviderRatings
                     .Where(vm =>
                         vm.Selected &&
                         vm.ProviderRatingType != providerRating.ProviderRatingType)
@@ -43,7 +43,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         public void And_ProviderRating_Selected_Then_Link_Returned_With_DeliveryModes_Selected(CourseProvidersViewModel model)
         {
             // Arrange
-            foreach (var providerRating in model.ProviderRatings)
+            foreach (var providerRating in model.EmployerProviderRatings)
             {
                 providerRating.Selected = true;
             }
@@ -54,13 +54,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             }
 
             // Act
-            var links = model.ClearProviderRatingLinks;
+            var links = model.ClearEmployerProviderRatingLinks;
 
             // Assert
-            foreach (var providerRating in model.ProviderRatings.Where(vm => vm.Selected))
+            foreach (var providerRating in model.EmployerProviderRatings.Where(vm => vm.Selected))
             {
                 var link = links.Single(pair => pair.Key == providerRating.Description);
-                var selectedProviderRatings = model.ProviderRatings
+                var selectedProviderRatings = model.EmployerProviderRatings
                     .Where(vm =>
                         vm.Selected &&
                         vm.ProviderRatingType != providerRating.ProviderRatingType)
@@ -76,12 +76,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         [Test, AutoData]
         public void And_ProviderType_Not_Selected_Then_Empty_List_Returned(CourseProvidersViewModel model)
         {
-            foreach (var providerRating in model.ProviderRatings)
+            foreach (var providerRating in model.EmployerProviderRatings)
             {
                 providerRating.Selected = false;
             }
 
-            var links = model.ClearProviderRatingLinks;
+            var links = model.ClearEmployerProviderRatingLinks;
 
             links.Should().BeEmpty();
         }
