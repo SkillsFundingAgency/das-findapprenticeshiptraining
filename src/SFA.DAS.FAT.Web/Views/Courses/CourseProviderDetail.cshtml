@@ -126,6 +126,74 @@
                         </div>
                     </details>
                 }
+
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Apprentice reviews</h2>
+                <p class="govuk-body-l govuk-!-margin-bottom-4">
+                    @if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating != 0)
+                    {
+                        <span class="das-rating das-rating--@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.ApprenticeFeedback.TotalFeedbackRating out of 4 stars">
+                            <span aria-hidden="true" class="das-rating__icon-star"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                        </span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.ApprenticeFeedback.TotalFeedbackText.GetDescription()</span>
+                    }
+
+                    @if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating == 0)
+                    {
+                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.ApprenticeFeedback.TotalFeedbackRatingTextProviderDetail</span>
+                    }
+                    else
+                    {
+                        <span class="govuk-body">@Model.Provider.ApprenticeFeedback.TotalFeedbackRatingTextProviderDetail</span>
+                    }
+                </p>
+
+                if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating != 0)
+                {
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Apprentice review details
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <div data-show-hide-panels="true">
+                                <div class="app-show-hide-panel" data-panel-label="graph" id="app-apprentice-feedback-graph">
+                                    <div id="apprentice-feedback-graph"></div>
+                                </div>
+                                <div class="app-show-hide-panel" data-panel-label="table and accessible" id="app-apprentice-feedback-table">
+                                    @foreach (var feedbackCategory in Model.Provider.ApprenticeFeedback.FeedbackAttributeSummary.GroupBy(s => s.Category).OrderBy(s => s.Key))
+                                    {
+                                        <span class="govuk-caption-l">@feedbackCategory.Key</span>
+                                        <table class="govuk-table das-table--responsive" data-target="apprentice-feedback-graph" data-label="apprentices" data-feedback-graph="true">
+                                            <thead class="govuk-table__head">
+                                                <tr class="govuk-table__row">
+                                                    <th scope="col" class="govuk-table__header">Statement</th>
+                                                    <th scope="col" class="govuk-table__header">Percentage of apprentices that agreed with this statement</th>
+                                                    <th scope="col" class="govuk-table__header">Percentage of apprentices that disagreed with this statement</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="govuk-table__body">
+                                                @foreach(var feedbackItem in feedbackCategory)
+                                                {
+                                                    <tr class="govuk-table__row">
+                                                        <th class="govuk-table__cell" scope="row">@feedbackItem.Name</th>
+                                                        <td class="govuk-table__cell" data-label="Percentage of apprentices that agreed with this statement">@feedbackItem.AgreePerc%</td>
+                                                        <td class="govuk-table__cell" data-label="Percentage of apprentices that disagreed with this statement">@feedbackItem.DisagreePerc%</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                }
+
+
                 if (!string.IsNullOrEmpty(Model.Provider.MarketingInfo))
                 {
                     <div class="govuk-!-margin-bottom-8">

@@ -78,6 +78,7 @@ namespace SFA.DAS.FAT.Web.Models
                     new ApprenticeFeedbackDetailViewModel
                     {
                         Name = entry.Name,
+                        Category = entry.Category,
                         AgreeCount = entry.Agree,
                         DisagreeCount = entry.Disagree,
                         TotalCount = totalCount,
@@ -92,6 +93,7 @@ namespace SFA.DAS.FAT.Web.Models
         public class ApprenticeFeedbackDetailViewModel
         {
             public string Name { get; set; }
+            public string Category { get; set; }
             public int AgreeCount { get; set; }
             public int DisagreeCount { get; set; }
             public int TotalCount { get; set; }
