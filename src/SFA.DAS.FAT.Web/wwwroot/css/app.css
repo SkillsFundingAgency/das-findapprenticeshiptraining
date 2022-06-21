@@ -300,7 +300,6 @@
 
 .app-graph__label, 
 .app-graph__chart-wrap {
-    white-space: nowrap;
     vertical-align: middle;
 }
 
@@ -322,6 +321,7 @@
         display: table-cell;
         border-top: 1px solid #d9dadb;
         padding: 10px 0;
+        width: 60%;
     }
 }
 
@@ -329,6 +329,17 @@
     .app-graph__label {
         padding-right: 10px;
         text-align: right;
+        width: 40%;
+    }
+}
+
+.app-graph__category {
+    padding: 20px 0 10px;
+}
+
+@media (min-width: 40.0625em) {
+    .app-graph__category {
+        margin-left: 40%;
     }
 }
 
