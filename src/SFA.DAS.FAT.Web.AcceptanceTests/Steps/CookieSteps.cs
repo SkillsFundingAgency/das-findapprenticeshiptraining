@@ -34,7 +34,9 @@ namespace SFA.DAS.FAT.Web.AcceptanceTests.Steps
                 Id = 324,
                 Location = "Somewhere",
                 DeliveryModes = new List<DeliveryModeType> {DeliveryModeType.BlockRelease},
-                ProviderRatings = new List<ProviderRating> {ProviderRating.Excellent}
+                EmployerProviderRatings = new List<ProviderRating> {ProviderRating.Excellent},
+                ApprenticeProviderRatings = new List<ProviderRating> { ProviderRating.Excellent }
+
             };
 
             var json = JsonConvert.SerializeObject(getProvidersRequest);

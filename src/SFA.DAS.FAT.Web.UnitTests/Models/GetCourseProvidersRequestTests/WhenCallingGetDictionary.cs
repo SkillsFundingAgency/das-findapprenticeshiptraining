@@ -38,10 +38,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
         {
             var dictionary = request.ToDictionary();
 
-            for (int i = 0; i < request.ProviderRatings.Count; i++)
+            for (int i = 0; i < request.EmployerProviderRatings.Count; i++)
             {
-                dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.ProviderRatings)}[{i}]")
-                    .WhichValue.Should().Be(request.ProviderRatings[i].ToString());
+                dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.EmployerProviderRatings)}[{i}]")
+                    .WhichValue.Should().Be(request.EmployerProviderRatings[i].ToString());
             }
         }
     }

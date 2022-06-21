@@ -68,7 +68,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 {
                     ProviderRatingType = providerRatingType,
                     Description = providerRatingType.GetDescription(),
-                    Selected = request.ProviderRatings.Any(type => type == providerRatingType)
+                    Selected = request.EmployerProviderRatings.Any(type => type == providerRatingType)
                 });
             }
 
