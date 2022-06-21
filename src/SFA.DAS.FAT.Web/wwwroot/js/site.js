@@ -324,6 +324,8 @@ FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
     var span2 = document.createElement('span')
         span2.className = "app-graph__bar-value app-graph__bar-value--colour-" + barCount
         span2.style.width = percentage + "%"
+        span2.title = dataCell.dataset.title
+        span2.tabIndex = 0
         span2.appendChild(span1)
 
     var span3 = document.createElement('span')
