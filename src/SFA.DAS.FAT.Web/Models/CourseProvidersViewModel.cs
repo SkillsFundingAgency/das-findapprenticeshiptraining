@@ -112,7 +112,7 @@ namespace SFA.DAS.FAT.Web.Models
                         viewModel.Selected &&
                         viewModel.ProviderRatingType != providerRating.ProviderRatingType)
                     .Select(viewModel => viewModel.ProviderRatingType);
-                var link = $"{location}{deliveryModes}&providerRatings={string.Join("&providerRatings=", otherSelected)}{apprenticeProviderRating}";
+                var link = $"{location}{deliveryModes}&employerProviderRatings={string.Join("&employerProviderRatings=", otherSelected)}{apprenticeProviderRating}";
 
                 providerRatingLinks.Add(providerRating.Description, link);
             }

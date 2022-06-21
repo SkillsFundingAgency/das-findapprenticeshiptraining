@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models
 {
@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.Models
         public int TotalFeedbackRating { get; set; }
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
-        public Domain.Courses.ProviderRating TotalFeedbackText { get; set; }
+        public ProviderRating TotalFeedbackText { get; set; }
         public List<ApprenticeFeedbackDetail> FeedbackDetail { get; set; }
         public List<ApprenticeFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
@@ -25,7 +25,7 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackResponses = apprenticeFeedback.TotalApprenticeResponses;
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
-            TotalFeedbackText = (Domain.Courses.ProviderRating)apprenticeFeedback.TotalFeedbackRating;
+            TotalFeedbackText = (ProviderRating)apprenticeFeedback.TotalFeedbackRating;
             FeedbackDetail = BuildApprenticeFeedbackRating(apprenticeFeedback);
             FeedbackAttributeSummary = GenerateAttributeSummary(apprenticeFeedback.FeedbackAttributes);
         }
@@ -49,9 +49,9 @@ namespace SFA.DAS.FAT.Web.Models
         private List<ApprenticeFeedbackDetail> BuildApprenticeFeedbackRating(ApprenticeFeedback employerFeedback)
         {
             var ratingList = new List<ApprenticeFeedbackDetail>();
-            for (var i = 1; i <= (int)Domain.Courses.ProviderRating.Excellent; i++)
+            for (var i = 1; i <= (int)ProviderRating.Excellent; i++)
             {
-                var rating = (Domain.Courses.ProviderRating)i;
+                var rating = (ProviderRating)i;
                 var feedback = employerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(rating.GetDescription(), StringComparison.CurrentCultureIgnoreCase));
 
                 ratingList.Add(new ApprenticeFeedbackDetail
@@ -103,7 +103,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         public class ApprenticeFeedbackDetail
         {
-            public Domain.Courses.ProviderRating Rating { get; set; }
+            public ProviderRating Rating { get; set; }
             public decimal RatingPercentage { get; set; }
             public int RatingCount { get; set; }
             public string RatingText => GetRatingText();

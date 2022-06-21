@@ -17,10 +17,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 dm.Selected = false;
             };
 
-            foreach (var pr in model.EmployerProviderRatings)
+            foreach (var epr in model.EmployerProviderRatings)
             {
-                pr.Selected = false;
+                epr.Selected = false;
             };
+
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = false;
+            }
 
             // Act
             var actual = model.ShowSelectedFilters;

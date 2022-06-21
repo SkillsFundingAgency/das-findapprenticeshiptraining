@@ -18,9 +18,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 deliveryMode.Selected = true;
             }
 
-            foreach (var providerRating in model.EmployerProviderRatings)
+            foreach (var employerProviderRating in model.EmployerProviderRatings)
             {
-                providerRating.Selected = false;
+                employerProviderRating.Selected = false;
+            }
+
+            foreach(var apprenticeProviderRating in model.ApprenticeProviderRatings)
+            {
+                apprenticeProviderRating.Selected = false;
             }
 
             var links = model.ClearDeliveryModeLinks;
@@ -57,12 +62,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 }
             };
             
-            foreach (var providerRating in model.EmployerProviderRatings)
+            foreach (var employerProviderRating in model.EmployerProviderRatings)
             {
-                providerRating.Selected = false;
+                employerProviderRating.Selected = false;
             }
 
-            
+            foreach (var apprenticeProviderRating in model.ApprenticeProviderRatings)
+            {
+                apprenticeProviderRating.Selected = false;
+            }
+
             var links = model.ClearDeliveryModeLinks;
     
             foreach (var deliveryMode in model.DeliveryModes.Where(viewModel => viewModel.Selected))

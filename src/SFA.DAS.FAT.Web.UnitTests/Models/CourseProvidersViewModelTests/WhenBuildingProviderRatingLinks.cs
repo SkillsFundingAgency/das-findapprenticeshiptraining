@@ -12,14 +12,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         public void And_ProviderRating_Selected_Then_Link_Returned_With_No_DeliveryModes(CourseProvidersViewModel model)
         {
             // Arrange
-            foreach (var providerRating in model.EmployerProviderRatings )
+            foreach (var employerProviderRating in model.EmployerProviderRatings )
             {
-                providerRating.Selected = true;
+                employerProviderRating.Selected = true;
             }
 
             foreach (var deliveryMode in model.DeliveryModes)
             {
                 deliveryMode.Selected = false;
+            }
+
+            foreach (var apprenticeProviderRating in model.ApprenticeProviderRatings)
+            {
+                apprenticeProviderRating.Selected = false;
             }
 
             // Act
@@ -35,7 +40,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                         vm.ProviderRatingType != providerRating.ProviderRatingType)
                     .Select(vm => vm.ProviderRatingType);
 
-                link.Value.Should().Be($"?location={model.Location}&providerRatings={string.Join("&providerRatings=", selectedProviderRatings)}");
+                link.Value.Should().Be($"?location={model.Location}&employerProviderRatings={string.Join("&employerProviderRatings=", selectedProviderRatings)}");
             }
         }
 
@@ -43,9 +48,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         public void And_ProviderRating_Selected_Then_Link_Returned_With_DeliveryModes_Selected(CourseProvidersViewModel model)
         {
             // Arrange
-            foreach (var providerRating in model.EmployerProviderRatings)
+            foreach (var employerProviderRating in model.EmployerProviderRatings)
             {
-                providerRating.Selected = true;
+                employerProviderRating.Selected = true;
+            }
+
+            foreach (var apprenticeProviderRating in model.ApprenticeProviderRatings)
+            {
+                apprenticeProviderRating.Selected = true;
             }
 
             foreach (var deliveryMode in model.DeliveryModes)
@@ -68,8 +78,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 var deliveryModeSelected = model.DeliveryModes
                     .Where(vm => vm.Selected)
                     .Select(vm => vm.DeliveryModeType);
+                var apprenticeProviderRatings = model.ApprenticeProviderRatings
+                    .Where(vm => vm.Selected)
+                    .Select(vm => vm.ProviderRatingType);
 
-                link.Value.Should().Be($"?location={model.Location}&deliveryModes={string.Join("&deliveryModes=", deliveryModeSelected)}&providerRatings={string.Join("&providerRatings=", selectedProviderRatings)}");
+
+                link.Value.Should().Be($"?location={model.Location}&deliveryModes={string.Join("&deliveryModes=", deliveryModeSelected)}&employerProviderRatings={string.Join("&employerProviderRatings=", selectedProviderRatings)}&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatings)}");
             }
         }
 

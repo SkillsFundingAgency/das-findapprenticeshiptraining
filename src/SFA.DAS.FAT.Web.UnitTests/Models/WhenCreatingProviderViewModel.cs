@@ -9,6 +9,7 @@ using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
+using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models
 {
@@ -129,10 +130,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             var actual = (ProviderViewModel)source;
 
             actual.EmployerFeedback.FeedbackDetail.Count.Should().Be(4);
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(Domain.Courses.ProviderRating.Excellent).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(Domain.Courses.ProviderRating.Good).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(Domain.Courses.ProviderRating.Poor).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(Domain.Courses.ProviderRating.VeryPoor).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
         }
 
         [Test]
@@ -148,7 +149,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             var actual = (ProviderViewModel)source;
 
-            var actualFeedbackDetail = actual.EmployerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(Domain.Courses.ProviderRating.Good));
+            var actualFeedbackDetail = actual.EmployerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
             Assert.IsNotNull(actualFeedbackDetail);
             actualFeedbackDetail.RatingText.Should().Be(expectedText);
             actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
