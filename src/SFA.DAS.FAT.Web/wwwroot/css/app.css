@@ -286,6 +286,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
+    display: table;
+    width: 100%;
 }
 
 .app-graph__list-item {
