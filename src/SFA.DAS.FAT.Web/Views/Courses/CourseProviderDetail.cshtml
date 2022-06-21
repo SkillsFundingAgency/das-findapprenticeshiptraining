@@ -114,8 +114,16 @@
                                             {
                                             <tr class="govuk-table__row">
                                                 <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.AttributeName</th>
-                                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Percentage of employers that selected this as a strength">@feedbackItem.StrengthPerc%</td>
-                                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Percentage of employers that selected this as needs improvement">@feedbackItem.WeaknessPerc%</td>
+                                                <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                data-label="Percentage of employers that selected this as a strength"
+                                                data-title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount employers selected this as a 'strength'">
+                                                @feedbackItem.StrengthPerc%
+                                                </td>
+                                                <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                data-label="Percentage of employers that selected this as needs improvement"
+                                                data-title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount employers selected this as a 'needs improvement'">
+                                                @feedbackItem.WeaknessPerc%
+                                                </td>
                                                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of employers that selected this statement">@feedbackItem.TotalCount</td>
                                             </tr>
                                             }
@@ -181,8 +189,16 @@
                                                 {
                                                     <tr class="govuk-table__row">
                                                         <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
-                                                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Percentage of apprentices that agreed with this statement">@feedbackItem.AgreePerc%</td>
-                                                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Percentage of apprentices that disagreed with this statement">@feedbackItem.DisagreePerc%</td>
+                                                        <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                        data-label="Percentage of apprentices that agreed with this statement"
+                                                        data-title="@feedbackItem.AgreePerc% of apprentices agreed with this statement">
+                                                        @feedbackItem.AgreePerc%
+                                                        </td>
+                                                        <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                        data-label="Percentage of apprentices that disagreed with this statement"
+                                                        data-title="@feedbackItem.DisagreePerc% of apprentices disagreed with this statement">
+                                                        @feedbackItem.DisagreePerc%
+                                                        </td>
                                                     </tr>
                                                 }
                                             </tbody>
