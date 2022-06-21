@@ -35,7 +35,7 @@
         ],
         "overallCohort": null,
         "overallAchievementRate": null,
-        "feedback": {
+        "employerFeedback": {
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
@@ -44,6 +44,21 @@
               "attributeName": "",
               "strength": 0,
               "weakness": 0
+            }
+          ]
+        },
+        "apprenticeFeedback": {
+          "totalApprenticeResponses": 48,
+          "totalFeedbackRating": 3,
+          "feedbackDetail": [
+
+          ],
+          "feedbackAttributes": [
+            {
+              "name": "",
+              "category": "",
+              "agree": 0,
+              "disagree": 0
             }
           ]
         },
@@ -134,7 +149,7 @@
         ],
         "overallCohort": null,
         "overallAchievementRate": null,
-        "feedback": {
+        "employerFeedback": {
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
@@ -143,6 +158,21 @@
               "attributeName": "",
               "strength": 0,
               "weakness": 0
+            }
+          ]
+        },
+        "apprenticeFeedback": {
+          "totalApprenticeResponses": 48,
+          "totalFeedbackRating": 3,
+          "feedbackDetail": [
+
+          ],
+          "feedbackAttributes": [
+            {
+              "name": "",
+              "category": "",
+              "agree": 0,
+              "disagree": 0
             }
           ]
         },
@@ -211,7 +241,7 @@
         ],
         "overallCohort": null,
         "overallAchievementRate": null,
-        "feedback": {
+        "employerFeedback": {
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
@@ -220,6 +250,21 @@
               "attributeName": "",
               "strength": 0,
               "weakness": 0
+            }
+          ]
+        },
+        "apprenticeFeedback": {
+          "totalApprenticeResponses": 48,
+          "totalFeedbackRating": 3,
+          "feedbackDetail": [
+
+          ],
+          "feedbackAttributes": [
+            {
+              "name": "",
+              "category": "",
+              "agree": 0,
+              "disagree": 0
             }
           ]
         },
@@ -298,7 +343,7 @@
         ],
         "overallCohort": null,
         "overallAchievementRate": null,
-        "feedback": {
+        "employerFeedback": {
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
@@ -307,6 +352,21 @@
               "attributeName": "",
               "strength": 0,
               "weakness": 0
+            }
+          ]
+        },
+        "apprenticeFeedback": {
+          "totalApprenticeResponses": 48,
+          "totalFeedbackRating": 3,
+          "feedbackDetail": [
+
+          ],
+          "feedbackAttributes": [
+            {
+              "name": "",
+              "category": "",
+              "agree": 0,
+              "disagree": 0
             }
           ]
         },
@@ -375,7 +435,7 @@
         ],
         "overallCohort": null,
         "overallAchievementRate": null,
-        "feedback": {
+        "employerFeedback": {
           "totalEmployerResponses": 0,
           "totalFeedbackRating": 0,
           "feedbackDetail": [],
@@ -384,6 +444,21 @@
               "attributeName": "",
               "strength": 0,
               "weakness": 0
+            }
+          ]
+        },
+        "apprenticeFeedback": {
+          "totalApprenticeResponses": 48,
+          "totalFeedbackRating": 3,
+          "feedbackDetail": [
+
+          ],
+          "feedbackAttributes": [
+            {
+              "name": "",
+              "category": "",
+              "agree": 0,
+              "disagree": 0
             }
           ]
         },

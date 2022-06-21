@@ -30,67 +30,81 @@
         -0.773876
       ]}
   },
-  "trainingCourseProvider": 
-      {
-        "providerId": 1001, 
-        "name": "Lab trainings r us",
-        "marketingInfo": "<p>some info for <b>marketing</b></p>",
-        "email": "test@test.com", 
-        "phone": "555 555 555", 
-        "website": "test@test.com",
-        "overallCohort": 50,
-        "nationalOverallCohort": 7850,
-        "overallAchievementRate": 64.2,
-        "nationalOverallAchievementRate": 66.8,
-        "tradingName": "Lab trainings",
-        "providerAddress": {
-          "address1": "test address",
-          "distanceInMiles": 12.0
-        },
-        "feedback": {
-          "totalEmployerResponses": 0,
-          "totalFeedbackRating": 0,
-          "feedbackDetail": [
+  "trainingCourseProvider": {
+    "providerId": 1001,
+    "name": "Lab trainings r us",
+    "marketingInfo": "<p>some info for <b>marketing</b></p>",
+    "email": "test@test.com",
+    "phone": "555 555 555",
+    "website": "test@test.com",
+    "overallCohort": 50,
+    "nationalOverallCohort": 7850,
+    "overallAchievementRate": 64.2,
+    "nationalOverallAchievementRate": 66.8,
+    "tradingName": "Lab trainings",
+    "providerAddress": {
+      "address1": "test address",
+      "distanceInMiles": 12.0
+    },
+    "employerFeedback": {
+      "totalEmployerResponses": 0,
+      "totalFeedbackRating": 0,
+      "feedbackDetail": [
 
-          ],
-          "feedbackAttributes": [
-            {
-              "attributeName": "",
-              "strength": 0,
-              "weakness": 0
-            }
-          ]
-        },
-        "deliveryModes": [
-          {
-            "deliveryModeType": 0,
-            "distanceInMiles": 13,
-            "address1": "Test Centre",
-            "address2": "New Road",
-            "town": "Some Town",
-            "postcode": "P05T C0DE",
-            "county": "Testshire"
-          },
-          {
-            "deliveryModeType": 1,
-            "distanceInMiles": 3.01,
-            "address1": "Test Centre 2",
-            "address2": "New Road 2",
-            "town": "Some Town 2",
-            "postcode": "P05T CDE",
-            "county": "Testshire1"
-          },
-          {
-            "deliveryModeType": 2,
-            "distanceInMiles": 3.01,
-            "address1": "Test Centre 2",
-            "address2": "New Road 2",
-            "town": "Some Town 2",
-            "postcode": "P05T CDE",
-            "county": "Testshire1"
-          }
-        ]
+      ],
+      "feedbackAttributes": [
+        {
+          "attributeName": "",
+          "strength": 0,
+          "weakness": 0
+        }
+      ]
+    },
+    "apprenticeFeedback": {
+      "totalApprenticeResponses": 0,
+      "totalFeedbackRating": 0,
+      "feedbackDetail": [
+
+      ],
+      "feedbackAttributes": [
+        {
+          "name": "",
+          "category": "",
+          "agree": 0,
+          "disagree": 0
+        }
+      ]
+    },
+    "deliveryModes": [
+      {
+        "deliveryModeType": 0,
+        "distanceInMiles": 13,
+        "address1": "Test Centre",
+        "address2": "New Road",
+        "town": "Some Town",
+        "postcode": "P05T C0DE",
+        "county": "Testshire"
       },
+      {
+        "deliveryModeType": 1,
+        "distanceInMiles": 3.01,
+        "address1": "Test Centre 2",
+        "address2": "New Road 2",
+        "town": "Some Town 2",
+        "postcode": "P05T CDE",
+        "county": "Testshire1"
+      },
+      {
+        "deliveryModeType": 2,
+        "distanceInMiles": 3.01,
+        "address1": "Test Centre 2",
+        "address2": "New Road 2",
+        "town": "Some Town 2",
+        "postcode": "P05T CDE",
+        "county": "Testshire1"
+      }
+    ]
+  },
   
   "additionalCourses": {
     "total": 10,
