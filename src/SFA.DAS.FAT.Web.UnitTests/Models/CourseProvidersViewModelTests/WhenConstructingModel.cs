@@ -59,12 +59,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         }
         
         [Test, AutoData]
-        public void Then_Builds_Provider_Ratings(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
+        public void Then_Builds_Employer_Provider_Ratings(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
-            var expectedProviderRatings = new List<EmployerProviderRatingOptionViewModel>();
+            var expectedEmployerProviderRatings = new List<EmployerProviderRatingOptionViewModel>();
             foreach (ProviderRating providerRatingType in Enum.GetValues(typeof(ProviderRating)))
             {
-                expectedProviderRatings.Add(new EmployerProviderRatingOptionViewModel
+                expectedEmployerProviderRatings.Add(new EmployerProviderRatingOptionViewModel
                 {
                     ProviderRatingType = providerRatingType,
                     Description = providerRatingType.GetDescription(),
@@ -74,7 +74,26 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
 
             var model = new CourseProvidersViewModel(request, result, providerOrder);
 
-            model.EmployerProviderRatings.Should().BeEquivalentTo(expectedProviderRatings);
+            model.EmployerProviderRatings.Should().BeEquivalentTo(expectedEmployerProviderRatings);
+        }
+
+        [Test, AutoData]
+        public void Then_Builds_Apprentice_Provider_Ratings(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
+        {
+            var expectedApprenticeProviderRatings = new List<ApprenticeProviderRatingOptionViewModel>();
+            foreach (ProviderRating providerRatingType in Enum.GetValues(typeof(ProviderRating)))
+            {
+                expectedApprenticeProviderRatings.Add(new ApprenticeProviderRatingOptionViewModel
+                {
+                    ProviderRatingType = providerRatingType,
+                    Description = providerRatingType.GetDescription(),
+                    Selected = request.ApprenticeProviderRatings.Any(type => type == providerRatingType)
+                });
+            }
+
+            var model = new CourseProvidersViewModel(request, result, providerOrder);
+
+            model.ApprenticeProviderRatings.Should().BeEquivalentTo(expectedApprenticeProviderRatings);
         }
     }
 }

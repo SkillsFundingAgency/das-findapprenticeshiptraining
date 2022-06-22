@@ -34,7 +34,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
         }
 
         [Test, AutoData]
-        public void Then_Adds_ProviderRatings_To_Dictionary(GetCourseProvidersRequest request)
+        public void Then_Adds_EmployerProviderRatings_To_Dictionary(GetCourseProvidersRequest request)
         {
             var dictionary = request.ToDictionary();
 
@@ -42,6 +42,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
             {
                 dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.EmployerProviderRatings)}[{i}]")
                     .WhichValue.Should().Be(request.EmployerProviderRatings[i].ToString());
+            }
+        }
+
+
+        [Test, AutoData]
+        public void Then_Adds_ApprenticeProviderRatings_To_Dictionary(GetCourseProvidersRequest request)
+        {
+            var dictionary = request.ToDictionary();
+
+            for (int i = 0; i < request.ApprenticeProviderRatings.Count; i++)
+            {
+                dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.ApprenticeProviderRatings)}[{i}]")
+                    .WhichValue.Should().Be(request.ApprenticeProviderRatings[i].ToString());
             }
         }
     }

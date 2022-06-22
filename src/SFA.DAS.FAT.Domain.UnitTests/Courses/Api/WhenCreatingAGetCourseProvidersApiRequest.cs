@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
         }
 
         [Test, AutoData]
-        public void Then_If_No_DelvieryModes_Its_Not_Added_To_Url_And_ProviderRatings_Are_Added(string baseUrl, int id, string location, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes, int sortOrder)
+        public void Then_If_No_DeliveryModes_Its_Not_Added_To_Url_And_ProviderRatings_Are_Added(string baseUrl, int id, string location, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes, int sortOrder)
         {
             //Arrange Act
             var actual = new GetCourseProvidersApiRequest(baseUrl, id, location, new List<DeliveryModeType>(), employerProviderRatingTypes, apprenticeProviderRatingTypes, sortOrder);
@@ -32,7 +32,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
         }
 
         [Test, AutoData]
-        public void Then_If_No_DelvieryModes_Is_Null_Its_Not_Added_To_Url_And_ProviderRatings_Are_Added(string baseUrl, int id, string location, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes, int sortOrder)
+        public void Then_If_No_DeliveryModes_Is_Null_Its_Not_Added_To_Url_And_ProviderRatings_Are_Added(string baseUrl, int id, string location, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes, int sortOrder)
         {
             //Arrange Act
             var actual = new GetCourseProvidersApiRequest(baseUrl, id, location, null, employerProviderRatingTypes, apprenticeProviderRatingTypes, sortOrder);

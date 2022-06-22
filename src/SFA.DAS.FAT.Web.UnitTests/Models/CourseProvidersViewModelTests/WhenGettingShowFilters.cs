@@ -50,6 +50,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 pr.Selected = false;
             };
 
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = false;
+            }
+
             // Act
             var actual = model.ShowSelectedFilters;
 
@@ -73,6 +78,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 pr.Selected = false;
             };
 
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = false;
+            }
+
             // Act
             var actual = model.ShowSelectedFilters;
 
@@ -81,7 +91,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         }
 
         [Test, AutoData]
-        public void And_ProviderRatings_Are_Set_And_DeliveryModes_Empty_And_Then_True(
+        public void And_EmployerProviderRatings_Are_Set_And_DeliveryModes_Empty_And_Then_True(
                    CourseProvidersViewModel model)
         {
             // Arrange
@@ -95,6 +105,39 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             {
                 pr.Selected = true;
             };
+
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = false;
+            }
+
+            // Act
+            var actual = model.ShowSelectedFilters;
+
+            // Assert
+            Assert.IsTrue(actual);
+        }
+
+        [Test, AutoData]
+        public void And_ApprenticeProviderRatings_Are_Set_And_DeliveryModes_Empty_And_Then_True(
+           CourseProvidersViewModel model)
+        {
+            // Arrange
+            model.Location = "";
+            foreach (var dm in model.DeliveryModes)
+            {
+                dm.Selected = false;
+            };
+
+            foreach (var pr in model.EmployerProviderRatings)
+            {
+                pr.Selected = false;
+            };
+
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = true;
+            }
 
             // Act
             var actual = model.ShowSelectedFilters;
@@ -118,6 +161,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             {
                 pr.Selected = true;
             };
+
+            foreach (var apr in model.ApprenticeProviderRatings)
+            {
+                apr.Selected = true;
+            }
 
             // Act
             var actual = model.ShowSelectedFilters;
