@@ -554,10 +554,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
         //Apprentice Feedback
         [Test]
-        [InlineAutoData(50, "(50 employer reviews)")]
-        [InlineAutoData(51, "(50+ employer reviews)")]
-        [InlineAutoData(1, "(1 employer review)")]
-        [InlineAutoData(0, "Not yet reviewed (employer reviews)")]
+        [InlineAutoData(50, "(50 apprentice reviews)")]
+        [InlineAutoData(51, "(50+ apprentice reviews)")]
+        [InlineAutoData(1, "(1 apprentice review)")]
+        [InlineAutoData(0, "Not yet reviewed (apprentice reviews)")]
         public void Then_The_ApprenticeFeedback_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
         {
             source.ApprenticeFeedback.TotalApprenticeResponses = numberOfReviews;
