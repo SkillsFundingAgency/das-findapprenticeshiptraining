@@ -334,10 +334,6 @@ FeedbackGraph.prototype.graphRow = function(row) {
 
 FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
     var percentage = parseFloat(dataCell.textContent.slice(0, -1));
-    if (percentage === 0) {
-        return;
-    }
-
     var span1 = document.createElement('span')
         span1.textContent = percentage + "%"
         span1.className = "app-graph__figure"

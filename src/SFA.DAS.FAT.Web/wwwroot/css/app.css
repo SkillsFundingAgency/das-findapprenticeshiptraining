@@ -364,6 +364,7 @@
 .app-graph__bar-value {
     background: #28a197;
     position: relative;
+    min-width: 1px;
 }
 
 .app-graph__bar-value--colour-2 {
