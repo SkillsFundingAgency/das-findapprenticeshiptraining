@@ -18,35 +18,40 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [Test, AutoData]
         public void Then_Maps_The_Fields(Provider source)
         {
-            var actual = (ProviderViewModel) source;
-            
+            var actual = (ProviderViewModel)source;
+
             actual.Should().BeEquivalentTo(source, options => options
-                .Excluding(c=>c.OverallAchievementRate)
-                .Excluding(c=>c.NationalOverallAchievementRate)
-                .Excluding(c=>c.NationalOverallCohort)
+                .Excluding(c => c.OverallAchievementRate)
+                .Excluding(c => c.NationalOverallAchievementRate)
+                .Excluding(c => c.NationalOverallCohort)
                 .Excluding(c => c.DeliveryModes)
-                .Excluding(c=>c.Feedback)
+                .Excluding(c => c.EmployerFeedback)
+                .Excluding(c => c.ApprenticeFeedback)
                 .Excluding(c => c.ProviderAddress)
             );
 
-            actual.OverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.OverallAchievementRate.Value)/100):0%}");
-            actual.NationalOverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.NationalOverallAchievementRate.Value)/100):0%}");
-            actual.TotalEmployerResponses.Should().Be(source.Feedback.TotalEmployerResponses);
-            actual.TotalFeedbackRating.Should().Be(source.Feedback.TotalFeedbackRating);
-            actual.FeedbackAttributeSummary.Select(c => c.StrengthCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Select(x => x.Strength));
-            actual.FeedbackAttributeSummary.Select(c => c.WeaknessCount).Should().BeEquivalentTo(source.Feedback.FeedbackAttributes.Select(x => x.Weakness));
+            actual.OverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.OverallAchievementRate.Value) / 100):0%}");
+            actual.NationalOverallAchievementRatePercentage.Should().Be($"{(Math.Round(source.NationalOverallAchievementRate.Value) / 100):0%}");
+            actual.EmployerFeedback.TotalFeedbackResponses.Should().Be(source.EmployerFeedback.TotalEmployerResponses);
+            actual.EmployerFeedback.TotalFeedbackRating.Should().Be(source.EmployerFeedback.TotalFeedbackRating);
+            actual.EmployerFeedback.FeedbackAttributeSummary.Select(c => c.StrengthCount).Should().BeEquivalentTo(source.EmployerFeedback.FeedbackAttributes.Select(x => x.Strength));
+            actual.EmployerFeedback.FeedbackAttributeSummary.Select(c => c.WeaknessCount).Should().BeEquivalentTo(source.EmployerFeedback.FeedbackAttributes.Select(x => x.Weakness));
+            actual.ApprenticeFeedback.TotalFeedbackResponses.Should().Be(source.ApprenticeFeedback.TotalApprenticeResponses);
+            actual.ApprenticeFeedback.TotalFeedbackRating.Should().Be(source.ApprenticeFeedback.TotalFeedbackRating);
+            actual.ApprenticeFeedback.FeedbackAttributeSummary.Select(c => c.AgreeCount).Should().BeEquivalentTo(source.ApprenticeFeedback.FeedbackAttributes.Select(x => x.Agree));
+            actual.ApprenticeFeedback.FeedbackAttributeSummary.Select(c => c.DisagreeCount).Should().BeEquivalentTo(source.ApprenticeFeedback.FeedbackAttributes.Select(x => x.Disagree));
             actual.ProviderDistance.Should().Be(source.ProviderAddress.DistanceInMiles.FormatDistance());
         }
-        
+
         [Test]
         public void Then_If_Source_Is_Null_Then_Null_Returned()
         {
-            var actual = (ProviderViewModel) null;
+            var actual = (ProviderViewModel)null;
 
             actual.Should().BeNull();
         }
-        
-        
+
+
         [Test]
         public void Then_If_Source_Is_Empty_Then_Null_Returned()
         {
@@ -54,7 +59,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             actual.Should().BeNull();
         }
-        
+
         [Test, AutoData]
         public void Then_Return_Null_When_Trading_Name_Matches_Name(Provider source)
         {
@@ -82,73 +87,73 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.TradingName.Should().BeNull();
         }
 
-        //Feedback
+        //Employer Feedback
         [Test]
         [InlineAutoData(50, "(50 employer reviews)")]
         [InlineAutoData(51, "(50+ employer reviews)")]
         [InlineAutoData(1, "(1 employer review)")]
         [InlineAutoData(0, "Not yet reviewed (employer reviews)")]
-        public void Then_The_Feedback_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
+        public void Then_The_EmployerFeedback_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = numberOfReviews;
-            var actual = (ProviderViewModel) source;    
+            source.EmployerFeedback.TotalEmployerResponses = numberOfReviews;
+            var actual = (ProviderViewModel)source;
 
-            actual.TotalFeedbackRatingText.Should().Be(expectedText);
+            actual.EmployerFeedback.TotalFeedbackRatingText.Should().Be(expectedText);
         }
         [Test]
         [InlineAutoData(50, "(50 reviews)")]
         [InlineAutoData(51, "(51 reviews)")]
         [InlineAutoData(1, "(1 review)")]
         [InlineAutoData(0, "Not yet reviewed")]
-        public void Then_The_Feedback_Provider_Detail_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
+        public void Then_The_EmployerFeedback_Provider_Detail_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = numberOfReviews;
-            var actual = (ProviderViewModel) source;    
+            source.EmployerFeedback.TotalEmployerResponses = numberOfReviews;
+            var actual = (ProviderViewModel)source;
 
-            actual.TotalFeedbackRatingTextProviderDetail.Should().Be(expectedText);
+            actual.EmployerFeedback.TotalFeedbackRatingTextProviderDetail.Should().Be(expectedText);
         }
 
         [Test]
-        [InlineAutoData(1,"Very poor")]
+        [InlineAutoData(1, "Very poor")]
         [InlineAutoData(2, "Poor")]
         [InlineAutoData(3, "Good")]
         [InlineAutoData(4, "Excellent")]
-        public void Then_The_Feedback_Rating_Is_Mapped_To_The_Description(int feedbackRating,string expected, Provider source)
+        public void Then_The_EmployerFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
         {
-            source.Feedback.TotalFeedbackRating = feedbackRating;
-            
-            var actual = (ProviderViewModel) source;
+            source.EmployerFeedback.TotalFeedbackRating = feedbackRating;
 
-            actual.TotalFeedbackText.GetDescription().Should().Be(expected);
+            var actual = (ProviderViewModel)source;
+
+            actual.EmployerFeedback.TotalFeedbackText.GetDescription().Should().Be(expected);
         }
 
         [Test, AutoData]
-        public void Then_The_Feedback_Detail_Exists_For_Each_Rating_Type(Provider source)
+        public void Then_The_EmployerFeedback_Detail_Exists_For_Each_Rating_Type(Provider source)
         {
-            
-            var actual = (ProviderViewModel) source;
 
-            actual.FeedbackDetail.Count.Should().Be(4);
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
-            actual.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
+            var actual = (ProviderViewModel)source;
+
+            actual.EmployerFeedback.FeedbackDetail.Count.Should().Be(4);
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
+            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
         }
 
         [Test]
         [InlineAutoData(50, 50, 100.0, "50 reviews")]
-        [InlineAutoData(51, 60, 85.0,"51 reviews")]
+        [InlineAutoData(51, 60, 85.0, "51 reviews")]
         [InlineAutoData(1, 11, 9.1, "1 review")]
         [InlineAutoData(0, 0, 0.0, "0 reviews")]
-        public void Then_The_Text_Is_Generated_For_Number_Of_Reviews_With_Percentage(int numberOfReviews,int totalReviews, double expectedPercentage, string expectedText, Provider source)
+        public void Then_The_Text_Is_Generated_For_Number_Of_EmployerReviews_With_Percentage(int numberOfReviews, int totalReviews, double expectedPercentage, string expectedText, Provider source)
         {
-            source.Feedback.TotalEmployerResponses = totalReviews;
-            source.Feedback.FeedbackDetail.FirstOrDefault().FeedbackCount = numberOfReviews;
-            source.Feedback.FeedbackDetail.FirstOrDefault().FeedbackName = "Good";
-            
-            var actual = (ProviderViewModel) source;
+            source.EmployerFeedback.TotalEmployerResponses = totalReviews;
+            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackCount = numberOfReviews;
+            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackName = "Good";
 
-            var actualFeedbackDetail = actual.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
+            var actual = (ProviderViewModel)source;
+
+            var actualFeedbackDetail = actual.EmployerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
             Assert.IsNotNull(actualFeedbackDetail);
             actualFeedbackDetail.RatingText.Should().Be(expectedText);
             actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
@@ -160,19 +165,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         public void Then_No_Delivery_Modes_Has_An_Empty_List(Provider source)
         {
             source.DeliveryModes = null;
-            
-            var actual = (ProviderViewModel) source;
-            
+
+            var actual = (ProviderViewModel)source;
+
             actual.DeliveryModes.Should().BeEmpty();
         }
-        
+
         [Test, AutoData]
         public void Then_No_Achievement_Data_Shows_Empty_String(Provider source)
         {
             source.OverallAchievementRate = null;
             source.NationalOverallAchievementRate = null;
-            
-            var actual = (ProviderViewModel) source;
+
+            var actual = (ProviderViewModel)source;
 
             actual.OverallAchievementRatePercentage.Should().BeEmpty();
             actual.NationalOverallAchievementRatePercentage.Should().BeEmpty();
@@ -183,9 +188,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         {
             source.OverallAchievementRate = 38.9m;
             source.NationalOverallAchievementRate = 78.9m;
-            
-            var actual = (ProviderViewModel) source;
-            
+
+            var actual = (ProviderViewModel)source;
+
             actual.OverallAchievementRatePercentage.Should().Be("39%");
             actual.NationalOverallAchievementRatePercentage.Should().Be("79%");
         }
@@ -195,31 +200,31 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         [Test, AutoData]
         public void Then_Maps_Fields_From_Source(DeliveryMode source)
         {
-            var actual = new DeliveryModeViewModel().Map(source,DeliveryModeType.BlockRelease);
-            
-            actual.Should().BeEquivalentTo(source, options=>options
-                .Excluding(c=>c.DeliveryModeType)
-                .Excluding(c=>c.DistanceInMiles)
+            var actual = new DeliveryModeViewModel().Map(source, DeliveryModeType.BlockRelease);
+
+            actual.Should().BeEquivalentTo(source, options => options
+                .Excluding(c => c.DeliveryModeType)
+                .Excluding(c => c.DistanceInMiles)
             );
             actual.AddressFormatted.Should()
                 .Be($"{source.Address1}, {source.Address2}, {source.Town}, {source.County}, {source.Postcode}");
         }
 
         [Test]
-        [InlineAutoData("Address1","Address2","Town","County","Postcode","Address1, Address2, Town, County, Postcode")]
-        [InlineAutoData("Address1","","Town","County","Postcode","Address1, Town, County, Postcode")]
-        [InlineAutoData("Address1","","","County","Postcode","Address1, County, Postcode")]
-        [InlineAutoData("","","","County","Postcode","County, Postcode")]
-        [InlineAutoData("","","","County","","County")]
-        public void Then_Builds_Address_Correctly(string address1, string address2, string town,string county, string postcode, string expected, DeliveryMode source)
+        [InlineAutoData("Address1", "Address2", "Town", "County", "Postcode", "Address1, Address2, Town, County, Postcode")]
+        [InlineAutoData("Address1", "", "Town", "County", "Postcode", "Address1, Town, County, Postcode")]
+        [InlineAutoData("Address1", "", "", "County", "Postcode", "Address1, County, Postcode")]
+        [InlineAutoData("", "", "", "County", "Postcode", "County, Postcode")]
+        [InlineAutoData("", "", "", "County", "", "County")]
+        public void Then_Builds_Address_Correctly(string address1, string address2, string town, string county, string postcode, string expected, DeliveryMode source)
         {
             source.Address1 = address1;
             source.Address2 = address2;
             source.County = county;
             source.Postcode = postcode;
             source.Town = town;
-            
-            var actual = new DeliveryModeViewModel().Map(source,DeliveryModeType.BlockRelease);
+
+            var actual = new DeliveryModeViewModel().Map(source, DeliveryModeType.BlockRelease);
 
             actual.AddressFormatted.Should().Be(expected);
         }
@@ -229,15 +234,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         {
             source.DeliveryModes = new List<DeliveryMode>();
 
-            var actual = (ProviderViewModel) source;
+            var actual = (ProviderViewModel)source;
 
             actual.DeliveryModes.Should().BeEmpty();
         }
-        
+
         [Test, AutoData]
         public void Then_Has_3_DeliveryModes_In_Correct_Order(Provider source)
         {
-            var actual = (ProviderViewModel) source;
+            var actual = (ProviderViewModel)source;
 
             var modes = actual.DeliveryModes.ToList();
             modes.Count.Should().Be(3);
@@ -333,7 +338,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             dayReleaseDeliveryMode.FormattedDistanceInMiles.Should().Be($": {distanceInMiles.FormatDistance()} miles away");
             dayReleaseDeliveryMode.IsAvailable.Should().BeTrue();
         }
-        
+
         [Test, AutoData]
         public void And_Has_DayRelease_Delivery_Then_Formatted_DeliveryMode_With_Trailing_Zeros_Removed(
             Provider source)
@@ -421,7 +426,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace && !c.IsAvailable).Should().NotBeNull();
             actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease && !c.IsAvailable).Should().NotBeNull();
             actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease && !c.IsAvailable).Should().NotBeNull();
-            
+
         }
 
         [Test, AutoData]
@@ -438,7 +443,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
                 }
             };
 
-            var actual = (ProviderViewModel) source;
+            var actual = (ProviderViewModel)source;
             actual.DeliveryModes.Count().Should().Be(3);
             actual.DeliveryModes.ToList().TrueForAll(x => x.DeliveryModeType == DeliveryModeType.NotFound).Should().BeFalse();
         }
@@ -464,7 +469,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
                     DeliveryModeType = Domain.Courses.DeliveryModeType.BlockRelease,
                     National = true
                 }
-                
+
             };
 
             // Act
@@ -482,10 +487,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         {
             //Arrange
             source.ProviderAddress.DistanceInMiles = (decimal)distance;
-            
+
             // Act
             var actual = (ProviderViewModel)source;
-            
+
             //Assert
             actual.ProviderDistanceText.Should().Be(expectedText);
         }
@@ -495,10 +500,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         {
             //Arrange
             source.ProviderAddress.DistanceInMiles = null;
-            
+
             // Act
             var actual = (ProviderViewModel)source;
-            
+
             //Assert
             actual.ProviderDistanceText.Should().Be("Head office");
         }
@@ -524,10 +529,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
                 Town = town,
                 Postcode = postcode
             };
-            
+
             // Act
             var actual = (ProviderViewModel)source;
-            
+
             //Assert
             actual.ProviderAddress.Should().Be(expected);
         }
@@ -537,14 +542,87 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         {
             //Arrange
             source.ProviderAddress = null;
-            
+
             //Act
-            var actual = (ProviderViewModel) source;
-            
+            var actual = (ProviderViewModel)source;
+
             //Assert
             actual.ProviderAddress.Should().BeEmpty();
             actual.ProviderDistanceText.Should().BeEmpty();
             actual.ProviderDistance.Should().BeEmpty();
+        }
+
+        //Apprentice Feedback
+        [Test]
+        [InlineAutoData(50, "(50 apprentice reviews)")]
+        [InlineAutoData(51, "(50+ apprentice reviews)")]
+        [InlineAutoData(1, "(1 apprentice review)")]
+        [InlineAutoData(0, "Not yet reviewed (apprentice reviews)")]
+        public void Then_The_ApprenticeFeedback_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
+        {
+            source.ApprenticeFeedback.TotalApprenticeResponses = numberOfReviews;
+            var actual = (ProviderViewModel)source;
+
+            actual.ApprenticeFeedback.TotalFeedbackRatingText.Should().Be(expectedText);
+        }
+        [Test]
+        [InlineAutoData(50, "(50 reviews)")]
+        [InlineAutoData(51, "(51 reviews)")]
+        [InlineAutoData(1, "(1 review)")]
+        [InlineAutoData(0, "Not yet reviewed")]
+        public void Then_The_ApprenticeFeedback_Provider_Detail_Text_Is_Formatted_Correctly(int numberOfReviews, string expectedText, Provider source)
+        {
+            source.ApprenticeFeedback.TotalApprenticeResponses = numberOfReviews;
+            var actual = (ProviderViewModel)source;
+
+            actual.ApprenticeFeedback.TotalFeedbackRatingTextProviderDetail.Should().Be(expectedText);
+        }
+
+        [Test]
+        [InlineAutoData(1, "Very poor")]
+        [InlineAutoData(2, "Poor")]
+        [InlineAutoData(3, "Good")]
+        [InlineAutoData(4, "Excellent")]
+        public void Then_The_ApprenticeFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
+        {
+            source.ApprenticeFeedback.TotalFeedbackRating = feedbackRating;
+
+            var actual = (ProviderViewModel)source;
+
+            actual.ApprenticeFeedback.TotalFeedbackText.GetDescription().Should().Be(expected);
+        }
+
+        [Test, AutoData]
+        public void Then_The_ApprenticeFeedback_Detail_Exists_For_Each_Rating_Type(Provider source)
+        {
+
+            var actual = (ProviderViewModel)source;
+
+            actual.ApprenticeFeedback.FeedbackDetail.Count.Should().Be(4);
+            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
+            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
+            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
+            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
+        }
+
+        [Test]
+        [InlineAutoData(50, 50, 100.0, "50 reviews")]
+        [InlineAutoData(51, 60, 85.0, "51 reviews")]
+        [InlineAutoData(1, 11, 9.1, "1 review")]
+        [InlineAutoData(0, 0, 0.0, "0 reviews")]
+        public void Then_The_Text_Is_Generated_For_Number_Of_ApprenticeReviews_With_Percentage(int numberOfReviews, int totalReviews, double expectedPercentage, string expectedText, Provider source)
+        {
+            source.ApprenticeFeedback.TotalApprenticeResponses = totalReviews;
+            source.ApprenticeFeedback.FeedbackDetail.FirstOrDefault().Count = numberOfReviews;
+            source.ApprenticeFeedback.FeedbackDetail.FirstOrDefault().Rating = "Good";
+
+            var actual = (ProviderViewModel)source;
+
+            var actualFeedbackDetail = actual.ApprenticeFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
+            Assert.IsNotNull(actualFeedbackDetail);
+            actualFeedbackDetail.RatingText.Should().Be(expectedText);
+            actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
+            actualFeedbackDetail.RatingPercentage.Should().Be((decimal)expectedPercentage);
         }
     }
 }

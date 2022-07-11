@@ -29,7 +29,7 @@
       "tradingName": "Lab trainings",
       "overallCohort": 10,
       "overallAchievementRate": 93.3,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 48,
         "totalFeedbackRating": 3,
         "feedbackDetail": [
@@ -40,6 +40,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 12,
+        "totalFeedbackRating": 3,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -55,7 +70,7 @@
       "name": "Lab trainings 4 u",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 15,
         "totalFeedbackRating": 1,
         "feedbackDetail": [
@@ -66,6 +81,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 48,
+        "totalFeedbackRating": 3,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -81,7 +111,7 @@
       "name": "Lab trainings 4 all",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 2,
         "totalFeedbackRating": 4,
         "feedbackDetail": [
@@ -92,6 +122,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 18,
+        "totalFeedbackRating": 1,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -107,7 +152,7 @@
       "name": "Lab trainings 4 some",
       "overallCohort": 15,
       "overallAchievementRate": 63.3,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 2000,
         "totalFeedbackRating": 2,
         "feedbackDetail": [
@@ -118,6 +163,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 12,
+        "totalFeedbackRating": 4,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -133,7 +193,7 @@
       "name": "Lab trainings 4 none",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 0,
         "totalFeedbackRating": 0,
         "feedbackDetail": [
@@ -144,6 +204,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 18,
+        "totalFeedbackRating": 1,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -159,7 +234,7 @@
       "name": "Lab trainings et al",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 0,
         "totalFeedbackRating": 0,
         "feedbackDetail": [
@@ -170,6 +245,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 12,
+        "totalFeedbackRating": 3,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -185,7 +275,7 @@
       "name": "Lab trainings & stuff",
       "overallCohort": 20,
       "overallAchievementRate": 73.3,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 1,
         "totalFeedbackRating": 1,
         "feedbackDetail": [
@@ -196,6 +286,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 4,
+        "totalFeedbackRating": 2,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -211,7 +316,7 @@
       "name": "Labs and lads",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 0,
         "totalFeedbackRating": 0,
         "feedbackDetail": [
@@ -222,6 +327,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 0,
+        "totalFeedbackRating": 0,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -237,7 +357,7 @@
       "name": "Labrador training",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 0,
         "totalFeedbackRating": 0,
         "feedbackDetail": [
@@ -248,6 +368,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 8,
+        "totalFeedbackRating": 4,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -263,7 +398,7 @@
       "name": "Lab coats",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 0,
         "totalFeedbackRating": 0,
         "feedbackDetail": [
@@ -274,6 +409,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 4,
+        "totalFeedbackRating": 1,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -289,7 +439,7 @@
       "name": "Lab door",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 10,
         "totalFeedbackRating": 2,
         "feedbackDetail": [
@@ -300,6 +450,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 3,
+        "totalFeedbackRating": 1,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },
@@ -315,7 +480,7 @@
       "name": "Lab ra kadabra",
       "overallCohort": null,
       "overallAchievementRate": null,
-      "feedback": {
+      "employerFeedback": {
         "totalEmployerResponses": 54,
         "totalFeedbackRating": 3,
         "feedbackDetail": [
@@ -326,6 +491,21 @@
             "attributeName": "",
             "strength": 0,
             "weakness": 0
+          }
+        ]
+      },
+      "apprenticeFeedback": {
+        "totalApprenticeResponses": 11,
+        "totalFeedbackRating": 3,
+        "feedbackDetail": [
+
+        ],
+        "feedbackAttributes": [
+          {
+            "name": "",
+            "category": "",
+            "agree": 0,
+            "disagree": 0
           }
         ]
       },

@@ -133,7 +133,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                     Lat = location?.Lat ?? 0,
                     Lon = location?.Lon ?? 0,
                     DeliveryModes = request.DeliveryModes.Select(type => (Domain.Courses.DeliveryModeType)type),
-                    ProviderRatings = request.ProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
+                    EmployerProviderRatings = request.EmployerProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
+                    ApprenticeProviderRatings = request.ApprenticeProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
                     ShortlistUserId = shortlistItem?.ShortlistUserId
                 });
                 
@@ -226,7 +227,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                     {
                         providersRequestCookie.Id = id;
                         providersRequestCookie.DeliveryModes = new List<DeliveryModeType>();
-                        providersRequestCookie.ProviderRatings = new List<ProviderRating>();
+                        providersRequestCookie.EmployerProviderRatings = new List<ProviderRating>();
+                        providersRequestCookie.ApprenticeProviderRatings = new List<ProviderRating>();
                     }
                     
                     providersRequestCookie.Location = result?.Location;

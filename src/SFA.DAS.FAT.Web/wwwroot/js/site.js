@@ -223,6 +223,7 @@ function nodeListForEach(nodes, callback) {
 function FeedbackGraph(table) {
     this.table = table
     this.target = this.table.dataset.target
+    this.hideLegend = this.table.dataset.hideLegend === "true"
     this.label = this.table.dataset.label || "people"
     this.rows = this.table.querySelectorAll("tbody tr")
 }
@@ -241,6 +242,9 @@ FeedbackGraph.prototype.init = function() {
     var graphList = document.createElement("ul")
         graphList.className = "app-graph__list"
 
+    var caption = this.table.querySelector("caption")
+    var categoryHtml
+
     nodeListForEach(this.rows, function (row) {
         if (rowCount === 0) {
             legendlistHtml = that.legendHtml(row)
@@ -248,7 +252,18 @@ FeedbackGraph.prototype.init = function() {
         graphList.appendChild(that.graphRow(row))
         rowCount++
     });
-    graphHtml.appendChild(legendlistHtml)
+
+    if (!this.hideLegend) {
+        graphHtml.appendChild(legendlistHtml)
+    }
+    
+    if (caption) {
+        categoryHtml = document.createElement("h2")
+        categoryHtml.className = "govuk-caption-l app-graph__category"
+        categoryHtml.textContent = caption.textContent
+        graphHtml.appendChild(categoryHtml)
+    }
+
     graphHtml.appendChild(graphList)
     document.getElementById(this.target).appendChild(graphHtml)
 }
@@ -258,6 +273,10 @@ FeedbackGraph.prototype.legendHtml = function(row) {
         legendList.className = "app-graph-key"
     var dataCells = row.querySelectorAll("td")
     var cellCount = 0
+
+    if (this.hideLegend) {
+        return ''
+    }
 
     nodeListForEach(dataCells, function (dataCell) {
         if (isNaN(dataCell.textContent)) {
@@ -303,7 +322,9 @@ FeedbackGraph.prototype.graphRow = function(row) {
     var heading = document.createElement('h3')
         heading.className = "app-graph__label"
         heading.textContent = questionText
-        heading.appendChild(caption)
+        if (totalAsked > 0) {
+            heading.appendChild(caption)
+        }
 
         graphRowHtml.appendChild(heading)
         graphRowHtml.appendChild(barsHtml)
@@ -313,10 +334,6 @@ FeedbackGraph.prototype.graphRow = function(row) {
 
 FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
     var percentage = parseFloat(dataCell.textContent.slice(0, -1));
-    if (percentage === 0) {
-        return;
-    }
-
     var span1 = document.createElement('span')
         span1.textContent = percentage + "%"
         span1.className = "app-graph__figure"
@@ -324,6 +341,8 @@ FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
     var span2 = document.createElement('span')
         span2.className = "app-graph__bar-value app-graph__bar-value--colour-" + barCount
         span2.style.width = percentage + "%"
+        span2.title = dataCell.dataset.title
+        span2.tabIndex = 0
         span2.appendChild(span1)
 
     var span3 = document.createElement('span')

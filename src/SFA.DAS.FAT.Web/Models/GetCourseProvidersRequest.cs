@@ -11,7 +11,9 @@ namespace SFA.DAS.FAT.Web.Models
         [FromQuery]
         public IReadOnlyList<DeliveryModeType> DeliveryModes { get; set; } = new List<DeliveryModeType>();
         [FromQuery]
-        public IReadOnlyList<ProviderRating> ProviderRatings { get; set; } = new List<ProviderRating>();
+        public IReadOnlyList<ProviderRating> EmployerProviderRatings { get; set; } = new List<ProviderRating>();
+        [FromQuery]
+        public IReadOnlyList<ProviderRating> ApprenticeProviderRatings { get; set; } = new List<ProviderRating>();
 
         [FromQuery]
         public string Removed { get; set; }
@@ -32,10 +34,16 @@ namespace SFA.DAS.FAT.Web.Models
                 result.Add($"{nameof(DeliveryModes)}[{i}]", deliveryModeType.ToString());
             }
 
-            for (var i = 0; i < ProviderRatings.Count; i++)
+            for (var i = 0; i < EmployerProviderRatings.Count; i++)
             {
-                var providerRating = ProviderRatings[i];
-                result.Add($"{nameof(ProviderRatings)}[{i}]", providerRating.ToString());
+                var employerProviderRating = EmployerProviderRatings[i];
+                result.Add($"{nameof(EmployerProviderRatings)}[{i}]", employerProviderRating.ToString());
+            }
+
+            for (var i = 0; i < ApprenticeProviderRatings.Count; i++)
+            {
+                var apprenticeProviderRating = ApprenticeProviderRatings[i];
+                result.Add($"{nameof(ApprenticeProviderRatings)}[{i}]", apprenticeProviderRating.ToString());
             }
 
             return result;

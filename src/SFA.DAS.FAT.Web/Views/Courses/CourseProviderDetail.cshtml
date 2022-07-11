@@ -64,29 +64,29 @@
 
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Employer reviews</h2>
                 <p class="govuk-body-l govuk-!-margin-bottom-4">
-                    @if (Model.Provider.TotalFeedbackRating != 0)
+                    @if (Model.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                     {
-                        <span class="das-rating das-rating--@(Model.Provider.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.TotalFeedbackRating out of 4 stars">
+                        <span class="das-rating das-rating--@(Model.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.EmployerFeedback.TotalFeedbackRating out of 4 stars">
                             <span aria-hidden="true" class="das-rating__icon-star"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.EmployerFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
                         </span>
-                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.TotalFeedbackText.GetDescription()</span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.EmployerFeedback.TotalFeedbackText.GetDescription()</span>
                     }
 
-                    @if (Model.Provider.TotalFeedbackRating == 0)
+                    @if (Model.Provider.EmployerFeedback.TotalFeedbackRating == 0)
                     {
-                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.TotalFeedbackRatingTextProviderDetail</span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.EmployerFeedback.TotalFeedbackRatingTextProviderDetail</span>
                     }
                     else
                     {
-                        <span class="govuk-body">@Model.Provider.TotalFeedbackRatingTextProviderDetail</span>
+                        <span class="govuk-body">@Model.Provider.EmployerFeedback.TotalFeedbackRatingTextProviderDetail</span>
                     }
                 </p>
 
 
-                if (Model.Provider.TotalFeedbackRating != 0)
+                if (Model.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                 {
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
@@ -100,23 +100,31 @@
                                     <div id="employer-feedback-graph"></div>
                                 </div>
                                 <div class="app-show-hide-panel" data-panel-label="table and accessible" id="app-emp-feedback-table">
-                                    <table class="govuk-table das-table--responsive" data-target="employer-feedback-graph" data-label="employers" data-feedback-graph="true">
+                                    <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="employer-feedback-graph" data-label="employers" data-feedback-graph="true">
                                         <thead class="govuk-table__head">
                                             <tr class="govuk-table__row">
                                                 <th scope="col" class="govuk-table__header">Statement</th>
-                                                <th scope="col" class="govuk-table__header">Percentage of employers that selected this as a "strength"</th>
-                                                <th scope="col" class="govuk-table__header">Percentage of employers that selected this as "needs improvement"</th>
-                                                <th scope="col" class="govuk-table__header">Total number of employers that selected this statement</th>
+                                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of employers that selected this as a "strength"</th>
+                                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of employers that selected this as "needs improvement"</th>
+                                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of employers that selected this statement</th>
                                             </tr>
                                         </thead>
                                         <tbody class="govuk-table__body">
-                                            @foreach (var feedbackItem in Model.Provider.FeedbackAttributeSummary)
+                                            @foreach (var feedbackItem in Model.Provider.EmployerFeedback.FeedbackAttributeSummary)
                                             {
                                             <tr class="govuk-table__row">
-                                                <th class="govuk-table__cell" scope="row">@feedbackItem.AttributeName</th>
-                                                <td class="govuk-table__cell" data-label="Percentage of employers that selected this as a strength">@feedbackItem.StrengthPerc%</td>
-                                                <td class="govuk-table__cell" data-label="Percentage of employers that selected this as needs improvement">@feedbackItem.WeaknessPerc%</td>
-                                                <td class="govuk-table__cell" data-label="Total number of employers that selected this statement">@feedbackItem.TotalCount</td>
+                                                <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.AttributeName</th>
+                                                <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                data-label="Percentage of employers that selected this as a strength"
+                                                data-title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount employers selected this as a 'strength'">
+                                                @feedbackItem.StrengthPerc%
+                                                </td>
+                                                <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                data-label="Percentage of employers that selected this as needs improvement"
+                                                data-title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount employers selected this as a 'needs improvement'">
+                                                @feedbackItem.WeaknessPerc%
+                                                </td>
+                                                <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of employers that selected this statement">@feedbackItem.TotalCount</td>
                                             </tr>
                                             }
                                         </tbody>
@@ -126,6 +134,84 @@
                         </div>
                     </details>
                 }
+
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-2">Apprentice reviews</h2>
+                <p class="govuk-body-l govuk-!-margin-bottom-4">
+                    @if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating != 0)
+                    {
+                        <span class="das-rating das-rating--@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Provider.ApprenticeFeedback.TotalFeedbackRating out of 4 stars">
+                            <span aria-hidden="true" class="das-rating__icon-star"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
+                        </span>
+                        <span class="govuk-!-font-weight-bold das-rating__label--@(Model.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@Model.Provider.ApprenticeFeedback.TotalFeedbackText.GetDescription()</span>
+                    }
+
+                    @if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating == 0)
+                    {
+                        <span class="govuk-!-font-weight-bold das-rating__label--poor">@Model.Provider.ApprenticeFeedback.TotalFeedbackRatingTextProviderDetail</span>
+                    }
+                    else
+                    {
+                        <span class="govuk-body">@Model.Provider.ApprenticeFeedback.TotalFeedbackRatingTextProviderDetail</span>
+                    }
+                </p>
+
+                if (Model.Provider.ApprenticeFeedback.TotalFeedbackRating != 0)
+                {
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                Apprentice review details
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <div data-show-hide-panels="true">
+                                <div class="app-show-hide-panel" data-panel-label="graph" id="app-apprentice-feedback-graph">
+                                    <div id="apprentice-feedback-graph"></div>
+                                </div>
+                                <div class="app-show-hide-panel" data-panel-label="table and accessible" id="app-apprentice-feedback-table">
+                                    @{int categoryCount = 0;}
+                                    @foreach (var feedbackCategory in Model.Provider.ApprenticeFeedback.FeedbackAttributeSummary.GroupBy(s => s.Category).OrderBy(s => s.Key))
+                                    {
+                                        <table class="govuk-table das-table--responsive govuk-!-font-size-16 govuk-!-margin-bottom-8" data-target="apprentice-feedback-graph" data-label="apprentices" data-feedback-graph="true" @(categoryCount > 0 ? "data-hide-legend=true" : "")>
+                                            <caption class="govuk-table__caption govuk-caption-l govuk-!-font-weight-regular">@feedbackCategory.Key</caption>
+                                            <thead class="govuk-table__head">
+                                                <tr class="govuk-table__row">
+                                                    <th scope="col" class="govuk-table__header">Statement</th>
+                                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th>
+                                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that disagreed with this statement</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody class="govuk-table__body">
+                                                @foreach(var feedbackItem in feedbackCategory)
+                                                {
+                                                    <tr class="govuk-table__row">
+                                                        <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
+                                                        <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                        data-label="Percentage of apprentices that agreed with this statement"
+                                                        data-title="@feedbackItem.AgreePerc% of apprentices agreed with this statement">
+                                                        @feedbackItem.AgreePerc%
+                                                        </td>
+                                                        <td class="govuk-table__cell govuk-table__cell--numeric" 
+                                                        data-label="Percentage of apprentices that disagreed with this statement"
+                                                        data-title="@feedbackItem.DisagreePerc% of apprentices disagreed with this statement">
+                                                        @feedbackItem.DisagreePerc%
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                        categoryCount++; 
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </details>
+                }
+
+
                 if (!string.IsNullOrEmpty(Model.Provider.MarketingInfo))
                 {
                     <div class="govuk-!-margin-bottom-8">

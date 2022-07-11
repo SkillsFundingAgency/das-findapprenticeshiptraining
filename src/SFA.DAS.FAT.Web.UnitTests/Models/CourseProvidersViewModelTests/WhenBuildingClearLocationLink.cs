@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
@@ -24,16 +25,36 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 c.Selected = false;
                 return c;
             }).ToList();
-            model.ProviderRatings = model.ProviderRatings.Select(c =>
+            model.EmployerProviderRatings = model.EmployerProviderRatings.Select(c =>
             {
                 c.Selected = true;
                 return c;
             }).ToList();
+            model.ApprenticeProviderRatings = new List<ApprenticeProviderRatingOptionViewModel>();
             
             var actual = model.ClearLocationLink;
-            actual.Should().StartWith($"?location=-1&providerRatings={string.Join("&providerRatings=", model.ProviderRatings.Select(c => c.ProviderRatingType))}");
+            actual.Should().StartWith($"?location=-1&employerProviderRatings={string.Join("&employerProviderRatings=", model.EmployerProviderRatings.Select(c => c.ProviderRatingType))}");
         }
-        
+
+        [Test, AutoData]
+        public void Then_Any_Selected_Apprentice_Reviews_Are_Maintained(CourseProvidersViewModel model)
+        {
+            model.DeliveryModes = model.DeliveryModes.Select(c =>
+            {
+                c.Selected = false;
+                return c;
+            }).ToList();
+            model.ApprenticeProviderRatings = model.ApprenticeProviderRatings.Select(c =>
+            {
+                c.Selected = true;
+                return c;
+            }).ToList();
+            model.EmployerProviderRatings = new List<EmployerProviderRatingOptionViewModel>();
+
+            var actual = model.ClearLocationLink;
+            actual.Should().StartWith($"?location=-1&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", model.ApprenticeProviderRatings.Select(c => c.ProviderRatingType))}");
+        }
+
         [Test, AutoData]
         public void Then_Any_Selected_Delivery_Options_Are_Maintained(CourseProvidersViewModel model)
         {
@@ -42,7 +63,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 c.Selected = true;
                 return c;
             }).ToList();
-            model.ProviderRatings = model.ProviderRatings.Select(c =>
+            model.EmployerProviderRatings = model.EmployerProviderRatings.Select(c =>
             {
                 c.Selected = false;
                 return c;
@@ -60,14 +81,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                 c.Selected = true;
                 return c;
             }).ToList();
-            model.ProviderRatings = model.ProviderRatings.Select(c =>
+            model.EmployerProviderRatings = model.EmployerProviderRatings.Select(c =>
             {
                 c.Selected = true;
                 return c;
             }).ToList();
-            
+            model.ApprenticeProviderRatings = model.ApprenticeProviderRatings.Select(c =>
+            {
+                c.Selected = true;
+                return c;
+            }).ToList();
+
             var actual = model.ClearLocationLink;
-            actual.Should().StartWith($"?location=-1&providerRatings={string.Join("&providerRatings=", model.ProviderRatings.Select(c => c.ProviderRatingType))}&deliveryModes={string.Join("&deliveryModes=", model.DeliveryModes.Select(c => c.DeliveryModeType))}");
+            actual.Should().StartWith($"?location=-1&employerProviderRatings={string.Join("&employerProviderRatings=", model.EmployerProviderRatings.Select(c => c.ProviderRatingType))}&deliveryModes={string.Join("&deliveryModes=", model.DeliveryModes.Select(c => c.DeliveryModeType))}&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", model.ApprenticeProviderRatings.Select(c => c.ProviderRatingType))}");
             
         }
     }
