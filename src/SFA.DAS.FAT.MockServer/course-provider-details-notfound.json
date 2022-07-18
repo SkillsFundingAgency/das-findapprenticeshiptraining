@@ -90,24 +90,6 @@
     "apprenticeFeedback": {
       "totalApprenticeResponses": 48,
       "totalFeedbackRating": 3,
-      "feedbackDetail": [
-        {
-          "rating": "Excellent",
-          "count": 3
-        },
-        {
-          "rating": "Good",
-          "count": 30
-        },
-        {
-          "rating": "Poor",
-          "count": 10
-        },
-        {
-          "rating": "Very Poor",
-          "count": 8
-        }
-      ],
       "feedbackAttributes": [
         {
           "name": "Providing relevant training at the right time",
