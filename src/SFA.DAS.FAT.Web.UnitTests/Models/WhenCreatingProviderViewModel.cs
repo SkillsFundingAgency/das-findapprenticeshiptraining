@@ -591,38 +591,5 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
 
             actual.ApprenticeFeedback.TotalFeedbackText.GetDescription().Should().Be(expected);
         }
-
-        [Test, AutoData]
-        public void Then_The_ApprenticeFeedback_Detail_Exists_For_Each_Rating_Type(Provider source)
-        {
-
-            var actual = (ProviderViewModel)source;
-
-            actual.ApprenticeFeedback.FeedbackDetail.Count.Should().Be(4);
-            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
-            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
-            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
-            actual.ApprenticeFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
-        }
-
-        [Test]
-        [InlineAutoData(50, 50, 100.0, "50 reviews")]
-        [InlineAutoData(51, 60, 85.0, "51 reviews")]
-        [InlineAutoData(1, 11, 9.1, "1 review")]
-        [InlineAutoData(0, 0, 0.0, "0 reviews")]
-        public void Then_The_Text_Is_Generated_For_Number_Of_ApprenticeReviews_With_Percentage(int numberOfReviews, int totalReviews, double expectedPercentage, string expectedText, Provider source)
-        {
-            source.ApprenticeFeedback.TotalApprenticeResponses = totalReviews;
-            source.ApprenticeFeedback.FeedbackDetail.FirstOrDefault().Count = numberOfReviews;
-            source.ApprenticeFeedback.FeedbackDetail.FirstOrDefault().Rating = "Good";
-
-            var actual = (ProviderViewModel)source;
-
-            var actualFeedbackDetail = actual.ApprenticeFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
-            Assert.IsNotNull(actualFeedbackDetail);
-            actualFeedbackDetail.RatingText.Should().Be(expectedText);
-            actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
-            actualFeedbackDetail.RatingPercentage.Should().Be((decimal)expectedPercentage);
-        }
     }
 }

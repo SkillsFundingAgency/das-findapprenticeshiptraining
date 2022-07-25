@@ -13,7 +13,6 @@ namespace SFA.DAS.FAT.Web.Models
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
         public ProviderRating TotalFeedbackText { get; set; }
-        public List<ApprenticeFeedbackDetail> FeedbackDetail { get; set; }
         public List<ApprenticeFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public ApprenticeFeedbackViewModel(ApprenticeFeedback apprenticeFeedback)
@@ -26,7 +25,6 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
             TotalFeedbackText = (ProviderRating)apprenticeFeedback.TotalFeedbackRating;
-            FeedbackDetail = BuildApprenticeFeedbackRating(apprenticeFeedback);
             FeedbackAttributeSummary = GenerateAttributeSummary(apprenticeFeedback.FeedbackAttributes);
         }
 
@@ -44,26 +42,6 @@ namespace SFA.DAS.FAT.Web.Models
                 : $"({TotalFeedbackResponses} apprentice reviews)";
 
             return isProviderDetail ? returnText.Replace("apprentice ", "") : returnText;
-        }
-
-        private List<ApprenticeFeedbackDetail> BuildApprenticeFeedbackRating(ApprenticeFeedback employerFeedback)
-        {
-            var ratingList = new List<ApprenticeFeedbackDetail>();
-            for (var i = 1; i <= (int)ProviderRating.Excellent; i++)
-            {
-                var rating = (ProviderRating)i;
-                var feedback = employerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(rating.GetDescription(), StringComparison.CurrentCultureIgnoreCase));
-
-                ratingList.Add(new ApprenticeFeedbackDetail
-                {
-                    Rating = rating,
-                    RatingCount = feedback?.Count ?? 0,
-                    RatingPercentage = feedback == null || feedback.Count == 0 ? 0 : Math.Round((decimal)feedback.Count / TotalFeedbackResponses * 100, 1)
-                });
-
-            }
-
-            return ratingList;
         }
 
         private List<ApprenticeFeedbackDetailViewModel> GenerateAttributeSummary(List<ApprenticeFeedbackAttributeDetail> source)

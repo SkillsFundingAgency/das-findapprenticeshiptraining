@@ -65,7 +65,6 @@ namespace SFA.DAS.FAT.Domain.Courses
     {
         public int TotalApprenticeResponses { get; set; }
         public int TotalFeedbackRating { get; set; }
-        public IEnumerable<ApprenticeFeedbackDetail> FeedbackDetail { get; set; }
         public List<ApprenticeFeedbackAttributeDetail> FeedbackAttributes { get; set; }
     }
 
@@ -80,12 +79,6 @@ namespace SFA.DAS.FAT.Domain.Courses
         public string AttributeName { get; set; }
         public int Strength { get; set; }
         public int Weakness { get; set; }
-    }
-
-    public class ApprenticeFeedbackDetail
-    {
-        public string Rating { get; set; }
-        public int Count { get; set; }
     }
 
     public class ApprenticeFeedbackAttributeDetail
