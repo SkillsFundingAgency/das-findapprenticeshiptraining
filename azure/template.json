@@ -58,6 +58,10 @@
         },
         "configurationStorageConnectionString": {
             "type": "securestring"
+        },
+        "utcValue": {
+            "type": "string",
+            "defaultValue": "[utcNow('yyMMddHHmmss')]"    
         }
     },
     "variables": {
@@ -78,7 +82,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "ui-app-service-certificate",
+            "name": "[concat('ui-app-service-certificate-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -102,7 +106,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "ui-application-insights",
+            "name": "[concat('ui-application-insights-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -123,7 +127,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "apim-product-subscription",
+            "name": "[concat('apim-product-subscription-', parameters('utcValue'))]",
             "resourceGroup": "[parameters('sharedApimResourceGroup')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
@@ -147,11 +151,11 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "ui-app-service",
+            "name": "[concat('ui-app-service-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "apim-product-subscription"
+                "[concat('apim-product-subscription-', parameters('utcValue'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -205,7 +209,7 @@
                                 },
                                 {
                                     "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference('ui-application-insights').outputs.InstrumentationKey.value]"
+                                    "value": "[reference(concat('ui-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
                                 }
                             ]
                         }
@@ -214,7 +218,7 @@
                         "value": "[parameters('uiCustomHostname')]"
                     },
                     "certificateThumbprint": {
-                        "value": "[reference('ui-app-service-certificate').outputs.certificateThumbprint.value]"
+                        "value": "[reference(concat('ui-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
                     },
                     "ipSecurityRestrictions": {
                         "value": "[parameters('frontEndAccessRestrictions')]"
