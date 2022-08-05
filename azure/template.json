@@ -17,25 +17,10 @@
         "serviceName": {
             "type": "string"
         },
-        "sharedEnvResourceGroup": {
-            "type": "string"
-        },
-        "sharedFrontEndAppServicePlanName": {
-            "type": "string"
-        },
-        "sharedFrontEndSubnetResourceId": {
-            "type": "string"
-        },
         "frontEndAccessRestrictions": {
             "type": "array"
         },
         "uiCustomHostname": {
-            "type": "string"
-        },
-        "sharedApimResourceGroup": {
-            "type": "string"
-        },
-        "sharedApimName": {
             "type": "string"
         },
         "cdnUrl": {
@@ -61,14 +46,17 @@
         },
         "utcValue": {
             "type": "string",
-            "defaultValue": "[utcNow('yyMMddHHmmss')]"    
+            "defaultValue": "[utcNow('yyMMddHHmmss')]"
         }
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
-        "uiAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as')]"
+        "neAppServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp-ne')]",
+        "weAppServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp-we')]",
+        "neUiAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as-ne')]",
+        "weUiAppServiceName": "[concat(variables('resourceNamePrefix'), 'ui-as-we')]"
     },
     "resources": [
         {
@@ -81,9 +69,63 @@
             }
         },
         {
+            "apiVersion": "2021-04-01",
+            "name": "ne-app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('neAppServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "1"
+                    },
+                    "aspInstances": {
+                        "value": 1
+                    },
+                    "nonASETier": {
+                        "value": "Standard"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2021-04-01",
+            "name": "we-app-service-plan",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-plan.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServicePlanName": {
+                        "value": "[variables('weAppServicePlanName')]"
+                    },
+                    "aspSize": {
+                        "value": "1"
+                    },
+                    "aspInstances": {
+                        "value": 1
+                    },
+                    "nonASETier": {
+                        "value": "Standard"
+                    }
+                }
+            }
+        },
+        {
             "apiVersion": "2020-06-01",
             "name": "[concat('ui-app-service-certificate-', parameters('utcValue'))]",
-            "resourceGroup": "[parameters('sharedEnvResourceGroup')]",
+            "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "properties": {
                 "mode": "Incremental",
@@ -106,52 +148,7 @@
         },
         {
             "apiVersion": "2020-06-01",
-            "name": "[concat('ui-application-insights-', parameters('utcValue'))]",
-            "resourceGroup": "[variables('resourceGroupName')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'application-insights.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "appInsightsName": {
-                        "value": "[variables('uiAppServiceName')]"
-                    },
-                    "attachedService": {
-                        "value": "[variables('uiAppServiceName')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "[concat('apim-product-subscription-', parameters('utcValue'))]",
-            "resourceGroup": "[parameters('sharedApimResourceGroup')]",
-            "type": "Microsoft.Resources/deployments",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[concat(variables('deploymentUrlBase'),'apim/apim-subscription.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "apimName": {
-                        "value": "[parameters('sharedApimName')]"
-                    },
-                    "subscriptionName": {
-                        "value": "[variables('uiAppServiceName')]"
-                    },
-                    "subscriptionScope": {
-                        "value": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('sharedApimResourceGroup'), '/providers/Microsoft.ApiManagement/service/', parameters('sharedApimName'), '/products/FindApprenticeshipTrainingOuterApi')]"
-                    }
-                }
-            }
-        },
-        {
-            "apiVersion": "2020-06-01",
-            "name": "[concat('ui-app-service-', parameters('utcValue'))]",
+            "name": "[concat('ne-ui-app-service-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
@@ -165,16 +162,13 @@
                 },
                 "parameters": {
                     "appServiceName": {
-                        "value": "[variables('uiAppServiceName')]"
+                        "value": "[variables('neUiAppServiceName')]"
                     },
                     "appServicePlanName": {
-                        "value": "[parameters('sharedFrontEndAppServicePlanName')]"
+                        "value": "[variables('neAppServicePlanName')]"
                     },
                     "appServicePlanResourceGroup": {
-                        "value": "[parameters('sharedEnvResourceGroup')]"
-                    },
-                    "subnetResourceId": {
-                        "value": "[parameters('sharedFrontEndSubnetResourceId')]"
+                        "value": "[variables('resourceGroupName')]"
                     },
                     "appServiceAppSettings": {
                         "value": {
@@ -206,10 +200,76 @@
                                 {
                                     "name": "ConfigurationStorageConnectionString",
                                     "value": "[parameters('configurationStorageConnectionString')]"
+                                }
+                            ]
+                        }
+                    },
+                    "customHostName": {
+                        "value": "[parameters('uiCustomHostname')]"
+                    },
+                    "certificateThumbprint": {
+                        "value": "[reference(concat('ui-app-service-certificate-', parameters('utcValue'))).outputs.certificateThumbprint.value]"
+                    },
+                    "ipSecurityRestrictions": {
+                        "value": "[parameters('frontEndAccessRestrictions')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2020-06-01",
+            "name": "[concat('we-ui-app-service-', parameters('utcValue'))]",
+            "resourceGroup": "[variables('resourceGroupName')]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[concat('apim-product-subscription-', parameters('utcValue'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[concat(variables('deploymentUrlBase'),'app-service-v2.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "appServiceName": {
+                        "value": "[variables('weUiAppServiceName')]"
+                    },
+                    "appServicePlanName": {
+                        "value": "[variables('weAppServicePlanName')]"
+                    },
+                    "appServicePlanResourceGroup": {
+                        "value": "[variables('resourceGroupName')]"
+                    },
+                    "appServiceAppSettings": {
+                        "value": {
+                            "array": [
+                                {
+                                    "name": "LoggingRedisConnectionString",
+                                    "value": "[parameters('loggingRedisConnectionString')]"
                                 },
                                 {
-                                    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('ui-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "name": "LoggingRedisKey",
+                                    "value": "[parameters('loggingRedisKey')]"
+                                },
+                                {
+                                    "name": "EnvironmentName",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "Environment",
+                                    "value": "[parameters('environmentName')]"
+                                },
+                                {
+                                    "name": "ConfigNames",
+                                    "value": "SFA.DAS.FindApprenticeshipTraining.Web"
+                                },
+                                {
+                                    "name": "Cdn:Url",
+                                    "value": "[parameters('cdnUrl')]"
+                                },
+                                {
+                                    "name": "ConfigurationStorageConnectionString",
+                                    "value": "[parameters('configurationStorageConnectionString')]"
                                 }
                             ]
                         }
@@ -228,9 +288,13 @@
         }
     ],
     "outputs": {
-        "UiAppServiceName": {
+        "NeUiAppServiceName": {
             "type": "string",
-            "value": "[variables('uiAppServiceName')]"
+            "value": "[variables('neUiAppServiceName')]"
+        },
+        "WeUiAppServiceName": {
+            "type": "string",
+            "value": "[variables('weUiAppServiceName')]"
         }
     }
 }
