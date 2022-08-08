@@ -151,9 +151,6 @@
             "name": "[concat('ne-ui-app-service-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[concat('apim-product-subscription-', parameters('utcValue'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -221,9 +218,6 @@
             "name": "[concat('we-ui-app-service-', parameters('utcValue'))]",
             "resourceGroup": "[variables('resourceGroupName')]",
             "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[concat('apim-product-subscription-', parameters('utcValue'))]"
-            ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
