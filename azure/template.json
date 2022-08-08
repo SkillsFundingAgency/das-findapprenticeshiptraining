@@ -50,7 +50,7 @@
         }
     },
     "variables": {
-        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
+        "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/DASD-9659-app-service-add-location-parameter/templates/",
         "resourceNamePrefix": "[toLower(concat('das-', parameters('resourceEnvironmentName'),'-', parameters('serviceName')))]",
         "resourceGroupName": "[concat(variables('resourceNamePrefix'), '-rg')]",
         "neAppServicePlanName": "[concat(variables('resourceNamePrefix'), '-asp-ne')]",
@@ -166,6 +166,9 @@
                     },
                     "appServicePlanName": {
                         "value": "[variables('neAppServicePlanName')]"
+                    },
+                    "appServiceLocation": {
+                        "value": "North Europe"
                     },
                     "appServicePlanResourceGroup": {
                         "value": "[variables('resourceGroupName')]"
