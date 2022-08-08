@@ -91,6 +91,9 @@
                     },
                     "nonASETier": {
                         "value": "Standard"
+                    },
+                    "aspLocation": {
+                        "value": "North Europe"
                     }
                 }
             }
