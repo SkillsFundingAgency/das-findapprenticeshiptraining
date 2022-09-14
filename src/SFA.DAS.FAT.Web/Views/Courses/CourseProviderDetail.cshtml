@@ -224,9 +224,11 @@
 
                 if (Model.AdditionalCourses.Total > 1)
                 {
-                    <details class="govuk-details govuk-!-margin-top-7" data-module="govuk-details">
-                        <h2 class="govuk-heading-m">Courses offered</h2>
+                   <div class="govuk-!-margin-bottom-8">
+                    <h2 class="govuk-heading-m">Courses offered</h2>
+                    <details class="govuk-details" data-module="govuk-details">                       
                         <summary class="govuk-details__summary">
+                            
                             <span class="govuk-details__summary-text">
                                 View all @Model.AdditionalCourses.Total courses offered by this provider
                             </span>
@@ -255,6 +257,7 @@
                             </table>
                         </div>
                     </details>
+                   </div>
                 }
 
 
