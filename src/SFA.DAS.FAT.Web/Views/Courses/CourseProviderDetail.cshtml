@@ -222,7 +222,48 @@
                     </div>
                 }
 
-                <div class="das-highlight govuk-!-margin-bottom-5">
+                if (Model.AdditionalCourses.Total > 1)
+                {
+                   <div class="govuk-!-margin-bottom-8">
+                    <h2 class="govuk-heading-m">Courses offered</h2>
+                    <details class="govuk-details" data-module="govuk-details">                       
+                        <summary class="govuk-details__summary">
+                            
+                            <span class="govuk-details__summary-text">
+                                View all @Model.AdditionalCourses.Total courses offered by this provider
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <p class="govuk-body ">Select a course to view locations, training options and contact details.</p>
+                            <table class="govuk-table">
+                                <tbody class="govuk-table__body">
+                                    @foreach (var course in Model.AdditionalCourses.Courses)
+                                    {
+                                        var routeData = new Dictionary<string, string>
+                            {
+                            {"location", Model.Location},
+                            {"id", course.Id.ToString()},
+                            {"providerId", Model.Provider.ProviderId.ToString()}
+                            };
+                                        <tr class="govuk-table__row">
+                                            <td class="govuk-table__cell">
+                                                <a class="govuk-link govuk-link--no-visited-state"
+                                       asp-route="@RouteNames.CourseProviderDetails"
+                                       asp-all-route-data="@routeData">@course.Title <span class="das-no-wrap">(level @course.Level)</span></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </details>
+                   </div>
+                }
+
+
+
+
+            <div class="das-highlight govuk-!-margin-bottom-5">
                     <span class="govuk-caption-l">Apprenticeship training course</span>
                     <h2 class="govuk-heading-l govuk-!-margin-bottom-3">@Model.Course.Title <span class="das-no-wrap">(level @Model.Course.Level)</span></h2>
                     @if (!string.IsNullOrEmpty(Model.Provider.OverallAchievementRatePercentage))
@@ -476,50 +517,12 @@
 
                         }
                     </div>
-
-
-
-
-                    if (Model.AdditionalCourses.Total > 1)
-                    {
-                        <details class="govuk-details govuk-!-margin-top-7" data-module="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    View all @Model.AdditionalCourses.Total courses offered by this provider
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <p class="govuk-body ">Select a course to view locations, training options and contact details.</p>
-                                <table class="govuk-table">
-                                    <tbody class="govuk-table__body">
-                                        @foreach (var course in Model.AdditionalCourses.Courses)
-                                        {
-                                            var routeData = new Dictionary<string, string>
-                                                                                            {
-                                {"location", Model.Location},
-                                {"id", course.Id.ToString()},
-                                {"providerId", Model.Provider.ProviderId.ToString()}
-                            };
-                                            <tr class="govuk-table__row">
-                                                <td class="govuk-table__cell">
-                                                    <a class="govuk-link govuk-link--no-visited-state"
-                                                       asp-route="@RouteNames.CourseProviderDetails"
-                                                       asp-all-route-data="@routeData">@course.Title <span class="das-no-wrap">(level @course.Level)</span></a>
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </details>
-                    }
-                }
-                else
-                {
-                    <h1 class="govuk-heading-xl">This training provider is currently unavailable for apprenticeship training</h1>
-                    <a class="govuk-button" asp-route="@RouteNames.Courses">View apprenticeship training courses</a>
-                }
-
+            }
+            else
+            {
+                <h1 class="govuk-heading-xl">This training provider is currently unavailable for apprenticeship training</h1>
+                <a class="govuk-button" asp-route="@RouteNames.Courses">View apprenticeship training courses</a>
+            }
         </div>
     </div>
 </main>
