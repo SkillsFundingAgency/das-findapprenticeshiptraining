@@ -127,39 +127,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.EmployerFeedback.TotalFeedbackText.GetDescription().Should().Be(expected);
         }
 
-        [Test, AutoData]
-        public void Then_The_EmployerFeedback_Detail_Exists_For_Each_Rating_Type(Provider source)
-        {
-
-            var actual = (ProviderViewModel)source;
-
-            actual.EmployerFeedback.FeedbackDetail.Count.Should().Be(4);
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Excellent).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Good).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.Poor).Should().BeTrue();
-            actual.EmployerFeedback.FeedbackDetail.Select(c => c.Rating).Contains(ProviderRating.VeryPoor).Should().BeTrue();
-        }
-
-        [Test]
-        [InlineAutoData(50, 50, 100.0, "50 reviews")]
-        [InlineAutoData(51, 60, 85.0, "51 reviews")]
-        [InlineAutoData(1, 11, 9.1, "1 review")]
-        [InlineAutoData(0, 0, 0.0, "0 reviews")]
-        public void Then_The_Text_Is_Generated_For_Number_Of_EmployerReviews_With_Percentage(int numberOfReviews, int totalReviews, double expectedPercentage, string expectedText, Provider source)
-        {
-            source.EmployerFeedback.TotalEmployerResponses = totalReviews;
-            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackCount = numberOfReviews;
-            source.EmployerFeedback.FeedbackDetail.FirstOrDefault().FeedbackName = "Good";
-
-            var actual = (ProviderViewModel)source;
-
-            var actualFeedbackDetail = actual.EmployerFeedback.FeedbackDetail.FirstOrDefault(c => c.Rating.Equals(ProviderRating.Good));
-            Assert.IsNotNull(actualFeedbackDetail);
-            actualFeedbackDetail.RatingText.Should().Be(expectedText);
-            actualFeedbackDetail.RatingCount.Should().Be(numberOfReviews);
-            actualFeedbackDetail.RatingPercentage.Should().Be((decimal)expectedPercentage);
-        }
-
         // achievement rate
         [Test, AutoData]
         public void Then_No_Delivery_Modes_Has_An_Empty_List(Provider source)

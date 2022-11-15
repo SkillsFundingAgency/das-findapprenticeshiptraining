@@ -13,7 +13,6 @@ namespace SFA.DAS.FAT.Web.Models
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
         public ProviderRating TotalFeedbackText { get; set; }
-        public List<EmployerFeedBackDetail> FeedbackDetail { get; set; }
         public List<EmployerFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public EmployerFeedbackViewModel(EmployerFeedback employerFeedback)
@@ -26,7 +25,6 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
             TotalFeedbackText = (ProviderRating)employerFeedback.TotalFeedbackRating;
-            FeedbackDetail = BuildEmployerFeedbackRating(employerFeedback);
             FeedbackAttributeSummary = GenerateAttributeSummary(employerFeedback.FeedbackAttributes);
         }
 
@@ -44,26 +42,6 @@ namespace SFA.DAS.FAT.Web.Models
                 : $"({TotalFeedbackResponses} employer reviews)";
 
             return isProviderDetail ? returnText.Replace("employer ", "") : returnText;
-        }
-
-        private List<EmployerFeedBackDetail> BuildEmployerFeedbackRating(EmployerFeedback employerFeedback)
-        {
-            var ratingList = new List<EmployerFeedBackDetail>();
-            for (var i = 1; i <= (int)ProviderRating.Excellent; i++)
-            {
-                var rating = (ProviderRating)i;
-                var feedback = employerFeedback.FeedbackDetail.FirstOrDefault(c => c.FeedbackName.Equals(rating.GetDescription(), StringComparison.CurrentCultureIgnoreCase));
-
-                ratingList.Add(new EmployerFeedBackDetail
-                {
-                    Rating = rating,
-                    RatingCount = feedback?.FeedbackCount ?? 0,
-                    RatingPercentage = feedback == null || feedback.FeedbackCount == 0 ? 0 : Math.Round((decimal)feedback.FeedbackCount / TotalFeedbackResponses * 100, 1)
-                });
-
-            }
-
-            return ratingList;
         }
 
         private List<EmployerFeedbackDetailViewModel> GenerateAttributeSummary(List<EmployerFeedbackAttributeDetail> source)
