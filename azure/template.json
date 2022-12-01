@@ -204,9 +204,6 @@
                     "appServicePlanResourceGroup": {
                         "value": "[parameters('sharedEnvResourceGroup')]"
                     },
-                    "subnetResourceId": {
-                        "value": "[parameters('sharedFrontEndSubnetResourceId')]"
-                    },
                     "appServiceAppSettings": {
                         "value": {
                             "array": [
