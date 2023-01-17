@@ -15,7 +15,7 @@
 
     <ItemGroup>
         <PackageReference Include="WireMock.Net.StandAlone" Version="1.5.13" />
-        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.0.0" />
+        <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.4.0" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="course-providers-0-results.json">
