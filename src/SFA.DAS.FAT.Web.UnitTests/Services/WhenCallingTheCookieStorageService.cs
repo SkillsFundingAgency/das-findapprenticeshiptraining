@@ -7,15 +7,13 @@ using FluentAssertions;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Http.Internal;
-using Microsoft.Extensions.ObjectPool;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using SFA.DAS.FAT.Infrastructure.Services;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Infrastructure.UnitTests.Services
+namespace SFA.DAS.FAT.Web.UnitTests.Services
 {
     public class WhenCallingTheCookieStorageService
     {
@@ -34,10 +32,10 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Services
             var context = new DefaultHttpContext(responseMock);
             var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
-            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object,provider.Object );
+            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object, provider.Object);
 
             //Act
-            service.Create(testString,testCookieName, 1);
+            service.Create(testString, testCookieName, 1);
 
             //Assert
             var actual = mockHeaderDictionary["set-cookie"].ToArray().First().Split(";");
@@ -57,14 +55,14 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Services
             var mockDataProtectionProvider = new Mock<IDataProtectionProvider>();
             mockDataProtectionProvider.Setup(s => s.CreateProtector(It.IsAny<string>())).Returns(mockDataProtector.Object);
             var featureMock = new Mock<IRequestCookiesFeature>();
-            var mockHeaderDictionary = new RequestCookieCollection(new Dictionary<string, string>{{testCookieName, Convert.ToBase64String(Encoding.UTF8.GetBytes(content))}});
+            var mockHeaderDictionary = new FakeCookieCollection(new Dictionary<string, string> { { testCookieName, Convert.ToBase64String(Encoding.UTF8.GetBytes(content)) } });
             featureMock.Setup(x => x.Cookies).Returns(mockHeaderDictionary);
             var responseMock = new FeatureCollection();
             responseMock.Set(featureMock.Object);
             var context = new DefaultHttpContext(responseMock);
             var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
-            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object,mockDataProtectionProvider.Object );
+            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object, mockDataProtectionProvider.Object);
 
             //Act
             var actual = service.Get(testCookieName);
@@ -80,29 +78,27 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Services
             string content,
             Mock<IDataProtectionProvider> provider)
         {
+            // Arrange
             var featureMock = new Mock<IRequestCookiesFeature>();
             var responseCookiesFeature = new Mock<IResponseCookiesFeature>();
-            var cookieDictionary =  new RequestCookieCollection(new Dictionary<string, string>{{testCookieName, Convert.ToBase64String(Encoding.UTF8.GetBytes(content))}});
-            var mockHeaderDictionary = new HeaderDictionary();
-            var mockResponseHeaderDictionary = new ResponseCookies(mockHeaderDictionary,Mock.Of<ObjectPool<StringBuilder>>() );
-            featureMock.Setup(x => x.Cookies).Returns(cookieDictionary);
-            responseCookiesFeature.Setup(x => x.Cookies).Returns(mockResponseHeaderDictionary);
-            
+            var fakeCookieCollection = new FakeCookieCollection(new Dictionary<string, string> { { testCookieName, Convert.ToBase64String(Encoding.UTF8.GetBytes(content)) } });
+            var fakeResponceCookies = new FakeResponseCookies(fakeCookieCollection.Store);
+            featureMock.Setup(x => x.Cookies).Returns(fakeCookieCollection);
+            responseCookiesFeature.Setup(x => x.Cookies).Returns(fakeResponceCookies);
+
             var responseMock = new FeatureCollection();
             responseMock.Set(featureMock.Object);
             responseMock.Set(responseCookiesFeature.Object);
             var context = new DefaultHttpContext(responseMock);
             var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
             mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
-            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object,provider.Object );
-            
+            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object, provider.Object);
+
             //Act
             service.Delete(testCookieName);
-            
+
             //Assert
-            var actual = mockHeaderDictionary["set-cookie"].ToArray().First().Split(";");
-            var actualExpiry = DateTime.Parse(actual.Skip(1).First().Split("=").Last());
-            Assert.IsTrue(actualExpiry < DateTime.UtcNow);
+            Assert.IsEmpty(fakeCookieCollection.Store);
         }
     }
 }

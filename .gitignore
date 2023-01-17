@@ -268,3 +268,4 @@ desktop.ini
 App.Debug.config
 
 src/SFA.DAS.FAT.Web/appsettings.Development.json
+*.ncrunchsolution

@@ -11,14 +11,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
         public void Then_Adds_Id_To_Dictionary(GetCourseProvidersRequest request)
         {
             request.ToDictionary().Should().ContainKey(nameof(GetCourseProvidersRequest.Id))
-                .WhichValue.Should().Be(request.Id.ToString());
+                .WhoseValue.Should().Be(request.Id.ToString());
         }
 
         [Test, AutoData]
         public void Then_Adds_Location_To_Dictionary(GetCourseProvidersRequest request)
         {
             request.ToDictionary().Should().ContainKey(nameof(GetCourseProvidersRequest.Location))
-                .WhichValue.Should().Be(request.Location);
+                .WhoseValue.Should().Be(request.Location);
         }
 
         [Test, AutoData]
@@ -29,7 +29,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
             for (int i = 0; i < request.DeliveryModes.Count; i++)
             {
                 dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.DeliveryModes)}[{i}]")
-                    .WhichValue.Should().Be(request.DeliveryModes[i].ToString());
+                    .WhoseValue.Should().Be(request.DeliveryModes[i].ToString());
             }
         }
 
@@ -41,7 +41,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
             for (int i = 0; i < request.EmployerProviderRatings.Count; i++)
             {
                 dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.EmployerProviderRatings)}[{i}]")
-                    .WhichValue.Should().Be(request.EmployerProviderRatings[i].ToString());
+                    .WhoseValue.Should().Be(request.EmployerProviderRatings[i].ToString());
             }
         }
 
@@ -54,7 +54,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.GetCourseProvidersRequestTests
             for (int i = 0; i < request.ApprenticeProviderRatings.Count; i++)
             {
                 dictionary.Should().ContainKey($"{nameof(GetCourseProvidersRequest.ApprenticeProviderRatings)}[{i}]")
-                    .WhichValue.Should().Be(request.ApprenticeProviderRatings[i].ToString());
+                    .WhoseValue.Should().Be(request.ApprenticeProviderRatings[i].ToString());
             }
         }
     }

@@ -4,7 +4,7 @@ using SFA.DAS.FAT.Application.Locations.Services;
 using SFA.DAS.FAT.Application.Shortlist.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Infrastructure.Api;
-using SFA.DAS.FAT.Infrastructure.Services;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.AppStart
 {
