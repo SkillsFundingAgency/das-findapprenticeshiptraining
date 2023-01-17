@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Infrastructure.Services
+namespace SFA.DAS.FAT.Web.Services
 {
     public class CookieStorageService<T> : ICookieStorageService<T>
     {
