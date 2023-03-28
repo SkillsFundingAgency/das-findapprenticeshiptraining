@@ -268,17 +268,17 @@
                     <h2 class="govuk-heading-l govuk-!-margin-bottom-3">@Model.Course.Title <span class="das-no-wrap">(level @Model.Course.Level)</span></h2>
                     @if (!string.IsNullOrEmpty(Model.Provider.OverallAchievementRatePercentage))
                     {
-                        <p class="govuk-body govuk-!-margin-bottom-1"><span class=" govuk-!-font-weight-bold">@Model.Provider.OverallAchievementRatePercentage pass rate</span> (out of @Model.Provider.OverallCohort apprentices)</p>
-                        <p class="govuk-body"><span>@Model.Provider.NationalOverallAchievementRatePercentage national average pass rate</span></p>
+                        <p class="govuk-body govuk-!-margin-bottom-1"><span class=" govuk-!-font-weight-bold">@Model.Provider.OverallAchievementRatePercentage achievement rate</span> (out of @Model.Provider.OverallCohort apprentices)</p>
+                        <p class="govuk-body"><span>@Model.Provider.NationalOverallAchievementRatePercentage national average achievement rate</span></p>
 
                         <details class="govuk-details" data-module="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    Explain pass rate
+                                    Explain achievement rate
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
-                                The percentage of apprentices who successfully passed a similar apprenticeship with this training provider in the 2018 to 2019 academic year.
+                                The percentage of apprentices who successfully achieved their apprenticeship when trained by this provider on a course in this subject area. This rate uses data from the @Model.AchievementRateFrom to @Model.AchievementRateTo academic year.
                             </div>
                         </details>
                     }
