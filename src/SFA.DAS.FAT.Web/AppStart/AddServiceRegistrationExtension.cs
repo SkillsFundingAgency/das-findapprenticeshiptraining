@@ -17,6 +17,7 @@ namespace SFA.DAS.FAT.Web.AppStart
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<IShortlistService, ShortlistService>();
+            services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddHttpContextAccessor();
             services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
         }
