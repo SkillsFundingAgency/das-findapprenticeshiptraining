@@ -15,6 +15,8 @@ namespace SFA.DAS.FAT.Web.Models
         public string BannerUpdateMessage { get ; set ; }
         public int TotalProviders { get ; set ; }
         public string HelpFindingCourseUrl { get ; set ; }
+        public int AchievementRateFrom { get; set; }
+        public int AchievementRateTo => AchievementRateFrom + 1;
 
         public static implicit operator CourseProviderViewModel(GetCourseProviderResult provider)
         {

@@ -69,6 +69,52 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             
         }
 
+        [Test]
+        [MoqInlineAutoData("2023-Mar-31", 2021,2022)]
+        [MoqInlineAutoData("2023-Mar-30", 2020,2021)]
+        public async Task Then_The_AchievementRateDates_Are_Set_Correctly(
+            string date,
+            int expectedDateFrom,
+            int expectedDateTo,
+            int providerId,
+            int courseId,
+            string location,
+            GetCourseProviderResult response,
+            ShortlistCookieItem shortlistCookieItem,
+            [Frozen] Mock<IMediator> mediator,
+            [Frozen] Mock<IDateTimeService> dateTimeService,
+            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Greedy] CoursesController controller)
+        {
+            //Arrange
+            dateTimeService.Setup(x => x.GetDateTime()).Returns(DateTime.Parse(date));
+            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
+            response.Location=string.Empty;
+            response.LocationGeoPoint = null;
+            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
+                    c.ProviderId.Equals(providerId) 
+                    && c.CourseId.Equals(courseId) 
+                    && c.Location.Equals(location)
+                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+                ), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+                .Returns(shortlistCookieItem);
+
+            //Act
+            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
+            
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualResult = actual as ViewResult;
+            Assert.IsNotNull(actualResult);
+            var actualModel = actualResult.Model as CourseProviderViewModel;
+            Assert.IsNotNull(actualModel);
+            actualModel.AchievementRateFrom.Should().Be(expectedDateFrom);
+            actualModel.AchievementRateTo.Should().Be(expectedDateTo);
+        }
+
         [Test, MoqAutoData]
         public async Task Then_The_Location_Is_Added_To_The_Cookie_If_Set(
             int providerId,
