@@ -29,6 +29,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly ICookieStorageService<LocationCookieItem> _locationCookieStorageService;
         private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
         private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+        private readonly IDateTimeService _dateTimeService;
         private readonly FindApprenticeshipTrainingWeb _config;
         private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
@@ -40,13 +41,15 @@ namespace SFA.DAS.FAT.Web.Controllers
             ICookieStorageService<GetCourseProvidersRequest> courseProvidersCookieStorageService,
             ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
             IDataProtectionProvider provider,
-            IOptions<FindApprenticeshipTrainingWeb> config)
+            IOptions<FindApprenticeshipTrainingWeb> config,
+            IDateTimeService dateTimeService)
         {
             _logger = logger;
             _mediator = mediator;
             _locationCookieStorageService = locationCookieStorageService;
             _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
             _shortlistCookieService = shortlistCookieService;
+            _dateTimeService = dateTimeService;
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
@@ -248,6 +251,17 @@ namespace SFA.DAS.FAT.Web.Controllers
                 viewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
                 
                 viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, EntryPoint.ProviderDetail);
+
+                var currentDate = _dateTimeService.GetDateTime();
+
+                if (currentDate.Month >= 3 && currentDate.Day > 30)
+                {
+                    viewModel.AchievementRateFrom = currentDate.Year - 2;
+                }
+                else
+                {
+                    viewModel.AchievementRateFrom = currentDate.Year - 3;
+                }
                 
                 return View(viewModel);
             }
