@@ -23,9 +23,10 @@ namespace SFA.DAS.FAT.Infrastructure.Api
         public async Task<TResponse> Get<TResponse>(IGetApiRequest request) 
         {
             
-            AddHeaders();
-
-            var response = await _httpClient.GetAsync(request.GetUrl).ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
+            AddAuthenticationHeader(requestMessage);
+            
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (response.StatusCode.Equals(HttpStatusCode.NotFound))
             {
@@ -45,12 +46,16 @@ namespace SFA.DAS.FAT.Infrastructure.Api
 
         public async Task<TResponse> Post<TResponse,TPostData>(IPostApiRequest<TPostData> request)
         {
-            AddHeaders();
-            
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
-
-            var response = await _httpClient.PostAsync(request.PostUrl, stringContent)
-                .ConfigureAwait(false);
+            
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
+            {
+                Content = stringContent
+            };
+            AddAuthenticationHeader(requestMessage);
+            
+            
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
             
@@ -60,27 +65,28 @@ namespace SFA.DAS.FAT.Infrastructure.Api
 
         public async Task Delete(IDeleteApiRequest request)
         {
-            AddHeaders();
-            var response = await _httpClient.DeleteAsync(request.DeleteUrl)
-                .ConfigureAwait(false);
+            var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
+            AddAuthenticationHeader(requestMessage);
+            
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
         }
 
         public async Task<int> Ping()
         {
-            AddHeaders();
-
-            var result = await _httpClient.GetAsync($"{_config.PingUrl}ping");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_config.PingUrl}ping");
+            AddAuthenticationHeader(requestMessage);
             
-            return (int)result.StatusCode;
+            var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
+
+            return (int)response.StatusCode;
         }
 
-
-        private void AddHeaders()
+        private void AddAuthenticationHeader(HttpRequestMessage httpRequestMessage)
         {
-            _httpClient.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _config.Key);
-            _httpClient.DefaultRequestHeaders.Add("X-Version", "1");
+            httpRequestMessage.Headers.Add("Ocp-Apim-Subscription-Key", _config.Key);
+            httpRequestMessage.Headers.Add("X-Version", "1");
         }
     }
 }
