@@ -70,8 +70,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
 
         [Test]
-        [MoqInlineAutoData("2023-Mar-31", 2021,2022)]
-        [MoqInlineAutoData("2023-Mar-30", 2020,2021)]
+        [MoqInlineAutoData("2023-Mar-31", 2018,2019)]
+        [MoqInlineAutoData("2023-Mar-30", 2018,2019)]
         public async Task Then_The_AchievementRateDates_Are_Set_Correctly(
             string date,
             int expectedDateFrom,
