@@ -252,16 +252,17 @@ namespace SFA.DAS.FAT.Web.Controllers
                 
                 viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, EntryPoint.ProviderDetail);
 
-                var currentDate = _dateTimeService.GetDateTime();
-
-                if (currentDate.Month >= 3 && currentDate.Day > 30)
-                {
-                    viewModel.AchievementRateFrom = currentDate.Year - 2;
-                }
-                else
-                {
-                    viewModel.AchievementRateFrom = currentDate.Year - 3;
-                }
+                // var currentDate = _dateTimeService.GetDateTime();
+                //
+                // if (currentDate.Month >= 3 && currentDate.Day > 30)
+                // {
+                //     viewModel.AchievementRateFrom = currentDate.Year - 2;
+                // }
+                // else
+                // {
+                //     viewModel.AchievementRateFrom = currentDate.Year - 3;
+                // }
+                viewModel.AchievementRateFrom = 2018;
                 
                 return View(viewModel);
             }
