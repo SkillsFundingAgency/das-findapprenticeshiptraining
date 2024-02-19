@@ -2,22 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
-using SFA.DAS.FAT.Web.Models;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Web.Infrastructure;
 using System.Threading.Tasks;
 using System.Web;
+using MediatR;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Web.Infrastructure;
+using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.Controllers
 {
@@ -34,7 +34,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
 
-        public CoursesController (
+        public CoursesController(
             ILogger<CoursesController> logger,
             IMediator mediator,
             ICookieStorageService<LocationCookieItem> locationCookieStorageService,
@@ -60,7 +60,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         {
             var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-            
+
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = request.Keyword,
@@ -89,11 +89,11 @@ namespace SFA.DAS.FAT.Web.Controllers
         }
 
         [Route("{id}", Name = RouteNames.CourseDetails)]
-        public async Task<IActionResult> CourseDetail(int id, [FromQuery(Name="location")]string locationName)
+        public async Task<IActionResult> CourseDetail(int id, [FromQuery(Name = "location")] string locationName)
         {
             var location = CheckLocation(locationName);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-            
+
             var result = await _mediator.Send(new GetCourseQuery
             {
                 CourseId = id,
@@ -107,18 +107,18 @@ namespace SFA.DAS.FAT.Web.Controllers
             {
                 return RedirectToRoute(RouteNames.Error404);
             }
-            
+
             var viewModel = (CourseViewModel)result.Course;
             viewModel.LocationName = location?.Name;
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
             viewModel.ShortlistItemCount = result.ShortlistItemCount;
             viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Id, EntryPoint.CourseDetail);
-            
+
             return View(viewModel);
         }
 
-        
+
 
         [Route("{id}/providers", Name = RouteNames.CourseProviders)]
         public async Task<IActionResult> CourseProviders(GetCourseProvidersRequest request)
@@ -128,7 +128,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var location = CheckLocation(request.Location);
 
                 var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-                
+
                 var result = await _mediator.Send(new GetCourseProvidersQuery
                 {
                     CourseId = request.Id,
@@ -140,15 +140,15 @@ namespace SFA.DAS.FAT.Web.Controllers
                     ApprenticeProviderRatings = request.ApprenticeProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
                     ShortlistUserId = shortlistItem?.ShortlistUserId
                 });
-                
-                var cookieResult =new LocationCookieItem
+
+                var cookieResult = new LocationCookieItem
                 {
                     Name = result.Location,
                     Lat = result.LocationGeoPoint?.FirstOrDefault() ?? 0,
                     Lon = result.LocationGeoPoint?.LastOrDefault() ?? 0
-                }; 
+                };
                 UpdateLocationCookie(cookieResult);
-                
+
                 if (result.Course == null)
                 {
                     return RedirectToRoute(RouteNames.Error404);
@@ -157,11 +157,11 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var providerList = result.Providers.ToList();
 
                 var providers = result.Providers
-                        .ToDictionary(provider => 
-                                        provider.ProviderId, 
+                        .ToDictionary(provider =>
+                                        provider.ProviderId,
                                         provider => WebEncoders.Base64UrlEncode(_providerDataProtector.Protect(
                                             System.Text.Encoding.UTF8.GetBytes($"{providerList.IndexOf(provider) + 1}|{result.TotalFiltered}"))));
-                
+
 
                 _courseProvidersCookieStorageService.Update(Constants.ProvidersCookieName, request, 2);
 
@@ -169,18 +169,18 @@ namespace SFA.DAS.FAT.Web.Controllers
 
                 if (courseProvidersViewModel.Course.AfterLastStartDate)
                 {
-                    return RedirectToRoute(RouteNames.CourseDetails,new {request.Id});
+                    return RedirectToRoute(RouteNames.CourseDetails, new { request.Id });
                 }
 
                 var removedProviderFromShortlist =
                     string.IsNullOrEmpty(request.Removed) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(request.Removed));
                 var addedProviderToShortlist =
                     string.IsNullOrEmpty(request.Added) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(request.Added));
-                
+
                 courseProvidersViewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
-                
+
                 courseProvidersViewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(courseProvidersViewModel.Course.Id, EntryPoint.Providers);
-                
+
                 return View(courseProvidersViewModel);
             }
             catch (Exception e)
@@ -194,33 +194,33 @@ namespace SFA.DAS.FAT.Web.Controllers
         public async Task<IActionResult> CourseProviderDetail(int id, int providerId, string location, string removed, string added)
         {
             try
-            {   
+            {
                 var locationItem = CheckLocation(location);
                 var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-                
+
                 var result = await _mediator.Send(new GetCourseProviderQuery
                 {
-                    ProviderId = providerId ,
-                    CourseId = id, 
+                    ProviderId = providerId,
+                    CourseId = id,
                     Location = locationItem?.Name ?? "",
                     Lat = locationItem?.Lat ?? 0,
                     Lon = locationItem?.Lon ?? 0,
                     ShortlistUserId = shortlistItem?.ShortlistUserId
                 });
 
-                var cookieResult =new LocationCookieItem
+                var cookieResult = new LocationCookieItem
                 {
                     Name = result.Location,
                     Lat = result.LocationGeoPoint?.FirstOrDefault() ?? 0,
                     Lon = result.LocationGeoPoint?.LastOrDefault() ?? 0
-                }; 
+                };
                 UpdateLocationCookie(cookieResult);
 
                 if (result.Course == null)
                 {
                     return RedirectToRoute(RouteNames.Error404);
                 }
-                
+
                 var viewModel = (CourseProviderViewModel)result;
                 viewModel.Location = cookieResult.Name;
                 var providersRequestCookie = _courseProvidersCookieStorageService.Get(Constants.ProvidersCookieName);
@@ -233,23 +233,23 @@ namespace SFA.DAS.FAT.Web.Controllers
                         providersRequestCookie.EmployerProviderRatings = new List<ProviderRating>();
                         providersRequestCookie.ApprenticeProviderRatings = new List<ProviderRating>();
                     }
-                    
+
                     providersRequestCookie.Location = result?.Location;
                     viewModel.GetCourseProvidersRequest = providersRequestCookie.ToDictionary();
                 }
 
                 if (viewModel.Course.AfterLastStartDate)
                 {
-                    return RedirectToRoute(RouteNames.CourseDetails,new {Id = id});
+                    return RedirectToRoute(RouteNames.CourseDetails, new { Id = id });
                 }
 
                 var removedProviderFromShortlist =
                     string.IsNullOrEmpty(removed) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(removed));
                 var addedProviderToShortlist =
                     string.IsNullOrEmpty(added) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(added));
-                
+
                 viewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
-                
+
                 viewModel.HelpFindingCourseUrl = BuildHelpFindingCourseUrl(viewModel.Course.Id, EntryPoint.ProviderDetail);
 
                 // var currentDate = _dateTimeService.GetDateTime();
@@ -262,8 +262,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                 // {
                 //     viewModel.AchievementRateFrom = currentDate.Year - 3;
                 // }
-                viewModel.AchievementRateFrom = 2018;
-                
+                viewModel.AchievementRateFrom = 2022;
+
                 return View(viewModel);
             }
             catch (Exception e)
@@ -295,7 +295,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         {
             if (!string.IsNullOrEmpty(location.Name) && location.Lat != 0 && location.Lon != 0)
             {
-                _locationCookieStorageService.Update(Constants.LocationCookieName, location, 2);    
+                _locationCookieStorageService.Update(Constants.LocationCookieName, location, 2);
             }
         }
 
@@ -308,7 +308,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             }
             catch (FormatException e)
             {
-                _logger.LogInformation(e,"Unable to decode provider name from request");
+                _logger.LogInformation(e, "Unable to decode provider name from request");
             }
             catch (CryptographicException e)
             {
@@ -323,8 +323,8 @@ namespace SFA.DAS.FAT.Web.Controllers
             if (!string.IsNullOrEmpty(removedProviderFromShortlist))
             {
                 return $"{removedProviderFromShortlist} removed from shortlist.";
-            } 
-            
+            }
+
             if (!string.IsNullOrEmpty(addedProviderToShortlist))
             {
                 return $"{addedProviderToShortlist} added to shortlist.";
@@ -332,11 +332,11 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             return "";
         }
-        
+
         private string BuildHelpFindingCourseUrl(int courseId, EntryPoint entryPoint)
         {
-            return _config.EmployerDemandFeatureToggle? 
-                $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest?entrypoint={(short)entryPoint}" 
+            return _config.EmployerDemandFeatureToggle ?
+                $"{_config.EmployerDemandUrl}/registerdemand/course/{courseId}/share-interest?entrypoint={(short)entryPoint}"
                 : "https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us";
         }
     }
