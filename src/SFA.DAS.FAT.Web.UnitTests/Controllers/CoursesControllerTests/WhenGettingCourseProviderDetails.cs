@@ -103,8 +103,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actualResult);
             var actualModel = actualResult.Model as CourseProviderViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.AchievementRateFrom.Should().Be(2022);
-            actualModel.AchievementRateTo.Should().Be(2023);
+            actualModel.AchievementRateFrom.Should().Be(2021);
+            actualModel.AchievementRateTo.Should().Be(2022);
         }
 
         [Test, MoqAutoData]
