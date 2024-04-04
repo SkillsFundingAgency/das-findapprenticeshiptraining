@@ -262,7 +262,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 // {
                 //     viewModel.AchievementRateFrom = currentDate.Year - 3;
                 // }
-                viewModel.AchievementRateFrom = 2021;
+                viewModel.AchievementRateFrom = 2022;
                 return View(viewModel);
             }
             catch (Exception e)
