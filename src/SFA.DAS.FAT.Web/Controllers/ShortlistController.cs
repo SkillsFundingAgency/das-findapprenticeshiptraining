@@ -80,8 +80,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             var viewModel = new ShortlistViewModel
             {
                 Shortlist = result.Shortlist.Select(item => (ShortlistItemViewModel)item).ToList(),
-                Removed = removedProviderName,
-                HelpBaseUrl = _config.EmployerDemandFeatureToggle ? _config.EmployerDemandUrl : ""
+                Removed = removedProviderName
             };
 
             return View(viewModel);

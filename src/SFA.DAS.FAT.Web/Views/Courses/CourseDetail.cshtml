@@ -1,6 +1,10 @@
+@using Microsoft.Extensions.Options
+@using SFA.DAS.FAT.Domain.Configuration
 @using SFA.DAS.FAT.Web.Infrastructure
+@using System.Web
 @using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CourseViewModel
+@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 
 @{
     ViewData["Title"] = $"{Model.TitleAndLevel} - apprenticeship training course";
@@ -117,16 +121,11 @@
                     {
                         <h2 class="govuk-heading-l">No training providers available for this course yet</h2>
                         <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
-                        <p class="govuk-body>">
-                            <strong>Can't find a training provider?</strong>
-                            <br />
-                            We can let other training providers know you are interested in @Model.TitleAndLevel.
-                        </p>
-                        <a href="@Model.HelpFindingCourseUrl" class="govuk-button govuk-!-margin-bottom-0" id="share-interest">Share interest</a>
+
+                        <partial name="_GetHelpFindingCourse" />
                     }
                     else
                     {
-
                         <h2 class="govuk-heading-l">Find training providers for this course</h2>
                         @if (Model.OtherBodyApprovalRequired)
                         {
@@ -161,12 +160,6 @@
                                     <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Id" asp-route-location="-1">@Model.TotalProvidersCount providers available</a> at other locations.</p>
                                 }
                                 <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
-                                <p class="govuk-body">
-                                    <strong>Can't find a training provider?</strong>
-                                    <br/>
-                                    We can let other training providers know you are interested in @Model.TitleAndLevel.
-                                </p>
-                                <a href="@Model.HelpFindingCourseUrl" class="govuk-button govuk-!-margin-bottom-0" id="share-interest">Share interest</a>
                             }
                             else
                             {

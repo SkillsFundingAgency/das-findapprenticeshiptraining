@@ -56,7 +56,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                 .BeEquivalentTo(
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();
-            model.HelpBaseUrl.Should().BeEmpty();
         }
 
         [Test, MoqAutoData]
@@ -199,7 +198,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Link_Is_Shown_If_The_Feature_Is_Toggled_On(ShortlistCookieItem shortlistCookie,
+        public async Task Then_The_Help_Url_Is_EmployerDemand_From_Config_If_EmployerDemandFeature_Enabled(ShortlistCookieItem shortlistCookie,
             GetShortlistForUserResult resultFromMediator,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockCookieService,
             [Frozen] Mock<IMediator> mockMediator,
@@ -230,12 +229,50 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                 .BeEquivalentTo(
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();
-            model.HelpBaseUrl.Should().Be(config.Object.Value.EmployerDemandUrl);
             foreach (var itemViewModel in model.Shortlist)
             {
-                itemViewModel.HelpFindingCourseUrl.Should().Be($"/registerdemand/course/{itemViewModel.Course.Id}/share-interest?entrypoint=0");    
+                itemViewModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{itemViewModel.Course.Id}/share-interest?entrypoint=0");
             }
             
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Help_Url_Is_RequestApprenticeshipTraining_From_Config_If_EmployerDemandFeature_NotEnabled(ShortlistCookieItem shortlistCookie,
+            GetShortlistForUserResult resultFromMediator,
+            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockCookieService,
+            [Frozen] Mock<IMediator> mockMediator,
+            [Frozen] Mock<IDataProtector> protector,
+            [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+            [Greedy] ShortlistController controller)
+        {
+            //Arrange
+            config.Object.Value.EmployerDemandFeatureToggle = false;
+            mockCookieService
+                .Setup(service => service.Get(Constants.ShortlistCookieName))
+                .Returns(shortlistCookie);
+            mockMediator
+                .Setup(mediator => mediator.Send(
+                    It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(resultFromMediator);
+
+            //Act
+            var actual = await controller.Index("") as ViewResult;
+
+            //Assert
+            actual.Should().NotBeNull();
+            var model = actual.Model as ShortlistViewModel;
+            model.Should().NotBeNull();
+            model.Shortlist.Should()
+                .BeEquivalentTo(
+                    resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
+            model.Removed.Should().BeEmpty();
+            foreach (var itemViewModel in model.Shortlist)
+            {
+                itemViewModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={itemViewModel.Course.Id}&requestType={EntryPoint.Shortlist}&location={itemViewModel.Course.LocationName}");
+            }
+
         }
     }
 }

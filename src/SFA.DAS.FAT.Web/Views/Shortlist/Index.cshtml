@@ -1,6 +1,10 @@
+@using Microsoft.Extensions.Options
+@using SFA.DAS.FAT.Domain.Configuration
 @using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @using System.Web
 @model SFA.DAS.FAT.Web.Models.ShortlistViewModel
+@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 @{
     ViewData["Title"] = "Shortlist";
     ViewData["Description"] = "View the apprenticeship training providers that you’ve shortlisted.";
@@ -56,28 +60,25 @@
 
                         @foreach (var locationGroup in courseLevelGroup.OrderBy(model => model.LocationDescription).GroupBy(model => model.LocationDescription))
                         {
-                            @if (!string.IsNullOrEmpty(locationGroup.Key))
+                            var course = locationGroup.FirstOrDefault()?.Course;
+
+                            if (!string.IsNullOrEmpty(locationGroup.Key))
                             {
                                 <h3 class="govuk-heading-m govuk-!-font-weight-regular">@locationGroup.Key</h3>
                             }
-                            @if (Model.IsOneTable)
+                            
+                            if (Model.IsOneTable)
                             {
                                 <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
+                                
                                 <p class="govuk-body govuk-!-margin-bottom-6">
                                     <a asp-route="@RouteNames.CourseProviders" 
-                                       asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
+                                       asp-route-id="@course?.Id" 
                                        asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
                                        class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                 </p>
-                                if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
-                                {
-                                    <p class="govuk-body>">
-                                        <strong>Can't find a training provider?</strong>
-                                        <br />
-                                        We can let other training providers know you are interested in @courseTitleGroup.Key (level @courseLevelGroup.Key).
-                                    </p>
-                                    <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>    
-                                }
+
+                                <partial name="_GetHelpFindingCourse" />
                             }
                             else
                             {
@@ -91,19 +92,12 @@
                                         <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
                                         <p class="govuk-body govuk-!-margin-bottom-6">
                                             <a asp-route="@RouteNames.CourseProviders" 
-                                               asp-route-id="@locationGroup.FirstOrDefault()?.Course?.Id" 
+                                               asp-route-id="@course?.Id" 
                                                asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
                                                class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                         </p>
-                                        @if (!string.IsNullOrEmpty(Model.HelpBaseUrl))
-                                        {
-                                            <p class="govuk-body>">
-                                                <strong>Can't find a training provider?</strong>
-                                                <br />
-                                                We can let other training providers know you are interested in @locationGroup.FirstOrDefault().Course.TitleAndLevel.
-                                            </p>
-                                            <a href="@(Model.HelpBaseUrl + locationGroup.FirstOrDefault()?.HelpFindingCourseUrl)" class="govuk-button govuk-!-margin-bottom-0" id="share-interest">Share interest</a>    
-                                        }
+
+                                        <partial name="_GetHelpFindingCourse" />
                                     </div>
                                 </details>
                             }

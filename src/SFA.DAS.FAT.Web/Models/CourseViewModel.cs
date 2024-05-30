@@ -1,11 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CourseViewModel
+    public class CourseViewModel : IGetHelpFindingCourseViewModel
     {
         public int Id { get ; private set ; }
         public string Title { get ; set ; }
@@ -28,7 +29,33 @@ namespace SFA.DAS.FAT.Web.Models
         public bool AfterLastStartDate { get; set; }
         public string LocationName { get; set; }
         public int ShortlistItemCount { get ; set ; }
-        public string HelpFindingCourseUrl { get ; set ; }
+
+        public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
+        {
+            switch (config.EmployerDemandFeatureToggle)
+            {
+                case true:
+                    return !string.IsNullOrEmpty(config.EmployerDemandUrl);
+
+                case false:
+                    return !string.IsNullOrEmpty(config.EmployerAccountsUrl) && !string.IsNullOrEmpty(config.RequestApprenticeshipTrainingUrl);
+            }
+        }
+
+        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+        {
+            return GetHelpFindingCourseUrl(config, EntryPoint.CourseDetail);
+        }
+
+        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config, EntryPoint entryPoint)
+        {
+            if (config.EmployerDemandFeatureToggle)
+            {
+                return $"{config.EmployerDemandUrl}/registerdemand/course/{Id}/share-interest?entrypoint={(short)entryPoint}";
+            }
+
+            return $"{config.EmployerAccountsUrl}/service/?redirectUri={config.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={Id}&requestType={entryPoint}&location={LocationName}";
+        }
 
         public static implicit operator CourseViewModel(Course course)
         {

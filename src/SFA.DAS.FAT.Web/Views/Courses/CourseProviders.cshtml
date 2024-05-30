@@ -1,10 +1,11 @@
-﻿@using SFA.DAS.FAT.Web.Infrastructure
+﻿@using Microsoft.Extensions.Options
+@using SFA.DAS.FAT.Domain.Configuration
 @using SFA.DAS.FAT.Domain.Extensions
+@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType
-
-
 @model SFA.DAS.FAT.Web.Models.CourseProvidersViewModel
+@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 
 @{
     ViewData["Title"] = $"Training providers for {Model.Course.TitleAndLevel}";
@@ -190,11 +191,6 @@
                         <li><a asp-querystring="@Model.ClearLocationLink" class="govuk-link govuk-link--no-visited-state" id="lnk-remove-location-0-results">removing the location</a></li>
                         <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a></li>
                     </ul>
-
-                    <p class="govuk-body"><strong>Can't find a training provider?</strong>
-                      <br>
-                    We can let other training providers know you are interested in @(Model.Course.TitleAndLevel).</p>                    
-                    <a href="@Model.HelpFindingCourseUrl" class="govuk-button" id="share-interest">Share interest</a>
                 }
                 else
                 {
@@ -351,13 +347,8 @@
             {
                 <hr class="govuk-section-break govuk-section-break--visible">
                 <hr class="govuk-section-break govuk-section-break--m">
-                <div class="das-highlight ">
-                    <p class="govuk-body govuk-!-margin-bottom-0">
-                        <strong>Can't find a training provider?</strong>
-                        <br />
-                        <a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state">Share your interest</a> in @Model.Course.TitleAndLevel with other potential training providers.
-                    </p>
-                </div>    
+
+                <partial name="_GetHelpFindingCourse" />
             }
         </div>
     </div>
