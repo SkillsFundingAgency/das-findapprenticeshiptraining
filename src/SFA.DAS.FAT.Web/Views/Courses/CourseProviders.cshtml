@@ -347,8 +347,20 @@
             {
                 <hr class="govuk-section-break govuk-section-break--visible">
                 <hr class="govuk-section-break govuk-section-break--m">
-
-                <partial name="_GetHelpFindingCourse" />
+                if (ConfigOptions.Value.EmployerDemandFeatureToggle)
+                {
+                    <div class="das-highlight ">
+                        <p class="govuk-body govuk-!-margin-bottom-0">
+                            <strong>Can't find a training provider?</strong>
+                            <br />
+                            <a href="@Model.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-link govuk-link--no-visited-state">Share your interest</a> in @Model.TitleAndLevel with other potential training providers.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <partial name="_GetHelpFindingCourse" />
+                }
             }
         </div>
     </div>

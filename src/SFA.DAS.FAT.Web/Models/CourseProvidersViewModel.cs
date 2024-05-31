@@ -59,7 +59,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
         {
-            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Providers);
+            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Providers, Location);
         }
 
         private bool ShouldShowFilters()

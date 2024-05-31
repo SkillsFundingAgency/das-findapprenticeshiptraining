@@ -122,7 +122,19 @@
                         <h2 class="govuk-heading-l">No training providers available for this course yet</h2>
                         <p class="govuk-body">Try <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">searching for another course</a>.</p>
 
-                        <partial name="_GetHelpFindingCourse" />
+                        if(ConfigOptions.Value.EmployerDemandFeatureToggle)
+                        {
+                            <p class="govuk-body>">
+                                <strong>Can't find a training provider?</strong>
+                                <br />
+                                We can let other training providers know you are interested in @Model.TitleAndLevel.
+                            </p>
+                            <a href="@Model.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-button govuk-!-margin-bottom-0" id="share-interest">Share interest</a>
+                        }
+                        else
+                        {
+                            <partial name="_GetHelpFindingCourse" />
+                        }
                     }
                     else
                     {

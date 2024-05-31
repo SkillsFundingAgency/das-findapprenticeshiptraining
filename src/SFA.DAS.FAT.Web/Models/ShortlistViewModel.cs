@@ -75,7 +75,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
         {
-            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Shortlist);
+            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Shortlist, LocationDescription);
         }
 
         public static implicit operator ShortlistItemViewModel(ShortlistItem source)

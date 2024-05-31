@@ -60,7 +60,7 @@
 
                         @foreach (var locationGroup in courseLevelGroup.OrderBy(model => model.LocationDescription).GroupBy(model => model.LocationDescription))
                         {
-                            var course = locationGroup.FirstOrDefault()?.Course;
+                            var shortlistItem = locationGroup.FirstOrDefault();
 
                             if (!string.IsNullOrEmpty(locationGroup.Key))
                             {
@@ -72,13 +72,25 @@
                                 <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
                                 
                                 <p class="govuk-body govuk-!-margin-bottom-6">
-                                    <a asp-route="@RouteNames.CourseProviders" 
-                                       asp-route-id="@course?.Id" 
+                                    <a asp-route="@RouteNames.CourseProviders"
+                                       asp-route-id="@shortlistItem?.Course?.Id"
                                        asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
                                        class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                 </p>
 
-                                <partial name="_GetHelpFindingCourse" />
+                                if(ConfigOptions.Value.EmployerDemandFeatureToggle)
+                                {
+                                    <p class="govuk-body>">
+                                        <strong>Can't find a training provider?</strong>
+                                        <br />
+                                        We can let other training providers know you are interested in @shortlistItem.TitleAndLevel.
+                                    </p>
+                                    <a href="@shortlistItem.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>
+                                }
+                                else
+                                {
+                                    <partial name="_GetHelpFindingCourse" model=shortlistItem />
+                                }
                             }
                             else
                             {
@@ -92,12 +104,24 @@
                                         <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
                                         <p class="govuk-body govuk-!-margin-bottom-6">
                                             <a asp-route="@RouteNames.CourseProviders" 
-                                               asp-route-id="@course?.Id" 
+                                               asp-route-id="@shortlistItem?.Course?.Id" 
                                                asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
                                                class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
                                         </p>
-
-                                        <partial name="_GetHelpFindingCourse" />
+                                        
+                                        @if(ConfigOptions.Value.EmployerDemandFeatureToggle)
+                                        {
+                                            <p class="govuk-body>">
+                                                <strong>Can't find a training provider?</strong>
+                                                <br />
+                                                We can let other training providers know you are interested in @shortlistItem.TitleAndLevel.
+                                            </p>
+                                            <a href="@shortlistItem.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>
+                                        }
+                                        else
+                                        {
+                                            <partial name="_GetHelpFindingCourse" model=shortlistItem/>
+                                        }
                                     </div>
                                 </details>
                             }

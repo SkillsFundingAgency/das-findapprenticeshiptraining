@@ -32,29 +32,25 @@ namespace SFA.DAS.FAT.Web.Models
 
         public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
         {
-            switch (config.EmployerDemandFeatureToggle)
-            {
-                case true:
-                    return !string.IsNullOrEmpty(config.EmployerDemandUrl);
-
-                case false:
-                    return !string.IsNullOrEmpty(config.EmployerAccountsUrl) && !string.IsNullOrEmpty(config.RequestApprenticeshipTrainingUrl);
-            }
+            return !string.IsNullOrEmpty(config.EmployerAccountsUrl) && !string.IsNullOrEmpty(config.RequestApprenticeshipTrainingUrl);
         }
 
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
         {
-            return GetHelpFindingCourseUrl(config, EntryPoint.CourseDetail);
+            return GetHelpFindingCourseUrl(config, EntryPoint.CourseDetail, LocationName);
         }
 
-        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config, EntryPoint entryPoint)
+        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config, EntryPoint entryPoint, string location)
         {
             if (config.EmployerDemandFeatureToggle)
             {
                 return $"{config.EmployerDemandUrl}/registerdemand/course/{Id}/share-interest?entrypoint={(short)entryPoint}";
             }
 
-            return $"{config.EmployerAccountsUrl}/service/?redirectUri={config.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={Id}&requestType={entryPoint}&location={LocationName}";
+            string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={Id}&requestType={entryPoint}";
+            var locationQueryParam = !string.IsNullOrEmpty(location) ? $"&location={location}" : string.Empty;
+            
+            return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
         }
 
         public static implicit operator CourseViewModel(Course course)
