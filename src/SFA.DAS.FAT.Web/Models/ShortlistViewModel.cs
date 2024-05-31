@@ -58,7 +58,7 @@ namespace SFA.DAS.FAT.Web.Models
         }
     }
 
-    public class ShortlistItemViewModel : IGetHelpFindingCourseViewModel
+    public class ShortlistItemViewModel
     {
         public Guid Id { get; set; }
         public ProviderViewModel Provider { get; set; }

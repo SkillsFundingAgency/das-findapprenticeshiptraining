@@ -6,7 +6,7 @@ using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CourseViewModel : IGetHelpFindingCourseViewModel
+    public class CourseViewModel
     {
         public int Id { get ; private set ; }
         public string Title { get ; set ; }

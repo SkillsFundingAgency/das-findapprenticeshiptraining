@@ -8,7 +8,7 @@ using SFA.DAS.FAT.Domain.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CourseProvidersViewModel : IGetHelpFindingCourseViewModel
+    public class CourseProvidersViewModel
     {
         public CourseProvidersViewModel(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
