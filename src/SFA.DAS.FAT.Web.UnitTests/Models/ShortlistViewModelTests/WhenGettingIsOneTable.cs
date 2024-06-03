@@ -7,7 +7,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistViewModelTests
 {
     public class WhenGettingIsOneTable
     {
-        // THESE TESTS ARE COMPLETE SHIT - RANDOM DATA - AMAZING IT WORKS!
         [Test, AutoData]
         public void And_Greater_Than_One_CourseTitle_Then_False(ShortlistViewModel model)
         {
