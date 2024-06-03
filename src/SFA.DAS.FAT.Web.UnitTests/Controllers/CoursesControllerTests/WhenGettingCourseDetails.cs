@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -206,7 +207,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
+            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }
     }
 }

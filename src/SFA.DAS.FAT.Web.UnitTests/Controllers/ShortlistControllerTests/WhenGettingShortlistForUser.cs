@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
@@ -270,7 +271,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
             model.Removed.Should().BeEmpty();
             foreach (var itemViewModel in model.Shortlist)
             {
-                itemViewModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={itemViewModel.Course.Id}&requestType={EntryPoint.Shortlist}&location={itemViewModel.Course.LocationName}");
+                var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={itemViewModel.Course.Id}&requestType={EntryPoint.Shortlist}&location={itemViewModel.LocationDescription}");
+                itemViewModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
             }
 
         }

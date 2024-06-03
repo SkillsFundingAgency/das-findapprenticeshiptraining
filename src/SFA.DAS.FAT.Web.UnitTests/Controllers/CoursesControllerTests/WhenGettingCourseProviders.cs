@@ -534,7 +534,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseProvidersViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{hashedAccountId}}/employer-requests/overview?standardId={actualModel.Course.Id}&requestType={EntryPoint.Providers}&location={actualModel.Course.LocationName}");
+            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Course.Id}&requestType={EntryPoint.Providers}&location={actualModel.Location}");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }
     }
 }
