@@ -24,7 +24,6 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IMediator _mediator;
         private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
         private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
-        private readonly FindApprenticeshipTrainingWeb _config;
         private readonly ILogger<ShortlistController> _logger;
         private readonly IDataProtector _protector;
 
@@ -32,13 +31,11 @@ namespace SFA.DAS.FAT.Web.Controllers
             ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
             ICookieStorageService<LocationCookieItem> locationCookieService,
             IDataProtectionProvider provider,
-            IOptions<FindApprenticeshipTrainingWeb> config,
             ILogger<ShortlistController> logger)
         {
             _mediator = mediator;
             _shortlistCookieService = shortlistCookieService;
             _locationCookieService = locationCookieService;
-            _config = config.Value;
             _logger = logger;
             _protector = provider.CreateProtector(Constants.ShortlistProtectorName);
         }
