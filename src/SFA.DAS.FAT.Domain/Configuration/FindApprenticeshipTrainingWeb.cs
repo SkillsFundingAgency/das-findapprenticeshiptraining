@@ -9,5 +9,7 @@
         public string ZendeskCoBrowsingSnippetKey { get; set; }
         public bool EmployerDemandFeatureToggle { get; set; }
         public string EmployerDemandUrl { get; set; }
+        public string EmployerAccountsUrl { get; set; }
+        public string RequestApprenticeshipTrainingUrl { get; set; }
     }
 }

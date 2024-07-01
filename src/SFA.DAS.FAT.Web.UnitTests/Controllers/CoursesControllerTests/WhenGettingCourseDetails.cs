@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -154,7 +155,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
 
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
+        public async Task Then_The_Help_Url_Is_EmployerDemand_From_Config_If_EmployerDemandFeature_Enabled(
             int standardCode,
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
@@ -178,11 +179,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Set_If_Feature_Disabled(
+        public async Task Then_The_Help_Url_Is_RequestApprenticeshipTraining_From_Config_If_EmployerDemandFeature_NotEnabled(
             int standardCode,
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
@@ -206,7 +207,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
+            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }
     }
 }

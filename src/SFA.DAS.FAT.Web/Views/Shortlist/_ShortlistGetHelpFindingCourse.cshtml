@@ -1,0 +1,30 @@
+﻿@using Microsoft.Extensions.Options
+@using SFA.DAS.FAT.Domain.Configuration
+@using SFA.DAS.FAT.Web.Models
+@model ShortlistItemViewModel
+@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions
+
+@if (ConfigOptions.Value.EmployerDemandFeatureToggle)
+{
+    <p class="govuk-body>">
+        <strong>Can't find a training provider?</strong>
+        <br />
+        We can let other training providers know you are interested in @Model.TitleAndLevel.
+    </p>
+    <a href="@Model.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-button govuk-!-margin-bottom-0">Share interest</a>
+}
+else
+{
+    @if (Model.CanGetHelpFindingCourse(ConfigOptions.Value))
+    {
+        <div class="govuk-inset-text">
+            <p class="govuk-body">
+                If the training providers listed are not suitable, we can ask training providers if they can run @Model.TitleAndLevel. If a training provider can offer the course, we'll send you their contact details.
+            </p>
+            <p class="govuk-body">
+                You can use this service if you employ apprentices. You'll need to be signed in to your apprenticeship service account.
+            </p>
+            <p class="govuk-body"><a href="@Model.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-link govuk-link--no-visited-state" id="share-interest">Ask if training providers can run this course</a>.</p>
+        </div>
+    }
+}

@@ -53,7 +53,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             actualModel.Should().BeEquivalentTo(new CourseProvidersViewModel(request, response, null), options=>options
                 .Excluding(c=>c.ProviderOrder)
                 .Excluding(c=>c.BannerUpdateMessage)
-                .Excluding(c=>c.HelpFindingCourseUrl)
             );
         }
 
@@ -479,7 +478,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
+        public async Task Then_The_Help_Url_Is_EmployerDemand_From_Config_If_EmployerDemandFeature_Enabled(
             GetCourseProvidersRequest request,
             GetCourseProvidersResult response,
             [Frozen] Mock<IMediator> mediator,
@@ -505,11 +504,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseProvidersViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=2");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=2");
         }
         
         [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Set_If_Feature_Disabled(
+        public async Task Then_The_Help_Url_Is_RequestApprenticeshipTraining_From_Config_If_EmployerDemandFeature_NotEnabled(
             GetCourseProvidersRequest request,
             GetCourseProvidersResult response,
             [Frozen] Mock<IMediator> mediator,
@@ -535,7 +534,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             Assert.IsNotNull(actual);
             var actualModel = actual.Model as CourseProvidersViewModel;
             Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
+            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Course.Id}&requestType={EntryPoint.Providers}&location={actualModel.Location}");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }
     }
 }
