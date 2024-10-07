@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
@@ -48,7 +49,18 @@ namespace SFA.DAS.FAT.Web.Models
         public IEnumerable<ApprenticeProviderRatingOptionViewModel> ApprenticeProviderRatings { get; set; }
         public Dictionary<uint, string> ProviderOrder { get ;}
         public string BannerUpdateMessage { get ; set ; }
-        public string HelpFindingCourseUrl { get ; set ; }
+
+        public string TitleAndLevel { get => Course.TitleAndLevel; }
+
+        public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
+        {
+            return Course.CanGetHelpFindingCourse(config);
+        }
+
+        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+        {
+            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Providers, Location);
+        }
 
         private bool ShouldShowFilters()
         {

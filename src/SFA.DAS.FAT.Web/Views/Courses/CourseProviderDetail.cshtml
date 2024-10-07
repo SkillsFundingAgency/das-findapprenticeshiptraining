@@ -55,6 +55,7 @@
                 <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                     @Model.Provider.Name
                 </h1>
+
                 if (!string.IsNullOrEmpty(Model.Provider.TradingName))
                 {
                     <p class="govuk-body">
@@ -84,7 +85,6 @@
                         <span class="govuk-body">@Model.Provider.EmployerFeedback.TotalFeedbackRatingTextProviderDetail</span>
                     }
                 </p>
-
 
                 if (Model.Provider.EmployerFeedback.TotalFeedbackRating != 0)
                 {
@@ -211,7 +211,6 @@
                     </details>
                 }
 
-
                 if (!string.IsNullOrEmpty(Model.Provider.MarketingInfo))
                 {
                     <div class="govuk-!-margin-bottom-8">
@@ -260,10 +259,7 @@
                    </div>
                 }
 
-
-
-
-            <div class="das-highlight govuk-!-margin-bottom-5">
+                <div class="das-highlight govuk-!-margin-bottom-5">
                     <span class="govuk-caption-l">Apprenticeship training course</span>
                     <h2 class="govuk-heading-l govuk-!-margin-bottom-3">@Model.Course.Title <span class="das-no-wrap">(level @Model.Course.Level)</span></h2>
                     @if (!string.IsNullOrEmpty(Model.Provider.OverallAchievementRatePercentage))
@@ -283,8 +279,6 @@
                         </details>
                     }
 
-
-
                     @if (!string.IsNullOrEmpty(Model.Location))
                     {
                         <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-4">Apprenticeship location</h2>
@@ -303,10 +297,8 @@
 
                     }
 
-
                     @if (Model.Provider.DeliveryModes.Any())
                     {
-
                         if (Model.Provider.DeliveryModes.FirstOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound) != null)
                         {
                             <p id="course_provider_not_available" class="govuk-body das-text--error das-text--error-icon">This training provider does not offer @Model.Course.TitleAndLevel at the apprenticeship location.</p>
@@ -323,94 +315,94 @@
                                 }
 
                                 var routeData = new Dictionary<string, string>
-                                                {
-                        {"Location", Model.Location},
-                        {"id", Model.Course.Id.ToString()},
-                    };
-
-                        <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
-                            <input type="hidden" name="Location" value="@Model.Location" />
-                            <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
-                                View training provider@((Model.ProvidersAtLocation == 1 ? "" : "s"))
-                            </button>
-                        </form>
-                    }
-                    else
-                    {
-                        <p class="govuk-body">There are no other training providers available for @Model.Course.TitleAndLevel at the apprenticeship location.</p>
-                        <p>You can either:</p>
-                        <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
-                            <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">search for another course</a></li>
-                            <li><a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state" id="share-interest">get help with finding a training provider</a></li>
-                        </ul>
-                        if (Model.TotalProviders > 1)
-                        {
-                            <p class="govuk-body">@Model.TotalProviders providers available at other locations.</p>
-                            <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
-                                <input type="hidden" name="Location" value="-1" />
-                                <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
-                                    View all providers for this course
-                                </button>
-                            </form>
-                        }
-                    }
-                }
-                else
-                {
-
-                    <h2 class="govuk-heading-m govuk-!-margin-bottom-3 govuk-!-margin-top-4">@Model.Provider.Name’s training options</h2>
-
-                    if (!string.IsNullOrEmpty(Model.Provider.ProviderAddress))
-                    {
-                        <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
-                            @Model.Provider.ProviderDistanceText
-                        </h3>
-                        <p class="govuk-body">@Model.Provider.ProviderAddress</p>
-                    }
-
-                    <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-margin-top-1 govuk-!-margin-bottom-0">
-                        @foreach (var mode in Model.Provider.DeliveryModes)
-                        {
-                            <li class="das-icon-list__list-item">
-                                @if (mode.IsAvailable)
                                 {
-                                    <span class="das-icon-list__icon das-icon-list__icon--tick">available</span>
-                                }
-                                else
+                                    {"Location", Model.Location},
+                                    {"id", Model.Course.Id.ToString()},
+                                };
+
+                                <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
+                                    <input type="hidden" name="Location" value="@Model.Location" />
+                                    <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
+                                        View training provider@((Model.ProvidersAtLocation == 1 ? "" : "s"))
+                                    </button>
+                                </form>
+                            }
+                            else
+                            {
+                                <p class="govuk-body">There are no other training providers available for @Model.Course.TitleAndLevel at the apprenticeship location.</p>
+                                <p>You can:</p>
+                                <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-6">
+                                    <li><a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">search for another course</a></li>
+                                </ul>
+                                if (Model.TotalProviders > 1)
                                 {
-                                    <span class="das-icon-list__icon das-icon-list__icon--cross">not available</span>
+                                    <p class="govuk-body">@Model.TotalProviders providers available at other locations.</p>
+                                    <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.Course.Id" class="govuk-!-width-three-quarters">
+                                        <input type="hidden" name="Location" value="-1" />
+                                        <button class="govuk-button govuk-!-margin-bottom-0" id="btn-view-providers">
+                                            View all providers for this course
+                                        </button>
+                                    </form>
                                 }
-                                @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(Model.Location) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
-                            </li>
-                        }
-                    </ul>
-
-                    if (!string.IsNullOrEmpty(Model.Location))
-                    {
-                        var dayRelease = Model.Provider.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
-                        var blockRelease = Model.Provider.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease);
-
-                        if (dayRelease != null && blockRelease != null && dayRelease.AddressFormatted == blockRelease.AddressFormatted && !string.IsNullOrEmpty(dayRelease.AddressFormatted))
-                        {
-                            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Day and block release address</p>
-                            <p class="govuk-body govuk-!-margin-bottom-0">@dayRelease.AddressFormatted</p>
+                            }
                         }
                         else
                         {
-                            if (dayRelease != null && !string.IsNullOrEmpty(dayRelease.AddressFormatted))
+
+                            <h2 class="govuk-heading-m govuk-!-margin-bottom-3 govuk-!-margin-top-4">@Model.Provider.Name’s training options</h2>
+
+                            if (!string.IsNullOrEmpty(Model.Provider.ProviderAddress))
                             {
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Day release address</p>
-                                <p class="govuk-body govuk-!-margin-bottom-0">@dayRelease.AddressFormatted</p>
+                                <h3 class="govuk-heading-s govuk-!-margin-bottom-1">
+                                    @Model.Provider.ProviderDistanceText
+                                </h3>
+                                <p class="govuk-body">@Model.Provider.ProviderAddress</p>
                             }
-                            if (blockRelease != null && !string.IsNullOrEmpty(blockRelease.AddressFormatted))
+
+                            <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-margin-top-1 govuk-!-margin-bottom-0">
+                             @foreach (var mode in Model.Provider.DeliveryModes)
                             {
-                                <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Block release address</p>
-                                <p class="govuk-body govuk-!-margin-bottom-0">@blockRelease.AddressFormatted</p>
+                                <li class="das-icon-list__list-item">
+                                    @if (mode.IsAvailable)
+                                    {
+                                        <span class="das-icon-list__icon das-icon-list__icon--tick">available</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="das-icon-list__icon das-icon-list__icon--cross">not available</span>
+                                    }
+                                    @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(Model.Location) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
+                                </li>
+                            }
+                            </ul>
+
+                            if (!string.IsNullOrEmpty(Model.Location))
+                            {
+                                var dayRelease = Model.Provider.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease);
+                                var blockRelease = Model.Provider.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease);
+
+                                if (dayRelease != null && blockRelease != null && dayRelease.AddressFormatted == blockRelease.AddressFormatted && !string.IsNullOrEmpty(dayRelease.AddressFormatted))
+                                {
+                                    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Day and block release address</p>
+                                    <p class="govuk-body govuk-!-margin-bottom-0">@dayRelease.AddressFormatted</p>
+                                }
+                                else
+                                {
+                                    if (dayRelease != null && !string.IsNullOrEmpty(dayRelease.AddressFormatted))
+                                    {
+                                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Day release address</p>
+                                        <p class="govuk-body govuk-!-margin-bottom-0">@dayRelease.AddressFormatted</p>
+                                    }
+                                    if (blockRelease != null && !string.IsNullOrEmpty(blockRelease.AddressFormatted))
+                                    {
+                                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-4 govuk-!-margin-bottom-1">Block release address</p>
+                                        <p class="govuk-body govuk-!-margin-bottom-0">@blockRelease.AddressFormatted</p>
+                                    }
+                                }
                             }
                         }
                     }
-                }
-            }
+
                     @if (string.IsNullOrEmpty(Model.Location))
                     {
                         <h2 class="govuk-heading-m govuk-!-margin-bottom-2 govuk-!-margin-top-4">Apprenticeship location</h2>
@@ -428,7 +420,6 @@
                         </form>
                     }
 
-
                 </div>
                 <div class="das-highlight govuk-!-margin-bottom-5">
                     <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Contact this provider about this course</h3>
@@ -437,11 +428,11 @@
                         @if (!string.IsNullOrEmpty(Model.Provider.Email))
                         {
                             <div class="govuk-summary-list__row">
-                            <dt class="govuk-summary-list__key">Email</dt>
-                            <dd class="govuk-summary-list__value"><a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Provider.Email">@Model.Provider.Email</a></dd>
-                    </div>
+                                <dt class="govuk-summary-list__key">Email</dt>
+                                <dd class="govuk-summary-list__value"><a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Provider.Email">@Model.Provider.Email</a></dd>
+                            </div>
+                        }
 
-                }
                         @if (!string.IsNullOrEmpty(Model.Provider.Phone))
                         {
                             <div class="govuk-summary-list__row">
@@ -450,6 +441,7 @@
                             </div>
 
                         }
+
                         @if (!string.IsNullOrEmpty(Model.Provider.Website))
                         {
                             <div class="govuk-summary-list__row">
@@ -488,10 +480,10 @@
                             if (!string.IsNullOrEmpty(Model.Location))
                             {
                                 var routeData = new Dictionary<string, string>
-                                            {
-                    {"location", Model.Location},
-                    {"id", Model.Course.Id.ToString()},
-                };
+                                {
+                                    {"location", Model.Location},
+                                    {"id", Model.Course.Id.ToString()},
+                                };
                                 if (Model.ProvidersAtLocation > 1)
                                 {
                                     <p class="govuk-body govuk-!-margin-top-4">@Model.Provider.Name is 1 of @Model.ProvidersAtLocation training providers for @Model.Course.TitleAndLevel at the apprenticeship location.</p>

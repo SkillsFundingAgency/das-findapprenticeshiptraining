@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Shortlist;
 
 namespace SFA.DAS.FAT.Web.Models
@@ -14,7 +15,6 @@ namespace SFA.DAS.FAT.Web.Models
         public string Removed { get; set; }
 
         public string ExpiryDateText => GetExpiryDateText();
-        public string HelpBaseUrl { get ; set ; }
 
         private string GetExpiryDateText()
         {
@@ -65,7 +65,19 @@ namespace SFA.DAS.FAT.Web.Models
         public CourseViewModel Course { get; set; }
         public string LocationDescription { get; set; }
         public DateTime CreatedDate { get; set; }
-        public string HelpFindingCourseUrl { get ; set ; }
+
+        public string TitleAndLevel { get => Course.TitleAndLevel; }
+
+        public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
+        {
+            return Course.CanGetHelpFindingCourse(config);
+        }
+
+        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+        {
+            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Shortlist, LocationDescription);
+        }
+
         public static implicit operator ShortlistItemViewModel(ShortlistItem source)
         {
             return new ShortlistItemViewModel
@@ -75,7 +87,6 @@ namespace SFA.DAS.FAT.Web.Models
                 CreatedDate = source.CreatedDate,
                 Course = source.Course,
                 Provider = source.Provider,
-                HelpFindingCourseUrl = $"/registerdemand/course/{source.Course.Id}/share-interest?entrypoint={(short)EntryPoint.Shortlist}"
             };
         }
     }
