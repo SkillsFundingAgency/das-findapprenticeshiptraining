@@ -44,10 +44,17 @@ namespace SFA.DAS.FAT.Web.Services
             if (cookie == null)
                 return default(T);
 
-            var base64EncodedBytes = Convert.FromBase64String(cookie);
-            return JsonConvert.DeserializeObject<T>(
-                System.Text.Encoding.UTF8.GetString(
-                    _protector.Unprotect(base64EncodedBytes)));
+            try
+            {
+                var base64EncodedBytes = Convert.FromBase64String(cookie);
+                return JsonConvert.DeserializeObject<T>(
+                    System.Text.Encoding.UTF8.GetString(
+                        _protector.Unprotect(base64EncodedBytes)));
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
         }
 
         public void Delete(string cookieName)

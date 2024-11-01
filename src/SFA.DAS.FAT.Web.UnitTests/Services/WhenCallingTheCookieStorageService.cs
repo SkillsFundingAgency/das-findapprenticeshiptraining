@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -70,6 +71,34 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services
             //Assert
             actual.Should().NotBeNull();
             actual.Should().Be(content);
+        }
+        
+        
+        [Test, AutoData]
+        public void Then_Default_Is_Returned_If_Error(
+            string testCookieName,
+            string content)
+        {
+            //Arrange
+            var mockDataProtector = new Mock<IDataProtector>();
+            mockDataProtector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Throws(new CryptographicException());
+            var mockDataProtectionProvider = new Mock<IDataProtectionProvider>();
+            mockDataProtectionProvider.Setup(s => s.CreateProtector(It.IsAny<string>())).Returns(mockDataProtector.Object);
+            var featureMock = new Mock<IRequestCookiesFeature>();
+            var mockHeaderDictionary = new FakeCookieCollection(new Dictionary<string, string> { { testCookieName, Convert.ToBase64String(Encoding.UTF8.GetBytes(content)) } });
+            featureMock.Setup(x => x.Cookies).Returns(mockHeaderDictionary);
+            var responseMock = new FeatureCollection();
+            responseMock.Set(featureMock.Object);
+            var context = new DefaultHttpContext(responseMock);
+            var mockHttpContextAccessor = new Mock<IHttpContextAccessor>();
+            mockHttpContextAccessor.Setup(_ => _.HttpContext).Returns(context);
+            var service = new CookieStorageService<string>(mockHttpContextAccessor.Object, mockDataProtectionProvider.Object);
+
+            //Act
+            var actual = service.Get(testCookieName);
+
+            //Assert
+            actual.Should().BeNull();
         }
 
         [Test, MoqAutoData]
