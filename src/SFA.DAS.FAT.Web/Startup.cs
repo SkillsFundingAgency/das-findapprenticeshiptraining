@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -68,7 +68,7 @@ namespace SFA.DAS.FAT.Web
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingApi>>().Value);
             services.Configure<FindApprenticeshipTrainingWeb>(_configuration.GetSection("FindApprenticeshipTrainingWeb"));
             services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingWeb>>().Value);
-            
+
             services.Configure<RouteOptions>(options =>
             {
                 options.LowercaseUrls = true;
@@ -81,10 +81,9 @@ namespace SFA.DAS.FAT.Web
             services.AddServiceRegistration();
             services.AddMediatR(typeof(GetCourseQueryHandler).Assembly);
             services.AddMediatRValidation();
-            
-            services.AddApplicationInsightsTelemetry(_configuration["APPINSIGHTS_INSTRUMENTATIONKEY"]);
 
-            
+            services.AddLogging()
+                .AddApplicationInsightsTelemetry();
 
             if (!_environment.IsDevelopment())
             {
@@ -92,8 +91,8 @@ namespace SFA.DAS.FAT.Web
                     .AddCheck<FatOuterApiHealthCheck>(
                         "FAT Outer Api",
                         failureStatus: HealthStatus.Unhealthy,
-                        tags: new[] {"ready"});
-                
+                        tags: new[] { "ready" });
+
                 services.AddDataProtection(_configuration);
             }
 #if DEBUG
@@ -116,9 +115,9 @@ namespace SFA.DAS.FAT.Web
                 app.UseHsts();
             }
 
-            
+
             app.AddRedirectRules();
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
@@ -151,7 +150,7 @@ namespace SFA.DAS.FAT.Web
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
-            
+
         }
     }
 }

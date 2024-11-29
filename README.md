@@ -39,8 +39,28 @@ Data:
     "ZendeskCoBrowsingSnippetKey": "test"
   }
 }
-
 ```
+
+In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.Development.json file with following content:
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning"
+    }
+  },
+  "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
+  "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.Web",
+  "Environment": "LOCAL",
+  "Version": "1.0",
+  "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+  "AllowedHosts": "*",
+  "cdn": {
+    "url": "https://das-at-frnt-end.azureedge.net"
+  }
+}
+```
+
 
 The important part of the configuration is making sure that your BaseUrl is pointed to the MockServer url
 
