@@ -26,20 +26,6 @@
         <PackageReference Include="CommonMark.NET" Version="0.15.1" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.13" />
     </ItemGroup>
-
-
-    <ItemGroup>
-        <Content Update="appsettings.Development.json">
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-        <Content Update="appsettings.Development.json">
-            <CopyToPublishDirectory>Never</CopyToPublishDirectory>
-        </Content>
-        <Content Update="nlog.config">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FAT.Application\SFA.DAS.FAT.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.FAT.Infrastructure\SFA.DAS.FAT.Infrastructure.csproj" />
