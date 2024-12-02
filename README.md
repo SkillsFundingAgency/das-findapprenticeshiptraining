@@ -53,7 +53,7 @@ In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.De
   "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.Web",
   "Environment": "LOCAL",
   "Version": "1.0",
-  "APPINSIGHTS_INSTRUMENTATIONKEY": "",
+  "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
   "AllowedHosts": "*",
   "cdn": {
     "url": "https://das-at-frnt-end.azureedge.net"

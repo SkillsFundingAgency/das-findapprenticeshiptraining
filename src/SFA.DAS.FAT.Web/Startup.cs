@@ -33,7 +33,6 @@ namespace SFA.DAS.FAT.Web
                 .AddConfiguration(configuration)
                 .SetBasePath(Directory.GetCurrentDirectory())
 #if DEBUG
-                .AddJsonFile("appsettings.json", true)
                 .AddJsonFile("appsettings.Development.json", true)
 #endif
                 .AddEnvironmentVariables();
@@ -83,6 +82,7 @@ namespace SFA.DAS.FAT.Web
             services.AddMediatRValidation();
 
             services.AddLogging()
+                .AddTelemetryRegistration(_configuration)
                 .AddApplicationInsightsTelemetry();
 
             if (!_environment.IsDevelopment())
@@ -114,7 +114,6 @@ namespace SFA.DAS.FAT.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
 
             app.AddRedirectRules();
 
