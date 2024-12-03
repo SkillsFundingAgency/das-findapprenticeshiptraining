@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using NLog.Web;
 
 namespace SFA.DAS.FAT.Web
 {
@@ -14,8 +13,6 @@ namespace SFA.DAS.FAT.Web
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost
                 .CreateDefaultBuilder(args)
-                .UseApplicationInsights()
-                .UseStartup<Startup>()
-                .UseNLog();
+                .UseStartup<Startup>();
     }
 }
