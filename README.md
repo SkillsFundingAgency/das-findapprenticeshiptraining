@@ -7,7 +7,7 @@
 
 ## Requirements
 
-DotNet Core 3.1 and any supported IDE for DEV running.
+DotNet Core 8 and any supported IDE for DEV running.
 
 Azure Storage Emulator
 
