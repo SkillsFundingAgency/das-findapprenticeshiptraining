@@ -52,6 +52,7 @@ In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.De
   "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
   "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.Web",
   "Environment": "LOCAL",
+  "EnvironmentName": "LOCAL",
   "Version": "1.0",
   "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
   "AllowedHosts": "*",

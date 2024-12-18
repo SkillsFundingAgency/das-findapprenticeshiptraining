@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-using System;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Application.Locations.Services;
 using SFA.DAS.FAT.Application.Shortlist.Services;
@@ -9,6 +7,7 @@ using SFA.DAS.FAT.Infrastructure.Api;
 using SFA.DAS.FAT.Web.Services;
 using Microsoft.Extensions.Configuration;
 using SFA.DAS.FAT.Domain.Configuration;
+using System.Linq;
 
 namespace SFA.DAS.FAT.Web.AppStart
 {
@@ -28,7 +27,8 @@ namespace SFA.DAS.FAT.Web.AppStart
 
         private static void AddDistributedCache(IServiceCollection services, IConfigurationRoot configuration)
         {
-            if (configuration["EnvironmentName"]!.Equals("LOCAL", StringComparison.CurrentCultureIgnoreCase))
+            var localEnvs = new[] { "LOCAL", "DEV" };
+            if (localEnvs.Contains(configuration["EnvironmentName"]))
             {
                 services.AddDistributedMemoryCache();
             }
