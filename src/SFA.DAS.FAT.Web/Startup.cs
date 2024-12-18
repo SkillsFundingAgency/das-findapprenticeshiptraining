@@ -81,7 +81,7 @@ public class Startup
             });
 
         services.AddServiceRegistration(_configuration);
-        services.AddMediatR(typeof(GetCourseQueryHandler).Assembly);
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetCourseQueryHandler).Assembly));
         services.AddMediatRValidation();
 
         services.AddLogging()
