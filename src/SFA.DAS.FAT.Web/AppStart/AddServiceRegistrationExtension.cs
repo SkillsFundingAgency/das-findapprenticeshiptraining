@@ -5,21 +5,41 @@ using SFA.DAS.FAT.Application.Shortlist.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Infrastructure.Api;
 using SFA.DAS.FAT.Web.Services;
+using Microsoft.Extensions.Configuration;
+using SFA.DAS.FAT.Domain.Configuration;
+using System.Linq;
 
 namespace SFA.DAS.FAT.Web.AppStart
 {
     public static class AddServiceRegistrationExtension
     {
-        public static void AddServiceRegistration(this IServiceCollection services)
+        public static void AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
         {
-            services.AddDistributedMemoryCache();
             services.AddHttpClient<IApiClient, ApiClient>();
             services.AddTransient<ICourseService, CourseService>();
             services.AddTransient<ILocationService, LocationService>();
             services.AddTransient<IShortlistService, ShortlistService>();
             services.AddTransient<IDateTimeService, DateTimeService>();
-            services.AddHttpContextAccessor();
             services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
+            services.AddHttpContextAccessor();
+            AddDistributedCache(services, configuration);
+        }
+
+        private static void AddDistributedCache(IServiceCollection services, IConfigurationRoot configuration)
+        {
+            var localEnvs = new[] { "LOCAL", "DEV" };
+            if (localEnvs.Contains(configuration["EnvironmentName"]))
+            {
+                services.AddDistributedMemoryCache();
+            }
+            else
+            {
+                services.AddStackExchangeRedisCache(options =>
+                {
+                    var fatWebConfig = configuration.GetSection(nameof(FindApprenticeshipTrainingWeb)).Get<FindApprenticeshipTrainingWeb>();
+                    options.Configuration = fatWebConfig.RedisConnectionString;
+                });
+            }
         }
     }
 }

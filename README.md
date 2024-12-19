@@ -7,7 +7,7 @@
 
 ## Requirements
 
-DotNet Core 3.1 and any supported IDE for DEV running.
+DotNet Core 8 and any supported IDE for DEV running.
 
 Azure Storage Emulator
 
@@ -52,6 +52,7 @@ In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.De
   "ConfigurationStorageConnectionString": "UseDevelopmentStorage=true;",
   "ConfigNames": "SFA.DAS.FindApprenticeshipTraining.Web",
   "Environment": "LOCAL",
+  "EnvironmentName": "LOCAL",
   "Version": "1.0",
   "APPLICATIONINSIGHTS_CONNECTION_STRING": "",
   "AllowedHosts": "*",

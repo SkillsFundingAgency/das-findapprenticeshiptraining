@@ -101,15 +101,14 @@
 <div class="govuk-width-container">
     @if (breadCrumbViewModel != null && breadCrumbViewModel.Level > BreadCrumbLevel.Home)
     {
-        
         <div class="govuk-grid-row">
-                <div class="govuk-grid-column-full">
-                    <div class="govuk-body">
-                        <p class="govuk-body">We're improving Find apprenticeship training. <a href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What do you think of this service? (opens in a new tab)</a></p>
-                        <hr/>
-                    </div>
+            <div class="govuk-grid-column-full">
+                <div class="govuk-body">
+                    <p class="govuk-body">We're improving Find apprenticeship training. <a href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What do you think of this service? (opens in a new tab)</a></p>
+                    <hr/>
                 </div>
-                <div class="govuk-grid-column-three-quarters">
+            </div>
+            <div class="govuk-grid-column-three-quarters">
                 <div class="govuk-breadcrumbs">
                     <ol class="govuk-breadcrumbs__list">
                         @if (breadCrumbViewModel.Level > BreadCrumbLevel.Home)
@@ -144,7 +143,7 @@
                 <div class="govuk-grid-column-one-quarter">
                     <a id="header-view-shortlist" asp-route="@RouteNames.ShortList" class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@(ViewData["ShortlistItemCount"] ?? 0)</span></a>    
                 </div>
-            }            
+            }
         </div>
     }
     @RenderBody()
