@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Validation;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 
@@ -33,6 +35,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly FindApprenticeshipTrainingWeb _config;
         private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
+        private readonly IValidator<GetCourseQuery> _validator;
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -42,7 +45,8 @@ namespace SFA.DAS.FAT.Web.Controllers
             ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
-            IDateTimeService dateTimeService)
+            IDateTimeService dateTimeService,
+            IValidator<GetCourseQuery> validator)
         {
             _logger = logger;
             _mediator = mediator;
@@ -50,6 +54,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
             _shortlistCookieService = shortlistCookieService;
             _dateTimeService = dateTimeService;
+            _validator = validator;
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
@@ -94,14 +99,23 @@ namespace SFA.DAS.FAT.Web.Controllers
             var location = CheckLocation(locationName);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            var result = await _mediator.Send(new GetCourseQuery
+            var query = new GetCourseQuery
             {
                 CourseId = id,
                 Lat = location?.Lat ?? 0,
                 Lon = location?.Lon ?? 0,
                 LocationName = location?.Name,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
-            });
+            };
+
+            var validationResult = await _validator.ValidateAsync(query);
+
+            if (!validationResult.IsValid())
+            {
+                throw new ValidationException(validationResult.DataAnnotationResult, null, null);
+            }
+
+            var result = await _mediator.Send(query);
 
             if (result.Course == null)
             {
@@ -116,8 +130,6 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             return View(viewModel);
         }
-
-
 
         [Route("{id}/providers", Name = RouteNames.CourseProviders)]
         public async Task<IActionResult> CourseProviders(GetCourseProvidersRequest request)

@@ -2,6 +2,7 @@
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Validation;
+using GetCourseQueryValidator = SFA.DAS.FAT.Web.Validators.GetCourseQueryValidator;
 
 namespace SFA.DAS.FAT.Web.AppStart
 {
