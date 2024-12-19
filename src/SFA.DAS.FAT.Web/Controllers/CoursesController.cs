@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -17,9 +17,9 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Validation;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace SFA.DAS.FAT.Web.Controllers
 {
@@ -31,11 +31,11 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly ICookieStorageService<LocationCookieItem> _locationCookieStorageService;
         private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
         private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-        private readonly IDateTimeService _dateTimeService;
         private readonly FindApprenticeshipTrainingWeb _config;
         private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _validator;
+        private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -45,16 +45,16 @@ namespace SFA.DAS.FAT.Web.Controllers
             ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
-            IDateTimeService dateTimeService,
-            IValidator<GetCourseQuery> validator)
+            IValidator<GetCourseQuery> validator,
+            IValidator<GetCourseProviderQuery> courseProviderValidator)
         {
             _logger = logger;
             _mediator = mediator;
             _locationCookieStorageService = locationCookieStorageService;
             _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
             _shortlistCookieService = shortlistCookieService;
-            _dateTimeService = dateTimeService;
             _validator = validator;
+            _courseProviderValidator = courseProviderValidator;
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
@@ -110,9 +110,9 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             var validationResult = await _validator.ValidateAsync(query);
 
-            if (!validationResult.IsValid())
+            if (!validationResult.IsValid)
             {
-                throw new ValidationException(validationResult.DataAnnotationResult, null, null);
+                throw new ValidationException(validationResult.Errors[0].ErrorMessage, null, null);
             }
 
             var result = await _mediator.Send(query);
@@ -207,7 +207,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var locationItem = CheckLocation(location);
                 var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-                var result = await _mediator.Send(new GetCourseProviderQuery
+                var query = new GetCourseProviderQuery
                 {
                     ProviderId = providerId,
                     CourseId = id,
@@ -215,7 +215,15 @@ namespace SFA.DAS.FAT.Web.Controllers
                     Lat = locationItem?.Lat ?? 0,
                     Lon = locationItem?.Lon ?? 0,
                     ShortlistUserId = shortlistItem?.ShortlistUserId
-                });
+                };
+
+                var validationResult = await _courseProviderValidator.ValidateAsync(query);
+                if (!validationResult.IsValid)
+                {
+                    throw new ValidationException(validationResult.Errors[0].ErrorMessage, null, null);
+                }
+
+                var result = await _mediator.Send(query);
 
                 var cookieResult = new LocationCookieItem
                 {

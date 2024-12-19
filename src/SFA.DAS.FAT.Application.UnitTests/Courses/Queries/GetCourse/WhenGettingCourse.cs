@@ -1,9 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentValidation;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
@@ -11,7 +11,9 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Validation;
 using SFA.DAS.Testing.AutoFixture;
-using ValidationResult = SFA.DAS.FAT.Domain.Validation.ValidationResult;
+using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
+
+//using ValidationResult = SFA.DAS.FAT.Domain.Validation.ValidationResult;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 {
@@ -56,15 +58,15 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 
             //Act
             var actual = await handler.Handle(request, CancellationToken.None);
-            
+
             //Assert
-            mockService.Verify(x=>x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
+            mockService.Verify(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
             Assert.IsNotNull(actual);
             actual.Course.Should().BeEquivalentTo(courseResponse.Course);
             actual.ProvidersCount.Should().BeEquivalentTo(courseResponse.ProvidersCount);
             actual.ShortlistItemCount.Should().Be(courseResponse.ShortlistItemCount);
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_No_Course_Returns_Null(
             GetCourseQuery request,
@@ -80,9 +82,9 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 
             //Act
             var actual = await handler.Handle(request, CancellationToken.None);
-            
+
             //Assert
-            mockService.Verify(x=>x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
+            mockService.Verify(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
             Assert.IsNull(actual.Course);
             Assert.IsNull(actual.ProvidersCount);
             Assert.AreEqual(0, actual.ShortlistItemCount);

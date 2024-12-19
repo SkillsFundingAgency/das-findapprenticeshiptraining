@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
-
-namespace SFA.DAS.FAT.Domain.Validation
+﻿namespace SFA.DAS.FAT.Domain.Validation
 {
-    public interface IValidator<in T>
-    {
-        Task<ValidationResult> ValidateAsync(T item);
-    }
+    // public interface IValidator<in T>
+    // {
+    //     Task<ValidationResult> ValidateAsync(T item);
+    // }
 }

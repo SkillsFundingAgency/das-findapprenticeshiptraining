@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -21,11 +20,11 @@ namespace SFA.DAS.FAT.Application.Courses.Queries.GetProvider
         public async Task<GetCourseProviderResult> Handle(GetCourseProviderQuery query, CancellationToken cancellationToken)
         {
 
-            var validationResult = await _validator.ValidateAsync(query);
-            if (!validationResult.IsValid())
-            {
-                throw new ValidationException(validationResult.DataAnnotationResult, null, null);
-            }
+            //var validationResult = await _validator.ValidateAsync(query);
+            //if (!validationResult.IsValid())
+            //{
+            //    throw new ValidationException(validationResult.DataAnnotationResult, null, null);
+            //}
 
             var response = await _courseService.GetCourseProviderDetails(query.ProviderId, query.CourseId, query.Location, query.Lat, query.Lon, query.ShortlistUserId ?? Guid.Empty);
 
