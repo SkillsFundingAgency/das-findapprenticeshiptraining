@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using MediatR;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -18,6 +18,7 @@ using SFA.DAS.FAT.Infrastructure.HealthCheck;
 using SFA.DAS.FAT.Web.AppStart;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Filters;
+using SFA.DAS.FAT.Web.Validators;
 
 namespace SFA.DAS.FAT.Web;
 
@@ -82,7 +83,8 @@ public class Startup
 
         services.AddServiceRegistration(_configuration);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetCourseQueryHandler).Assembly));
-        services.AddMediatRValidation();
+
+        services.AddValidatorsFromAssembly(typeof(GetCourseQueryValidator).Assembly);
 
         services.AddLogging()
             .AddTelemetryRegistration(_configuration)

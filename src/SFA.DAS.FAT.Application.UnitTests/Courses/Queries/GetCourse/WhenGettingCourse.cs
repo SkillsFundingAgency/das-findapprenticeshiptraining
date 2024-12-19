@@ -1,59 +1,29 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentValidation;
+using FluentValidation.Results;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Validation;
-using SFA.DAS.Testing.AutoFixture;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
-//using ValidationResult = SFA.DAS.FAT.Domain.Validation.ValidationResult;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 {
     public class WhenGettingCourse
     {
         [Test, MoqAutoData]
-        public void Then_Throws_ValidationException_When_Request_Fails_Validation(
-            GetCourseQuery request,
-            string propertyName,
-            [Frozen] Mock<IValidator<GetCourseQuery>> mockValidator,
-            [Frozen] ValidationResult validationResult,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCourseQueryHandler handler)
-        {
-            //Arrange
-            validationResult.AddError(propertyName);
-            mockValidator
-                .Setup(validator => validator.ValidateAsync(It.IsAny<GetCourseQuery>()))
-                .ReturnsAsync(validationResult);
-
-            //Act
-            var act = new Func<Task>(async () => await handler.Handle(request, CancellationToken.None));
-
-            //Assert
-            act.Should().ThrowAsync<ValidationException>()
-                .WithMessage($"*{propertyName}*");
-        }
-
-        [Test, MoqAutoData]
         public async Task Then_If_The_Query_Is_Valid_The_Service_Is_Called_And_The_Data_Returned(
             GetCourseQuery request,
             TrainingCourse courseResponse,
-            [Frozen] Mock<IValidator<GetCourseQuery>> mockValidator,
             [Frozen] ValidationResult validationResult,
             [Frozen] Mock<ICourseService> mockService,
             GetCourseQueryHandler handler)
         {
             //Arrange
-            validationResult.ValidationDictionary.Clear();
-            mockValidator.Setup(x => x.ValidateAsync(request)).ReturnsAsync(validationResult);
             mockService.Setup(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId)).ReturnsAsync(courseResponse);
 
             //Act
@@ -70,14 +40,11 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
         [Test, MoqAutoData]
         public async Task Then_If_There_Is_No_Course_Returns_Null(
             GetCourseQuery request,
-            [Frozen] Mock<IValidator<GetCourseQuery>> mockValidator,
             [Frozen] ValidationResult validationResult,
             [Frozen] Mock<ICourseService> mockService,
             GetCourseQueryHandler handler)
         {
             //Arrange
-            validationResult.ValidationDictionary.Clear();
-            mockValidator.Setup(x => x.ValidateAsync(request)).ReturnsAsync(validationResult);
             mockService.Setup(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId)).ReturnsAsync((TrainingCourse)null);
 
             //Act

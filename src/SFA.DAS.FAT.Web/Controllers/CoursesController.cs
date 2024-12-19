@@ -19,7 +19,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
+
 
 namespace SFA.DAS.FAT.Web.Controllers
 {
@@ -108,11 +108,11 @@ namespace SFA.DAS.FAT.Web.Controllers
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             };
 
-            var validationResult = await _validator.ValidateAsync(query);
+            var validationResult = _validator.Validate(query);
 
             if (!validationResult.IsValid)
             {
-                throw new ValidationException(validationResult.Errors[0].ErrorMessage, null, null);
+                throw new ValidationException(validationResult.Errors[0].ErrorMessage);
             }
 
             var result = await _mediator.Send(query);
@@ -217,10 +217,11 @@ namespace SFA.DAS.FAT.Web.Controllers
                     ShortlistUserId = shortlistItem?.ShortlistUserId
                 };
 
-                var validationResult = await _courseProviderValidator.ValidateAsync(query);
+                var validationResult = _courseProviderValidator.Validate(query);
+
                 if (!validationResult.IsValid)
                 {
-                    throw new ValidationException(validationResult.Errors[0].ErrorMessage, null, null);
+                    throw new ValidationException(validationResult.Errors[0].ErrorMessage);
                 }
 
                 var result = await _mediator.Send(query);

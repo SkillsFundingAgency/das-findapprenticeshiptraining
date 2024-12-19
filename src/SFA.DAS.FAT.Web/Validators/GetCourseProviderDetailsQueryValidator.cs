@@ -1,21 +1,17 @@
-﻿using System.Threading.Tasks;
+﻿using FluentValidation;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
-using SFA.DAS.FAT.Domain.Validation;
 
 namespace SFA.DAS.FAT.Web.Validators
 {
-    public class GetCourseProviderDetailsQueryValidator : IValidator<GetCourseProviderQuery>
+    public class GetCourseProviderDetailsQueryValidator : AbstractValidator<GetCourseProviderQuery>
     {
-        public Task<ValidationResult> ValidateAsync(GetCourseProviderQuery item)
+        public const string ProviderIdErrorMessage = "ProviderId must be greater than zero";
+        public GetCourseProviderDetailsQueryValidator()
         {
-            var validationResult = new ValidationResult();
-
-            if (item.ProviderId < 1)
-            {
-                validationResult.AddError(nameof(item.ProviderId));
-            }
-
-            return Task.FromResult(validationResult);
+            RuleFor(s => s.ProviderId)
+                .Cascade(CascadeMode.Stop)
+                .GreaterThan(0)
+                .WithMessage(ProviderIdErrorMessage);
         }
     }
 }
