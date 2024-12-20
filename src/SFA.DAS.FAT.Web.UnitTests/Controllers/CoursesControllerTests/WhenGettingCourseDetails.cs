@@ -1,9 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentValidation;
-using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,6 +16,8 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
+using ValidationException = FluentValidation.ValidationException;
+using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
 {
@@ -52,7 +54,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             validator.Setup(v =>
                 v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
 
             //Act
             var actual = await controller.CourseDetail(standardCode, "");
@@ -199,6 +200,38 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actualModel = actual.Model as CourseViewModel;
             Assert.IsNotNull(actualModel);
             actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_Help_Url_Is_RequestApprenticeshipTraining_From_Config_If_EmployerDemandFeature_NotEnabled(
+                int standardCode,
+                GetCourseResult response,
+                LocationCookieItem locationCookieItem,
+                [Frozen] Mock<IMediator> mediator,
+                [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+                [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+                [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+                [Greedy] CoursesController controller)
+        {
+            //Arrange
+            config.Object.Value.EmployerDemandFeatureToggle = false;
+            mediator
+                .Setup(x => x.Send(
+                    It.Is<GetCourseQuery>(c => c.CourseId.Equals(standardCode)),
+                    It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+            validator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+
+            //Act
+            var actual = await controller.CourseDetail(standardCode, "") as ViewResult;
+
+            //Assert
+            Assert.IsNotNull(actual);
+            var actualModel = actual.Model as CourseViewModel;
+            Assert.IsNotNull(actualModel);
+            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
+            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }
 
         [Test, MoqAutoData]
