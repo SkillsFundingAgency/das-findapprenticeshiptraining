@@ -45,10 +45,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index("") as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
             var model = actual.Model as ShortlistViewModel;
@@ -82,10 +82,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index(WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
             var model = actual.Model as ShortlistViewModel;
@@ -118,10 +118,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index(WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
             var model = actual.Model as ShortlistViewModel;
@@ -131,7 +131,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Encoded_Removed_Param_Is_Invalid_Then_It_Is_Set_To_Empty(
             string removed,
@@ -152,15 +152,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index(encodedData.ToString()) as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
-            var model = actual.Model as ShortlistViewModel;
+            var model = actual!.Model as ShortlistViewModel;
             model.Should().NotBeNull();
-            model.Shortlist.Should()
+            model!.Shortlist.Should()
                 .BeEquivalentTo(
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();
@@ -183,18 +183,18 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index(null) as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
-            var model = actual.Model as ShortlistViewModel;
+            var model = actual!.Model as ShortlistViewModel;
             model.Should().NotBeNull();
-            model.Shortlist.Should().BeEmpty();
+            model!.Shortlist.Should().BeEmpty();
             mockMediator.Verify(mediator => mediator.Send(
-                    It.IsAny<GetShortlistForUserQuery>(), 
-                    It.IsAny<CancellationToken>()), 
+                    It.IsAny<GetShortlistForUserQuery>(),
+                    It.IsAny<CancellationToken>()),
                 Times.Never);
         }
 
@@ -218,15 +218,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
                     It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(resultFromMediator);
-            
+
             //Act
             var actual = await controller.Index("") as ViewResult;
-            
+
             //Assert
             actual.Should().NotBeNull();
-            var model = actual.Model as ShortlistViewModel;
+            var model = actual!.Model as ShortlistViewModel;
             model.Should().NotBeNull();
-            model.Shortlist.Should()
+            model!.Shortlist.Should()
                 .BeEquivalentTo(
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();
@@ -234,7 +234,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
             {
                 itemViewModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{itemViewModel.Course.Id}/share-interest?entrypoint=0");
             }
-            
+
         }
 
         [Test, MoqAutoData]
@@ -263,9 +263,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests
 
             //Assert
             actual.Should().NotBeNull();
-            var model = actual.Model as ShortlistViewModel;
+            var model = actual!.Model as ShortlistViewModel;
             model.Should().NotBeNull();
-            model.Shortlist.Should()
+            model!.Shortlist.Should()
                 .BeEquivalentTo(
                     resultFromMediator.Shortlist.Select(item => (ShortlistItemViewModel)item));
             model.Removed.Should().BeEmpty();

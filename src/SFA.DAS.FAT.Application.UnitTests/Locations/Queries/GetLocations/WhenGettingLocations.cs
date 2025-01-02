@@ -26,7 +26,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Locations.Queries.GetLocations
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.LocationItems.Should().BeEquivalentTo(locationsFromService.LocationItems);
-            
+
         }
     }
 }

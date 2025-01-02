@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Locations.Api
         {
             //Arrange Act
             var actual = new GetLocationsApiRequest(baseUrl, searchTerm);
-            
+
             //Assert
             actual.GetUrl.Should().Be($"{baseUrl}locations?searchTerm={searchTerm}");
         }

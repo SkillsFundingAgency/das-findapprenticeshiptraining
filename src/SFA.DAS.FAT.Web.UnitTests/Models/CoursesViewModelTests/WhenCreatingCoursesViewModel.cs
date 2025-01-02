@@ -66,43 +66,45 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
 
             viewModel.TotalMessage.Should().Be("5 results");
         }
-        
+
         [Test, AutoData]
         public void Then_If_There_Are_Filtered_Levels_Sectors_Keywords_The_ShowFilterOptions_Property_Is_True(List<int> selectedLevels, List<string> selectedRoutes, string keyword)
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(selectedRoutes, keyword, selectedLevels);
-            
+
             //Assert
-            Assert.IsTrue(model.ShowFilterOptions); 
+            model.ShowFilterOptions.Should().BeTrue();
         }
+
         [Test, AutoData]
         public void Then_If_There_Are_Filtered_Sectors_Keywords_The_ShowFilterOptions_Property_Is_True(List<string> selectedRoutes, string keyword)
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(selectedRoutes, keyword, new List<int>());
-            
+
             //Assert
-            Assert.IsTrue(model.ShowFilterOptions); 
+            model.ShowFilterOptions.Should().BeTrue();
         }
-        
+
         [Test, AutoData]
         public void Then_If_There_Are_Filtered_Keywords_The_ShowFilterOptions_Property_Is_True(string keyword)
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(new List<string>(), keyword, new List<int>());
-            
+
             //Assert
-            Assert.IsTrue(model.ShowFilterOptions); 
+            model.ShowFilterOptions.Should().BeTrue();
         }
+
         [Test]
         public void Then_If_There_Are_No_Filtered_Options_The_ShowFilterOptions_Property_Is_False()
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(new List<string>(), "", new List<int>());
-            
+
             //Assert
-            Assert.IsFalse(model.ShowFilterOptions); 
+            model.ShowFilterOptions.Should().BeFalse();
         }
 
         [Test]
@@ -110,30 +112,29 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(new List<string>(), "test", new List<int>(), OrderBy.None);
-            
+
             //Assert
-            Assert.AreEqual(OrderBy.Relevance, model.OrderBy); 
+            model.OrderBy.Should().Be(OrderBy.Relevance);
         }
-        
+
         [Test]
         public void Then_If_There_Is_A_Keyword_Search_And_OrderBy_It_Is_Maintained()
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(new List<string>(), "test", new List<int>());
-            
+
             //Assert
-            Assert.AreEqual(OrderBy.Name, model.OrderBy); 
+            model.OrderBy.Should().Be(OrderBy.Name);
         }
-        
-        
+
         [Test]
         public void Then_If_There_Is_No_Keyword_Search_And_OrderBy_It_Is_Set_To_None()
         {
             //Arrange Act
             var model = CoursesViewModelFactory.BuildModel(new List<string>(), "", new List<int>());
-            
+
             //Assert
-            Assert.AreEqual(OrderBy.None, model.OrderBy); 
+            model.OrderBy.Should().Be(OrderBy.None);
         }
     }
 }
