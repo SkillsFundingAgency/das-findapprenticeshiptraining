@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +20,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 
+
 namespace SFA.DAS.FAT.Web.Controllers
 {
     [Route("[controller]")]
@@ -29,10 +31,11 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly ICookieStorageService<LocationCookieItem> _locationCookieStorageService;
         private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
         private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-        private readonly IDateTimeService _dateTimeService;
         private readonly FindApprenticeshipTrainingWeb _config;
         private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
+        private readonly IValidator<GetCourseQuery> _courseValidator;
+        private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -42,14 +45,16 @@ namespace SFA.DAS.FAT.Web.Controllers
             ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
-            IDateTimeService dateTimeService)
+            IValidator<GetCourseQuery> courseValidator,
+            IValidator<GetCourseProviderQuery> courseProviderValidator)
         {
             _logger = logger;
             _mediator = mediator;
             _locationCookieStorageService = locationCookieStorageService;
             _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
             _shortlistCookieService = shortlistCookieService;
-            _dateTimeService = dateTimeService;
+            _courseValidator = courseValidator;
+            _courseProviderValidator = courseProviderValidator;
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
@@ -94,14 +99,23 @@ namespace SFA.DAS.FAT.Web.Controllers
             var location = CheckLocation(locationName);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            var result = await _mediator.Send(new GetCourseQuery
+            var query = new GetCourseQuery
             {
                 CourseId = id,
                 Lat = location?.Lat ?? 0,
                 Lon = location?.Lon ?? 0,
                 LocationName = location?.Name,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
-            });
+            };
+
+            var validationResult = await _courseValidator.ValidateAsync(query);
+
+            if (!validationResult.IsValid)
+            {
+                throw new ValidationException(validationResult.Errors[0].ErrorMessage);
+            }
+
+            var result = await _mediator.Send(query);
 
             if (result.Course == null)
             {
@@ -116,8 +130,6 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             return View(viewModel);
         }
-
-
 
         [Route("{id}/providers", Name = RouteNames.CourseProviders)]
         public async Task<IActionResult> CourseProviders(GetCourseProvidersRequest request)
@@ -195,7 +207,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 var locationItem = CheckLocation(location);
                 var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-                var result = await _mediator.Send(new GetCourseProviderQuery
+                var query = new GetCourseProviderQuery
                 {
                     ProviderId = providerId,
                     CourseId = id,
@@ -203,7 +215,16 @@ namespace SFA.DAS.FAT.Web.Controllers
                     Lat = locationItem?.Lat ?? 0,
                     Lon = locationItem?.Lon ?? 0,
                     ShortlistUserId = shortlistItem?.ShortlistUserId
-                });
+                };
+
+                var validationResult = await _courseProviderValidator.ValidateAsync(query);
+
+                if (!validationResult.IsValid)
+                {
+                    throw new ValidationException(validationResult.Errors[0].ErrorMessage);
+                }
+
+                var result = await _mediator.Send(query);
 
                 var cookieResult = new LocationCookieItem
                 {

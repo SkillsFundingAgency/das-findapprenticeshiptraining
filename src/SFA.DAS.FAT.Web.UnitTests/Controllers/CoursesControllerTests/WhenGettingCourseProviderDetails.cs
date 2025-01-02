@@ -6,6 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +38,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller
             )
         {
@@ -52,6 +55,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
@@ -78,6 +84,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             ShortlistCookieItem shortlistCookieItem,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -93,6 +100,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
@@ -116,6 +126,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -126,6 +137,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns((ShortlistCookieItem)null);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var result = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
@@ -147,6 +161,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -158,6 +173,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                         c.Location.Equals("")),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "-1", "", "") as ViewResult;
@@ -176,6 +194,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -189,6 +208,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     && c.Lon.Equals(location.Lon)
                     ), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "");
@@ -210,6 +232,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -223,6 +246,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     It.IsAny<GetCourseProviderQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as ViewResult;
@@ -241,6 +267,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -253,6 +280,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     It.IsAny<GetCourseProviderQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as ViewResult;
@@ -295,6 +325,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -307,6 +338,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     It.IsAny<GetCourseProviderQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
@@ -324,6 +358,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseProviderResult response,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -336,6 +371,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     It.IsAny<GetCourseProviderQuery>(),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
@@ -358,6 +396,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller
             )
         {
@@ -377,6 +416,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), "") as ViewResult;
@@ -401,6 +443,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller
             )
         {
@@ -420,6 +463,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
@@ -444,6 +490,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller
             )
         {
@@ -463,6 +510,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
@@ -487,6 +537,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller
             )
         {
@@ -506,6 +557,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, encodedData.ToString(), encodedData.ToString()) as ViewResult;
@@ -532,6 +586,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
             [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -548,6 +603,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
+
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
@@ -573,6 +631,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
             [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
             [Greedy] CoursesController controller)
         {
             //Arrange
@@ -590,6 +649,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookieItem);
 
+            validator.Setup(v =>
+                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+
             //Act
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
 
@@ -598,6 +660,25 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actualModel = actual.Model as CourseProviderViewModel;
             Assert.IsNotNull(actualModel);
             actualModel.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
+        }
+
+        [Test, MoqAutoData]
+        public async Task Then_The_ProviderId_Is_Invalid_And_PageRedirectedToError500Page(
+            int courseId,
+            string location,
+            ShortlistCookieItem shortlistCookieItem,
+            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
+            [Greedy] CoursesController controller)
+        {
+            const int providerId = 0;
+            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+                .Returns(shortlistCookieItem);
+
+            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as RedirectToRouteResult;
+
+            // Assert
+            actual!.RouteName.Should().Be(RouteNames.Error500);
         }
     }
 }
