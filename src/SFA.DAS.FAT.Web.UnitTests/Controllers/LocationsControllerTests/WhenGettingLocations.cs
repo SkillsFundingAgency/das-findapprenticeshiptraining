@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -19,23 +20,23 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.LocationsControllerTests
             string searchTerm,
             GetLocationsQueryResponse response,
             [Frozen] Mock<IMediator> mediator,
-            [Greedy]LocationsController controller)
+            [Greedy] LocationsController controller)
         {
             //Arrange
-            mediator.Setup(x => 
-                    x.Send(It.Is<GetLocationsQuery>(c => 
-                        c.SearchTerm.Equals(searchTerm)),It.IsAny<CancellationToken>()))
+            mediator.Setup(x =>
+                    x.Send(It.Is<GetLocationsQuery>(c =>
+                        c.SearchTerm.Equals(searchTerm)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.Locations(searchTerm);
-            
+
             //Assert
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
             var actualResult = actual as JsonResult;
-            Assert.IsNotNull(actualResult);
-            var model = (LocationsViewModel)actualResult.Value;
-            Assert.IsNotNull(model);
+            actualResult.Should().NotBeNull();
+            var model = (LocationsViewModel)actualResult!.Value;
+            model.Should().NotBeNull();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentValidation.Results;
 using Moq;
 using NUnit.Framework;
@@ -30,7 +31,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviderDet
 
             //Assert
             mockService.Verify(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
             actual.Provider.Should().BeEquivalentTo(courseProviderResponse.CourseProviderDetails);
             actual.Course.Should().BeEquivalentTo(courseProviderResponse.TrainingCourse);
             actual.AdditionalCourses.Should().BeEquivalentTo(courseProviderResponse.AdditionalCourses);
@@ -57,14 +58,18 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviderDet
 
             //Assert
             mockService.Verify(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value), Times.Once);
-            Assert.IsNull(actual.Provider);
-            Assert.IsNull(actual.Course);
-            Assert.IsNull(actual.AdditionalCourses);
-            Assert.IsNull(actual.Location);
-            Assert.IsNull(actual.LocationGeoPoint);
-            Assert.AreEqual(0, actual.ShortlistItemCount);
-            Assert.AreEqual(0, actual.TotalProviders);
-            Assert.AreEqual(0, actual.ProvidersAtLocation);
+
+            using (new AssertionScope())
+            {
+                actual.Provider.Should().BeNull();
+                actual.Course.Should().BeNull();
+                actual.AdditionalCourses.Should().BeNull();
+                actual.Location.Should().BeNull();
+                actual.LocationGeoPoint.Should().BeNull();
+                actual.ShortlistItemCount.Should().Be(0);
+                actual.TotalProviders.Should().Be(0);
+                actual.ProvidersAtLocation.Should().Be(0);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -35,25 +36,29 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                     && c.Location.Equals(request.Location)
                     && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Select(type => (Domain.Courses.DeliveryModeType)type))
                     && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings.Select(type => (Domain.Courses.ProviderRating)type))
                     && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings.Select(type => (Domain.Courses.ProviderRating)type))),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.Should().BeEquivalentTo(new CourseProvidersViewModel(request, response, null), options=>options
-                .Excluding(c=>c.ProviderOrder)
-                .Excluding(c=>c.BannerUpdateMessage)
-            );
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel.Should().BeEquivalentTo(new CourseProvidersViewModel(request, response, null), options =>
+                    options
+                        .Excluding(c => c.ProviderOrder)
+                        .Excluding(c => c.BannerUpdateMessage)
+                );
+            }
         }
 
         [Test, MoqAutoData]
@@ -67,23 +72,26 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            cookieStorageService.Verify(x=>x.Update(Constants.LocationCookieName,
-                It.Is<LocationCookieItem>(c=>c.Name.Equals(response.Location)
-                                          && c.Lat.Equals(response.LocationGeoPoint.FirstOrDefault())
-                                          && c.Lon.Equals(response.LocationGeoPoint.LastOrDefault())),2));
-            actualModel.HasLocation.Should().BeTrue();
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName,
+                    It.Is<LocationCookieItem>(c => c.Name.Equals(response.Location)
+                                                   && c.Lat.Equals(response.LocationGeoPoint.FirstOrDefault())
+                                                   && c.Lon.Equals(response.LocationGeoPoint.LastOrDefault())), 2));
+                actualModel!.HasLocation.Should().BeTrue();
+            }
         }
 
         [Test, MoqAutoData]
@@ -98,21 +106,21 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(shortlistCookieItem);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_The_Location_Is_Removed_From_The_Cookie_If_Set_To_Minus_One(
             GetCourseProvidersRequest request,
@@ -127,20 +135,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             request.Location = "-1";
             response.Location = null;
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(string.Empty)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.HasLocation.Should().BeFalse();
-            cookieStorageService.Verify(x=>x.Delete(Constants.LocationCookieName));
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.HasLocation.Should().BeFalse();
+            }
+
+            cookieStorageService.Verify(x => x.Delete(Constants.LocationCookieName));
         }
 
         [Test, MoqAutoData]
@@ -170,20 +182,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
 
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.Providers.Should().BeEquivalentTo(response.Providers.Select(provider => (ProviderViewModel)provider));
-            actualModel.HasLocation.Should().BeTrue();
-            cookieStorageService.Verify(x=>x.Update(Constants.LocationCookieName,
-                It.Is<LocationCookieItem>(c=>
-                    c.Name.Equals(response.Location)
-                    && c.Lat.Equals(response.LocationGeoPoint.FirstOrDefault())
-                    && c.Lon.Equals(response.LocationGeoPoint.LastOrDefault())
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.Providers.Should()
+                    .BeEquivalentTo(response.Providers.Select(provider => (ProviderViewModel)provider));
+                actualModel.HasLocation.Should().BeTrue();
+                cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName,
+                    It.Is<LocationCookieItem>(c =>
+                        c.Name.Equals(response.Location)
+                        && c.Lat.Equals(response.LocationGeoPoint.FirstOrDefault())
+                        && c.Lon.Equals(response.LocationGeoPoint.LastOrDefault())
                     )
-                ,2));
+                    , 2));
+            }
         }
 
         [Test, MoqAutoData]
@@ -197,18 +213,18 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             await controller.CourseProviders(request);
-            
+
             //Assert
-            cookieStorageService.Verify(x=>x.Update(
+            cookieStorageService.Verify(x => x.Update(
                 Constants.ProvidersCookieName,
-                It.Is<GetCourseProvidersRequest>(c=>c == request),
+                It.Is<GetCourseProvidersRequest>(c => c == request),
                 2));
         }
 
@@ -224,13 +240,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)),
                     It.IsAny<CancellationToken>()))
                 .ThrowsAsync(exception);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as RedirectToRouteResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            actual.RouteName.Should().Be(RouteNames.Error500);
+            actual.Should().NotBeNull();
+            actual!.RouteName.Should().Be(RouteNames.Error500);
         }
 
         [Test, MoqAutoData]
@@ -244,17 +260,17 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course = null;
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as RedirectToRouteResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            actual.RouteName.Should().Be(RouteNames.Error404);
+            actual.Should().NotBeNull();
+            actual!.RouteName.Should().Be(RouteNames.Error404);
         }
 
         [Test, MoqAutoData]
@@ -268,17 +284,17 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Arrange
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(-1);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as RedirectToRouteResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            actual.RouteName.Should().Be(RouteNames.CourseDetails);
+            actual.Should().NotBeNull();
+            actual!.RouteName.Should().Be(RouteNames.CourseDetails);
         }
 
         [Test, MoqAutoData]
@@ -295,20 +311,20 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             await controller.CourseProviders(request);
-            
+
             //Assert
             var expectedProviders = response.Providers.ToList();
             foreach (var responseProvider in expectedProviders)
             {
-                protector.Verify(c=>c.Protect(It.Is<byte[]>(
-                    x=>x[0].Equals(Encoding.UTF8.GetBytes($"{expectedProviders.IndexOf(responseProvider) + 1}|{response.TotalFiltered}")[0]))), Times.Once);    
+                protector.Verify(c => c.Protect(It.Is<byte[]>(
+                    x => x[0].Equals(Encoding.UTF8.GetBytes($"{expectedProviders.IndexOf(responseProvider) + 1}|{response.TotalFiltered}")[0]))), Times.Once);
             }
         }
 
@@ -329,24 +345,28 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(It.IsAny<string>())).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.ProviderOrder.Count.Should().Be(response.Providers.Count());
-            actualModel.ProviderOrder.Select(c => c.Value).All(c => c.Equals(Convert.ToBase64String(encodedData))).Should().BeTrue();
-            actualModel.ProviderOrder.Select(c => c.Key).ToList().Should()
-                .BeEquivalentTo(response.Providers.Select(c => c.ProviderId).ToList());
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.ProviderOrder.Count.Should().Be(response.Providers.Count());
+                actualModel.ProviderOrder.Select(c => c.Value).All(c => c.Equals(Convert.ToBase64String(encodedData)))
+                    .Should().BeTrue();
+                actualModel.ProviderOrder.Select(c => c.Key).ToList().Should()
+                    .BeEquivalentTo(response.Providers.Select(c => c.ProviderId).ToList());
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Removed_Parameter_Is_Provided_It_Is_Is_Decoded_And_Added_To_The_Model(
             string removed,
@@ -366,21 +386,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().Be($"{removed} removed from shortlist.");
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.BannerUpdateMessage.Should().Be($"{removed} removed from shortlist.");
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Added_Parameter_Is_Provided_It_Is_Is_Decoded_And_Added_To_The_Model(
             string added,
@@ -400,21 +423,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().Be($"{added} added to shortlist.");
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.BannerUpdateMessage.Should().Be($"{added} added to shortlist.");
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Removed_And_Added_Parameter_Is_Is_Invalid_Empty_String_Is_Added(
             string removed,
@@ -433,21 +459,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().BeEmpty();
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel.BannerUpdateMessage.Should().BeEmpty();
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_If_The_Removed_And_Added_Parameter_Is_Is_Unable_To_Be_Decoded_An_Empty_String_Is_Added(
             GetCourseProvidersRequest request,
@@ -462,21 +491,24 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().BeEmpty();
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel.BannerUpdateMessage.Should().BeEmpty();
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_The_Help_Url_Is_EmployerDemand_From_Config_If_EmployerDemandFeature_Enabled(
             GetCourseProvidersRequest request,
@@ -492,21 +524,25 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=2");
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual!.Model as CourseProvidersViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.GetHelpFindingCourseUrl(config.Object.Value).Should().Be(
+                    $"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=2");
+            }
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_The_Help_Url_Is_RequestApprenticeshipTraining_From_Config_If_EmployerDemandFeature_NotEnabled(
             GetCourseProvidersRequest request,
@@ -522,18 +558,18 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id) 
+                    It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                                                         && c.Location.Equals(request.Location)),
                     It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
-            
+
             //Act
             var actual = await controller.CourseProviders(request) as ViewResult;
-            
+
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProvidersViewModel;
-            Assert.IsNotNull(actualModel);
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
             var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Course.Id}&requestType={EntryPoint.Providers}&location={actualModel.Location}");
             actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
         }

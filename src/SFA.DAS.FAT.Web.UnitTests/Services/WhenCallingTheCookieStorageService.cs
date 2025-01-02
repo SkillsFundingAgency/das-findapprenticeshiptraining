@@ -42,7 +42,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services
             var actual = mockHeaderDictionary["set-cookie"].ToArray().First().Split(";");
             actual.First().Should().Contain(testCookieName);
             var actualExpiry = DateTime.Parse(actual.Skip(1).First().Split("=").Last());
-            Assert.IsTrue(actualExpiry > DateTime.UtcNow.AddHours(23).AddMinutes(59));
+            (actualExpiry > DateTime.UtcNow.AddHours(23).AddMinutes(59)).Should().BeTrue();
         }
 
         [Test, AutoData]
@@ -72,8 +72,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services
             actual.Should().NotBeNull();
             actual.Should().Be(content);
         }
-        
-        
+
+
         [Test, AutoData]
         public void Then_Default_Is_Returned_If_Error(
             string testCookieName,
@@ -127,7 +127,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services
             service.Delete(testCookieName);
 
             //Assert
-            Assert.IsEmpty(fakeCookieCollection.Store);
+            fakeCookieCollection.Store.Should().BeEmpty();
         }
     }
 }

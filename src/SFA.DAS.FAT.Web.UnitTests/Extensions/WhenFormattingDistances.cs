@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using NUnit.Framework;
 using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Extensions
@@ -16,7 +17,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Extensions
         [TestCase(null, "")]
         public void Then_The_Trailing_Zero_Is_Removed(decimal? value, string expected)
         {
-            Assert.AreEqual(expected, value.FormatDistance());
+            value.FormatDistance().Should().Be(expected);
         }
     }
 }

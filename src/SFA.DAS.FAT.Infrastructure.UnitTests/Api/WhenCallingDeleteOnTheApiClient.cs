@@ -1,8 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
+using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using Moq.Protected;
@@ -28,13 +30,13 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
             {
                 StatusCode = HttpStatusCode.Accepted
             };
-            var deleteTestRequest = new DeleteTestRequest(id,"https://test.local");
+            var deleteTestRequest = new DeleteTestRequest(id, "https://test.local");
             var expectedUrl = deleteTestRequest.DeleteUrl;
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, config.Key, HttpMethod.Delete);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new ApiClient(client, configMock.Object);
-            
-            
+
+
             //Act
             await apiClient.Delete(deleteTestRequest);
 
@@ -48,7 +50,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
                     ItExpr.IsAny<CancellationToken>()
                 );
         }
-        
+
         [Test, AutoData]
         public void Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown(
             int id,
@@ -61,22 +63,22 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
             {
                 StatusCode = HttpStatusCode.BadRequest
             };
-            var deleteTestRequest = new DeleteTestRequest(id,"https://test.local");
+            var deleteTestRequest = new DeleteTestRequest(id, "https://test.local");
             var expectedUrl = deleteTestRequest.DeleteUrl;
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, config.Key, HttpMethod.Delete);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new ApiClient(client, configMock.Object);
-            
-            //Act Assert
-            Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Delete(deleteTestRequest));
-            
+
+            Func<Task> check = () => apiClient.Delete(deleteTestRequest);
+            check.Should().ThrowAsync<HttpRequestException>();
+
         }
-        
+
         private class DeleteTestRequest : IDeleteApiRequest
         {
             private readonly int _id;
 
-            public DeleteTestRequest (int id, string baseUrl)
+            public DeleteTestRequest(int id, string baseUrl)
             {
                 _id = id;
                 BaseUrl = baseUrl;
