@@ -56,6 +56,5 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviders
             result.Location.Should().BeNullOrEmpty();
             result.LocationGeoPoint.Should().BeNull();
         }
-
     }
 }

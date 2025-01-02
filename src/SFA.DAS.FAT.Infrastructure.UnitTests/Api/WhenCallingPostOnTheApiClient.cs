@@ -33,15 +33,15 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
                 Content = new StringContent($"'{responseId}'"),
                 StatusCode = HttpStatusCode.Accepted
             };
-            var postTestRequest = new PostTestRequest(id,"https://test.local") {Data = postContent};
+            var postTestRequest = new PostTestRequest(id, "https://test.local") { Data = postContent };
             var expectedUrl = postTestRequest.PostUrl;
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, config.Key, HttpMethod.Post);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new ApiClient(client, configMock.Object);
-            
-            
+
+
             //Act
-            var actual = await apiClient.Post<string,PostData>(postTestRequest);
+            var actual = await apiClient.Post<string, PostData>(postTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
@@ -54,7 +54,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
                 );
             Guid.Parse(actual).Should().Be(responseId);
         }
-        
+
         [Test, AutoData]
         public void Then_If_It_Is_Not_Successful_An_Exception_Is_Thrown(
             PostData postContent,
@@ -68,22 +68,22 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
             {
                 StatusCode = HttpStatusCode.BadRequest
             };
-            var postTestRequest = new PostTestRequest(id,"https://test.local") {Data = postContent};
+            var postTestRequest = new PostTestRequest(id, "https://test.local") { Data = postContent };
             var expectedUrl = postTestRequest.PostUrl;
             var httpMessageHandler = MessageHandler.SetupMessageHandlerMock(response, expectedUrl, config.Key, HttpMethod.Post);
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new ApiClient(client, configMock.Object);
-            
+
             //Act Assert
-            Assert.ThrowsAsync<HttpRequestException>(() => apiClient.Post<Guid, PostData>(postTestRequest));
-            
+            Func<Task> check = () => apiClient.Post<Guid, PostData>(postTestRequest);
+            check.Should().ThrowAsync<HttpRequestException>();
         }
-        
+
         private class PostTestRequest : IPostApiRequest<PostData>
         {
             private readonly int _id;
 
-            public PostTestRequest (int id, string baseUrl)
+            public PostTestRequest(int id, string baseUrl)
             {
                 _id = id;
                 BaseUrl = baseUrl;

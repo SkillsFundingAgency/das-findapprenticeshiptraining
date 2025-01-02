@@ -1,3 +1,4 @@
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Extensions;
 
@@ -10,7 +11,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Extensions
         [TestCase(123456, "£123,456")]
         public void Then_The_Integer_Is_Formatted_Correctly(long value, string expected)
         {
-            Assert.AreEqual(expected, value.ToGdsCostFormat());
+            value.ToGdsCostFormat().Should().Be(expected);
         }
     }
 }

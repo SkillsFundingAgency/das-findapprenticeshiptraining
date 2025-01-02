@@ -30,14 +30,14 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
             //Assert
             actual.GetUrl.Should().Be($"{baseUrl}trainingcourses/{courseId}/providers/{providerId}?location=&lat=0&lon=0&shortlistUserId={shortlistUserId}");
         }
-        
+
         [Test, AutoData]
         public void Then_The_Location_Is_Url_Encoded(string baseUrl, int courseId,
             int providerId, string location, Guid shortlistUserId)
         {
             //Arrange Act
-            var actual = new GetCourseProviderDetailsApiRequest(baseUrl, courseId, providerId, $"{location} & {location}",shortlistUserId);
-            
+            var actual = new GetCourseProviderDetailsApiRequest(baseUrl, courseId, providerId, $"{location} & {location}", shortlistUserId);
+
             //Assert
             actual.GetUrl.Should().Be($"{baseUrl}trainingcourses/{courseId}/providers/{providerId}?location={HttpUtility.UrlEncode($"{location} & {location}")}&lat=0&lon=0&shortlistUserId={shortlistUserId}");
         }
@@ -47,8 +47,8 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
             string location, double lat, double lon, Guid shortlistUserId)
         {
             //Arrange Act
-            var actual = new GetCourseProviderDetailsApiRequest(baseUrl, courseId, providerId, $"{location} & {location}",shortlistUserId, lat, lon);
-            
+            var actual = new GetCourseProviderDetailsApiRequest(baseUrl, courseId, providerId, $"{location} & {location}", shortlistUserId, lat, lon);
+
             //Assert
             actual.GetUrl.Should().Be($"{baseUrl}trainingcourses/{courseId}/providers/{providerId}?location={HttpUtility.UrlEncode($"{location} & {location}")}&lat={lat}&lon={lon}&shortlistUserId={shortlistUserId}");
         }

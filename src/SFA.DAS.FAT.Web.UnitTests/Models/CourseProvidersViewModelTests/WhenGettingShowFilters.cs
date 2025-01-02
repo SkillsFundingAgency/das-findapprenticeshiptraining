@@ -1,4 +1,5 @@
 ﻿using AutoFixture.NUnit3;
+using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Models;
 
@@ -12,7 +13,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
         {
             // Arrange
             model.Location = "";
-            foreach( var dm in model.DeliveryModes)
+            foreach (var dm in model.DeliveryModes)
             {
                 dm.Selected = false;
             };
@@ -31,16 +32,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsFalse(actual);
+            actual.Should().BeFalse();
         }
-        
+
         [Test, AutoData]
         public void Then_True_When_DeliveryModes_Empty_And_ProviderRatings_Empty_And_Location_Has_Value(
             CourseProvidersViewModel model)
         {
             // Arrange
             model.Location = "test";
-            foreach( var dm in model.DeliveryModes)
+            foreach (var dm in model.DeliveryModes)
             {
                 dm.Selected = false;
             };
@@ -59,7 +60,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsTrue(actual);
+            actual.Should().BeTrue();
         }
 
         [Test, AutoData]
@@ -87,7 +88,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsTrue(actual);
+            actual.Should().BeTrue();
         }
 
         [Test, AutoData]
@@ -115,7 +116,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsTrue(actual);
+            actual.Should().BeTrue();
         }
 
         [Test, AutoData]
@@ -143,7 +144,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsTrue(actual);
+            actual.Should().BeTrue();
         }
 
         [Test, AutoData]
@@ -171,7 +172,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             var actual = model.ShowSelectedFilters;
 
             // Assert
-            Assert.IsTrue(actual);
+            actual.Should().BeTrue();
         }
     }
 }

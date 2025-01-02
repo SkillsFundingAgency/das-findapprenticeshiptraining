@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -63,16 +64,20 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as ViewResult;
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            Assert.IsNotNull(actualModel.AdditionalCourses);
-            Assert.IsNotNull(actualModel.AdditionalCourses.Courses);
-            actualModel.Location.Should().BeNullOrEmpty();
-            cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>(), It.IsAny<int>()), Times.Never);
-
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as ViewResult;
+                actualResult.Should().NotBeNull();
+                var actualModel = actualResult!.Model as CourseProviderViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel.AdditionalCourses.Should().NotBeNull();
+                actualModel.AdditionalCourses.Courses.Should().NotBeNull();
+                actualModel.Location.Should().BeNullOrEmpty();
+                cookieStorageService.Verify(
+                    x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>(), It.IsAny<int>()),
+                    Times.Never);
+            }
         }
 
         [Test, MoqAutoData]
@@ -108,13 +113,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as ViewResult;
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.AchievementRateFrom.Should().Be(2022);
-            actualModel.AchievementRateTo.Should().Be(2023);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as ViewResult;
+                actualResult.Should().NotBeNull();
+                var actualModel = actualResult!.Model as CourseProviderViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.AchievementRateFrom.Should().Be(2022);
+                actualModel.AchievementRateTo.Should().Be(2023);
+            }
         }
 
         [Test, MoqAutoData]
@@ -216,11 +224,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as ViewResult;
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
+
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as ViewResult;
+                actualResult.Should().NotBeNull();
+                var actualModel = actualResult!.Model as CourseProviderViewModel;
+                actualModel.Should().NotBeNull();
+            }
             cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(c => c.Name.Equals(response.Location)), 2));
         }
 
@@ -256,7 +268,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             //Assert
             var model = actual!.Model as CourseProviderViewModel;
             model!.GetCourseProvidersRequest.Where(key => key.Key != "Id").Should().BeEquivalentTo(providersRequest.ToDictionary().Where(key => key.Key != "Id"));
-
         }
 
         [Test, MoqAutoData]
@@ -346,8 +357,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            actual.RouteName.Should().Be(RouteNames.Error404);
+            actual.Should().NotBeNull();
+            actual!.RouteName.Should().Be(RouteNames.Error404);
         }
 
         [Test, MoqAutoData]
@@ -379,8 +390,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            actual.RouteName.Should().Be(RouteNames.CourseDetails);
+            actual.Should().NotBeNull();
+            actual!.RouteName.Should().Be(RouteNames.CourseDetails);
         }
 
         [Test, MoqAutoData]
@@ -424,10 +435,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), "") as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().Be($"{removed} removed from shortlist.");
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.BannerUpdateMessage.Should().Be($"{removed} removed from shortlist.");
         }
 
         [Test, MoqAutoData]
@@ -471,10 +482,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().Be($"{added} added to shortlist.");
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.BannerUpdateMessage.Should().Be($"{added} added to shortlist.");
         }
 
         [Test, MoqAutoData]
@@ -518,10 +529,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().BeEmpty();
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.BannerUpdateMessage.Should().BeEmpty();
         }
 
         [Test, MoqAutoData]
@@ -565,10 +576,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, encodedData.ToString(), encodedData.ToString()) as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.BannerUpdateMessage.Should().BeEmpty();
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.BannerUpdateMessage.Should().BeEmpty();
         }
 
 
@@ -611,10 +622,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=3");
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=3");
         }
 
         [Test, MoqAutoData]
@@ -656,10 +667,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseProviderViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
+            actual.Should().NotBeNull();
+            var actualModel = actual!.Model as CourseProviderViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
         }
 
         [Test, MoqAutoData]
