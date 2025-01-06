@@ -5,10 +5,11 @@ using System.Web;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Extensions;
+using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CourseProvidersViewModel
+    public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         public CourseProvidersViewModel(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
@@ -21,17 +22,15 @@ namespace SFA.DAS.FAT.Web.Models
             DeliveryModes = BuildDeliveryModeOptionViewModel(request.DeliveryModes);
             EmployerProviderRatings = BuildEmployerProviderRatingOptionViewModel(request.EmployerProviderRatings);
             ApprenticeProviderRatings = BuildApprenticeProviderRatingOptionViewModel(request.ApprenticeProviderRatings);
-            ShortlistItemCount = result.ShortlistItemCount;
+            ShortListItemCount = result.ShortlistItemCount;
         }
 
-        public int ShortlistItemCount { get ; set ; }
-        
         public IEnumerable<ProviderViewModel> Providers { get; set; }
         public CourseViewModel Course { get; set; }
         public int Total { get; set; }
         public int TotalFiltered { get; set; }
         public string TotalMessage => GetTotalMessage();
-        public string Location { get; set; }
+
         public string ClearLocationLink => BuildClearLocationFilterLink();
         public Dictionary<string, string> ClearDeliveryModeLinks => BuildClearDeliveryModeLinks();
         public Dictionary<string, string> ClearEmployerProviderRatingLinks => BuildClearEmployerProviderRatingLinks();
@@ -41,14 +40,14 @@ namespace SFA.DAS.FAT.Web.Models
         public bool HasEmployerProviderRatings => EmployerProviderRatings != null && EmployerProviderRatings.Any(model => model.Selected);
         public bool HasApprenticeProviderRatings => ApprenticeProviderRatings != null && ApprenticeProviderRatings.Any(model => model.Selected);
 
-        public bool HasDeliveryModes => DeliveryModes !=null && DeliveryModes.Any(model => model.Selected);
+        public bool HasDeliveryModes => DeliveryModes != null && DeliveryModes.Any(model => model.Selected);
         public bool ShowSelectedFilters => ShouldShowFilters();
 
         public IEnumerable<DeliveryModeOptionViewModel> DeliveryModes { get; set; }
         public IEnumerable<EmployerProviderRatingOptionViewModel> EmployerProviderRatings { get; set; }
         public IEnumerable<ApprenticeProviderRatingOptionViewModel> ApprenticeProviderRatings { get; set; }
-        public Dictionary<uint, string> ProviderOrder { get ;}
-        public string BannerUpdateMessage { get ; set ; }
+        public Dictionary<uint, string> ProviderOrder { get; }
+        public string BannerUpdateMessage { get; set; }
 
         public string TitleAndLevel { get => Course.TitleAndLevel; }
 
@@ -64,7 +63,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         private bool ShouldShowFilters()
         {
-            var result = HasLocation || 
+            var result = HasLocation ||
                          HasDeliveryModes ||
                          HasEmployerProviderRatings ||
                          HasApprenticeProviderRatings;
@@ -96,7 +95,7 @@ namespace SFA.DAS.FAT.Web.Models
                 {
                     otherSelected = otherSelected.Where(c => c != DeliveryModeType.National);
                 }
-                
+
                 var link = $"{location}&deliveryModes={string.Join("&deliveryModes=", otherSelected)}{providerRatings}{apprenticeProviderRating}";
 
                 clearDeliveryModeLinks.Add(deliveryMode.Description, link);
@@ -117,7 +116,7 @@ namespace SFA.DAS.FAT.Web.Models
             var deliveryModes = BuildDeliveryModeLinks(location);
             var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
 
-            foreach (var providerRating in EmployerProviderRatings.Where(model => model.Selected).OrderByDescending(c=>c.ProviderRatingType))
+            foreach (var providerRating in EmployerProviderRatings.Where(model => model.Selected).OrderByDescending(c => c.ProviderRatingType))
             {
                 var otherSelected = EmployerProviderRatings
                     .Where(viewModel =>
@@ -163,7 +162,7 @@ namespace SFA.DAS.FAT.Web.Models
             var employerProviderRatings = BuildEmployerProviderRatingLinks(location);
             var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
             var deliveryModeLinks = BuildDeliveryModeLinks(location);
-            
+
             var link = $"{location}{employerProviderRatings}{deliveryModeLinks}{apprenticeProviderRating}";
 
             return link;
@@ -206,10 +205,10 @@ namespace SFA.DAS.FAT.Web.Models
         private string GetTotalMessage()
         {
             var totalToUse = !HasDeliveryModes && !HasEmployerProviderRatings && !HasApprenticeProviderRatings
-                ? Total 
+                ? Total
                 : TotalFiltered;
 
-            var totalMessage = $"{totalToUse} result{(totalToUse!=1 ? "s": "")}";
+            var totalMessage = $"{totalToUse} result{(totalToUse != 1 ? "s" : "")}";
 
             if (HasLocation && totalToUse == 0)
             {
@@ -229,7 +228,7 @@ namespace SFA.DAS.FAT.Web.Models
                 {
                     continue;
                 }
-                
+
                 deliveryModeOptionViewModels.Add(new DeliveryModeOptionViewModel
                 {
                     DeliveryModeType = deliveryModeType,
@@ -244,7 +243,7 @@ namespace SFA.DAS.FAT.Web.Models
                 deliveryModeOptionViewModels.First(c => c.DeliveryModeType == DeliveryModeType.Workplace).Selected =
                     true;
             }
-            
+
 
             return deliveryModeOptionViewModels;
         }

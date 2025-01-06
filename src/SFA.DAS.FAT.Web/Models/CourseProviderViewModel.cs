@@ -1,20 +1,21 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
+using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CourseProviderViewModel
+    public class CourseProviderViewModel : PageLinksViewModelBase
     {
         public CourseViewModel Course { get; set; }
         public ProviderViewModel Provider { get; set; }
         public ProviderCoursesViewModel AdditionalCourses { get; set; }
-        public string Location { get ; set ; }
-        public int ProvidersAtLocation { get ; set ; }
+
+        public int ProvidersAtLocation { get; set; }
         public Dictionary<string, string> GetCourseProvidersRequest { get; set; } = new Dictionary<string, string>();
-        public int ShortlistItemCount { get ; set ; }
-        public string BannerUpdateMessage { get ; set ; }
-        public int TotalProviders { get ; set ; }
-        public string HelpFindingCourseUrl { get ; set ; }
+
+        public string BannerUpdateMessage { get; set; }
+        public int TotalProviders { get; set; }
+        public string HelpFindingCourseUrl { get; set; }
         public int AchievementRateFrom { get; set; }
         public int AchievementRateTo => AchievementRateFrom + 1;
 
@@ -26,7 +27,7 @@ namespace SFA.DAS.FAT.Web.Models
                 Course = provider.Course,
                 AdditionalCourses = provider.AdditionalCourses,
                 ProvidersAtLocation = provider.ProvidersAtLocation,
-                ShortlistItemCount = provider.ShortlistItemCount,
+                ShortListItemCount = provider.ShortlistItemCount,
                 TotalProviders = provider.TotalProviders
             };
         }

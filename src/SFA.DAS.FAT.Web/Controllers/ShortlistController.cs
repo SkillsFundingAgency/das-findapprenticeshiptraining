@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistForUser;
@@ -42,7 +41,7 @@ namespace SFA.DAS.FAT.Web.Controllers
 
         [HttpGet]
         [Route("", Name = RouteNames.ShortList)]
-        public async Task<IActionResult> Index([FromQuery]string removed)
+        public async Task<IActionResult> Index([FromQuery] string removed)
         {
             var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
@@ -53,10 +52,10 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             var result =
                 await _mediator.Send(
-                    new GetShortlistForUserQuery {ShortlistUserId = cookie.ShortlistUserId});
+                    new GetShortlistForUserQuery { ShortlistUserId = cookie.ShortlistUserId });
 
             var removedProviderName = string.Empty;
-            
+
             if (!string.IsNullOrEmpty(removed))
             {
                 try
@@ -66,14 +65,14 @@ namespace SFA.DAS.FAT.Web.Controllers
                 }
                 catch (FormatException e)
                 {
-                    _logger.LogInformation(e,"Unable to decode provider name from request");
+                    _logger.LogInformation(e, "Unable to decode provider name from request");
                 }
                 catch (CryptographicException e)
                 {
                     _logger.LogInformation(e, "Unable to decode provider name from request");
                 }
             }
-            
+
             var viewModel = new ShortlistViewModel
             {
                 Shortlist = result.Shortlist.Select(item => (ShortlistItemViewModel)item).ToList(),
@@ -120,7 +119,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                         System.Text.Encoding.UTF8.GetBytes($"{request.ProviderName}")))
                 });
             }
-            
+
             return Accepted(result);
         }
 
@@ -147,7 +146,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                         System.Text.Encoding.UTF8.GetBytes($"{request.ProviderName}")))
                 });
             }
-            
+
             return Accepted();
         }
     }
