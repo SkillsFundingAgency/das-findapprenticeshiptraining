@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -20,6 +16,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
@@ -30,11 +27,21 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
             GetCourseProvidersRequest request,
             GetCourseProvidersResult response,
+            string serviceStartUrl,
+            string shortlistUrl,
+            string courseDetailsUrl,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+                .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
+            response.Location = request.Location;
+
             mediator.Setup(x => x.Send(
                     It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
                     && c.Location.Equals(request.Location)
@@ -57,7 +64,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     options
                         .Excluding(c => c.ProviderOrder)
                         .Excluding(c => c.BannerUpdateMessage)
+                        .Excluding(c => c.ShowHomeCrumb)
+                        .Excluding(c => c.ShowShortListLink)
+                        .Excluding(c => c.ShowApprenticeTrainingCourseCrumb)
+                        .Excluding(c => c.ApprenticeCourseTitle)
+                        .Excluding(c => c.CourseId)
+                        .Excluding(c => c.ShowApprenticeTrainingCoursesCrumb)
                 );
+                actualModel!.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowShortListLink.Should().BeTrue();
+                actualModel.ShowApprenticeTrainingCourseCrumb.Should().BeTrue();
+                actualModel.ApprenticeCourseTitle.Should().Be(actualModel.Course.TitleAndLevel);
+                actualModel.CourseId.Should().Be(actualModel.Course.Id);
+                actualModel.ShowApprenticeTrainingCoursesCrumb.Should().BeTrue();
             }
         }
 
@@ -70,6 +89,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
                     It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
@@ -104,6 +128,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
                     It.Is<GetCourseProvidersQuery>(c => c.CourseId.Equals(request.Id)
@@ -130,6 +159,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
             request.Location = "-1";
@@ -165,6 +199,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             request.Location = string.Empty;
             cookieStorageService
@@ -340,6 +379,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes(encodedValue);
             protector.Setup(sut => sut.Protect(It.IsAny<byte[]>())).Returns(encodedData);
             provider.Setup(x => x.CreateProtector(It.IsAny<string>())).Returns(protector.Object);
@@ -379,6 +423,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{removed}");
             request.Removed = WebEncoders.Base64UrlEncode(encodedData);
             request.Added = "";
@@ -416,6 +465,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{added}");
             request.Removed = "";
             request.Added = WebEncoders.Base64UrlEncode(encodedData);
@@ -452,6 +506,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{removed}");
             request.Removed = encodedData.ToString();
             request.Added = encodedData.ToString();
@@ -487,6 +546,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Throws<CryptographicException>();
             provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
@@ -520,6 +584,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             config.Object.Value.EmployerDemandFeatureToggle = true;
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
@@ -554,6 +623,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.CourseDetails, Guid.NewGuid().ToString());
+
             config.Object.Value.EmployerDemandFeatureToggle = false;
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);

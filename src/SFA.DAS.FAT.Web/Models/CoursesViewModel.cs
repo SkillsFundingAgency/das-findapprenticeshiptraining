@@ -1,22 +1,23 @@
-﻿using SFA.DAS.FAT.Domain.Courses;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
 namespace SFA.DAS.FAT.Web.Models
 {
-    public class CoursesViewModel
+    public class CoursesViewModel : PageLinksViewModelBase
     {
         private OrderBy _orderBy = OrderBy.None;
         public List<CourseViewModel> Courses { get; set; }
         public string Keyword { get; set; }
-        public int Total { get ; set ; }
-        public int TotalFiltered { get ; set ; }
+        public int Total { get; set; }
+        public int TotalFiltered { get; set; }
         public List<LevelViewModel> Levels { get; set; }
-        public List<SectorViewModel> Sectors { get ; set ; }
-        public List<string> SelectedSectors { get ; set ; }
-        public List<int> SelectedLevels { get ; set ; }
+        public List<SectorViewModel> Sectors { get; set; }
+        public List<string> SelectedSectors { get; set; }
+        public List<int> SelectedLevels { get; set; }
         public OrderBy OrderBy
         {
             get => _orderBy;
@@ -32,12 +33,12 @@ namespace SFA.DAS.FAT.Web.Models
                 }
                 else
                 {
-                    _orderBy = value;    
+                    _orderBy = value;
                 }
             }
         }
 
-        public bool ShowFilterOptions =>  ClearSectorLinks.Any() || ClearLevelLinks.Any() || !string.IsNullOrEmpty(Keyword);
+        public bool ShowFilterOptions => ClearSectorLinks.Any() || ClearLevelLinks.Any() || !string.IsNullOrEmpty(Keyword);
 
         public string TotalMessage => GetTotalMessage();
         public Dictionary<string, string> ClearSectorLinks => BuildClearSectorFilterLinks();
@@ -45,18 +46,17 @@ namespace SFA.DAS.FAT.Web.Models
         public Dictionary<string, string> ClearLevelLinks => BuildClearLevelFilterLinks();
         public string OrderByName => BuildOrderByLink(OrderBy.Name);
         public string OrderByRelevance => BuildOrderByLink(OrderBy.Relevance);
-        public int ShortlistItemCount { get ; set ; }
-        public string Location { get ; set ; }
+
 
         private string GetTotalMessage()
         {
-            var totalToUse = string.IsNullOrEmpty(Keyword) 
-                             && (SelectedSectors == null || !SelectedSectors.Any()) 
+            var totalToUse = string.IsNullOrEmpty(Keyword)
+                             && (SelectedSectors == null || !SelectedSectors.Any())
                              && (SelectedLevels == null || !SelectedLevels.Any())
-                                    ? Total 
+                                    ? Total
                                     : TotalFiltered;
 
-            return $"{totalToUse} result" + (totalToUse!=1 ? "s": "");
+            return $"{totalToUse} result" + (totalToUse != 1 ? "s" : "");
         }
         private string BuildOrderByLink(OrderBy order)
         {
@@ -65,9 +65,9 @@ namespace SFA.DAS.FAT.Web.Models
             buildOrderByNameLink += !string.IsNullOrEmpty(order.ToString()) ? $"{GetSeparator(buildOrderByNameLink)}orderby={order}" : "";
 
             buildOrderByNameLink += BuildSelectedSectorListLink(buildOrderByNameLink);
-            
+
             buildOrderByNameLink += BuildSelectedLevelsListLink(buildOrderByNameLink);
-            
+
             return buildOrderByNameLink;
         }
 
@@ -78,29 +78,29 @@ namespace SFA.DAS.FAT.Web.Models
             return buildClearKeywordFilterLink;
         }
 
-        private Dictionary<string, string> BuildClearSectorFilterLinks ( )
+        private Dictionary<string, string> BuildClearSectorFilterLinks()
         {
             var clearFilterLinks = new Dictionary<string, string>();
             if (SelectedSectors?.FirstOrDefault() == null)
             {
                 return clearFilterLinks;
             }
-            
+
             var levels = BuildSelectedLevelsListLink("appendTo");
-            
+
             foreach (var selectedSector in SelectedSectors)
             {
                 var clearFilterString = BuildClearFilterStringForKeywordAndOrderBy();
 
                 clearFilterString += $"{GetSeparator(clearFilterString)}sectors=" + string.Join("&sectors=", SelectedSectors.Where(c => !c.Equals(selectedSector, StringComparison.CurrentCultureIgnoreCase)).Select(HttpUtility.HtmlEncode));
                 clearFilterString += levels;
-                
+
                 var sector = Sectors.SingleOrDefault(c => c.Route.Equals(selectedSector, StringComparison.CurrentCultureIgnoreCase));
                 if (sector != null)
                 {
-                    clearFilterLinks.Add(sector.Route, clearFilterString);    
+                    clearFilterLinks.Add(sector.Route, clearFilterString);
                 }
-                
+
             }
 
             return clearFilterLinks;
@@ -108,14 +108,14 @@ namespace SFA.DAS.FAT.Web.Models
 
         private Dictionary<string, string> BuildClearLevelFilterLinks()
         {
-            var clearLevelLink = new Dictionary<string,string>();
+            var clearLevelLink = new Dictionary<string, string>();
             if (SelectedLevels == null || !SelectedLevels.Any())
             {
                 return clearLevelLink;
             }
 
             var sectors = BuildSelectedSectorListLink("appendTo");
-            
+
             foreach (var selectedLevel in SelectedLevels)
             {
                 var clearFilterString = BuildClearFilterStringForKeywordAndOrderBy();
@@ -123,19 +123,19 @@ namespace SFA.DAS.FAT.Web.Models
                 clearFilterString += $"{GetSeparator(clearFilterString)}levels=" + string.Join("&levels=", SelectedLevels.Where(c => !c.Equals(selectedLevel)));
                 clearFilterString += sectors;
                 var level = Levels.SingleOrDefault(c => c.Code.Equals(selectedLevel));
-                if(level != null)
+                if (level != null)
                 {
-                    clearLevelLink.Add(level.Title, clearFilterString);    
+                    clearLevelLink.Add(level.Title, clearFilterString);
                 }
             }
-            
+
             return clearLevelLink;
         }
 
         private string BuildClearFilterStringForKeywordAndOrderBy()
         {
             var clearFilterString = "";
-            
+
             if (!string.IsNullOrEmpty(Keyword))
             {
                 clearFilterString = $"?keyword={Keyword}";

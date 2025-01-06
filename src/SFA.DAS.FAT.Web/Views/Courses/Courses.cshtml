@@ -5,8 +5,7 @@
 @{
     ViewData["Title"] = "Apprenticeship training courses";
     ViewData["Description"] = "View all available apprenticeship training courses in England. Search using keywords, different qualification levels and categories.";
-    ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel {Level = BreadCrumbLevel.CourseList};
-    ViewData["shortlistItemCount"] = Model.ShortlistItemCount;
+    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
 }
 
 <main class="govuk-main-wrapper" id="main-content">

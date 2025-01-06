@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentValidation;
@@ -17,6 +14,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
@@ -29,6 +27,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
             ShortlistCookieItem shortlistCookieItem,
+            string serviceStartUrl,
+            string shortlistUrl,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistStorageService,
@@ -36,6 +36,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
+
             cookieStorageService
                 .Setup(x => x.Get(Constants.LocationCookieName))
                 .Returns(locationCookieItem);
@@ -69,7 +73,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel!.TotalProvidersCount.Should().Be(response.ProvidersCount.TotalProviders);
                 actualModel.ProvidersAtLocationCount.Should().Be(response.ProvidersCount.ProvidersAtLocation);
                 actualModel.LocationName.Should().Be(locationCookieItem.Name);
-                actualModel.ShortlistItemCount.Should().Be(response.ShortlistItemCount);
+                actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
+                actualModel.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowShortListLink.Should().BeTrue();
             }
         }
 
@@ -78,6 +84,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             int standardCode,
             GetCourseResult response,
             LocationCookieItem locationCookieItem,
+            string serviceStartUrl,
+            string shortlistUrl,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistStorageService,
@@ -85,6 +93,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
+
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName))
                 .Returns(locationCookieItem);
             shortlistStorageService
@@ -113,6 +125,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualResult.Should().NotBeNull();
                 var actualModel = actualResult!.Model as CourseViewModel;
                 actualModel.Should().NotBeNull();
+                actualModel!.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowShortListLink.Should().BeTrue();
             }
         }
 
@@ -127,6 +141,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
              [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             locationName = "-1";
             mediator
                 .Setup(x => x.Send(
@@ -192,6 +210,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             config.Object.Value.EmployerDemandFeatureToggle = true;
             mediator
                 .Setup(x => x.Send(
@@ -227,6 +249,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
             config.Object.Value.EmployerDemandFeatureToggle = false;
             mediator
                 .Setup(x => x.Send(
