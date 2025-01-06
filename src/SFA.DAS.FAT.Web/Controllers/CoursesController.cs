@@ -86,8 +86,10 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
-                ShortlistItemCount = result.ShortlistItemCount,
-                Location = location?.Name ?? ""
+                ShortListItemCount = result.ShortlistItemCount,
+                Location = location?.Name ?? "",
+                ShowHomeCrumb = true,
+                ShowShortListLink = true
             };
 
             return View(viewModel);
@@ -126,8 +128,11 @@ namespace SFA.DAS.FAT.Web.Controllers
             viewModel.LocationName = location?.Name;
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
-            viewModel.ShortlistItemCount = result.ShortlistItemCount;
-
+            viewModel.ShortListItemCount = result.ShortlistItemCount;
+            viewModel.ShowHomeCrumb = true;
+            viewModel.ShowShortListLink = true;
+            viewModel.ShowApprenticeTrainingCoursesCrumb = true;
+            viewModel.CourseId = id;
             return View(viewModel);
         }
 
@@ -182,6 +187,18 @@ namespace SFA.DAS.FAT.Web.Controllers
                 {
                     return RedirectToRoute(RouteNames.CourseDetails, new { request.Id });
                 }
+
+                courseProvidersViewModel.ShowHomeCrumb = true;
+                courseProvidersViewModel.ShowShortListLink = true;
+                courseProvidersViewModel.ShortListItemCount = result.ShortlistItemCount;
+
+                courseProvidersViewModel.ShowApprenticeTrainingCoursesCrumb = true;
+                courseProvidersViewModel.Location = location?.Name;
+
+                courseProvidersViewModel.ShowApprenticeTrainingCourseCrumb = true;
+
+                courseProvidersViewModel.ApprenticeCourseTitle = courseProvidersViewModel.Course.TitleAndLevel;
+                courseProvidersViewModel.CourseId = result.Course.Id;
 
                 var removedProviderFromShortlist =
                     string.IsNullOrEmpty(request.Removed) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(request.Removed));
@@ -254,6 +271,24 @@ namespace SFA.DAS.FAT.Web.Controllers
 
                     providersRequestCookie.Location = result.Location;
                     viewModel.GetCourseProvidersRequest = providersRequestCookie.ToDictionary();
+                }
+
+                viewModel.ShortListItemCount = result.ShortlistItemCount;
+                viewModel.ShowHomeCrumb = true;
+
+
+                if (viewModel.Provider != null)
+                {
+                    viewModel.ShowShortListLink = true;
+                    viewModel.ShowApprenticeTrainingCoursesCrumb = true;
+                    viewModel.Location = result.Location;
+
+
+                    viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
+
+                    viewModel.ApprenticeCourseTitle = viewModel.Course.TitleAndLevel;
+                    viewModel.ShowApprenticeTrainingCourseCrumb = true;
+                    viewModel.CourseId = id;
                 }
 
                 if (viewModel.Course.AfterLastStartDate)

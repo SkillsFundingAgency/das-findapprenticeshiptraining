@@ -9,23 +9,11 @@
     {
         ViewData["Title"] = "This training provider is currently unavailable for apprenticeship training";
         ViewData["Description"] = "This training provider is currently unavailable for apprenticeship training.";
-        ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel
-        {
-            Level = BreadCrumbLevel.Error
-        };
     }
     else
     {
         ViewData["Title"] = $"{Model.Provider.Name} - training provider";
         ViewData["Description"] = $"View {Model.Provider.Name}'s available training options, pass rate and contact details for {Model.Course.TitleAndLevel}. You can also check their employer reviews and any other apprenticeship training courses that they offer.";
-        ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel
-        {
-            Level = BreadCrumbLevel.CourseProviderDetails,
-            CourseId = Model.Course.Id.ToString(),
-            CourseDescription = Model.Course.TitleAndLevel,
-            ProvidersFilters = Model.GetCourseProvidersRequest,
-            Location = Model.Location
-        };
     }
 
     var shortlistRouteData = new Dictionary<string, string>
@@ -34,7 +22,7 @@
         {"providerId",Model.Provider?.ProviderId.ToString()}
     };
 
-    ViewData["ShortlistItemCount"] = Model.ShortlistItemCount;
+    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
 }
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">

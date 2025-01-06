@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -22,6 +18,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
@@ -34,6 +31,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             int providerId,
             int courseId,
             string location,
+            string serviceStartUrl,
+            string shortlistUrl,
             GetCourseProviderResult response,
             ShortlistCookieItem shortlistCookieItem,
             [Frozen] Mock<IMediator> mediator,
@@ -44,6 +43,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
             response.LocationGeoPoint = null;
@@ -77,6 +80,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 cookieStorageService.Verify(
                     x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>(), It.IsAny<int>()),
                     Times.Never);
+                actualModel.ShowShortListLink.Should().BeTrue();
+                actualModel.ShowHomeCrumb.Should().BeTrue();
             }
         }
 
@@ -93,6 +98,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
             response.LocationGeoPoint = null;
@@ -138,6 +147,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName)).Returns((LocationCookieItem)null);
             mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
@@ -173,6 +186,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             mediator.Setup(x => x.Send(
                     It.Is<GetCourseProviderQuery>(c =>
@@ -206,6 +223,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(location);
             mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
@@ -248,6 +269,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             providersRequest.Id = courseId;
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             cookieStorageService
@@ -282,6 +307,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             cookieStorageService
                 .Setup(x => x.Get(Constants.ProvidersCookieName))
@@ -373,6 +402,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(-1);
             cookieStorageService
                 .Setup(x => x.Get(Constants.ProvidersCookieName))
@@ -412,6 +445,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{removed}");
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
@@ -459,6 +496,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{added}");
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
@@ -506,6 +547,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{removed}");
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
@@ -553,6 +598,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             )
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             var encodedData = Encoding.UTF8.GetBytes($"{removed}");
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
@@ -601,6 +650,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             config.Object.Value.EmployerDemandFeatureToggle = true;
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;
@@ -646,6 +699,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             config.Object.Value.EmployerDemandFeatureToggle = false;
             response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
             response.Location = string.Empty;

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
@@ -24,7 +21,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
             model.TotalFiltered.Should().Be(result.TotalFiltered);
             model.Location.Should().Be(result.Location);
             model.ProviderOrder.Should().BeEquivalentTo(providerOrder);
-            model.ShortlistItemCount.Should().Be(result.ShortlistItemCount);
+            model.ShortListItemCount.Should().Be(result.ShortlistItemCount);
         }
 
         [Test, AutoData]
@@ -43,21 +40,21 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
 
             var model = new CourseProvidersViewModel(request, result, providerOrder);
 
-            model.DeliveryModes.Should().BeEquivalentTo(expectedDeliveryModes.Where(c=>c.DeliveryModeType!=DeliveryModeType.NotFound));
+            model.DeliveryModes.Should().BeEquivalentTo(expectedDeliveryModes.Where(c => c.DeliveryModeType != DeliveryModeType.NotFound));
         }
 
         [Test, AutoData]
         public void Then_If_National_Delivery_Mode_Is_Selected_Then_AtWorkplace_Is_Selected(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
-            request.DeliveryModes = new List<DeliveryModeType> {DeliveryModeType.National};
-            
+            request.DeliveryModes = new List<DeliveryModeType> { DeliveryModeType.National };
+
             var model = new CourseProvidersViewModel(request, result, providerOrder);
 
             model.DeliveryModes.Count(c => c.Selected).Should().Be(2);
             model.DeliveryModes.Where(c => c.Selected).Select(c => c.DeliveryModeType).ToList().Should()
-                .BeEquivalentTo(new List<DeliveryModeType> {DeliveryModeType.Workplace, DeliveryModeType.National});
+                .BeEquivalentTo(new List<DeliveryModeType> { DeliveryModeType.Workplace, DeliveryModeType.National });
         }
-        
+
         [Test, AutoData]
         public void Then_Builds_Employer_Provider_Ratings(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
