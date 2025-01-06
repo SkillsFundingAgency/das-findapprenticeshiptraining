@@ -188,7 +188,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             viewBag.ProviderId.Should().Be(0);
         }
 
-        private ActionExecutingContext SetupContextAndCookieLocations(CoursesController controller, string location,
+        private static ActionExecutingContext SetupContextAndCookieLocations(CoursesController controller, string location,
             LocationCookieItem cookieLocation, Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService, string providerId = "", string data = "")
         {
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName))
