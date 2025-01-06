@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
@@ -13,7 +10,9 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
@@ -30,6 +29,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c =>
                         c.Keyword.Equals(request.Keyword)
@@ -51,11 +54,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
         public async Task Then_The_Keyword_And_Sectors_And_Levels_And_Location_Are_Added_To_The_Query_And_Returned_To_The_View(
             GetCoursesRequest request,
             GetCoursesResult response,
+            Guid shortlistUrl,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl.ToString());
+
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
                         => c.Keyword.Equals(request.Keyword)
@@ -86,8 +94,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel.SelectedSectors.Should().BeEquivalentTo(request.Sectors);
                 actualModel.Total.Should().Be(response.Total);
                 actualModel.TotalFiltered.Should().Be(response.TotalFiltered);
-                actualModel.ShortlistItemCount.Should().Be(response.ShortlistItemCount);
+                actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
                 actualModel.Location.Should().Be(request.Location);
+                actualModel.ShowShortListLink.Should().BeTrue();
+                actualModel.ShowHomeCrumb.Should().BeTrue();
+                actualModel.CourseId.Should().Be(0);
+                actualModel.ShowApprenticeTrainingCourseCrumb.Should().BeFalse();
+                actualModel.ShowApprenticeTrainingCoursesCrumb.Should().BeFalse();
+                actualModel.ShowApprenticeTrainingCourseProvidersCrumb.Should().BeFalse();
+                actualModel.ApprenticeCourseTitle.Should().BeNull();
             }
         }
 
@@ -100,6 +115,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
             request.Location = "";
             response.Sectors.Add(new Sector
             {
@@ -140,11 +158,17 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             GetCoursesRequest request,
             GetCoursesResult response,
             LocationCookieItem cookieItem,
+            string serviceStartUrl,
+            string shortlistUrl,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
             [Frozen] Mock<IMediator> mediator,
             [Greedy] CoursesController controller)
         {
             //Arrange
+            controller.AddUrlHelperMock()
+                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
+
             request.Location = string.Empty;
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
@@ -166,6 +190,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 var actualModel = actualResult!.Model as CoursesViewModel;
                 actualModel.Should().NotBeNull();
                 actualModel!.Location.Should().Be(cookieItem.Name);
+                actualModel.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowShortListLink.Should().BeTrue();
             }
         }
     }

@@ -1,11 +1,8 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @using SFA.DAS.FAT.Web.Infrastructure
-@using SFA.DAS.FAT.Web.Models
-
-@{
-    var breadCrumbViewModel = ViewData[nameof(BreadCrumbViewModel)] as BreadCrumbViewModel;
-}
+@using WebEssentials.AspNetCore.CdnTagHelpers
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
 <html lang="en" class="govuk-template">
@@ -38,7 +35,7 @@
 
 </head>
 
-<body class="govuk-template__body " data-shortlistcount="@(ViewData["ShortlistItemCount"] ?? 0)">
+<body class="govuk-template__body " data-shortlistcount="@(ViewData["ShortListItemCount"] ?? 0)"> 
 
 <!-- Google Tag Manager (noscript) -->
 <noscript>
@@ -99,66 +96,9 @@
 </header>
 
 <div class="govuk-width-container">
-    @if (breadCrumbViewModel != null && breadCrumbViewModel.Level > BreadCrumbLevel.Home)
-    {
-        <div class="govuk-grid-row">
-            <div class="govuk-grid-column-full">
-                <div class="govuk-body">
-                    <p class="govuk-body">We're improving Find apprenticeship training. <a href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What do you think of this service? (opens in a new tab)</a></p>
-                    <hr/>
-                </div>
-            </div>
-            <div class="govuk-grid-column-three-quarters">
-                <div class="govuk-breadcrumbs">
-                    <ol class="govuk-breadcrumbs__list">
-                        @if (breadCrumbViewModel.Level > BreadCrumbLevel.Home)
-                        {
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a id="home-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.ServiceStart">Home</a>
-                            </li>
-                        }
-                        @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseList)
-                        {
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a id="courses-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.Courses" asp-route-location="@breadCrumbViewModel.Location">Apprenticeship training courses</a>
-                            </li>
-                        }
-                        @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseDetails)
-                        {
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a id="course-detail-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@breadCrumbViewModel.CourseId" asp-route-location="@breadCrumbViewModel.Location">@breadCrumbViewModel.CourseDescription</a>
-                            </li>
-                        }
-                        @if (breadCrumbViewModel.Level > BreadCrumbLevel.CourseProvidersList)
-                        {
-                            <li class="govuk-breadcrumbs__list-item">
-                                <a id="providers-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseProviders" asp-all-route-data="@breadCrumbViewModel.ProvidersFilters">Training providers</a>
-                            </li>
-                        }
-                    </ol>
-                </div>
-            </div>
-            @if (breadCrumbViewModel.Level > BreadCrumbLevel.Accessibility)
-            {
-                <div class="govuk-grid-column-one-quarter">
-                    <a id="header-view-shortlist" asp-route="@RouteNames.ShortList" class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@(ViewData["ShortlistItemCount"] ?? 0)</span></a>    
-                </div>
-            }
-        </div>
-    }
+    
+    <partial name="_pageLinks" />
     @RenderBody()
-
-    @if (breadCrumbViewModel != null && breadCrumbViewModel.Level > BreadCrumbLevel.Accessibility) {
-        <div class="govuk-body app-shortlist-banner">
-            <a class="govuk-link govuk-link--no-visited-state app-back-to-top-link" href="#top">
-                <svg class="app-back-to-top-link__icon" xmlns="http://www.w3.org/2000/svg" width="13" height="17" viewBox="0 0 13 17">
-                    <path fill="currentColor" d="M6.5 0L0 6.5 1.4 8l4-4v12.7h2V4l4.3 4L13 6.4z"></path>
-                </svg>
-                Back to top
-            </a>
-            <a asp-route="@RouteNames.ShortList" class="govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@(ViewData["ShortlistItemCount"] ?? 0)</span></a>
-        </div>
-    }
 
 </div>
 
