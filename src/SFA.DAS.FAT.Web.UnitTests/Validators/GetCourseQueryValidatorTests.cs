@@ -1,4 +1,5 @@
-﻿using FluentValidation.TestHelper;
+﻿using FluentAssertions;
+using FluentValidation.TestHelper;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Web.Validators;
@@ -20,7 +21,7 @@ public class GetCourseQueryValidatorTests
     {
         var result = _validator.TestValidate(new GetCourseQuery());
 
-        Assert.IsFalse(result.IsValid);
+        result.IsValid.Should().BeFalse();
         result.ShouldHaveValidationErrorFor(c => c.CourseId)
             .WithErrorMessage(GetCourseQueryValidator.CourseIdErrorMessage);
     }
@@ -30,6 +31,6 @@ public class GetCourseQueryValidatorTests
     {
         var result = _validator.TestValidate(new GetCourseQuery { CourseId = 1 });
 
-        Assert.IsTrue(result.IsValid);
+        result.IsValid.Should().BeTrue();
     }
 }

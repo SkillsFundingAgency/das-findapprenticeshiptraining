@@ -19,21 +19,21 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
 
             //Assert
             var clearLinkCount = selectedRoutes.Count;
-            Assert.AreEqual(clearLinkCount, model.ClearSectorLinks.Count);
+            model.ClearSectorLinks.Count.Should().Be(clearLinkCount);
 
             foreach (var selectedRoute in selectedRoutes)
             {
                 var sector = model.Sectors.SingleOrDefault(c => c.Route.Equals(selectedRoute));
 
-                Assert.IsNotNull(sector);
-                Assert.IsTrue(model.ClearSectorLinks.ContainsKey(sector.Route));
-                Assert.AreEqual(clearLinkCount - 1, model.ClearSectorLinks.Count(c => c.Value.Contains($"sectors={HttpUtility.HtmlEncode(selectedRoute)}")));
-                Assert.AreEqual(clearLinkCount, model.ClearSectorLinks.Count(c => c.Value.Contains($"keyword={keyword}")));
+                sector.Should().NotBeNull();
+                model.ClearSectorLinks.ContainsKey(sector!.Route).Should().BeTrue();
+                model.ClearSectorLinks.Count(c => c.Value.Contains($"sectors={HttpUtility.HtmlEncode(selectedRoute)}")).Should().Be(clearLinkCount - 1);
+                model.ClearSectorLinks.Count(c => c.Value.Contains($"?keyword={keyword}")).Should().Be(clearLinkCount);
             }
         }
-        
+
         [Test, AutoData]
-        public void Then_If_The_Sector_Does_Not_Exist_It_Is_Not_Added(List<string> selectedRoutes )
+        public void Then_If_The_Sector_Does_Not_Exist_It_Is_Not_Added(List<string> selectedRoutes)
         {
             //Arrange
             var sectors = selectedRoutes.Take(1)
@@ -43,7 +43,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
                         Route = selectedRoute
                     }, null))
                 .ToList();
-            
+
             //Act
             var model = new CoursesViewModel
             {
@@ -54,8 +54,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
                 SelectedLevels = null,
                 OrderBy = OrderBy.Name
             };
-            
-            Assert.AreEqual(1, model.ClearSectorLinks.Count);
+
+            model.ClearSectorLinks.Count.Should().Be(1);
         }
 
         [Test]

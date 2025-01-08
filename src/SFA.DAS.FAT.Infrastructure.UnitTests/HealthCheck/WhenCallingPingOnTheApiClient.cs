@@ -65,7 +65,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.HealthCheck
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             //Assert
-            Assert.AreEqual(HealthStatus.Healthy, actual.Status);
+            actual.Status.Should().Be(HealthStatus.Healthy);
         }
 
         [Test, MoqAutoData]
@@ -80,7 +80,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.HealthCheck
             //Act
             var actual = await healthCheck.CheckHealthAsync(healthCheckContext, CancellationToken.None);
             //Assert
-            Assert.AreEqual(HealthStatus.Unhealthy, actual.Status);
+            actual.Status.Should().Be(HealthStatus.Unhealthy);
         }
     }
 }

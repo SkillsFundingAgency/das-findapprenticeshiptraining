@@ -13,7 +13,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Shortlist.Api
         {
             //Arrange Act
             var actual = new GetShortlistForUserApiRequest(baseUrl, shortlistUserId);
-            
+
             //Assert
             actual.GetUrl.Should().Be($"{baseUrl}shortlist/users/{shortlistUserId}");
         }

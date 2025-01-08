@@ -3,7 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,8 +18,6 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
-using ValidationException = FluentValidation.ValidationException;
-using ValidationResult = FluentValidation.Results.ValidationResult;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
 {
@@ -59,15 +59,18 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseDetail(standardCode, "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as ViewResult;
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as CourseViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.TotalProvidersCount.Should().Be(response.ProvidersCount.TotalProviders);
-            actualModel.ProvidersAtLocationCount.Should().Be(response.ProvidersCount.ProvidersAtLocation);
-            actualModel.LocationName.Should().Be(locationCookieItem.Name);
-            actualModel.ShortlistItemCount.Should().Be(response.ShortlistItemCount);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as ViewResult;
+                actualResult.Should().NotBeNull();
+                var actualModel = actualResult!.Model as CourseViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.TotalProvidersCount.Should().Be(response.ProvidersCount.TotalProviders);
+                actualModel.ProvidersAtLocationCount.Should().Be(response.ProvidersCount.ProvidersAtLocation);
+                actualModel.LocationName.Should().Be(locationCookieItem.Name);
+                actualModel.ShortlistItemCount.Should().Be(response.ShortlistItemCount);
+            }
         }
 
         [Test, MoqAutoData]
@@ -103,22 +106,25 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseDetail(standardCode, "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as ViewResult;
-            Assert.IsNotNull(actualResult);
-            var actualModel = actualResult.Model as CourseViewModel;
-            Assert.IsNotNull(actualModel);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as ViewResult;
+                actualResult.Should().NotBeNull();
+                var actualModel = actualResult!.Model as CourseViewModel;
+                actualModel.Should().NotBeNull();
+            }
         }
 
         [Test, MoqAutoData]
         public async Task And_Location_Minus_1_Then_Removes_Location(
-            int standardCode,
-            string locationName,
-            GetCourseResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseQuery>> validator,
-            [Greedy] CoursesController controller)
+             int standardCode,
+             string locationName,
+             GetCourseResult response,
+             [Frozen] Mock<IMediator> mediator,
+             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
+             [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+             [Greedy] CoursesController controller)
         {
             //Arrange
             locationName = "-1";
@@ -165,10 +171,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseDetail(standardCode, "");
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualResult = actual as RedirectToRouteResult;
-            Assert.IsNotNull(actualResult);
-            actualResult.RouteName.Should().Be(RouteNames.Error404);
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualResult = actual as RedirectToRouteResult;
+                actualResult.Should().NotBeNull();
+                actualResult!.RouteName.Should().Be(RouteNames.Error404);
+            }
         }
 
         [Test, MoqAutoData]
@@ -196,10 +205,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseDetail(standardCode, "") as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseViewModel;
-            Assert.IsNotNull(actualModel);
-            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual.Model as CourseViewModel;
+                actualModel.Should().NotBeNull();
+                actualModel!.GetHelpFindingCourseUrl(config.Object.Value).Should().Be(
+                    $"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Id}/share-interest?entrypoint=1");
+            }
         }
 
         [Test, MoqAutoData]
@@ -227,11 +240,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             var actual = await controller.CourseDetail(standardCode, "") as ViewResult;
 
             //Assert
-            Assert.IsNotNull(actual);
-            var actualModel = actual.Model as CourseViewModel;
-            Assert.IsNotNull(actualModel);
-            var redirectUri = Uri.EscapeDataString($"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
-            actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should().Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
+            using (new AssertionScope())
+            {
+                actual.Should().NotBeNull();
+                var actualModel = actual.Model as CourseViewModel;
+                actualModel.Should().NotBeNull();
+                var redirectUri = Uri.EscapeDataString(
+                    $"{config.Object.Value.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={actualModel.Id}&requestType={EntryPoint.CourseDetail}&location={actualModel.LocationName}");
+                actualModel.GetHelpFindingCourseUrl(config.Object.Value).Should()
+                    .Be($"{config.Object.Value.EmployerAccountsUrl}/service/?redirectUri={redirectUri}");
+            }
         }
 
         [Test, MoqAutoData]
@@ -240,7 +258,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             [Greedy] CoursesController controller)
         {
             const int courseId = 0;
-            Assert.ThrowsAsync<ValidationException>(() => controller.CourseDetail(courseId, ""));
+
+            Func<Task> check = () => controller.CourseDetail(courseId, "");
+            check.Should().ThrowAsync<ValidationException>();
         }
     }
 }

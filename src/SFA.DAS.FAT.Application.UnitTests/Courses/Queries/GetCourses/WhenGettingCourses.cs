@@ -1,4 +1,4 @@
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
@@ -13,7 +13,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 {
     public class WhenGettingCourses
     {
-        
+
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_The_Data_Returned(
             GetCoursesQuery request,
@@ -30,10 +30,10 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Act
             var actual = await handler.Handle(request, CancellationToken.None);
-            
+
             //Assert
-            mockService.Verify(x=>x.GetCourses(null, null, null, OrderBy.None, null), Times.Once);
-            Assert.IsNotNull(actual);
+            mockService.Verify(x => x.GetCourses(null, null, null, OrderBy.None, null), Times.Once);
+            actual.Should().NotBeNull();
             actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
             actual.Sectors.Should().BeEquivalentTo(courseResponse.Sectors);
             actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
@@ -58,7 +58,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Assert
             mockService.Verify(x => x.GetCourses(request.Keyword, null, null, OrderBy.None, request.ShortlistUserId), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
             actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
             actual.Sectors.Should().BeEquivalentTo(courseResponse.Sectors);
             actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
@@ -81,7 +81,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Assert
             mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, null, OrderBy.None, request.ShortlistUserId), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
@@ -100,7 +100,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Assert
             mockService.Verify(x => x.GetCourses(request.Keyword, null, request.Levels, OrderBy.None, request.ShortlistUserId), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
         }
 
         [Test, MoqAutoData]
@@ -119,9 +119,9 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Assert
             mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, null), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
         }
-        
+
         [Test, MoqAutoData]
         public async Task Then_Keywords_And_Levels_And_Sectors_Are_Passed_To_The_Service(
             GetCoursesQuery request,
@@ -137,7 +137,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 
             //Assert
             mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, request.ShortlistUserId), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
         }
     }
 }

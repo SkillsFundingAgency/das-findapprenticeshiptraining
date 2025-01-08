@@ -2,13 +2,13 @@
 using System.Threading.Tasks;
 using AutoFixture.NUnit3;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using FluentValidation.Results;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
-
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
@@ -31,7 +31,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 
             //Assert
             mockService.Verify(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
-            Assert.IsNotNull(actual);
+            actual.Should().NotBeNull();
             actual.Course.Should().BeEquivalentTo(courseResponse.Course);
             actual.ProvidersCount.Should().BeEquivalentTo(courseResponse.ProvidersCount);
             actual.ShortlistItemCount.Should().Be(courseResponse.ShortlistItemCount);
@@ -52,9 +52,13 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse
 
             //Assert
             mockService.Verify(x => x.GetCourse(request.CourseId, request.Lat, request.Lon, request.LocationName, request.ShortlistUserId), Times.Once);
-            Assert.IsNull(actual.Course);
-            Assert.IsNull(actual.ProvidersCount);
-            Assert.AreEqual(0, actual.ShortlistItemCount);
+
+            using (new AssertionScope())
+            {
+                actual.Course.Should().BeNull();
+                actual.ProvidersCount.Should().BeNull();
+                actual.ShortlistItemCount.Should().Be(0);
+            }
         }
     }
 }

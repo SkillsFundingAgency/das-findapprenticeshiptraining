@@ -41,8 +41,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            Assert.AreEqual(location, viewBag.Location);
+            viewBag.Should().NotBeNull();
+            viewBag!.Location.Should().Be(location);
         }
 
         [Test, MoqAutoData]
@@ -61,8 +61,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            Assert.AreEqual(location.Name, viewBag.Location);
+            viewBag.Should().NotBeNull();
+            viewBag!.Location.Should().Be(location.Name);
         }
         [Test, MoqAutoData]
         public async Task
@@ -81,8 +81,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            Assert.AreEqual(location, viewBag.Location);
+            viewBag.Should().NotBeNull();
+            viewBag!.Location.Should().Be(location);
         }
 
         [Test, MoqAutoData]
@@ -118,14 +118,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), Convert.ToBase64String(encodedData));
-            
+
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            viewBag.ProviderTotal.Should().Be(providerCount);
+
+            viewBag.Should().NotBeNull();
+            viewBag!.ProviderTotal.Should().Be(providerCount);
             viewBag.ProviderPlacement.Should().Be(providerPosition);
             viewBag.ProviderId.Should().Be(providerId);
         }
@@ -146,14 +147,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Throws<CryptographicException>();
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), Convert.ToBase64String(encodedData));
-            
+
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            viewBag.ProviderTotal.Should().Be(0);
+            viewBag.Should().NotBeNull();
+            viewBag!.ProviderTotal.Should().Be(0);
             viewBag.ProviderPlacement.Should().Be(0);
             viewBag.ProviderId.Should().Be(0);
         }
@@ -175,19 +176,19 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
             var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), data);
-            
+
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
 
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
-            Assert.IsNotNull(viewBag);
-            viewBag.ProviderTotal.Should().Be(0);
+            viewBag.Should().NotBeNull();
+            viewBag!.ProviderTotal.Should().Be(0);
             viewBag.ProviderPlacement.Should().Be(0);
             viewBag.ProviderId.Should().Be(0);
         }
 
-        private ActionExecutingContext SetupContextAndCookieLocations(CoursesController controller, string location,
+        private static ActionExecutingContext SetupContextAndCookieLocations(CoursesController controller, string location,
             LocationCookieItem cookieLocation, Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService, string providerId = "", string data = "")
         {
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName))
@@ -203,12 +204,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
 
             if (!string.IsNullOrEmpty(providerId))
             {
-                routeData.Values.Add("providerId",providerId);
+                routeData.Values.Add("providerId", providerId);
                 if (!string.IsNullOrEmpty(data))
                 {
                     if (string.IsNullOrEmpty(queryString))
                     {
-                        queryString += $"?data={data}";        
+                        queryString += $"?data={data}";
                     }
                     else
                     {
@@ -219,16 +220,16 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
 
             if (!string.IsNullOrEmpty(queryString))
             {
-                httpContext.Request.QueryString = new QueryString(queryString);    
+                httpContext.Request.QueryString = new QueryString(queryString);
             }
-            
-            
+
+
             controller.ControllerContext = new ControllerContext
             {
                 HttpContext = httpContext
             };
 
-            
+
             var actionContext = new ActionContext(
                 httpContext,
                 routeData,
