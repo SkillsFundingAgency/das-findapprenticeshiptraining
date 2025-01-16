@@ -16,7 +16,6 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Infrastructure.HealthCheck;
 using SFA.DAS.FAT.Web.AppStart;
-using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Filters;
 using SFA.DAS.FAT.Web.Validators;
 
@@ -69,7 +68,6 @@ public class Startup
         services.Configure<FindApprenticeshipTrainingWeb>(_configuration.GetSection("FindApprenticeshipTrainingWeb"));
         services.AddSingleton(cfg => cfg.GetService<IOptions<FindApprenticeshipTrainingWeb>>().Value);
 
-
         services
             .Configure<RouteOptions>(options =>
             {
@@ -82,11 +80,12 @@ public class Startup
             });
 
         services.AddServiceRegistration(_configuration);
+        services.AddSession(_configuration);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetCourseQueryHandler).Assembly));
-
         services.AddValidatorsFromAssembly(typeof(GetCourseQueryValidator).Assembly);
 
-        services.AddLogging()
+        services
+            .AddLogging()
             .AddTelemetryRegistration(_configuration)
             .AddApplicationInsightsTelemetry();
 
@@ -100,6 +99,7 @@ public class Startup
 
             services.AddDataProtection(_configuration);
         }
+
 #if DEBUG
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
 #endif
