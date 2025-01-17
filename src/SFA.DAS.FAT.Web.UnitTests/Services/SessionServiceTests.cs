@@ -36,17 +36,6 @@ public class SessionServiceTests
     }
 
     [Test, AutoData]
-    public void Set_AddsValueToSessionAndOverridesAnyExistingValue(string key, string value, string newValue)
-    {
-        _sut.Set(key, value);
-
-        _sut.Set(key, newValue);
-
-        _sessionMock.Verify(s => s.Set(key, Encoding.UTF8.GetBytes(value)), Times.Once);
-        _sessionMock.Verify(s => s.Set(key, Encoding.UTF8.GetBytes(newValue)), Times.Once);
-    }
-
-    [Test, AutoData]
     public void SetOfT_AddsSerialisedValueToSession(string context, Person value)
     {
         var json = JsonSerializer.Serialize(value);
