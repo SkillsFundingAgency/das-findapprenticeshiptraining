@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Distributed;
+using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Web.Services;
 

@@ -252,7 +252,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                         providersRequestCookie.ApprenticeProviderRatings = new List<ProviderRating>();
                     }
 
-                    providersRequestCookie.Location = result?.Location;
+                    providersRequestCookie.Location = result.Location;
                     viewModel.GetCourseProvidersRequest = providersRequestCookie.ToDictionary();
                 }
 

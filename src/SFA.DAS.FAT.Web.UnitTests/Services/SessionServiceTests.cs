@@ -70,12 +70,12 @@ public class SessionServiceTests
     [Test, AutoData]
     public void Get_ContextNotMatching_ReturnsNull(string key)
     {
-        byte[]? contextValue;
+        byte[] contextValue;
         _sessionMock.Setup(s => s.TryGetValue(key, out contextValue)).Returns(false);
 
         var actual = _sut.Get(key);
 
-        _sessionMock.Verify(s => s.TryGetValue(key, out It.Ref<byte[]?>.IsAny), Times.Once);
+        _sessionMock.Verify(s => s.TryGetValue(key, out It.Ref<byte[]>.IsAny), Times.Once);
 
         actual.Should().BeNull();
     }
