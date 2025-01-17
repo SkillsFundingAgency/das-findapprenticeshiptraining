@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.DataProtection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -7,6 +8,7 @@ using StackExchange.Redis;
 
 namespace SFA.DAS.FAT.Web.AppStart;
 
+[ExcludeFromCodeCoverage]
 public static class AddDataProtectionExtensions
 {
     public static void AddDataProtection(this IServiceCollection services, IConfiguration configuration)

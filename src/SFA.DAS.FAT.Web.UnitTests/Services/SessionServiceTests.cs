@@ -118,7 +118,7 @@ public class SessionServiceTests
     [Test, AutoData]
     public void Delete_RemovesKey(string key)
     {
-        _sessionMock.Setup(s => s.Keys).Returns(new[] { key });
+        _sessionMock.Setup(s => s.Keys).Returns([key]);
 
         _sut.Delete(key);
 
@@ -137,7 +137,7 @@ public class SessionServiceTests
     public void DeleteOfT_ObjectFound_RemovesObjectFromSession()
     {
         var key = typeof(Person).Name;
-        _sessionMock.Setup(s => s.Keys).Returns(new[] { key });
+        _sessionMock.Setup(s => s.Keys).Returns([key]);
 
         _sut.Delete(key);
 
@@ -148,7 +148,7 @@ public class SessionServiceTests
     public void DeleteOfT_RemovesKeyByType()
     {
         var key = typeof(Person).Name;
-        _sessionMock.Setup(s => s.Keys).Returns(new[] { key });
+        _sessionMock.Setup(s => s.Keys).Returns([key]);
 
         _sut.Delete<Person>();
 
@@ -162,6 +162,47 @@ public class SessionServiceTests
         _sessionMock.Verify(s => s.Clear());
     }
 
+    [Test]
+    public void Contains_KeyFound_ReturnsTrue()
+    {
+        string key = "some key";
+        _sessionMock.Setup(s => s.Keys).Returns([key]);
+
+        var actual = _sut.Contains(key);
+
+        actual.Should().BeTrue();
+    }
+
+    [Test]
+    public void Contains_KeyNotFound_ReturnsFalse()
+    {
+        string key = "some key";
+        _sessionMock.Setup(s => s.Keys).Returns(Array.Empty<string>());
+
+        var actual = _sut.Contains(key);
+
+        actual.Should().BeFalse();
+    }
+
+    [Test]
+    public void ContainsOfT_KeyFound_ReturnsTrue()
+    {
+        _sessionMock.Setup(s => s.Keys).Returns([nameof(Person)]);
+
+        var actual = _sut.Contains<Person>();
+
+        actual.Should().BeTrue();
+    }
+
+    [Test]
+    public void ContainsOfT_KeyNotFound_ReturnsFalse()
+    {
+        _sessionMock.Setup(s => s.Keys).Returns(Array.Empty<string>());
+
+        var actual = _sut.Contains<Person>();
+
+        actual.Should().BeFalse();
+    }
     public class Person
     {
         public int Id { get; set; }

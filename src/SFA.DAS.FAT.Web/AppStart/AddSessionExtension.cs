@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -9,6 +10,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.AppStart;
 
+[ExcludeFromCodeCoverage]
 public static class AddSessionExtension
 {
     public static IServiceCollection AddSession(this IServiceCollection services, IConfigurationRoot configuration)

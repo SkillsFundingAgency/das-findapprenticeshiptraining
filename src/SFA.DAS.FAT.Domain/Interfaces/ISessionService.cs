@@ -9,4 +9,5 @@ public interface ISessionService
     void Delete<T>();
     void Clear();
     bool Contains<T>();
+    bool Contains(string key);
 }
