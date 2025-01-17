@@ -21,7 +21,8 @@ public static class AddSessionExtension
             options.Cookie.IsEssential = true;
         });
         services.AddHttpContextAccessor();
-        services.AddTransient<ISessionService, SessionService>();
+        services.AddScoped<ISessionService, SessionService>();
+        services.AddSingleton<IDistributedCacheService, IDistributedCacheService>();
         AddDistributedCache(services, configuration);
         return services;
     }
