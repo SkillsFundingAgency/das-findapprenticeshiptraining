@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Application.Courses.Services;
@@ -21,29 +20,29 @@ namespace SFA.DAS.FAT.Web.AppStart;
             services.AddHttpClient<IApiClient, ApiClient>();
             services.AddTransient<ICourseService, CourseService>();
         services.AddTransient<IProviderService, ProviderService>();
-            services.AddTransient<ILocationService, LocationService>();
-            services.AddTransient<IShortlistService, ShortlistService>();
-            services.AddTransient<IDateTimeService, DateTimeService>();
-            services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
-            services.AddHttpContextAccessor();
-            AddDistributedCache(services, configuration);
-        }
+        services.AddTransient<ILocationService, LocationService>();
+        services.AddTransient<IShortlistService, ShortlistService>();
+        services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddSingleton(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
+        services.AddHttpContextAccessor();
+        AddDistributedCache(services, configuration);
+    }
 
-        private static void AddDistributedCache(IServiceCollection services, IConfigurationRoot configuration)
+    private static void AddDistributedCache(IServiceCollection services, IConfigurationRoot configuration)
+    {
+        var localEnvs = new[] { "LOCAL", "DEV" };
+        if (localEnvs.Contains(configuration["EnvironmentName"]))
         {
-            var localEnvs = new[] { "LOCAL", "DEV" };
-            if (localEnvs.Contains(configuration["EnvironmentName"]))
+            services.AddDistributedMemoryCache();
+        }
+        else
+        {
+            services.AddStackExchangeRedisCache(options =>
             {
-                services.AddDistributedMemoryCache();
-            }
-            else
-            {
-                services.AddStackExchangeRedisCache(options =>
-                {
-                    var fatWebConfig = configuration.GetSection(nameof(FindApprenticeshipTrainingWeb)).Get<FindApprenticeshipTrainingWeb>();
-                    options.Configuration = fatWebConfig.RedisConnectionString;
-                });
-            }
+                var fatWebConfig = configuration.GetSection(nameof(FindApprenticeshipTrainingWeb)).Get<FindApprenticeshipTrainingWeb>();
+                options.Configuration = fatWebConfig.RedisConnectionString;
+            });
         }
     }
 }
+
