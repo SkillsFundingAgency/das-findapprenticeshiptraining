@@ -10,15 +10,8 @@
 @{
     ViewData["Title"] = $"Training providers for {Model.Course.TitleAndLevel}";
     ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.Course.TitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
-    ViewData[nameof(BreadCrumbViewModel)] = new BreadCrumbViewModel
-    {
-        Level = BreadCrumbLevel.CourseProvidersList, 
-        CourseId = Model.Course.Id.ToString(),
-        CourseDescription = Model.Course.TitleAndLevel,
-        Location = Model.Location
-    };
-    ViewData["ShortlistItemCount"] = Model.ShortlistItemCount;
-
+  
+    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
     var clearFiltersRouteData = new Dictionary<string, string>
     {
         {"location","-1"},
