@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Linq;
 using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +13,6 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.AppStart;
 
-[ExcludeFromCodeCoverage]
 public static class AddServiceRegistrationExtension
 {
     public static void AddServiceRegistration(this IServiceCollection services, IConfigurationRoot configuration)
