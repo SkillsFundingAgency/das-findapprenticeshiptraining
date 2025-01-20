@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SFA.DAS.FAT.Application.Services;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Services;
@@ -24,6 +25,7 @@ public static class AddSessionExtension
         });
         services.AddHttpContextAccessor();
         services.AddScoped<ISessionService, SessionService>();
+        services.AddScoped<IProviderService, ProviderService>();
         services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
         AddDistributedCache(services, configuration);
         return services;

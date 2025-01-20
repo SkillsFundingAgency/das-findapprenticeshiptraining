@@ -233,12 +233,6 @@ public class WhenGettingRegisteredProviders
             mockedRegisteredProviders.Add(new RegisteredProvider { Name = Guid.NewGuid().ToString(), Ukprn = UkprnSeed + i });
         }
 
-        // mockDistributedCache
-        //     .Setup(x => x.GetAsync(CacheStorageValues.Providers.Key, It.IsAny<CancellationToken>()))
-        //     .ReturnsAsync((byte[])null!);
-        //
-        // mockProviderService.Setup(x => x.GetRegisteredProviders()).ReturnsAsync(mockedRegisteredProviders);
-
         var cacheService = new DistributedCacheService(mockDistributedCache.Object);
         var controller = new RegisteredProvidersController(cacheService, mockProviderService.Object);
 
