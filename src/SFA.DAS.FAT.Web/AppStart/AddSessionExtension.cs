@@ -24,7 +24,7 @@ public static class AddSessionExtension
         });
         services.AddHttpContextAccessor();
         services.AddScoped<ISessionService, SessionService>();
-        services.AddSingleton<IDistributedCacheService, IDistributedCacheService>();
+        services.AddSingleton<IDistributedCacheService, DistributedCacheService>();
         AddDistributedCache(services, configuration);
         return services;
     }
