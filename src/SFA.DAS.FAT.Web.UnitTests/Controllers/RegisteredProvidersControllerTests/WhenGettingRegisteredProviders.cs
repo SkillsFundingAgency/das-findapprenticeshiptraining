@@ -225,14 +225,6 @@ public class WhenGettingRegisteredProviders
         Mock<IDistributedCache> mockDistributedCache = new Mock<IDistributedCache>();
         Mock<IProviderService> mockProviderService = new Mock<IProviderService>();
 
-        int numberOfMockedRegisteredProviders = 10;
-        var mockedRegisteredProviders = new List<RegisteredProvider>();
-
-        for (var i = 0; i < numberOfMockedRegisteredProviders; i++)
-        {
-            mockedRegisteredProviders.Add(new RegisteredProvider { Name = Guid.NewGuid().ToString(), Ukprn = UkprnSeed + i });
-        }
-
         var cacheService = new DistributedCacheService(mockDistributedCache.Object);
         var controller = new RegisteredProvidersController(cacheService, mockProviderService.Object);
 
