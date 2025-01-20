@@ -6,5 +6,5 @@ namespace SFA.DAS.FAT.Domain.Interfaces;
 
 public interface IProviderService
 {
-    Task<IEnumerable<RegisteredProvider>> GetRegisteredProviders(string searchTerm);
+    Task<List<RegisteredProvider>> GetRegisteredProviders();
 }
