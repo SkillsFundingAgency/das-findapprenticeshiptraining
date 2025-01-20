@@ -1,12 +1,15 @@
-﻿namespace SFA.DAS.FAT.Web.Infrastructure
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace SFA.DAS.FAT.Web.Infrastructure
 {
+    [ExcludeFromCodeCoverage]
     public static class RouteNames
     {
         public const string ServiceStartDefault = "default";
         public const string ServiceStart = "service-start";
         public const string Cookies = "cookies";
         public const string CookiesDetails = "cookies-details";
-        
+
         public const string Courses = "courses";
         public const string CourseDetails = "course-details";
         public const string CourseProviders = "course-providers";
@@ -23,5 +26,8 @@
         public const string AccessibilityStatement = "accessibility-statement";
 
         public const string Privacy = "privacy";
+
+        public const string GetRegisteredProviders = nameof(GetRegisteredProviders);
+        public const string SelectProvider = nameof(SelectProvider);
     }
 }
