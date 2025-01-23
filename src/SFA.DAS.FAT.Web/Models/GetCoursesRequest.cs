@@ -18,6 +18,9 @@ namespace SFA.DAS.FAT.Web.Models
         public OrderBy OrderBy { get; set; }
 
         [FromQuery]
-        public string Location { get ; set ; }
+        public string Location { get; set; }
+
+        [FromQuery]
+        public int? Distance { get; set; }
     }
 }
