@@ -9,7 +9,7 @@ public class SelectTrainingProviderViewModel : SelectTrainingProviderSubmitViewM
     {
         ShortListItemCount = shortListItemCount;
         ShowBackLink = true;
-        ShowHomeCrumb = false;
+        ShowSearchCrumb = false;
         ShowShortListLink = true;
     }
 }

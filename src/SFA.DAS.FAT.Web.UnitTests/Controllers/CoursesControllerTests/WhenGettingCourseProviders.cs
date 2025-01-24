@@ -64,17 +64,15 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     options
                         .Excluding(c => c.ProviderOrder)
                         .Excluding(c => c.BannerUpdateMessage)
-                        .Excluding(c => c.ShowHomeCrumb)
+                        .Excluding(c => c.ShowSearchCrumb)
                         .Excluding(c => c.ShowShortListLink)
                         .Excluding(c => c.ShowApprenticeTrainingCourseCrumb)
-                        .Excluding(c => c.ApprenticeCourseTitle)
                         .Excluding(c => c.CourseId)
                         .Excluding(c => c.ShowApprenticeTrainingCoursesCrumb)
                 );
-                actualModel!.ShowHomeCrumb.Should().BeTrue();
+                actualModel!.ShowSearchCrumb.Should().BeTrue();
                 actualModel.ShowShortListLink.Should().BeTrue();
                 actualModel.ShowApprenticeTrainingCourseCrumb.Should().BeTrue();
-                actualModel.ApprenticeCourseTitle.Should().Be(actualModel.Course.TitleAndLevel);
                 actualModel.CourseId.Should().Be(actualModel.Course.Id);
                 actualModel.ShowApprenticeTrainingCoursesCrumb.Should().BeTrue();
             }

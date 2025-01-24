@@ -74,7 +74,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel.ProvidersAtLocationCount.Should().Be(response.ProvidersCount.ProvidersAtLocation);
                 actualModel.LocationName.Should().Be(locationCookieItem.Name);
                 actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
-                actualModel.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowSearchCrumb.Should().BeTrue();
                 actualModel.ShowShortListLink.Should().BeTrue();
             }
         }
@@ -125,7 +125,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualResult.Should().NotBeNull();
                 var actualModel = actualResult!.Model as CourseViewModel;
                 actualModel.Should().NotBeNull();
-                actualModel!.ShowHomeCrumb.Should().BeTrue();
+                actualModel!.ShowSearchCrumb.Should().BeTrue();
                 actualModel.ShowShortListLink.Should().BeTrue();
             }
         }

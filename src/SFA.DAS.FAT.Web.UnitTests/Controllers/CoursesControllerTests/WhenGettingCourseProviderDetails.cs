@@ -81,7 +81,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                     x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>(), It.IsAny<int>()),
                     Times.Never);
                 actualModel.ShowShortListLink.Should().BeTrue();
-                actualModel.ShowHomeCrumb.Should().BeTrue();
+                actualModel.ShowSearchCrumb.Should().BeTrue();
             }
         }
 

@@ -67,7 +67,7 @@ public class WhenGettingSearchCourses
         model!.ShortListItemCount.Should().Be(0);
         mockService.Verify(x => x.GetShortlistForUser(It.IsAny<Guid>()), Times.Never);
         model.ShowBackLink.Should().BeTrue();
-        model.ShowHomeCrumb.Should().BeFalse();
+        model.ShowSearchCrumb.Should().BeFalse();
         model.ShowShortListLink.Should().BeTrue();
     }
 }

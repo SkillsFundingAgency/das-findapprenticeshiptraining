@@ -32,7 +32,7 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
         {
             ShortListItemCount = shortListItemCount,
             ShowBackLink = true,
-            ShowHomeCrumb = false,
+            ShowSearchCrumb = false,
             ShowShortListLink = true
         };
 
