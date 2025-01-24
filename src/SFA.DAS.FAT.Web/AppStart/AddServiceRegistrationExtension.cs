@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Application.Locations.Services;
+using SFA.DAS.FAT.Application.Providers.Services;
 using SFA.DAS.FAT.Application.Shortlist.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Infrastructure.Api;
@@ -17,6 +18,7 @@ public static class AddServiceRegistrationExtension
     {
         services.AddHttpClient<IApiClient, ApiClient>();
         services.AddTransient<ICourseService, CourseService>();
+        services.AddTransient<IProviderService, ProviderService>();
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<IShortlistService, ShortlistService>();
         services.AddTransient<IDateTimeService, DateTimeService>();
