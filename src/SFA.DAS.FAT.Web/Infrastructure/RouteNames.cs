@@ -29,5 +29,6 @@ namespace SFA.DAS.FAT.Web.Infrastructure
 
         public const string GetRegisteredProviders = nameof(GetRegisteredProviders);
         public const string SelectProvider = nameof(SelectProvider);
+        public const string SearchCourses = nameof(SearchCourses);
     }
 }
