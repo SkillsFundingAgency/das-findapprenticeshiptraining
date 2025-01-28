@@ -16,7 +16,7 @@ public class WhenCreatingSelectTrainingProviderViewModel
         {
             vm.ShortListItemCount.Should().Be(shortlistItemCount);
             vm.ShowBackLink.Should().BeTrue();
-            vm.ShowHomeCrumb.Should().BeFalse();
+            vm.ShowSearchCrumb.Should().BeFalse();
             vm.ShowShortListLink.Should().BeTrue();
         }
     }
