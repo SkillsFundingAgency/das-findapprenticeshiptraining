@@ -58,7 +58,7 @@ public class WhenPostingSelectTrainingProviderSubmitViewModel
 
         model!.ShortListItemCount.Should().Be(viewModel.ShortListItemCount);
         model.ShowBackLink.Should().BeTrue();
-        model.ShowHomeCrumb.Should().BeFalse();
+        model.ShowSearchCrumb.Should().BeFalse();
         model.ShowShortListLink.Should().BeTrue();
     }
 }

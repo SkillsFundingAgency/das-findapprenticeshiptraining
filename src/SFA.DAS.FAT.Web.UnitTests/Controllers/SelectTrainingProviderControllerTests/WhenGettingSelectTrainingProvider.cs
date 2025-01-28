@@ -1,7 +1,6 @@
 ﻿#nullable enable
 using AutoFixture.NUnit3;
 using FluentAssertions;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -23,7 +22,6 @@ public class WhenGettingSelectTrainingProvider
             GetShortlistForUserResult resultFromMediator,
             Domain.Shortlist.ShortlistForUser shortlistFromService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockCookieService,
-            [Frozen] Mock<IMediator> mockMediator,
             [Frozen] Mock<IShortlistService> mockService,
             [Greedy] SelectTrainingProviderController controller)
         {
@@ -35,12 +33,6 @@ public class WhenGettingSelectTrainingProvider
             mockService
                 .Setup(service => service.GetShortlistForUser(shortlistCookie.ShortlistUserId))
                 .ReturnsAsync(shortlistFromService);
-
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(resultFromMediator);
 
             //Act
             var actual = await controller.Index() as ViewResult;
@@ -58,7 +50,6 @@ public class WhenGettingSelectTrainingProvider
             GetShortlistForUserResult resultFromMediator,
             Domain.Shortlist.ShortlistForUser shortlistFromService,
             [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockCookieService,
-            [Frozen] Mock<IMediator> mockMediator,
             [Frozen] Mock<IShortlistService> mockService,
             [Greedy] SelectTrainingProviderController controller)
         {
@@ -68,12 +59,6 @@ public class WhenGettingSelectTrainingProvider
             mockCookieService
                 .Setup(service => service.Get(Constants.ShortlistCookieName))
                 .Returns(shortlistCookie!);
-
-            mockMediator
-                .Setup(mediator => mediator.Send(
-                    It.Is<GetShortlistForUserQuery>(c => c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(resultFromMediator);
 
             //Act
             var actual = await controller.Index() as ViewResult;

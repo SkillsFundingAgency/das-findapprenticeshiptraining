@@ -7,5 +7,7 @@
         public static string ShortlistCookieName => "SFA.DAS.FindApprenticeshipTraining.Shortlist";
         public static string GaDataProtectorName => "Analytics";
         public static string ShortlistProtectorName => "Shortlist";
+
+        public static int DefaultDistance => 10;
     }
 }
