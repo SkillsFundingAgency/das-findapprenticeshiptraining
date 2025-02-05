@@ -20,9 +20,7 @@ public class DistributedCacheService : IDistributedCacheService
         var cachedData = await _distributedCache.GetStringAsync(cacheKey);
         if (!string.IsNullOrEmpty(cachedData))
         {
-            var distributedCacheData = JsonSerializer.Deserialize<T>(cachedData);
-
-            return distributedCacheData;
+            return JsonSerializer.Deserialize<T>(cachedData);
         }
 
         var data = await getData();

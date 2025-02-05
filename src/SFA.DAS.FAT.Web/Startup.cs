@@ -79,7 +79,6 @@ public class Startup
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
-        services.AddMemoryCache();
         services.AddServiceRegistration(_configuration);
         services.AddSession(_configuration);
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(GetCourseQueryHandler).Assembly));
