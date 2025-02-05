@@ -37,7 +37,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
-        private HashSet<int> ValidDistances = new HashSet<int> { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
+        private readonly HashSet<int> ValidDistances = new HashSet<int> { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
 
         public CoursesController(
             ILogger<CoursesController> logger,

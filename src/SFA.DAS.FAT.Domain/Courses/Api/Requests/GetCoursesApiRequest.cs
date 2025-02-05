@@ -33,11 +33,11 @@ namespace SFA.DAS.FAT.Domain.Courses.Api.Requests
             {
                 url += $"&orderby={OrderBy}";
             }
-            if (Sectors != null && Sectors.Any())
+            if (Sectors != null && Sectors.Count > 0)
             {
                 url += "&routeIds=" + string.Join("&routeIds=", Sectors.Select(HttpUtility.HtmlEncode));
             }
-            if (Levels != null && Levels.Any())
+            if (Levels != null && Levels.Count > 0)
             {
                 url += "&levels=" + string.Join("&levels=", Levels);
             }

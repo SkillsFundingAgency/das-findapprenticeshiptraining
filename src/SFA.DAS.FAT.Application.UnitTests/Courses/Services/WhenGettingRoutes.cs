@@ -22,8 +22,8 @@ public sealed class WhenGettingRoutes
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetRoutesListResponse sessionResponse,
-        CancellationToken cancellationToken,
-        RoutesService sut
+        RoutesService sut,
+        CancellationToken cancellationToken
     )
     {
         sessionServiceMock
@@ -52,8 +52,8 @@ public sealed class WhenGettingRoutes
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetRoutesListResponse cacheResponse,
         FindApprenticeshipTrainingApi config,
-        CancellationToken cancellationToken,
-        RoutesService sut
+        RoutesService sut,
+        CancellationToken cancellationToken
     )
     {
         sessionServiceMock

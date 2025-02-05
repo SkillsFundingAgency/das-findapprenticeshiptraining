@@ -38,7 +38,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    public bool ShowFilterOptions => ClearLinks.Any();
+    public bool ShowFilterOptions => ClearLinks.Count > 0;
 
     public string WorkLocationDisplayMessage => GetWorkLocationDistanceDisplayMessage();
 

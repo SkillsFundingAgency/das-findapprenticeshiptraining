@@ -22,8 +22,8 @@ public sealed class WhenGettingLevels
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetLevelsListResponse sessionResponse,
-        CancellationToken cancellationToken,
-        LevelsService sut
+        LevelsService sut,
+        CancellationToken cancellationToken
     )
     {
         sessionServiceMock
@@ -52,8 +52,8 @@ public sealed class WhenGettingLevels
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetLevelsListResponse cacheResponse,
         FindApprenticeshipTrainingApi config,
-        CancellationToken cancellationToken,
-        LevelsService sut
+        LevelsService sut,
+        CancellationToken cancellationToken
     )
     {
         sessionServiceMock
