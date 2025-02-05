@@ -1,11 +1,11 @@
 ﻿
 // AUTOCOMPLETE
 
-var $keywordsInput = $('#search-location');
+var $locationInput = $('#search-location');
 var $submitOnConfirm = $('#search-location').data('submit-on-selection');
 var $defaultValue = $('#search-location').data('default-value');
-if ($keywordsInput.length > 0) {
-    $keywordsInput.wrap('<div id="autocomplete-container" class="das-autocomplete-wrap"></div>');
+if ($locationInput.length > 0) {
+    $locationInput.wrap('<div id="autocomplete-container" class="das-autocomplete-wrap"></div>');
     var container = document.querySelector('#autocomplete-container');
     var apiUrl = '/locations';
     $(container).empty();

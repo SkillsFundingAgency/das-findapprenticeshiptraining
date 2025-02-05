@@ -67,7 +67,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
                         => c.Keyword.Equals(request.Keyword)
-                        && c.RouteIds.Equals(request.Sectors)
+                        && c.RouteIds.Equals(request.Routes)
                         && c.Levels.Equals(request.Levels)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
@@ -118,11 +118,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
                 .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
             request.Location = "";
-            response.Sectors.Add(new Sector
+            response.Sectors.Add(new Route
             {
                 Route = request.Sectors.First()
             });
-            response.Sectors.Add(new Sector
+            response.Sectors.Add(new Route
             {
                 Route = request.Sectors.Skip(1).First()
             });

@@ -2,10 +2,10 @@
 
 namespace SFA.DAS.FAT.Domain.Courses;
 
-public class Level
+public class Route
 {
-    [JsonProperty("code")]
-    public int Code { get; set; }
+    [JsonProperty("id")]
+    public int Id { get; set; }
 
     [JsonProperty("name")]
     public string Name { get; set; }

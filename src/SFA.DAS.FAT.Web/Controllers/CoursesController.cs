@@ -37,6 +37,8 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
+        private HashSet<int> ValidDistances = new HashSet<int> { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
+
         public CoursesController(
             ILogger<CoursesController> logger,
             IMediator mediator,
@@ -66,10 +68,12 @@ namespace SFA.DAS.FAT.Web.Controllers
             var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
+            int? validatedDistance = request.Distance.HasValue && ValidDistances.Contains(request.Distance.Value) ? request.Distance : null;
+
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = request.Keyword,
-                RouteIds = request.Sectors,
+                RouteIds = request.Routes,
                 Levels = request.Levels,
                 OrderBy = request.OrderBy,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
@@ -78,16 +82,17 @@ namespace SFA.DAS.FAT.Web.Controllers
             var viewModel = new CoursesViewModel
             {
                 Courses = result.Courses.Select(c => (CourseViewModel)c).ToList(),
-                Sectors = result.Sectors.Select(sector => new SectorViewModel(sector, request.Sectors)).ToList(),
+                Routes = result.Routes.Select(route => new RouteViewModel(route, request.Routes)).ToList(),
                 Total = result.Total,
                 TotalFiltered = result.TotalFiltered,
                 Keyword = request.Keyword,
-                SelectedSectors = request.Sectors,
+                SelectedRoutes = request.Routes,
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
                 ShortListItemCount = result.ShortlistItemCount,
-                Location = location?.Name ?? "",
+                Location = location?.Name ?? string.Empty,
+                Distance = validatedDistance,
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };

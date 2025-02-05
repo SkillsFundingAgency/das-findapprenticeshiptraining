@@ -2,32 +2,33 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses
+namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
+
+public class GetCoursesQueryHandler(
+    ICourseService _courseService, 
+    ILevelsService _levelsService,
+    IRoutesService _routesService
+) : IRequestHandler<GetCoursesQuery, GetCoursesResult>
 {
-    public class GetCoursesQueryHandler : IRequestHandler<GetCoursesQuery, GetCoursesResult>
+    public async Task<GetCoursesResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
-        private readonly ICourseService _courseService;
+        var response = await _courseService.GetCourses(query.Keyword, query.RouteIds, query.Levels, query.OrderBy, query.ShortlistUserId);
 
-        public GetCoursesQueryHandler(ICourseService courseService)
+        var levels = await _levelsService.GetLevelsAsync(cancellationToken);
+
+        var routes = await _routesService.GetRoutesAsync(cancellationToken);
+
+        return new GetCoursesResult
         {
-            _courseService = courseService;
-        }
-
-        public async Task<GetCoursesResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
-        {
-            var response = await _courseService.GetCourses(query.Keyword, query.RouteIds, query.Levels, query.OrderBy, query.ShortlistUserId);
-
-            return new GetCoursesResult
-            {
-                Courses = response.Courses.ToList(),
-                Sectors = response.Sectors.ToList(),
-                Total = response.Total,
-                TotalFiltered = response.TotalFiltered,
-                Levels = response.Levels.ToList(),
-                ShortlistItemCount = response.ShortlistItemCount
-            };
-        }
+            Courses = response.Courses.ToList(),
+            Routes = routes,
+            Total = response.Total,
+            TotalFiltered = response.TotalFiltered,
+            Levels = levels,
+            ShortlistItemCount = response.ShortlistItemCount
+        };
     }
 }

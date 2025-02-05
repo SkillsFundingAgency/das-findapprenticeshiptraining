@@ -37,8 +37,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
         {
             //Arrange
             var sectors = selectedRoutes.Take(1)
-                .Select(selectedRoute => new SectorViewModel(
-                    new Sector
+                .Select(selectedRoute => new RouteViewModel(
+                    new Route
                     {
                         Route = selectedRoute
                     }, null))

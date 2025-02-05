@@ -11,9 +11,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
         public static CoursesViewModel BuildModel(List<string> selectedRoutes, string keyword, List<int> selectedLevels, OrderBy orderBy = OrderBy.Name)
         {
             var fixture = new Fixture();
-            var sectors = selectedRoutes
-                .Select(selectedRoute => new SectorViewModel(
-                    new Sector
+            var routes = selectedRoutes
+                .Select(selectedRoute => new RouteViewModel(
+                    new Route
                     {
                         Route = selectedRoute
                     }, null))
@@ -29,10 +29,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
 
             var model = new CoursesViewModel
             {
-                Sectors = sectors,
+                Routes = sectors,
                 Levels = levels,
                 Keyword = keyword,
-                SelectedSectors = selectedRoutes,
+                SelectedRoutes = selectedRoutes,
                 SelectedLevels = selectedLevels,
                 OrderBy = orderBy
             };

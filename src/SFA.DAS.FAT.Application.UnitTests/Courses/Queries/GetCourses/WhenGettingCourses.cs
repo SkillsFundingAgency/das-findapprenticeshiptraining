@@ -35,7 +35,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
             mockService.Verify(x => x.GetCourses(null, null, null, OrderBy.None, null), Times.Once);
             actual.Should().NotBeNull();
             actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
-            actual.Sectors.Should().BeEquivalentTo(courseResponse.Sectors);
+            actual.Routes.Should().BeEquivalentTo(courseResponse.Sectors);
             actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
             actual.Total.Should().Be(courseResponse.Total);
             actual.ShortlistItemCount.Should().Be(courseResponse.ShortlistItemCount);
@@ -60,7 +60,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
             mockService.Verify(x => x.GetCourses(request.Keyword, null, null, OrderBy.None, request.ShortlistUserId), Times.Once);
             actual.Should().NotBeNull();
             actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
-            actual.Sectors.Should().BeEquivalentTo(courseResponse.Sectors);
+            actual.Routes.Should().BeEquivalentTo(courseResponse.Sectors);
             actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
             actual.Total.Should().Be(courseResponse.Total);
         }

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Web;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Domain.Courses.Api
+namespace SFA.DAS.FAT.Domain.Courses.Api.Requests
 {
     public class GetCoursesApiRequest : IGetApiRequest
     {
         private readonly Guid? _shortlistUserId;
 
-        public GetCoursesApiRequest( string baseUrl, string keyword, List<string> sectors = null, List<int> levels = null, OrderBy orderBy = OrderBy.None, Guid? shortlistUserId = null)
+        public GetCoursesApiRequest(string baseUrl, string keyword, List<string> sectors = null, List<int> levels = null, OrderBy orderBy = OrderBy.None, Guid? shortlistUserId = null)
         {
             _shortlistUserId = shortlistUserId;
             BaseUrl = baseUrl;
@@ -20,7 +20,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
             OrderBy = orderBy;
         }
 
-        public List<string> Sectors { get ;  }
+        public List<string> Sectors { get; }
         public List<int> Levels { get; }
 
         public string BaseUrl { get; }
@@ -49,7 +49,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
             return url;
         }
 
-        public string Keyword { get;  }
+        public string Keyword { get; }
         public OrderBy OrderBy { get; }
     }
 
