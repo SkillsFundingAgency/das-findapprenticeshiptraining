@@ -9,7 +9,7 @@ namespace SFA.DAS.FAT.Web.Models
         [FromQuery]
         public string Keyword { get; set; }
         [FromQuery]
-        public List<string> Routes { get; set; }
+        public List<string> Categories { get; set; }
 
         [FromQuery]
         public List<int> Levels { get; set; }

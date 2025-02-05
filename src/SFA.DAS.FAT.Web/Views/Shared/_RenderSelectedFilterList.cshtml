@@ -1,0 +1,11 @@
+﻿@model Tuple<string, Dictionary<string, string>>
+
+<h4 class="das-filter__selected-sub-heading">@Model.Item1</h4>
+@foreach (var filterLink in Model.Item2)
+{
+    <a class="das-filter__tag"
+       asp-querystring="@filterLink.Value"
+       title="Clear this filter '@filterLink.Key'">
+        @filterLink.Key
+    </a>
+}

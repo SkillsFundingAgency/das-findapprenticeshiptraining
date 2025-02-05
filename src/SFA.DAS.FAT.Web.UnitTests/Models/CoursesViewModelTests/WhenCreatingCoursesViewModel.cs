@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
@@ -33,7 +32,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
             {
                 Total = 10,
                 TotalFiltered = 5,
-                SelectedSectors = new List<string> { "" }
+                SelectedRoutes = new List<string> { "" }
             };
 
             viewModel.TotalMessage.Should().Be("5 results");
@@ -60,7 +59,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
                 Total = 10,
                 TotalFiltered = 5,
                 SelectedLevels = new List<int> { 1 },
-                SelectedSectors = new List<string> { "" },
+                SelectedRoutes = new List<string> { "" },
                 Keyword = "Test"
             };
 

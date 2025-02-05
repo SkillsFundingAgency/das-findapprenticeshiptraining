@@ -5,6 +5,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
+using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
@@ -19,6 +20,8 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
             GetCoursesQuery request,
             TrainingCourses courseResponse,
             [Frozen] Mock<ICourseService> mockService,
+            [Frozen] Mock<ILevelsService> mockLevelService,
+            [Frozen] Mock<IRoutesService> mockRoutesService,
             GetCoursesQueryHandler handler)
         {
             //Arrange
@@ -27,6 +30,10 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
             request.Levels = null;
             request.ShortlistUserId = null;
             mockService.Setup(x => x.GetCourses(null, null, null, OrderBy.None, null)).ReturnsAsync(courseResponse);
+
+            mockLevelService.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Levels);
+
+            mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Sectors);
 
             //Act
             var actual = await handler.Handle(request, CancellationToken.None);
@@ -46,12 +53,18 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
             GetCoursesQuery request,
             TrainingCourses courseResponse,
             [Frozen] Mock<ICourseService> mockService,
+            [Frozen] Mock<ILevelsService> mockLevelService,
+            [Frozen] Mock<IRoutesService> mockRoutesService,
             GetCoursesQueryHandler handler)
         {
             //Arrange
             request.RouteIds = null;
             request.Levels = null;
             mockService.Setup(x => x.GetCourses(request.Keyword, null, null, OrderBy.None, request.ShortlistUserId)).ReturnsAsync(courseResponse);
+
+            mockLevelService.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Levels);
+
+            mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Sectors);
 
             //Act
             var actual = await handler.Handle(request, CancellationToken.None);

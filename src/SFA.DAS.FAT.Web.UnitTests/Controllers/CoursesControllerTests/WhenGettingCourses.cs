@@ -67,7 +67,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
                         => c.Keyword.Equals(request.Keyword)
-                        && c.RouteIds.Equals(request.Routes)
+                        && c.RouteIds.Equals(request.Categories)
                         && c.Levels.Equals(request.Levels)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
@@ -87,11 +87,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel.Should().NotBeNull();
                 actualModel!.Courses.Should()
                     .BeEquivalentTo(response.Courses, options => options.Including(course => course.Id));
-                actualModel.Sectors.Should().BeEquivalentTo(response.Sectors);
+                actualModel.Routes.Should().BeEquivalentTo(response.Routes);
                 actualModel.Levels.Should().BeEquivalentTo(response.Levels);
                 actualModel.Keyword.Should().Be(request.Keyword);
                 actualModel.SelectedLevels.Should().BeEquivalentTo(request.Levels);
-                actualModel.SelectedSectors.Should().BeEquivalentTo(request.Sectors);
+                actualModel.SelectedRoutes.Should().BeEquivalentTo(request.Categories);
                 actualModel.Total.Should().Be(response.Total);
                 actualModel.TotalFiltered.Should().Be(response.TotalFiltered);
                 actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
@@ -118,18 +118,22 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
                 .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
             request.Location = "";
-            response.Sectors.Add(new Route
-            {
-                Route = request.Sectors.First()
-            });
-            response.Sectors.Add(new Route
-            {
-                Route = request.Sectors.Skip(1).First()
-            });
+
+            response.Routes = new List<Route>() {
+                new Route 
+                {
+                    Name = request.Categories[0]
+                },
+                new Route
+                {
+                    Name = request.Categories[1]
+                }
+            };
+
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
                         => c.Keyword.Equals(request.Keyword)
-                           && c.RouteIds.Equals(request.Sectors)), It.IsAny<CancellationToken>()))
+                           && c.RouteIds.Equals(request.Categories)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns((LocationCookieItem)null);
 
@@ -144,9 +148,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualResult.Should().NotBeNull();
                 var actualModel = actualResult!.Model as CoursesViewModel;
                 actualModel.Should().NotBeNull();
-                actualModel!.Sectors.Count(sector => sector.Selected).Should().Be(2);
-                actualModel.Sectors.SingleOrDefault(c => c.Route.Equals(request.Sectors.First())).Should().NotBeNull();
-                actualModel.Sectors.SingleOrDefault(c => c.Route.Equals(request.Sectors.Skip(1).First())).Should()
+                actualModel!.Routes.Count(sector => sector.Selected).Should().Be(2);
+                actualModel.Routes.SingleOrDefault(c => c.Name.Equals(request.Categories.First())).Should().NotBeNull();
+                actualModel.Routes.SingleOrDefault(c => c.Name.Equals(request.Categories.Skip(1).First())).Should()
                     .NotBeNull();
                 actualModel.Location.Should().BeEmpty();
             }
@@ -172,7 +176,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
             mediator.Setup(x =>
                     x.Send(It.Is<GetCoursesQuery>(c
                         => c.Keyword.Equals(request.Keyword)
-                           && c.RouteIds.Equals(request.Sectors)
+                           && c.RouteIds.Equals(request.Categories)
                            && c.Levels.Equals(request.Levels)), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(response);
             locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(cookieItem);

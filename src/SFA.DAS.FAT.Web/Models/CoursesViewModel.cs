@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Web;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
@@ -46,12 +44,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string TotalMessage => GetTotalMessage();
 
-    public string OrderByName => string.Empty;
+    public string OrderByName => $"{GenerateFilterQueryString()}&orderby={nameof(OrderBy.Name).ToLower()}";
 
-    //BuildOrderByLink(OrderBy.Name);
-    public string OrderByRelevance => string.Empty;
-        
-        //BuildOrderByLink(OrderBy.Relevance);
+    public string OrderByRelevance => $"{GenerateFilterQueryString()}&orderby={nameof(OrderBy.Relevance).ToLower()}";
 
     private string GetTotalMessage()
     {
@@ -76,14 +71,6 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    public enum CoursesFilterType
-    {
-        Location,
-        Levels,
-        Routes,
-        KeyWord
-    }
-
     private Dictionary<CoursesFilterType, Dictionary<string, string>> _clearLinks;
 
     public Dictionary<CoursesFilterType, Dictionary<string, string>> ClearLinks
@@ -94,11 +81,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             {
                 _clearLinks = GenerateFilterClearLinks();
             }
+
             return _clearLinks;
         }
     }
 
-    public Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterClearLinks()
+    public Dictionary<CoursesFilterType, List<string>> GetSelectedFilters()
     {
         var selectedFilters = new Dictionary<CoursesFilterType, List<string>>();
 
@@ -112,23 +100,42 @@ public class CoursesViewModel : PageLinksViewModelBase
             selectedFilters[CoursesFilterType.Location] = new List<string> { Location };
         }
 
-        if (SelectedLevels != null && SelectedLevels.Any())
+        if (SelectedLevels is not null && SelectedLevels.Any())
         {
-            selectedFilters[CoursesFilterType.Levels] = Levels
-                .Where(a => SelectedLevels.Contains(a.Code))
-                .Select(a => a.Name)
-                .ToList();
+            selectedFilters[CoursesFilterType.Levels] = Levels.Where(a => SelectedLevels.Contains(a.Code)).Select(a => a.Name).ToList();
         }
 
-        if (SelectedRoutes != null && SelectedRoutes.Any())
+        if (SelectedRoutes is not null && SelectedRoutes.Any())
         {
-            selectedFilters[CoursesFilterType.Routes] = SelectedRoutes;
+            selectedFilters[CoursesFilterType.Categories] = SelectedRoutes.Where(a => Routes.Select(t => t.Name).Contains(a)).ToList();
         }
+
+        return selectedFilters;
+    }
+
+    public Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterClearLinks()
+    {
+        var selectedFilters = GetSelectedFilters();
 
         return GenerateFilterPermutations(selectedFilters);
     }
 
-    private static Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterPermutations(Dictionary<CoursesFilterType, List<string>> queryParams)
+    public string GenerateFilterQueryString()
+    {
+        var queryBuilder = new StringBuilder();
+
+        foreach (var param in GetSelectedFilters())
+        {
+            foreach (var value in param.Value)
+            {
+                AppendQueryParam(queryBuilder, param.Key, value);
+            }
+        }
+
+        return queryBuilder.ToString();
+    }
+
+    private Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterPermutations(Dictionary<CoursesFilterType, List<string>> queryParams)
     {
         var filterPermutations = new Dictionary<CoursesFilterType, Dictionary<string, string>>();
 
@@ -148,7 +155,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         return filterPermutations;
     }
 
-    private static string BuildQueryWithoutValue(CoursesFilterType filterType, string value, Dictionary<CoursesFilterType, List<string>> queryParams)
+    public string BuildQueryWithoutValue(CoursesFilterType filterType, string value, Dictionary<CoursesFilterType, List<string>> queryParams)
     {
         var queryBuilder = new StringBuilder();
 
@@ -158,14 +165,14 @@ public class CoursesViewModel : PageLinksViewModelBase
             {
                 foreach (var val in param.Value.Where(v => v != value))
                 {
-                    AppendQueryParam(queryBuilder, param.Key.ToString().ToLower(), val);
+                    AppendQueryParam(queryBuilder, param.Key, val);
                 }
             }
             else
             {
                 foreach (var val in param.Value)
                 {
-                    AppendQueryParam(queryBuilder, param.Key.ToString().ToLower(), val);
+                    AppendQueryParam(queryBuilder, param.Key, val);
                 }
             }
         }
@@ -173,8 +180,10 @@ public class CoursesViewModel : PageLinksViewModelBase
         return queryBuilder.ToString();
     }
 
-    private static void AppendQueryParam(StringBuilder builder, string key, string value)
+    private void AppendQueryParam(StringBuilder builder, CoursesFilterType key, string value)
     {
+        string stringKey = key.ToString().ToLower();
+
         if (!string.IsNullOrWhiteSpace(value))
         {
             if (builder.Length > 0)
@@ -185,7 +194,31 @@ public class CoursesViewModel : PageLinksViewModelBase
             {
                 builder.Append('?');
             }
-            builder.Append($"{key}={value}");
+            builder.Append($"{stringKey}={GetValue(key, value)}");
         }
+    }
+
+    private string GetValue(CoursesFilterType key, string filterValue)
+    {
+        return key switch
+        {
+            CoursesFilterType.Levels => GetLevelCodeValue(filterValue),
+            _ => filterValue
+        };
+    }
+
+    private string GetLevelCodeValue(string filterValue)
+    {
+        var level = Levels.FirstOrDefault(a => a.Name == filterValue);
+        return level?.Code.ToString() ?? filterValue;
+    }
+
+    public enum CoursesFilterType
+    {
+        Location,
+        Levels,
+        Categories,
+        KeyWord,
+        OrderBy
     }
 }

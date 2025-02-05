@@ -12,15 +12,13 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services;
 public class DistributedCacheServiceTests
 {
     private Mock<IDistributedCache> _mockDistributedCache;
-    private Mock<IMemoryCache> _mockMemoryCache;
     private DistributedCacheService _distributedCacheService;
 
     [SetUp]
     public void Setup()
     {
         _mockDistributedCache = new Mock<IDistributedCache>();
-        _mockMemoryCache = new Mock<IMemoryCache>();
-        _distributedCacheService = new DistributedCacheService(_mockDistributedCache.Object, _mockMemoryCache.Object);
+        _distributedCacheService = new DistributedCacheService(_mockDistributedCache.Object);
     }
 
     [Test]
@@ -43,26 +41,6 @@ public class DistributedCacheServiceTests
         // Assert
         result.Should().Be(cachedValue);
         _mockDistributedCache.Verify(x => x.GetAsync(cacheKey, default), Times.Once);
-        _mockDistributedCache.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), default), Times.Never);
-    }
-
-    [Test]
-    public async Task GetOrSetAsync_ShouldReturnMemoryCachedData_WhenDataExistsInMemoryCache()
-    {
-        string cacheKey = "testKey";
-        string cachedValue = "Cached Value";
-        var cachedData = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cachedValue));
-        _mockMemoryCache
-            .Setup(x => x.Get(cacheKey))
-            .Returns(cachedData);
-
-        var result = await _distributedCacheService.GetOrSetAsync(
-            cacheKey,
-            () => Task.FromResult("New Value"),
-            TimeSpan.FromMinutes(10));
-
-        result.Should().Be(cachedValue);
-        _mockMemoryCache.Verify(x => x.Get(cacheKey), Times.Once);
         _mockDistributedCache.Verify(x => x.SetAsync(It.IsAny<string>(), It.IsAny<byte[]>(), It.IsAny<DistributedCacheEntryOptions>(), default), Times.Never);
     }
 
@@ -103,7 +81,6 @@ public class DistributedCacheServiceTests
 
         // Assert
         _mockDistributedCache.Verify(x => x.RemoveAsync(cacheKey, default), Times.Once);
-        _mockMemoryCache.Verify(x => x.Remove(cacheKey), Times.Once);
     }
 }
 

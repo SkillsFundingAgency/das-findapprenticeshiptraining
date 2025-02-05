@@ -48,42 +48,42 @@
                     @if (Model.ShowFilterOptions)
                     {
                         <div class="das-filter__selected-filters">
-
                             <div class="das-filter__selected-header">
                                 <h3 class="das-filter__selected-heading">Selected filters</h3>
-                                <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear <span class="govuk-visually-hidden">the selected filters</span></a>
+                                <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">
+                                    Clear <span class="govuk-visually-hidden">the selected filters</span>
+                                </a>
                             </div>
 
                             @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.KeyWord) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.KeyWord].Any())
                             {
-                                <h4 class="das-filter__selected-sub-heading">Course</h4>
-                                <a asp-querystring="@Model.ClearLinks[CoursesViewModel.CoursesFilterType.KeyWord].First().Value" title="Clear this filter '@Model.Keyword'" class="das-filter__tag das-breakable">@Model.Keyword</a>
+                                @await Html.PartialAsync("_RenderSelectedFilter", Tuple.Create(
+                                         "Course",
+                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.KeyWord].First().Value,
+                                         Model.Keyword))
                             }
 
                             @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Location) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Location].Any())
                             {
-                                <h4 class="das-filter__selected-sub-heading">Apprentice's work location</h4>
-                                <a asp-querystring="@Model.ClearLinks[CoursesViewModel.CoursesFilterType.Location].First().Value" title="Clear this filter '@Model.Location'" class="das-filter__tag das-breakable">@Model.WorkLocationDisplayMessage</a>
+                                @await Html.PartialAsync("_RenderSelectedFilter", Tuple.Create(
+                                         "Apprentice's work location",
+                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Location].First().Value,
+                                         Model.WorkLocationDisplayMessage))
                             }
 
                             @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Levels) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Levels].Any())
                             {
-                                <h4 class="das-filter__selected-sub-heading">Qualification level</h4>
-                                @foreach (var levelLink in Model.ClearLinks[CoursesViewModel.CoursesFilterType.Levels])
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@levelLink.Value" title="Clear this level filter @levelLink.Key">@levelLink.Key</a>
-                                }
+                                @await Html.PartialAsync("_RenderSelectedFilterList", Tuple.Create(
+                                         "Qualification level",
+                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Levels]))
                             }
 
-                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Routes) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Routes].Any())
+                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Categories) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Categories].Any())
                             {
-                                <h4 class="das-filter__selected-sub-heading">Apprenticeship category</h4>
-                                @foreach (var filterLink in Model.ClearLinks[CoursesViewModel.CoursesFilterType.Routes])
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@filterLink.Value" title="Clear this sector filter @filterLink.Key">@filterLink.Key</a>
-                                }
+                                @await Html.PartialAsync("_RenderSelectedFilterList", Tuple.Create(
+                                         "Apprenticeship category",
+                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Categories]))
                             }
-
                         </div>
                     }
 
@@ -213,18 +213,18 @@
                                         <div class="govuk-form-group">
                                             <fieldset class="govuk-fieldset">
                                                 <div class="govuk-checkboxes govuk-checkboxes--small">
-                                                    @foreach (var route in Model.Routes)
+                                                    @foreach (var category in Model.Routes)
                                                     {
                                                         <div class="govuk-checkboxes__item">
-                                                            <input @(route.Selected ? "checked='checked'" : "")
+                                                            <input @(category.Selected ? "checked='checked'" : "")
                                                                    class="govuk-checkboxes__input"
-                                                                   id="route-@route.Id"
-                                                                   name="routes"
+                                                                   id="category-@category.Id"
+                                                                   name="categories"
                                                                    type="checkbox"
-                                                                   value="@route.Name" />
+                                                                   value="@category.Name" />
 
-                                                            <label class="govuk-label govuk-checkboxes__label" for="route-@route.Id">
-                                                                @route.Name
+                                                            <label class="govuk-label govuk-checkboxes__label" for="category-@category.Id">
+                                                                @category.Name
                                                             </label>
                                                         </div>
                                                     }
