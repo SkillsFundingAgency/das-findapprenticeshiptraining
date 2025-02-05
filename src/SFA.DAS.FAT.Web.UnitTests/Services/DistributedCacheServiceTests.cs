@@ -2,7 +2,6 @@
 using System.Text.Json;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.Memory;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Services;
@@ -22,7 +21,7 @@ public class DistributedCacheServiceTests
     }
 
     [Test]
-    public async Task GetOrSetAsync_ShouldReturnDistributedCachedData_WhenDataExistsInDistributedCache()
+    public async Task GetOrSetAsync_ShouldReturnCachedData_WhenDataExistsInCache()
     {
         // Arrange
         string cacheKey = "testKey";
