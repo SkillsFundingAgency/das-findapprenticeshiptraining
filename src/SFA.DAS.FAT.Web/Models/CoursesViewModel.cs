@@ -100,12 +100,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             selectedFilters[CoursesFilterType.Location] = new List<string> { Location };
         }
 
-        if (SelectedLevels is not null && SelectedLevels.Any())
+        if (SelectedLevels is not null && SelectedLevels.Count > 0)
         {
             selectedFilters[CoursesFilterType.Levels] = Levels.Where(a => SelectedLevels.Contains(a.Code)).Select(a => a.Name).ToList();
         }
 
-        if (SelectedRoutes is not null && SelectedRoutes.Any())
+        if (SelectedRoutes is not null && SelectedRoutes.Count > 0)
         {
             selectedFilters[CoursesFilterType.Categories] = SelectedRoutes.Where(a => Routes.Select(t => t.Name).Contains(a)).ToList();
         }

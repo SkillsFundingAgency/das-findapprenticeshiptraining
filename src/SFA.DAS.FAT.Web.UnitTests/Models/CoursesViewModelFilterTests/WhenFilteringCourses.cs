@@ -94,7 +94,7 @@ public sealed class WhenFilteringCourses
     {
         _coursesViewModel.SelectedLevels = [-1];
         var selectedFilters = _coursesViewModel.GetSelectedFilters();
-        Assert.That(selectedFilters[CoursesFilterType.Levels].Count, Is.EqualTo(0));
+        Assert.That(selectedFilters[CoursesFilterType.Levels], Has.Count.EqualTo(0));
     }
 
     [Test]
@@ -102,7 +102,7 @@ public sealed class WhenFilteringCourses
     {
         _coursesViewModel.SelectedRoutes = ["Invalid Route"];
         var selectedFilters = _coursesViewModel.GetSelectedFilters();
-        Assert.That(selectedFilters[CoursesFilterType.Categories].Count, Is.EqualTo(0));
+        Assert.That(selectedFilters[CoursesFilterType.Categories], Has.Count.EqualTo(0));
     }
 
     [Test]
