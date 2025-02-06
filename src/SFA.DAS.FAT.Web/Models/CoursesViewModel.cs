@@ -98,14 +98,19 @@ public class CoursesViewModel : PageLinksViewModelBase
         if (!string.IsNullOrWhiteSpace(Location))
         {
             selectedFilters[CoursesFilterType.Location] = new List<string> { Location };
+
+            if(Distance.HasValue && ValidDistances.IsValidDistance(Distance.Value))
+            {
+                selectedFilters[CoursesFilterType.Distance] = new List<string> { Distance.Value.ToString() };
+            }
         }
 
-        if (SelectedLevels is not null && SelectedLevels.Count > 0)
+        if (SelectedLevels is not null && SelectedLevels.Count > 0 && Levels.Count > 0)
         {
             selectedFilters[CoursesFilterType.Levels] = Levels.Where(a => SelectedLevels.Contains(a.Code)).Select(a => a.Name).ToList();
         }
 
-        if (SelectedRoutes is not null && SelectedRoutes.Count > 0)
+        if (SelectedRoutes is not null && SelectedRoutes.Count > 0 && Routes.Count > 0)
         {
             selectedFilters[CoursesFilterType.Categories] = SelectedRoutes.Where(a => Routes.Select(t => t.Name).Contains(a)).ToList();
         }
@@ -219,6 +224,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         Levels,
         Categories,
         KeyWord,
-        OrderBy
+        OrderBy,
+        Distance
     }
 }

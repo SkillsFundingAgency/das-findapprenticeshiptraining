@@ -128,4 +128,51 @@ public sealed class WhenFilteringCourses
             Assert.That(result[CoursesFilterType.Location]["M60 RNA"], Is.EqualTo("?keyword=Construction"));
         });
     }
+
+    [Test]
+    public void When_Distance_Is_Set_Then_Clear_Links_Must_Contain_Both_Distance_And_Location_Permutation()
+    {
+        var routeName = "Agriculture, environmental and animal care";
+
+        CoursesViewModel sut = new CoursesViewModel
+        {
+            Location = "M60 RNA",
+            Distance = 10,
+            Keyword = string.Empty,
+            Routes = new List<RouteViewModel> { new RouteViewModel(new Route() { Name = routeName }, [routeName]) },
+            SelectedLevels = [],
+            SelectedRoutes = [routeName]
+        };
+
+        var result = sut.GenerateFilterClearLinks();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContainsKey(CoursesFilterType.Categories), Is.True);
+            Assert.That(result.ContainsKey(CoursesFilterType.Distance), Is.True);
+            Assert.That(result.ContainsKey(CoursesFilterType.Location), Is.True);
+            Assert.That(result[CoursesFilterType.Categories][routeName],  Is.EqualTo("?location=M60 RNA&distance=10"));
+        });
+    }
+
+    [Test]
+    public void When_Distance_Is_Invalid_Then_Location_Clear_Link_Must_Not_Contain_Distance_Permutation()
+    {
+        CoursesViewModel sut = new CoursesViewModel
+        {
+            Location = "M60 RNA",
+            Distance = -10,
+            Keyword = string.Empty,
+            SelectedLevels = [],
+            SelectedRoutes = []
+        };
+
+        var result = sut.GenerateFilterClearLinks();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContainsKey(CoursesFilterType.Location), Is.True);
+            Assert.That(result.ContainsKey(CoursesFilterType.Distance), Is.False);
+        });
+    }
 }
