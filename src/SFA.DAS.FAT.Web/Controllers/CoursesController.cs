@@ -16,10 +16,12 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-
+using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
+using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
 namespace SFA.DAS.FAT.Web.Controllers
 {
@@ -36,8 +38,6 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
-
-        private readonly HashSet<int> ValidDistances = new HashSet<int> { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -68,7 +68,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            int? validatedDistance = request.Distance.HasValue && ValidDistances.Contains(request.Distance.Value) ? request.Distance : null;
+            int? validatedDistance = request.Distance.HasValue && ValidDistances.IsValidDistance(request.Distance.Value) ? request.Distance : null;
 
             var result = await _mediator.Send(new GetCoursesQuery
             {

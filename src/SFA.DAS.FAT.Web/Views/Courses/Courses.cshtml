@@ -127,28 +127,23 @@
                             <div class="govuk-form-group">
                                 <label class="govuk-label das-filter__search-label" for="sort">
                                     Apprentice can travel
-                                    <p class="govuk-hint">Distance apprentice can travel</p>
+                                    <p class="govuk-hint">Distance apprentice can travel to training</p>
                                 </label>
 
                                 <select class="govuk-select" id="distance" name="distance" asp-for="Distance">
-                                    <option value="2" selected="@(Model.Distance == 2 ? "selected" : null)">2 Miles</option>
-                                    <option value="5" selected="@(Model.Distance == 5 ? "selected" : null)">5 Miles</option>
-                                    <option value="10" selected="@(Model.Distance == 10 ? "selected" : null)">10 Miles</option>
-                                    <option value="15" selected="@(Model.Distance == 15 ? "selected" : null)">15 Miles</option>
-                                    <option value="20" selected="@(Model.Distance == 20 ? "selected" : null)">20 Miles</option>
-                                    <option value="30" selected="@(Model.Distance == 30 ? "selected" : null)">30 Miles</option>
-                                    <option value="40" selected="@(Model.Distance == 40 ? "selected" : null)">40 Miles</option>
-                                    <option value="50" selected="@(Model.Distance == 50 ? "selected" : null)">50 Miles</option>
-                                    <option value="100" selected="@(Model.Distance == 100 ? "selected" : null)">100 Miles</option>
+                                    @foreach (int distance in ValidDistances.Distances)
+                                    {
+                                        <option value="@distance" selected="@(Model.Distance == @distance ? "selected" : null)">@distance Miles</option>
+                                    }
                                     <option value="" selected="@(Model.Distance == null ? "selected" : null)">Across England</option>
                                 </select>
                             </div>
 
                             @* Distance select filter *@
 
-                            @* Levels Checkbox filters *@
+                            <div class="govuk-accordion govuk-accordion-hide-controls" data-module="govuk-accordion">
 
-                            <div class="govuk-accordion govuk-accordion-hide-controls" data-module="govuk-accordion" data-hide-section-toggle="true" id="accordion-default">
+                                @* Levels Checkbox filters *@
 
                                 <div class="govuk-accordion__section">
                                     <div class="govuk-accordion__section-header">
@@ -192,13 +187,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            @* Levels Checkbox filters *@
+                                @* Levels Checkbox filters *@
 
-                            @* Job Categories Checkbox filters *@
-
-                            <div class="govuk-accordion govuk-accordion-hide-controls" data-module="govuk-accordion" data-hide-section-toggle="true" id="accordion-default">
+                                @* Job Categories Checkbox filters *@
 
                                 <div class="govuk-accordion__section">
                                     <div class="govuk-accordion__section-header">
@@ -233,9 +225,10 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            @* Job Categories Checkbox filters *@
+                                @* Job Categories Checkbox filters *@
+
+                            </div>
 
                             <button type="submit" class="govuk-button" id="filters-submit-second">Apply filters</button>
 
