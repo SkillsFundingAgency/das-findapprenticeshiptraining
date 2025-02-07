@@ -59,8 +59,8 @@ public class CoursesViewModel : PageLinksViewModelBase
     private string GetTotalMessage()
     {
         var totalToUse = string.IsNullOrEmpty(Keyword)
-                         && (SelectedRoutes == null || !SelectedRoutes.Any())
-                         && (SelectedLevels == null || !SelectedLevels.Any())
+                         && (SelectedRoutes == null || SelectedRoutes.Count < 1)
+                         && (SelectedLevels == null || !SelectedLevels.Count < 1)
                                 ? Total
                                 : TotalFiltered;
 
