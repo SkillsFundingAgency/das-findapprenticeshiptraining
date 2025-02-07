@@ -11,24 +11,25 @@ public class GetCoursesQueryHandler(
     ICourseService _courseService, 
     ILevelsService _levelsService,
     IRoutesService _routesService
-) : IRequestHandler<GetCoursesQuery, GetCoursesResult>
+) : IRequestHandler<GetCoursesQuery, GetCoursesQueryResult>
 {
-    public async Task<GetCoursesResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
+    public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
-        var response = await _courseService.GetCourses(query.Keyword, query.RouteIds, query.Levels, query.OrderBy, query.ShortlistUserId);
+        var coursesResponse = await _courseService.GetCourses(query.Keyword, query.RouteIds, query.Levels, query.OrderBy, cancellationToken);
 
         var levels = await _levelsService.GetLevelsAsync(cancellationToken);
 
         var routes = await _routesService.GetRoutesAsync(cancellationToken);
 
-        return new GetCoursesResult
+        return new GetCoursesQueryResult()
         {
-            Courses = response.Courses.ToList(),
-            Routes = routes,
-            Total = response.Total,
-            TotalFiltered = response.TotalFiltered,
+            Standards = coursesResponse.Standards,
+            Page = coursesResponse.Page,
+            PageSize = coursesResponse.PageSize,
+            TotalPages = coursesResponse.TotalPages,
+            TotalCount = coursesResponse.TotalCount,
             Levels = levels,
-            ShortlistItemCount = response.ShortlistItemCount
+            Routes = routes
         };
     }
 }

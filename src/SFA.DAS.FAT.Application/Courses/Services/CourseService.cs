@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
+using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Services
@@ -29,15 +32,22 @@ namespace SFA.DAS.FAT.Application.Courses.Services
             return response;
         }
 
-        public async Task<TrainingCourses> GetCourses(string keyword, List<string> requestRouteIds, List<int> requestLevelCodes, OrderBy orderBy, Guid? shortlistUserId)
+        public async Task<GetCoursesResponse> GetCourses(string keyword, List<int> routeIds, List<int> levels, OrderBy orderBy, CancellationToken cancellationToken)
         {
-            var request = new GetCoursesApiRequest(_config.BaseUrl, keyword, requestRouteIds, requestLevelCodes, orderBy, shortlistUserId);
+            var request = new GetCoursesApiRequest(
+                _config.BaseUrl, 
+                keyword, 
+                routeIds,
+                levels, 
+                orderBy
+            );
 
-            var response = await _apiClient.Get<TrainingCourses>(request);
+            var response = await _apiClient.Get<GetCoursesResponse>(request);
 
             return response;
         }
-        public async Task<TrainingCourseProviderDetails> GetCourseProviderDetails(    int providerId, int courseId,
+
+        public async Task<TrainingCourseProviderDetails> GetCourseProviderDetails(int providerId, int courseId,
             string location, double lat, double lon, Guid shortlistUserId)
         {
             var request = new GetCourseProviderDetailsApiRequest(_config.BaseUrl,courseId, providerId, location,shortlistUserId, lat, lon);

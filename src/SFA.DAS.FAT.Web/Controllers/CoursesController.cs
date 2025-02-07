@@ -73,7 +73,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = request.Keyword,
-                RouteIds = request.Categories,
+                RouteIds = [], //request.Categories
                 Levels = request.Levels,
                 OrderBy = request.OrderBy,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
@@ -81,16 +81,16 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             var viewModel = new CoursesViewModel
             {
-                Courses = result.Courses.Select(c => (CourseViewModel)c).ToList(),
+                Courses = [], //result.Select(c => (CourseViewModel)c).ToList()
                 Routes = result.Routes.Select(route => new RouteViewModel(route, request.Categories)).ToList(),
-                Total = result.Total,
-                TotalFiltered = result.TotalFiltered,
+                Total = result.TotalCount,
+                TotalFiltered = result.TotalCount,
                 Keyword = request.Keyword,
                 SelectedRoutes = request.Categories,
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
-                ShortListItemCount = result.ShortlistItemCount,
+                //ShortListItemCount = result.ShortlistItemCount,
                 Location = location?.Name ?? string.Empty,
                 Distance = validatedDistance,
                 ShowSearchCrumb = true,
