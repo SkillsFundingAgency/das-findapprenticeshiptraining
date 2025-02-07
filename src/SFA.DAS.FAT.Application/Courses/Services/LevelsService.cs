@@ -11,11 +11,6 @@ using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Services;
 
-public interface ILevelsService
-{
-    Task<IEnumerable<Level>> GetLevelsAsync(CancellationToken cancellationToken);
-}
-
 public sealed class LevelsService(
     IApiClient _apiClient, 
     ISessionService _sessionService, 
@@ -37,7 +32,7 @@ public sealed class LevelsService(
             CacheSetting.Levels.CacheDuration
         );
 
-        _sessionService.Set<GetLevelsListResponse>(levelsResponse);
+        _sessionService.Set(levelsResponse);
 
         return levelsResponse.Levels;
     }

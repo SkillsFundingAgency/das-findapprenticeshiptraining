@@ -1,4 +1,6 @@
-﻿@using SFA.DAS.FAT.Web.Infrastructure
+﻿@using SFA.DAS.FAT.Domain
+@using SFA.DAS.FAT.Domain.Filters
+@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
@@ -55,34 +57,9 @@
                                 </a>
                             </div>
 
-                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.KeyWord) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.KeyWord].Any())
+                            @foreach(ClearFilterSection section in Model.SelectedFilterSections)
                             {
-                                @await Html.PartialAsync("_RenderSelectedFilter", Tuple.Create(
-                                         "Course",
-                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.KeyWord].First().Value,
-                                         Model.Keyword))
-                            }
-
-                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Location) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Location].Any())
-                            {
-                                @await Html.PartialAsync("_RenderSelectedFilter", Tuple.Create(
-                                         "Apprentice's work location",
-                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Location].First().Value,
-                                         Model.WorkLocationDisplayMessage))
-                            }
-
-                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Levels) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Levels].Any())
-                            {
-                                @await Html.PartialAsync("_RenderSelectedFilterList", Tuple.Create(
-                                         "Qualification level",
-                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Levels]))
-                            }
-
-                            @if (Model.ClearLinks.ContainsKey(CoursesViewModel.CoursesFilterType.Categories) && Model.ClearLinks[CoursesViewModel.CoursesFilterType.Categories].Any())
-                            {
-                                @await Html.PartialAsync("_RenderSelectedFilterList", Tuple.Create(
-                                         "Apprenticeship category",
-                                         Model.ClearLinks[CoursesViewModel.CoursesFilterType.Categories]))
+                                @await Html.PartialAsync("_clearFilterSection", section)
                             }
                         </div>
                     }
@@ -249,37 +226,10 @@
 
                 if (Model.Courses.Count > 1)
                 {
-                    if (!string.IsNullOrEmpty(Model.Keyword))
-                    {
-                        if (Model.OrderBy == OrderBy.Relevance)
-                        {
-                            <p class="govuk-body govuk-!-margin-bottom-6">
-                                Sort by:
-
-                                <span class="govuk-!-font-weight-bold">Relevance</span>,
-                                <a id="sort-by-name" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByName">Name</a>
-
-                            </p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-bottom-6">
-                                Sort by:
-
-                                <a id="sort-by-relevance" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByRelevance">Relevance</a>,
-                                <span class="govuk-!-font-weight-bold">Name</span>
-
-                            </p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="govuk-body govuk-!-margin-bottom-6">
-                            Sorted by:
-                            <span class="govuk-!-font-weight-bold">Name</span>
-                        </p>
-                    }
+                    <p class="govuk-body govuk-!-margin-bottom-6">
+                        Sorted by:
+                        <span class="govuk-!-font-weight-bold">Name</span>
+                    </p>
                 }
                 
                 <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 ">

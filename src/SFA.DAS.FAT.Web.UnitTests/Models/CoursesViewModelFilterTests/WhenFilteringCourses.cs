@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Courses.Filters;
 using SFA.DAS.FAT.Web.Models;
-using static SFA.DAS.FAT.Web.Models.CoursesViewModel;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelFilterTests;
 
@@ -27,50 +27,50 @@ public sealed class WhenFilteringCourses
     [Test]
     public void Then_Work_Location_Distance_Display_Message_Should_Return_Within_Miles()
     {
-        var result = _coursesViewModel.WorkLocationDisplayMessage;
-        Assert.That(result, Is.EqualTo("London (within 50 miles)"));
+        var _sut = _coursesViewModel.WorkLocationDisplayMessage;
+        Assert.That(_sut, Is.EqualTo("London (within 50 miles)"));
     }
 
     [Test]
     public void Then_Work_Location_Distance_Display_Message_Should_Return_Across_England_When_Distance_Exceeds_Maximum()
     {
         _coursesViewModel.Distance = 150;
-        var result = _coursesViewModel.WorkLocationDisplayMessage;
-        Assert.That(result, Is.EqualTo("London (Across England)"));
+        var _sut = _coursesViewModel.WorkLocationDisplayMessage;
+        Assert.That(_sut, Is.EqualTo("London (Across England)"));
     }
 
     [Test]
     public void Then_Work_Location_Distance_Display_Message_Should_Return_Across_England_When_Distance_Is_Null()
     {
         _coursesViewModel.Distance = null;
-        var result = _coursesViewModel.WorkLocationDisplayMessage;
-        Assert.That(result, Is.EqualTo("London (Across England)"));
+        var _sut = _coursesViewModel.WorkLocationDisplayMessage;
+        Assert.That(_sut, Is.EqualTo("London (Across England)"));
     }
 
     [Test]
     public void Then_Work_Location_Distance_Display_Message_Should_Return_Across_England_When_Distance_Is_Less_Than_One()
     {
         _coursesViewModel.Distance = -1;
-        var result = _coursesViewModel.WorkLocationDisplayMessage;
-        Assert.That(result, Is.EqualTo("London (Across England)"));
+        var _sut = _coursesViewModel.WorkLocationDisplayMessage;
+        Assert.That(_sut, Is.EqualTo("London (Across England)"));
     }
 
     [Test]
-    public void Then_Selected_Filters_Should_Contain_Correct_Filters()
+    public void Then_Selected_Filters_Should_Contain_Correct_Selected_Filter_Sections()
     {
-        var selectedFilters = _coursesViewModel.GetSelectedFilters();
+        var _sut = _coursesViewModel.SelectedFilterSections;
 
         Assert.Multiple(() =>
         {
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.KeyWord), Is.True);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Location), Is.True);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Levels), Is.True);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Categories), Is.True);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.KEYWORD_SECTION_HEADING), Is.Not.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LOCATION_SECTION_HEADING), Is.Not.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LEVELS_SECTION_HEADING), Is.Not.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.CATEGORIES_SECTION_HEADING), Is.Not.Null);
         });
     }
 
     [Test]
-    public void Then_Selected_Filters_Should_Be_Empty()
+    public void Then_Selected_Filter_Sections_Should_Be_Empty()
     {
         _coursesViewModel.Distance = null;
         _coursesViewModel.Keyword = null;
@@ -78,37 +78,37 @@ public sealed class WhenFilteringCourses
         _coursesViewModel.SelectedRoutes = [];
         _coursesViewModel.Location = null;
 
-        var selectedFilters = _coursesViewModel.GetSelectedFilters();
+        var _sut = _coursesViewModel.SelectedFilterSections;
 
         Assert.Multiple(() =>
         {
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.KeyWord), Is.False);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Location), Is.False);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Levels), Is.False);
-            Assert.That(selectedFilters.ContainsKey(CoursesFilterType.Categories), Is.False);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.KEYWORD_SECTION_HEADING), Is.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LOCATION_SECTION_HEADING), Is.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LEVELS_SECTION_HEADING), Is.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.CATEGORIES_SECTION_HEADING), Is.Null);
         });
     }
 
     [Test]
-    public void Then_Selected_Filters_Should_Not_Contain_Invalid_Level_Filter()
+    public void Then_Selected_Filter_Sections_Should_Not_Contain_Invalid_Levels()
     {
         _coursesViewModel.SelectedLevels = [-1];
-        var selectedFilters = _coursesViewModel.GetSelectedFilters();
-        Assert.That(selectedFilters[CoursesFilterType.Levels], Has.Count.EqualTo(0));
+        var _sut = _coursesViewModel.SelectedFilterSections;
+        Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LEVELS_SECTION_HEADING), Is.Null);
     }
 
     [Test]
-    public void Then_Selected_Filters_Should_Not_Contain_Invalid_Category_Filter()
+    public void Then_Selected_Filter_Sections_Should_Not_Contain_Invalid_Categories()
     {
         _coursesViewModel.SelectedRoutes = ["Invalid Route"];
-        var selectedFilters = _coursesViewModel.GetSelectedFilters();
-        Assert.That(selectedFilters[CoursesFilterType.Categories], Has.Count.EqualTo(0));
+        var selectedFilterSections = _coursesViewModel.SelectedFilterSections;
+        Assert.That(selectedFilterSections.FirstOrDefault(a => a.Title == CourseFilters.CATEGORIES_SECTION_HEADING), Is.Null);
     }
 
     [Test]
     public void Then_Clear_Links_Must_Have_Correct_Permutations()
     {
-        CoursesViewModel sut = new CoursesViewModel
+        CoursesViewModel _viewModel = new CoursesViewModel
         {
             Location = "M60 RNA",
             Distance = null,
@@ -117,15 +117,17 @@ public sealed class WhenFilteringCourses
             SelectedRoutes = []
         };
 
-        var result = sut.GenerateFilterClearLinks();
+        var sut = _viewModel.SelectedFilterSections;
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey(CoursesFilterType.KeyWord), Is.True);
-            Assert.That(result[CoursesFilterType.KeyWord]["Construction"], Is.EqualTo("?location=M60 RNA"));
+            var keywordFilterSection = sut.FirstOrDefault(a => a.Title == CourseFilters.KEYWORD_SECTION_HEADING);
+            Assert.That(keywordFilterSection, Is.Not.Null);
+            Assert.That(keywordFilterSection.Items[0].ClearLink, Is.EqualTo("?location=M60 RNA"));
 
-            Assert.That(result.ContainsKey(CoursesFilterType.Location), Is.True);
-            Assert.That(result[CoursesFilterType.Location]["M60 RNA"], Is.EqualTo("?keyword=Construction"));
+            var locationFilterSection = sut.FirstOrDefault(a => a.Title == CourseFilters.LOCATION_SECTION_HEADING);
+            Assert.That(locationFilterSection, Is.Not.Null);
+            Assert.That(locationFilterSection.Items[0].ClearLink, Is.EqualTo("?keyword=Construction"));
         });
     }
 
@@ -134,7 +136,7 @@ public sealed class WhenFilteringCourses
     {
         var routeName = "Agriculture, environmental and animal care";
 
-        CoursesViewModel sut = new CoursesViewModel
+        CoursesViewModel _viewModel = new CoursesViewModel
         {
             Location = "M60 RNA",
             Distance = 10,
@@ -144,21 +146,22 @@ public sealed class WhenFilteringCourses
             SelectedRoutes = [routeName]
         };
 
-        var result = sut.GenerateFilterClearLinks();
+        var _sut = _viewModel.SelectedFilterSections;
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey(CoursesFilterType.Categories), Is.True);
-            Assert.That(result.ContainsKey(CoursesFilterType.Distance), Is.True);
-            Assert.That(result.ContainsKey(CoursesFilterType.Location), Is.True);
-            Assert.That(result[CoursesFilterType.Categories][routeName],  Is.EqualTo("?location=M60 RNA&distance=10"));
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LOCATION_SECTION_HEADING), Is.Not.Null);
+
+            var categoriesSelectedFilterSections = _sut.FirstOrDefault(a => a.Title == CourseFilters.CATEGORIES_SECTION_HEADING);
+            Assert.That(categoriesSelectedFilterSections, Is.Not.Null);
+            Assert.That(categoriesSelectedFilterSections.Items[0].ClearLink, Is.EqualTo("?location=M60 RNA&distance=10"));
         });
     }
 
     [Test]
     public void When_Distance_Is_Invalid_Then_Location_Clear_Link_Must_Not_Contain_Distance_Permutation()
     {
-        CoursesViewModel sut = new CoursesViewModel
+        CoursesViewModel _viewModel = new CoursesViewModel
         {
             Location = "M60 RNA",
             Distance = -10,
@@ -167,12 +170,12 @@ public sealed class WhenFilteringCourses
             SelectedRoutes = []
         };
 
-        var result = sut.GenerateFilterClearLinks();
+        var _sut = _viewModel.SelectedFilterSections;
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey(CoursesFilterType.Location), Is.True);
-            Assert.That(result.ContainsKey(CoursesFilterType.Distance), Is.False);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.LOCATION_SECTION_HEADING), Is.Not.Null);
+            Assert.That(_sut.FirstOrDefault(a => a.Title == CourseFilters.KEYWORD_SECTION_HEADING), Is.Null);
         });
     }
 }
