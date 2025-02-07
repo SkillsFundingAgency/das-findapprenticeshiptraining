@@ -60,7 +60,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         var totalToUse = string.IsNullOrEmpty(Keyword)
                          && (SelectedRoutes == null || SelectedRoutes.Count < 1)
-                         && (SelectedLevels == null || !SelectedLevels.Count < 1)
+                         && (SelectedLevels == null || SelectedLevels.Count < 1)
                                 ? Total
                                 : TotalFiltered;
 
