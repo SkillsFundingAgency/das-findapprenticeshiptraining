@@ -75,7 +75,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests
                     .Select(vm => vm.ProviderRatingType);
                 var deliveryModeSelected = model.DeliveryModes
                     .Where(vm => vm.Selected)
-                    .Select(vm => vm.DeliveryModeType);
+                    .Select(vm => vm.DeliveryModeChoice);
                 var apprenticeProviderRatings = model.ApprenticeProviderRatings
                     .Where(vm => vm.Selected && 
                     vm.ProviderRatingType != providerRating.ProviderRatingType)

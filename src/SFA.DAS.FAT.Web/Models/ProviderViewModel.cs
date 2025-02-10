@@ -9,32 +9,33 @@ namespace SFA.DAS.FAT.Web.Models
 {
     public class ProviderViewModel
     {
-        public decimal? OverallAchievementRate { get ; set ; }
+        public decimal? OverallAchievementRate { get; set; }
 
-        public int? OverallCohort { get ; set ; }
+        public int? OverallCohort { get; set; }
 
-        public uint ProviderId { get ; set ; }
+        public uint ProviderId { get; set; }
 
-        public string Website { get ; set ; }
+        public string Website { get; set; }
 
-        public string Phone { get ; set ; }
+        public string Phone { get; set; }
 
-        public string Email { get ; set ; }
+        public string Email { get; set; }
 
-        public string Name { get ; set ; }
+        public string Name { get; set; }
         public string TradingName { get; set; }
-        public string MarketingInfo { get ; set ; }
-        public string OverallAchievementRatePercentage { get ; set ; }
-        public string NationalOverallAchievementRatePercentage { get ; set ; }
+        public string MarketingInfo { get; set; }
+        public string OverallAchievementRatePercentage { get; set; }
+        public string NationalOverallAchievementRatePercentage { get; set; }
         public IEnumerable<DeliveryModeViewModel> DeliveryModes { get; set; }
         public EmployerFeedbackViewModel EmployerFeedback { get; set; }
         public ApprenticeFeedbackViewModel ApprenticeFeedback { get; set; }
-        public string ProviderDistance { get ; set ; }
+        public string ProviderDistance { get; set; }
         public string ProviderDistanceText { get; set; }
-        public string ProviderAddress { get ; set ; }
+        public string ProviderAddress { get; set; }
 
-        public Guid? ShortlistId { get ; set ; }
+        public Guid? ShortlistId { get; set; }
 
+        //MFCMFC I think this mapping is no longer required
         public static implicit operator ProviderViewModel(Provider source)
         {
             if (source == null || source.ProviderId == 0)
@@ -58,9 +59,9 @@ namespace SFA.DAS.FAT.Web.Models
                 DeliveryModes = source.DeliveryModes != null ? BuildDeliveryModes(source.DeliveryModes.ToList()) : new List<DeliveryModeViewModel>(),
                 EmployerFeedback = new EmployerFeedbackViewModel(source.EmployerFeedback),
                 ApprenticeFeedback = new ApprenticeFeedbackViewModel(source.ApprenticeFeedback),
-                ProviderDistance = source.ProviderAddress?.DistanceInMiles !=null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
-                ProviderDistanceText =source.ProviderAddress !=null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
-                ProviderAddress = source.ProviderAddress !=null ? BuildProviderAddress(source.ProviderAddress) : ""
+                ProviderDistance = source.ProviderAddress?.DistanceInMiles != null ? source.ProviderAddress.DistanceInMiles.FormatDistance() : "",
+                ProviderDistanceText = source.ProviderAddress != null ? GetProviderDistanceText(source.ProviderAddress.DistanceInMiles.FormatDistance()) : "",
+                ProviderAddress = source.ProviderAddress != null ? BuildProviderAddress(source.ProviderAddress) : ""
             };
         }
 
@@ -70,7 +71,7 @@ namespace SFA.DAS.FAT.Web.Models
             {
                 return "Head office";
             }
-            
+
             if (distance == "1")
             {
                 return "Head office 1 mile away";
@@ -115,7 +116,7 @@ namespace SFA.DAS.FAT.Web.Models
             {
                 return new List<DeliveryModeViewModel>();
             }
-            var notFound = source.SingleOrDefault(mode => 
+            var notFound = source.SingleOrDefault(mode =>
                 mode.DeliveryModeType == Domain.Courses.DeliveryModeType.NotFound);
             if (source.Count == 1 && notFound != null)
             {
@@ -127,10 +128,10 @@ namespace SFA.DAS.FAT.Web.Models
                     new DeliveryModeViewModel().Map(null, DeliveryModeType.BlockRelease)
                 };
             }
-            
+
             var dayRelease = source.SingleOrDefault(mode =>
                 mode.DeliveryModeType == Domain.Courses.DeliveryModeType.DayRelease);
-            var blockRelease = source.SingleOrDefault(mode => 
+            var blockRelease = source.SingleOrDefault(mode =>
                 mode.DeliveryModeType == Domain.Courses.DeliveryModeType.BlockRelease);
             var workPlace =
                 source.SingleOrDefault(mode => mode.DeliveryModeType == Domain.Courses.DeliveryModeType.Workplace);
@@ -139,9 +140,9 @@ namespace SFA.DAS.FAT.Web.Models
                 new DeliveryModeViewModel().Map(workPlace, DeliveryModeType.Workplace),
                 new DeliveryModeViewModel().Map(dayRelease, DeliveryModeType.DayRelease),
                 new DeliveryModeViewModel().Map(blockRelease, DeliveryModeType.BlockRelease),
-                
+
             };
-            
+
             return returnList;
         }
     }
@@ -157,23 +158,23 @@ namespace SFA.DAS.FAT.Web.Models
         public string Postcode { get; set; }
         public string County { get; set; }
         public string AddressFormatted { get; set; }
-        public bool National { get ; set ; }
-        public string NationalText { get ; set ; }
+        public bool National { get; set; }
+        public string NationalText { get; set; }
 
         public DeliveryModeViewModel Map(DeliveryMode source, DeliveryModeType deliveryModeType)
         {
             var viewModel = source ?? new DeliveryModeViewModel();
             viewModel.DeliveryModeType = deliveryModeType;
-            viewModel.IsAvailable =  source != default;
+            viewModel.IsAvailable = source != default;
             viewModel.FormattedDistanceInMiles = source != default && deliveryModeType != DeliveryModeType.Workplace
-                ? source.DistanceInMiles.FormatDistance() == "1" 
-                    ? ": 1 mile away" 
+                ? source.DistanceInMiles.FormatDistance() == "1"
+                    ? ": 1 mile away"
                     : $": {source.DistanceInMiles.FormatDistance()} miles away"
                 : null;
-            viewModel.NationalText = source != default && 
+            viewModel.NationalText = source != default &&
                 source.National && deliveryModeType == DeliveryModeType.Workplace ? "(national)" : null;
-            viewModel.AddressFormatted = source != default ? 
-                BuildFormattedAddress(source) 
+            viewModel.AddressFormatted = source != default ?
+                BuildFormattedAddress(source)
                 : "";
             return viewModel;
         }
@@ -201,7 +202,7 @@ namespace SFA.DAS.FAT.Web.Models
             {
                 returnString += $"{source.Postcode},";
             }
-            
+
             return returnString.TrimEnd().TrimEnd(',');
         }
 
@@ -217,10 +218,25 @@ namespace SFA.DAS.FAT.Web.Models
                 National = source.National
             };
         }
-
-        
     }
 
+    public enum DeliveryModeChoice
+    {
+        [Description("At apprentice’s workplace")]
+        Workplace = 0,
+        [Description("At training provider's location")]
+        Provider = 1,
+        [Description("Day release")]
+        DayRelease = 2,
+        [Description("Block release")]
+        BlockRelease = 3
+
+        // [Description("Not Found")]
+        // NotFound = 3,
+
+    }
+
+    // MFCMFC delete this? update to DeliveryModeChoice?
     public enum DeliveryModeType
     {
         [Description("At apprentice’s workplace")]
@@ -235,17 +251,19 @@ namespace SFA.DAS.FAT.Web.Models
         National = 4,
     }
 
-    public enum ProviderRating
-    {
-        [Description("Not yet reviewed")]
-        NotYetReviewed = 0,
-        [Description("Very poor")]
-        VeryPoor = 1,
-        [Description("Poor")]
-        Poor = 2,
-        [Description("Good")]
-        Good = 3,
-        [Description("Excellent")]
-        Excellent = 4
-    }
+
+    // MFCMFC ordering is wrong???
+    // public enum QarRating
+    // {
+    //     [Description("Above 70%")]
+    //     Excellent = 0,
+    //     [Description("60% to 70%")]
+    //     Good = 1,
+    //     [Description("50% to 59%")]
+    //     Poor = 2,
+    //     [Description("Less than 50%")]
+    //     VeryPoor = 3,
+    //     [Description("No achievement rate")]
+    //     None = 4
+    // }
 }

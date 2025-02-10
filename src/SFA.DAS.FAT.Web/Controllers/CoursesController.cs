@@ -12,10 +12,10 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -32,10 +32,10 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
         private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
         private readonly FindApprenticeshipTrainingWeb _config;
-        private readonly IDataProtector _providerDataProtector;
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
+
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -56,7 +56,6 @@ namespace SFA.DAS.FAT.Web.Controllers
             _courseValidator = courseValidator;
             _courseProviderValidator = courseProviderValidator;
             _config = config.Value;
-            _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
         }
 
@@ -136,83 +135,6 @@ namespace SFA.DAS.FAT.Web.Controllers
             return View(viewModel);
         }
 
-        [Route("{id}/providers", Name = RouteNames.CourseProviders)]
-        public async Task<IActionResult> CourseProviders(GetCourseProvidersRequest request)
-        {
-            try
-            {
-                var location = CheckLocation(request.Location);
-
-                var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-
-                var result = await _mediator.Send(new GetCourseProvidersQuery
-                {
-                    CourseId = request.Id,
-                    Location = location?.Name ?? "",
-                    Lat = location?.Lat ?? 0,
-                    Lon = location?.Lon ?? 0,
-                    DeliveryModes = request.DeliveryModes.Select(type => (Domain.Courses.DeliveryModeType)type),
-                    EmployerProviderRatings = request.EmployerProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
-                    ApprenticeProviderRatings = request.ApprenticeProviderRatings.Select(rating => (Domain.Courses.ProviderRating)rating),
-                    ShortlistUserId = shortlistItem?.ShortlistUserId
-                });
-
-                var cookieResult = new LocationCookieItem
-                {
-                    Name = result.Location,
-                    Lat = result.LocationGeoPoint?.FirstOrDefault() ?? 0,
-                    Lon = result.LocationGeoPoint?.LastOrDefault() ?? 0
-                };
-                UpdateLocationCookie(cookieResult);
-
-                if (result.Course == null)
-                {
-                    return RedirectToRoute(RouteNames.Error404);
-                }
-
-                var providerList = result.Providers.ToList();
-
-                var providers = result.Providers
-                        .ToDictionary(provider =>
-                                        provider.ProviderId,
-                                        provider => WebEncoders.Base64UrlEncode(_providerDataProtector.Protect(
-                                            System.Text.Encoding.UTF8.GetBytes($"{providerList.IndexOf(provider) + 1}|{result.TotalFiltered}"))));
-
-
-                _courseProvidersCookieStorageService.Update(Constants.ProvidersCookieName, request, 2);
-
-                var courseProvidersViewModel = new CourseProvidersViewModel(request, result, providers);
-
-                if (courseProvidersViewModel.Course.AfterLastStartDate)
-                {
-                    return RedirectToRoute(RouteNames.CourseDetails, new { request.Id });
-                }
-
-                courseProvidersViewModel.ShowSearchCrumb = true;
-                courseProvidersViewModel.ShowShortListLink = true;
-                courseProvidersViewModel.ShortListItemCount = result.ShortlistItemCount;
-
-                courseProvidersViewModel.ShowApprenticeTrainingCoursesCrumb = true;
-                courseProvidersViewModel.Location = location?.Name;
-                courseProvidersViewModel.ShowApprenticeTrainingCourseCrumb = true;
-                courseProvidersViewModel.CourseId = result.Course.Id;
-
-                var removedProviderFromShortlist =
-                    string.IsNullOrEmpty(request.Removed) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(request.Removed));
-                var addedProviderToShortlist =
-                    string.IsNullOrEmpty(request.Added) ? "" : HttpUtility.HtmlDecode(GetEncodedProviderName(request.Added));
-
-                courseProvidersViewModel.BannerUpdateMessage = GetProvidersBannerUpdateMessage(removedProviderFromShortlist, addedProviderToShortlist);
-
-                return View(courseProvidersViewModel);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e, e.Message);
-                return RedirectToRoute(RouteNames.Error500);
-            }
-        }
-
         [Route("{id}/providers/{providerId}", Name = RouteNames.CourseProviderDetails)]
         public async Task<IActionResult> CourseProviderDetail(int id, int providerId, string location, string removed, string added)
         {
@@ -261,7 +183,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                     if (id != providersRequestCookie.Id)
                     {
                         providersRequestCookie.Id = id;
-                        providersRequestCookie.DeliveryModes = new List<DeliveryModeType>();
+                        providersRequestCookie.DeliveryModes = new List<ProviderDeliveryMode>();
                         providersRequestCookie.EmployerProviderRatings = new List<ProviderRating>();
                         providersRequestCookie.ApprenticeProviderRatings = new List<ProviderRating>();
                     }
@@ -317,6 +239,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 return RedirectToRoute(RouteNames.Error500);
             }
         }
+
 
         private LocationCookieItem CheckLocation(string location)
         {

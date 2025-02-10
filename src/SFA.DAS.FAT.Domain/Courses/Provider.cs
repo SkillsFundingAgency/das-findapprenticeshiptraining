@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace SFA.DAS.FAT.Domain.Courses
 {
@@ -44,13 +45,53 @@ namespace SFA.DAS.FAT.Domain.Courses
         National = 4
     }
 
+    public enum ProviderDeliveryMode
+    {
+        [Description("At apprentice’s workplace")]
+        Workplace = 0,
+        [Description("At training provider's location")]
+        Provider = 1,
+        [Description("Day release")]
+        DayRelease = 2,
+        [Description("Block release")]
+        BlockRelease = 3
+
+    }
+
     public enum ProviderRating
     {
+        [Description("Not yet reviewed")]
         NotYetReviewed = 0,
+        [Description("Very poor")]
         VeryPoor = 1,
+        [Description("Poor")]
         Poor = 2,
+        [Description("Good")]
         Good = 3,
+        [Description("Excellent")]
         Excellent = 4
+    }
+
+    public enum QarRating
+    {
+        [Description("No achievement rate")]
+        None,
+        [Description("Above 70%")]
+        Excellent,
+        [Description("60% to 70%")]
+        Good,
+        [Description("50% to 59%")]
+        Poor,
+        [Description("Less than 50%")]
+        VeryPoor
+    }
+
+    public enum ProviderOrderBy
+    {
+        Distance,
+        AchievementRate,
+        EmployerProviderRating,
+        ApprenticeProviderRating
     }
 
     public class EmployerFeedback
@@ -58,7 +99,7 @@ namespace SFA.DAS.FAT.Domain.Courses
         public int TotalEmployerResponses { get; set; }
         public int TotalFeedbackRating { get; set; }
         public IEnumerable<EmployerFeedbackDetail> FeedbackDetail { get; set; }
-        public List<EmployerFeedbackAttributeDetail> FeedbackAttributes {get; set; }
+        public List<EmployerFeedbackAttributeDetail> FeedbackAttributes { get; set; }
     }
 
     public class ApprenticeFeedback
@@ -75,7 +116,7 @@ namespace SFA.DAS.FAT.Domain.Courses
     }
 
     public class EmployerFeedbackAttributeDetail
-    { 
+    {
         public string AttributeName { get; set; }
         public int Strength { get; set; }
         public int Weakness { get; set; }

@@ -9,30 +9,35 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
     public class GetCourseProvidersApiRequest : IGetApiRequest
     {
         private readonly string _location;
-        private readonly IEnumerable<DeliveryModeType> _deliveryModeTypes;
+        private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes;
         private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes;
         private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes;
+        private readonly IEnumerable<QarRating> _qarRatings;
 
-        private readonly int _sortOrder;
-        private readonly double _lat;
-        private readonly double _lon;
+        private readonly ProviderOrderBy _orderBy;
+        private readonly int? _distance;
+        private readonly int? _page;
+        private readonly int? _pageSize;
         private readonly Guid? _shortlistUserId;
         private readonly int _id;
 
-        public GetCourseProvidersApiRequest(       string baseUrl, int id, string location,
-            IEnumerable<DeliveryModeType> deliveryModeTypes, IEnumerable<ProviderRating> employerProviderRatingTypes,
-            IEnumerable<ProviderRating> apprenticeProviderRatingTypes, int sortOrder = 0, double lat = 0, double lon = 0, Guid? shortlistUserId = null)
+        public GetCourseProvidersApiRequest(string baseUrl, int id, ProviderOrderBy orderBy, int? distance, string location,
+            IEnumerable<ProviderDeliveryMode> deliveryModeTypes, IEnumerable<ProviderRating> employerProviderRatingTypes,
+            IEnumerable<ProviderRating> apprenticeProviderRatingTypes, IEnumerable<QarRating> qarRatings,
+            int? page, int? pageSize, Guid? shortlistUserId = null)
         {
-            _location = location;
-            _deliveryModeTypes = deliveryModeTypes;
-            _sortOrder = sortOrder;
-            _lat = lat;
-            _lon = lon;
-            _shortlistUserId = shortlistUserId;
             BaseUrl = baseUrl;
             _id = id;
+            _orderBy = orderBy;
+            _distance = distance;
+            _location = location;
+            _deliveryModeTypes = deliveryModeTypes;
             _employerProviderRatingTypes = employerProviderRatingTypes;
             _apprenticeProviderRatingTypes = apprenticeProviderRatingTypes;
+            _qarRatings = qarRatings;
+            _page = page;
+            _pageSize = pageSize;
+            _shortlistUserId = shortlistUserId;
         }
 
         public string BaseUrl { get; }
@@ -40,8 +45,19 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
 
         private string BuildUrl()
         {
-            var buildUrl = $"{BaseUrl}trainingcourses/{_id}/providers?location={HttpUtility.UrlEncode(_location)}&sortOrder={_sortOrder}";
-            if (_deliveryModeTypes!= null && _deliveryModeTypes.Any())
+            var buildUrl = $"{BaseUrl}courses/{_id}/providers?location={HttpUtility.UrlEncode(_location)}&orderBy={_orderBy}";
+
+            if (_distance != 0)
+            {
+                buildUrl += $"&distance={_distance}";
+            }
+
+            if (string.IsNullOrEmpty(_location))
+            {
+                buildUrl += $"&location={_location}";
+            }
+
+            if (_deliveryModeTypes != null && _deliveryModeTypes.Any())
             {
                 buildUrl += $"&deliveryModes={string.Join("&deliveryModes=", _deliveryModeTypes)}";
             }
@@ -54,20 +70,25 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
                 buildUrl += $"&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", _apprenticeProviderRatingTypes)}";
             }
 
-            if (_lat != 0)
+            if (_qarRatings != null && _qarRatings.Any())
             {
-                buildUrl += $"&lat={_lat}";
+                buildUrl += $"&qar={string.Join("&qar=", _qarRatings)}";
             }
-            if (_lon != 0)
+
+            if (_page != null)
             {
-                buildUrl += $"&lon={_lon}";
+                buildUrl += $"&page={_page}";
+            }
+            if (_pageSize != 0)
+            {
+                buildUrl += $"&pageSize={_pageSize}";
             }
 
             if (_shortlistUserId != null)
             {
                 buildUrl += $"&shortlistUserId={_shortlistUserId}";
             }
-            
+
             return buildUrl;
         }
     }

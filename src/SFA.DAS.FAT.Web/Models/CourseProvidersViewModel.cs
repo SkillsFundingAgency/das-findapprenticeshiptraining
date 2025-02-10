@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
+using SFA.DAS.FAT.Application.CourseProviders.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
@@ -14,19 +15,54 @@ namespace SFA.DAS.FAT.Web.Models
         public CourseProvidersViewModel(GetCourseProvidersRequest request, GetCourseProvidersResult result, Dictionary<uint, string> providerOrder)
         {
             ProviderOrder = providerOrder;
-            Course = result.Course;
-            Providers = result.Providers.Select(c => (ProviderViewModel)c);
-            Total = result.Total;
-            TotalFiltered = result.TotalFiltered;
-            Location = result.Location;
+            CourseId = request.Id;
+            CourseTitleAndLevel = result.StandardName;
+
+            // MFCMFC get this from const??
+            var defaultDistance = 10;
+
+            Distance = request.Distance switch
+            {
+                null when request.Location != null => defaultDistance,
+                null => null,
+                _ => request.Distance
+            };
+
+
+            LocationFilterDescription = string.Empty;
+            if (Distance != null && request.Location != null)
+            {
+                LocationFilterDescription = Distance == MaximumDistance
+                    ? $"{request.Location} (across England)"
+                    : $"{request.Location} (within {Distance} miles)";
+            }
+
+            // MFCMFC holding pattern
+            Providers = new List<ProviderViewModel>();
+            // Providers = result.Providers.Select(c => (ProviderViewModel)c);
+
+
+
+            Location = request.Location;
+            Total = result.TotalCount;
+            TotalFiltered = Providers.Count();
+
             DeliveryModes = BuildDeliveryModeOptionViewModel(request.DeliveryModes);
             EmployerProviderRatings = BuildEmployerProviderRatingOptionViewModel(request.EmployerProviderRatings);
             ApprenticeProviderRatings = BuildApprenticeProviderRatingOptionViewModel(request.ApprenticeProviderRatings);
-            ShortListItemCount = result.ShortlistItemCount;
+            QarRatings = BuildQarOptionViewModel(request.QarRatings);
+            QarPeriod = result.QarPeriod;
+            ReviewPeriod = result.ReviewPeriod;
         }
 
+        public int MaximumDistance => 500;
         public IEnumerable<ProviderViewModel> Providers { get; set; }
-        public CourseViewModel Course { get; set; }
+
+        public string CourseTitleAndLevel { get; set; }
+
+
+        public string LocationFilterDescription { get; set; }
+
         public int Total { get; set; }
         public int TotalFiltered { get; set; }
         public string TotalMessage => GetTotalMessage();
@@ -39,6 +75,7 @@ namespace SFA.DAS.FAT.Web.Models
         public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
         public bool HasEmployerProviderRatings => EmployerProviderRatings != null && EmployerProviderRatings.Any(model => model.Selected);
         public bool HasApprenticeProviderRatings => ApprenticeProviderRatings != null && ApprenticeProviderRatings.Any(model => model.Selected);
+        public bool HasQarRatings => QarRatings != null && QarRatings.Any(model => model.Selected);
 
         public bool HasDeliveryModes => DeliveryModes != null && DeliveryModes.Any(model => model.Selected);
         public bool ShowSelectedFilters => ShouldShowFilters();
@@ -46,19 +83,35 @@ namespace SFA.DAS.FAT.Web.Models
         public IEnumerable<DeliveryModeOptionViewModel> DeliveryModes { get; set; }
         public IEnumerable<EmployerProviderRatingOptionViewModel> EmployerProviderRatings { get; set; }
         public IEnumerable<ApprenticeProviderRatingOptionViewModel> ApprenticeProviderRatings { get; set; }
+
+        public IEnumerable<QarOptionViewModel> QarRatings { get; set; }
         public Dictionary<uint, string> ProviderOrder { get; }
         public string BannerUpdateMessage { get; set; }
 
-        public string TitleAndLevel { get => Course.TitleAndLevel; }
+        public string QarPeriod { get; set; }
+        public string ReviewPeriod { get; set; }
 
+
+        public int? Distance { get; set; }
+
+        public string QarPeriodStartYear { get => $"20{QarPeriod.AsSpan(0, 2)}"; }
+
+        public string QarPeriodEndYear { get => $"20{QarPeriod.AsSpan(2, 2)}"; }
+
+        public string ReviewPeriodStartYear { get => $"20{ReviewPeriod.AsSpan(0, 2)}"; }
+        public string ReviewPeriodEndYear { get => $"20{ReviewPeriod.AsSpan(2, 2)}"; }
+
+        //public CourseViewModel Course { get; set; }
         public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
         {
-            return Course.CanGetHelpFindingCourse(config);
+            return true;
+            // MFCMFC return Course.CanGetHelpFindingCourse(config);
         }
 
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
         {
-            return Course.GetHelpFindingCourseUrl(config, EntryPoint.Providers, Location);
+            return "";
+            // return Course.GetHelpFindingCourseUrl(config, EntryPoint.Providers, Location);
         }
 
         private bool ShouldShowFilters()
@@ -66,7 +119,8 @@ namespace SFA.DAS.FAT.Web.Models
             var result = HasLocation ||
                          HasDeliveryModes ||
                          HasEmployerProviderRatings ||
-                         HasApprenticeProviderRatings;
+                         HasApprenticeProviderRatings ||
+                         HasQarRatings;
             return result;
         }
 
@@ -88,13 +142,8 @@ namespace SFA.DAS.FAT.Web.Models
                 var otherSelected = DeliveryModes
                     .Where(viewModel =>
                         viewModel.Selected &&
-                        viewModel.DeliveryModeType != deliveryMode.DeliveryModeType)
-                    .Select(viewModel => viewModel.DeliveryModeType);
-
-                if (deliveryMode.DeliveryModeType == DeliveryModeType.Workplace)
-                {
-                    otherSelected = otherSelected.Where(c => c != DeliveryModeType.National);
-                }
+                        viewModel.DeliveryModeChoice != deliveryMode.DeliveryModeChoice)
+                    .Select(viewModel => viewModel.DeliveryModeChoice);
 
                 var link = $"{location}&deliveryModes={string.Join("&deliveryModes=", otherSelected)}{providerRatings}{apprenticeProviderRating}";
 
@@ -158,7 +207,7 @@ namespace SFA.DAS.FAT.Web.Models
 
         private string BuildClearLocationFilterLink()
         {
-            var location = "?location=-1";
+            var location = "?location="; //"?location=-1";
             var employerProviderRatings = BuildEmployerProviderRatingLinks(location);
             var apprenticeProviderRating = BuildApprenticeProviderRatingLinks(location);
             var deliveryModeLinks = BuildDeliveryModeLinks(location);
@@ -172,7 +221,7 @@ namespace SFA.DAS.FAT.Web.Models
         {
             if (HasDeliveryModes)
             {
-                var deliveryModes = DeliveryModes.Where(dm => dm.Selected).Select(dm => dm.DeliveryModeType);
+                var deliveryModes = DeliveryModes.Where(dm => dm.Selected).Select(dm => dm.DeliveryModeChoice);
                 return $"{GetSeparator(linkToAppendTo)}deliveryModes={string.Join("&deliveryModes=", deliveryModes)}";
             }
             return null;
@@ -218,32 +267,26 @@ namespace SFA.DAS.FAT.Web.Models
             return totalMessage;
         }
 
-        private static IEnumerable<DeliveryModeOptionViewModel> BuildDeliveryModeOptionViewModel(IReadOnlyList<DeliveryModeType> selectedDeliveryModeTypes)
+        private static IEnumerable<DeliveryModeOptionViewModel> BuildDeliveryModeOptionViewModel(IReadOnlyList<ProviderDeliveryMode> selectedDeliveryModeChoices)
         {
             var deliveryModeOptionViewModels = new List<DeliveryModeOptionViewModel>();
 
-            foreach (DeliveryModeType deliveryModeType in Enum.GetValues(typeof(DeliveryModeType)))
+            foreach (ProviderDeliveryMode deliveryModeChoice in Enum.GetValues(typeof(ProviderDeliveryMode)))
             {
-                if (deliveryModeType == DeliveryModeType.NotFound)
-                {
-                    continue;
-                }
-
                 deliveryModeOptionViewModels.Add(new DeliveryModeOptionViewModel
                 {
-                    DeliveryModeType = deliveryModeType,
-                    Description = deliveryModeType.GetDescription(),
-                    Selected = selectedDeliveryModeTypes.Any(type => type == deliveryModeType)
+                    DeliveryModeChoice = deliveryModeChoice,
+                    Description = deliveryModeChoice.GetDescription(),
+                    Selected = selectedDeliveryModeChoices.Any(type => type == deliveryModeChoice)
                 });
             }
 
-            if (deliveryModeOptionViewModels.FirstOrDefault(c =>
-                c.Selected && c.DeliveryModeType == DeliveryModeType.National) != null)
-            {
-                deliveryModeOptionViewModels.First(c => c.DeliveryModeType == DeliveryModeType.Workplace).Selected =
-                    true;
-            }
-
+            // if (deliveryModeOptionViewModels.FirstOrDefault(c =>
+            //     c.Selected && c.DeliveryModeChoice == DeliveryModeType.National) != null)
+            // {
+            //     deliveryModeOptionViewModels.First(c => c.DeliveryModeChoice == DeliveryModeType.Workplace).Selected =
+            //         true;
+            // }
 
             return deliveryModeOptionViewModels;
         }
@@ -280,6 +323,23 @@ namespace SFA.DAS.FAT.Web.Models
             }
 
             return apprenticeProviderRatingOptionViewModel;
+        }
+
+        private static IEnumerable<QarOptionViewModel> BuildQarOptionViewModel(IReadOnlyList<QarRating> selectedQarTypes)
+        {
+            var vm = new List<QarOptionViewModel>();
+
+            foreach (QarRating qarRatingType in Enum.GetValues(typeof(QarRating)))
+            {
+                vm.Add(new QarOptionViewModel
+                {
+                    QarRatingType = qarRatingType,
+                    Description = qarRatingType.GetDescription(),
+                    Selected = selectedQarTypes.Any(type => type == qarRatingType)
+                });
+            }
+
+            return vm;
         }
 
         private static string GetSeparator(string url)

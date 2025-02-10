@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace SFA.DAS.FAT.Domain.Courses
 {
+    //MFCMFC this might be redundant now
     public class TrainingCourseProviders
     {
         [JsonProperty("trainingCourse")]
@@ -11,7 +12,7 @@ namespace SFA.DAS.FAT.Domain.Courses
         public IEnumerable<Provider> CourseProviders { get; set; }
         [JsonProperty("total")]
         public int Total { get; set; }
-        [JsonProperty("totalFiltered")] 
+        [JsonProperty("totalFiltered")]
         public int TotalFiltered { get; set; }
         [JsonProperty("location")]
         public Locations.Locations.LocationItem Location { get; set; }
