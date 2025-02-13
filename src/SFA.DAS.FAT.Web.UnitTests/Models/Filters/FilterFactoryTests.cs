@@ -22,16 +22,40 @@ public sealed class FilterFactoryTests
         string inputValue
     )
     { 
-        var _sut = FilterFactory.CreateInputFilterSection(id, heading, subHeading, filterFor, inputValue);
+        var _sut = CreateInputFilterSection(id, heading, subHeading, filterFor, inputValue);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.InstanceOf<TextBoxFilterSection>());
+            Assert.That(_sut, Is.InstanceOf<TextBoxFilterSectionViewModel>());
             Assert.That(_sut.Id, Is.EqualTo(id));
             Assert.That(_sut.For, Is.EqualTo(filterFor));
             Assert.That(_sut.Heading, Is.EqualTo(heading));
             Assert.That(_sut.SubHeading, Is.EqualTo(subHeading));
-            Assert.That(((TextBoxFilterSection)_sut).InputValue, Is.EqualTo(inputValue));
+            Assert.That(((TextBoxFilterSectionViewModel)_sut).FilterComponentType, Is.EqualTo(FilterComponentType.TextBox));
+            Assert.That(((TextBoxFilterSectionViewModel)_sut).InputValue, Is.EqualTo(inputValue));
+        });
+    }
+
+    [Test, MoqAutoData]
+    public void CreateSearchFilterSection_ShouldReturnSearchFilterSection_WithCorrectValues(
+        string id,
+        string heading,
+        string subHeading,
+        string filterFor,
+        string inputValue
+    )
+    {
+        var _sut = CreateSearchFilterSection(id, heading, subHeading, filterFor, inputValue);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.InstanceOf<SearchFilterSectionViewModel>());
+            Assert.That(_sut.Id, Is.EqualTo(id));
+            Assert.That(_sut.For, Is.EqualTo(filterFor));
+            Assert.That(_sut.Heading, Is.EqualTo(heading));
+            Assert.That(_sut.SubHeading, Is.EqualTo(subHeading));
+            Assert.That(((SearchFilterSectionViewModel)_sut).FilterComponentType, Is.EqualTo(FilterComponentType.Search));
+            Assert.That(((SearchFilterSectionViewModel)_sut).InputValue, Is.EqualTo(inputValue));
         });
     }
 
@@ -41,19 +65,19 @@ public sealed class FilterFactoryTests
         string filterFor,
         string heading,
         string subHeading,
-        List<FilterItem> items
+        List<FilterItemViewModel> items
     )
     {
         var _sut = FilterFactory.CreateDropdownFilterSection(id, filterFor, heading, subHeading, items);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.InstanceOf<DropdownFilterSection>());
+            Assert.That(_sut, Is.InstanceOf<DropdownFilterSectionViewModel>());
             Assert.That(_sut.Id, Is.EqualTo(id));
             Assert.That(_sut.For, Is.EqualTo(filterFor));
             Assert.That(_sut.Heading, Is.EqualTo(heading));
             Assert.That(_sut.SubHeading, Is.EqualTo(subHeading));
-            Assert.That(((DropdownFilterSection)_sut).Items, Is.EquivalentTo(items));
+            Assert.That(((DropdownFilterSectionViewModel)_sut).Items, Is.EquivalentTo(items));
         });
     }
 
@@ -62,7 +86,7 @@ public sealed class FilterFactoryTests
         string id,
         string filterFor,
         string heading,
-        List<FilterItem> items,
+        List<FilterItemViewModel> items,
         string linkDisplayText,
         string linkDisplayUrl
     )
@@ -78,12 +102,12 @@ public sealed class FilterFactoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.InstanceOf<CheckboxListFilterSection>());
+            Assert.That(_sut, Is.InstanceOf<CheckboxListFilterSectionViewModel>());
             Assert.That(_sut.Id, Is.EqualTo(id));
             Assert.That(_sut.For, Is.EqualTo(filterFor));
             Assert.That(_sut.Heading, Is.EqualTo(heading));
 
-            var checkboxListFilterSection = (CheckboxListFilterSection)_sut;
+            var checkboxListFilterSection = (CheckboxListFilterSectionViewModel)_sut;
             Assert.That(checkboxListFilterSection.Items, Is.EquivalentTo(items));
             Assert.That(checkboxListFilterSection.Link, Is.Not.Null);
             Assert.That(checkboxListFilterSection.Link.DisplayText, Is.EqualTo(linkDisplayText));
@@ -96,15 +120,15 @@ public sealed class FilterFactoryTests
         string id,
         string filterFor,
         string heading,
-        List<FilterItem> items
+        List<FilterItemViewModel> items
     )
     {
         var _sut = FilterFactory.CreateCheckboxListFilterSection(id, filterFor, heading, items, "", "");
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.InstanceOf<CheckboxListFilterSection>());
-            Assert.That(((CheckboxListFilterSection)_sut).Link, Is.Null);
+            Assert.That(_sut, Is.InstanceOf<CheckboxListFilterSectionViewModel>());
+            Assert.That(((CheckboxListFilterSectionViewModel)_sut).Link, Is.Null);
         });
     }
 
@@ -122,10 +146,10 @@ public sealed class FilterFactoryTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.InstanceOf<AccordionFilterSection>());
+            Assert.That(_sut, Is.InstanceOf<AccordionFilterSectionViewModel>());
             Assert.That(_sut.Id, Is.EqualTo(id));
             Assert.That(_sut.For, Is.EqualTo(sectionFor));
-            Assert.That(((AccordionFilterSection)_sut).Children, Is.EquivalentTo(children));
+            Assert.That(((AccordionFilterSectionViewModel)_sut).Children, Is.EquivalentTo(children));
         });
     }
 
@@ -436,7 +460,7 @@ public sealed class FilterFactoryTests
         fixture.Customizations.Add(
             new TypeRelay(
                 typeof(FilterSection),
-                typeof(AccordionFilterSection)
+                typeof(AccordionFilterSectionViewModel)
             )
         );
 

@@ -4,11 +4,11 @@ using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
-public class CheckboxListFilterSection : FilterSection
+public class CheckboxListFilterSectionViewModel : FilterSection
 {
-    public List<FilterItem> Items { get; set; } = new List<FilterItem>();
+    public List<FilterItemViewModel> Items { get; set; } = new List<FilterItemViewModel>();
 
-    public CheckboxListFilterSection()
+    public CheckboxListFilterSectionViewModel()
     {
         FilterComponentType = FilterComponentType.CheckboxList;
     }

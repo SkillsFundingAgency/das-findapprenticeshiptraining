@@ -11,9 +11,9 @@ public sealed class WhenCreatingFiltersViewModelTests
     [Test]
     public void Then_Show_Filter_Options_Should_Be_True_When_Clear_Filter_Sections_Is_Not_Empty()
     {
-        var clearFilterSections = new List<ClearFilterSection>
+        var clearFilterSections = new List<ClearFilterSectionViewModel>
         {
-            new ClearFilterSection { FilterType = FilterFactory.FilterType.Categories, Title = "Category", Items = new List<ClearFilterItem>() }
+            new ClearFilterSectionViewModel { FilterType = FilterFactory.FilterType.Categories, Title = "Category", Items = new List<ClearFilterItemViewModel>() }
         };
 
         var _sut = new FiltersViewModel
@@ -28,7 +28,7 @@ public sealed class WhenCreatingFiltersViewModelTests
     [Test]
     public void Then_Show_Filter_Options_Should_Be_False_When_Clear_Filter_Sections_Is_Not_Empty()
     {
-        var clearFilterSections = new List<ClearFilterSection>();
+        var clearFilterSections = new List<ClearFilterSectionViewModel>();
 
         var _sut = new FiltersViewModel
         {

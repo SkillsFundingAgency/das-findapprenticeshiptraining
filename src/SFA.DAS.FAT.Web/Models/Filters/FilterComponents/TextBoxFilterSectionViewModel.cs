@@ -3,11 +3,11 @@ using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
-public sealed class TextBoxFilterSection : FilterSection
+public sealed class TextBoxFilterSectionViewModel : FilterSection
 {
     public string? InputValue { get; set; }
 
-    public TextBoxFilterSection()
+    public TextBoxFilterSectionViewModel()
     {
         FilterComponentType = FilterComponentType.TextBox;
     }

@@ -3,9 +3,9 @@ using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
-public class AccordionFilterSection : FilterSection
+public class AccordionFilterSectionViewModel : FilterSection
 {
-    public AccordionFilterSection()
+    public AccordionFilterSectionViewModel()
     {
         FilterComponentType = FilterComponentType.Accordion;
     }

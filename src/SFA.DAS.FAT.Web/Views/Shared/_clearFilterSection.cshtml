@@ -1,8 +1,8 @@
 ﻿@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
-@model ClearFilterSection
+@model ClearFilterSectionViewModel
 
 <h4 class="das-filter__selected-sub-heading">@Model.Title</h4>
-@foreach (ClearFilterItem item in @Model.Items)
+@foreach (ClearFilterItemViewModel item in @Model.Items)
 {
     <a asp-querystring="@item.ClearLink" title="Clear this filter '@item.DisplayText'" class="das-filter__tag das-breakable">
         @item.DisplayText

@@ -4,11 +4,11 @@ using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
-public sealed class DropdownFilterSection : FilterSection
+public sealed class DropdownFilterSectionViewModel : FilterSection
 {
-    public List<FilterItem> Items { get; set; } = new List<FilterItem>();
+    public List<FilterItemViewModel> Items { get; set; } = new List<FilterItemViewModel>();
 
-    public DropdownFilterSection()
+    public DropdownFilterSectionViewModel()
     {
         FilterComponentType = FilterComponentType.Dropdown;
     }

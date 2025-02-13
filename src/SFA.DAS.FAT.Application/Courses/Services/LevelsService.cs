@@ -28,7 +28,7 @@ public sealed class LevelsService(
 
         var levelsResponse = await _distributedCacheService.GetOrSetAsync(
             CacheSetting.Levels.Key,
-            async () => await _apiClient.Get<GetLevelsListResponse>(new GetCourseLevelsApiRequest(config.Value.BaseUrl)),
+            () => _apiClient.Get<GetLevelsListResponse>(new GetCourseLevelsApiRequest(config.Value.BaseUrl)),
             CacheSetting.Levels.CacheDuration
         );
 

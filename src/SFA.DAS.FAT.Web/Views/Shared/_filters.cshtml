@@ -29,7 +29,7 @@
 
                 </div>
 
-                @foreach(ClearFilterSection section in Model.ClearFilterSections)
+                @foreach(ClearFilterSectionViewModel section in Model.ClearFilterSections)
                 {
                     @await Html.PartialAsync("_clearFilterSection", section)
                 }
@@ -47,6 +47,11 @@
                         case FilterFactory.FilterComponentType.TextBox:
                             {
                                 @await Html.PartialAsync("_textBoxFilterSection", section)
+                            }
+                            break;
+                        case FilterFactory.FilterComponentType.Search:
+                            {
+                                @await Html.PartialAsync("_searchFilterSection", section)
                             }
                             break;
                         case FilterFactory.FilterComponentType.Accordion:

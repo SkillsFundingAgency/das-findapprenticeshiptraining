@@ -10,7 +10,7 @@ public abstract class FilterSection
     public required string For { get; set; }
     public string? Heading { get; set; } = string.Empty;
     public string? SubHeading { get; set; } = string.Empty;
-    public SectionLink? Link { get; set; }
+    public SectionLinkViewModel? Link { get; set; }
     public FilterComponentType FilterComponentType { get; set; }
     public List<FilterSection> Children { get; set; } = [];
 }

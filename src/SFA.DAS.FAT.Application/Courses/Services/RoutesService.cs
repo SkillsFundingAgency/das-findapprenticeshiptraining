@@ -23,7 +23,7 @@ public sealed class RoutesService(IApiClient _apiClient, ISessionService _sessio
 
         var routesResponse = await _distributedCacheService.GetOrSetAsync(
             CacheSetting.Routes.Key,
-            async () => await _apiClient.Get<GetRoutesListResponse>(new GetCourseRoutesApiRequest(config.Value.BaseUrl)),
+            () => _apiClient.Get<GetRoutesListResponse>(new GetCourseRoutesApiRequest(config.Value.BaseUrl)),
             CacheSetting.Routes.CacheDuration
         );
 

@@ -100,7 +100,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             FilterSections = new List<FilterSection>
             {
                 CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
-                CreateInputFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
+                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
                     "multi-select",
@@ -116,29 +116,29 @@ public class CoursesViewModel : PageLinksViewModelBase
         };
     }
 
-    private List<FilterItem> GenerateRouteFilterItems()
+    private List<FilterItemViewModel> GenerateRouteFilterItems()
     {
-        return Routes?.Select(category => new FilterItem
+        return Routes?.Select(category => new FilterItemViewModel
             {
                 Value = category.Name,
                 DisplayText = category.Name,
                 Selected = SelectedRoutes?.Contains(category.Name) ?? false
             })
-        .ToList() ?? new List<FilterItem>();
+        .ToList() ?? new List<FilterItemViewModel>();
     }
 
-    private List<FilterItem> GenerateLevelFilterItems()
+    private List<FilterItemViewModel> GenerateLevelFilterItems()
     {
-        return Levels?.Select(level => new FilterItem
+        return Levels?.Select(level => new FilterItemViewModel
             {
                 Value = level.Code.ToString(),
                 DisplayText = level.Title,
                 Selected = SelectedLevels?.Contains(level.Code) ?? false
             })
-        .ToList() ?? new List<FilterItem>();
+        .ToList() ?? new List<FilterItemViewModel>();
     }
 
-    private IReadOnlyList<ClearFilterSection> CreateSelectedFilterSections()
+    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
         var selectedFilters = new Dictionary<FilterType, List<string>>();
 

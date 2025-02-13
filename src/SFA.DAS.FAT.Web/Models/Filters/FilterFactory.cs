@@ -15,6 +15,7 @@ public static class FilterFactory
         CheckboxList,
         Dropdown,
         TextBox,
+        Search,
         Accordion
     }
 
@@ -57,7 +58,7 @@ public static class FilterFactory
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
     {
-        return new TextBoxFilterSection
+        return new TextBoxFilterSectionViewModel
         {
             Id = id,
             For = filterFor,
@@ -67,9 +68,21 @@ public static class FilterFactory
         };
     }
 
-    public static FilterSection CreateDropdownFilterSection(string id, string filterFor, string heading, string subHeading, List<FilterItem> items)
+    public static FilterSection CreateSearchFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
     {
-        return new DropdownFilterSection
+        return new SearchFilterSectionViewModel
+        {
+            Id = id,
+            For = filterFor,
+            Heading = heading,
+            SubHeading = subHeading,
+            InputValue = inputValue
+        };
+    }
+
+    public static FilterSection CreateDropdownFilterSection(string id, string filterFor, string heading, string subHeading, List<FilterItemViewModel> items)
+    {
+        return new DropdownFilterSectionViewModel
         {
             Id = id,
             For = filterFor,
@@ -79,9 +92,9 @@ public static class FilterFactory
         };
     }
 
-    public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, List<FilterItem> items, string linkDisplayText = "", string linkDisplayUrl = "")
+    public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, List<FilterItemViewModel> items, string linkDisplayText = "", string linkDisplayUrl = "")
     {
-        CheckboxListFilterSection section = new CheckboxListFilterSection()
+        CheckboxListFilterSectionViewModel section = new CheckboxListFilterSectionViewModel()
         {
             Id = id,
             For = filterFor,
@@ -91,7 +104,7 @@ public static class FilterFactory
 
         if (!string.IsNullOrWhiteSpace(linkDisplayText) && !string.IsNullOrWhiteSpace(linkDisplayUrl))
         {
-            section.Link = new SectionLink
+            section.Link = new SectionLinkViewModel
             {
                 DisplayText = linkDisplayText,
                 Url = linkDisplayUrl
@@ -103,7 +116,7 @@ public static class FilterFactory
 
     public static FilterSection CreateAccordionFilterSection(string id, string sectionFor, List<FilterSection> children)
     {
-        return new AccordionFilterSection
+        return new AccordionFilterSectionViewModel
         {
             Id = id,
             For = sectionFor,
@@ -111,7 +124,7 @@ public static class FilterFactory
         };
     }
 
-    public static IReadOnlyList<ClearFilterSection> CreateClearFilterSections(
+    public static IReadOnlyList<ClearFilterSectionViewModel> CreateClearFilterSections(
         Dictionary<FilterType, List<string>>? selectedFilters,
         Dictionary<FilterType, Func<string, string>>? overrideValueFunctions = null,
         FilterType[]? excludedFilterTypes = null
@@ -119,10 +132,10 @@ public static class FilterFactory
     {
         if (selectedFilters == null || selectedFilters.Count == 0)
         {
-            return Array.Empty<ClearFilterSection>();
+            return Array.Empty<ClearFilterSectionViewModel>();
         }
 
-        List<ClearFilterSection> clearFilterSections = new List<ClearFilterSection>();
+        List<ClearFilterSectionViewModel> clearFilterSections = new List<ClearFilterSectionViewModel>();
 
         foreach(KeyValuePair<FilterType, List<string>> filter in selectedFilters)
         {
@@ -131,11 +144,11 @@ public static class FilterFactory
                 continue;
             }
 
-            clearFilterSections.Add(new ClearFilterSection()
+            clearFilterSections.Add(new ClearFilterSectionViewModel()
             {
                 FilterType = filter.Key,
                 Title = ClearFilterSectionHeadings[filter.Key],
-                Items = filter.Value.Select(value => new ClearFilterItem
+                Items = filter.Value.Select(value => new ClearFilterItemViewModel
                     {
                         DisplayText = GetDisplayValue(filter.Key, value, selectedFilters),
                         ClearLink = BuildQueryWithoutValue(filter.Key, value, selectedFilters, overrideValueFunctions)
@@ -147,10 +160,10 @@ public static class FilterFactory
         return clearFilterSections;
     }
 
-    public static List<FilterItem> GetDistanceFilterValues(int? selectedDistance)
+    public static List<FilterItemViewModel> GetDistanceFilterValues(int? selectedDistance)
     {
         var distanceFilterItems = ValidDistances.Distances
-            .Select(distance => new FilterItem
+            .Select(distance => new FilterItemViewModel
             {
                 Value = distance.ToString(),
                 DisplayText = $"{distance} Miles",
@@ -158,7 +171,7 @@ public static class FilterFactory
             })
         .ToList();
 
-        distanceFilterItems.Add(new FilterItem
+        distanceFilterItems.Add(new FilterItemViewModel
         {
             Value = null,
             DisplayText = ACROSS_ENGLAND_FILTER_VALUE,
