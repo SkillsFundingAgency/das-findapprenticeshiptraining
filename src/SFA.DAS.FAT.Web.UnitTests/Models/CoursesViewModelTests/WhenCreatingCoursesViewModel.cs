@@ -66,46 +66,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
             viewModel.TotalMessage.Should().Be("5 results");
         }
 
-        [Test, AutoData]
-        public void Then_If_There_Are_Filtered_Levels_Sectors_Keywords_The_ShowFilterOptions_Property_Is_True(List<int> selectedLevels, List<string> selectedRoutes, string keyword)
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(selectedRoutes, keyword, selectedLevels);
-
-            //Assert
-            model.ShowFilterOptions.Should().BeTrue();
-        }
-
-        [Test, AutoData]
-        public void Then_If_There_Are_Filtered_Sectors_Keywords_The_ShowFilterOptions_Property_Is_True(List<string> selectedRoutes, string keyword)
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(selectedRoutes, keyword, new List<int>());
-
-            //Assert
-            model.ShowFilterOptions.Should().BeTrue();
-        }
-
-        [Test, AutoData]
-        public void Then_If_There_Are_Filtered_Keywords_The_ShowFilterOptions_Property_Is_True(string keyword)
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(new List<string>(), keyword, new List<int>());
-
-            //Assert
-            model.ShowFilterOptions.Should().BeTrue();
-        }
-
-        [Test]
-        public void Then_If_There_Are_No_Filtered_Options_The_ShowFilterOptions_Property_Is_False()
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(new List<string>(), "", new List<int>());
-
-            //Assert
-            model.ShowFilterOptions.Should().BeFalse();
-        }
-
         [Test]
         public void Then_If_There_Is_A_Keyword_Search_And_No_OrderBy_It_Is_Set_To_Relevance()
         {

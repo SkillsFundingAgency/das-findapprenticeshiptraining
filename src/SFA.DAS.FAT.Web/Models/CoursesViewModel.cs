@@ -1,35 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Filters;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
-using static SFA.DAS.FAT.Domain.Courses.Filters.CourseFilters;
+using SFA.DAS.FAT.Web.Models.Filters;
+using SFA.DAS.FAT.Web.Models.Filters.Abstract;
+using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
-    public List<CourseViewModel> Courses { get; set; }
+    public List<CourseViewModel> Courses { get; set; } = [];
 
-    public List<LevelViewModel> Levels { get; set; }
+    public List<LevelViewModel> Levels { get; set; } = [];
 
-    public List<RouteViewModel> Routes { get; set; }
-
-    public List<string> SelectedRoutes { get; set; }
-
-    public List<int> SelectedLevels { get; set; }
-
-    private OrderBy _orderBy = OrderBy.None;
-
-    public string Keyword { get; set; }
+    public List<RouteViewModel> Routes { get; set; } = [];
+    public string Keyword { get; set; } = string.Empty;
 
     public int? Distance { get; set; }
+
+    public List<string> SelectedRoutes { get; set; } = [];
+
+    public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
 
     public int TotalFiltered { get; set; }
-    
+
+    private OrderBy _orderBy = OrderBy.None;
+
     public OrderBy OrderBy
     {
         get => _orderBy;
@@ -50,11 +52,17 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    public bool ShowFilterOptions => SelectedFilterSections.Count > 0;
-
-    public string WorkLocationDisplayMessage => GetWorkLocationDistanceDisplayMessage();
-
     public string TotalMessage => GetTotalMessage();
+
+    private readonly Dictionary<FilterType, Func<string, string>> ValueFunctions;
+
+    public CoursesViewModel()
+    {
+        ValueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
+        };
+    }
 
     private string GetTotalMessage()
     {
@@ -67,38 +75,79 @@ public class CoursesViewModel : PageLinksViewModelBase
         return $"{totalToUse} result" + (totalToUse != 1 ? "s" : "");
     }
 
-    private string GetWorkLocationDistanceDisplayMessage()
-    {
-        if(!this.Distance.HasValue || this.Distance < 1 || this.Distance > 100)
-        {
-            return $"{Location} (Across England)";
-        }
-        else
-        {
-            return $"{Location} (within {Distance.Value} miles)";
-        }
-    }
+    private FiltersViewModel? _filters;
 
-    private List<ClearFilterSection> _selectedFilterSections;
-
-    public List<ClearFilterSection> SelectedFilterSections
+    public FiltersViewModel Filters
     {
         get
         {
-            if (_selectedFilterSections == null)
+            if (_filters == null)
             {
-                _selectedFilterSections = GenerateSelectedFilterSections();
+                _filters = CreateFilterSections();
             }
-            return _selectedFilterSections;
+
+            return _filters;
         }
     }
 
-    private List<ClearFilterSection> GenerateSelectedFilterSections()
+    public FiltersViewModel CreateFilterSections()
+    {
+        var selectedFilterSections = CreateSelectedFilterSections();
+
+        return new FiltersViewModel()
+        {
+            Route = RouteNames.Courses,
+            FilterSections = new List<FilterSection>
+            {
+                CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
+                CreateInputFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
+                CreateAccordionFilterSection(
+                    "multi-select",
+                    string.Empty,
+                    new List<FilterSection>()
+                    {
+                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
+                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, GenerateRouteFilterItems())
+                    }
+                )
+            },
+            ClearFilterSections = selectedFilterSections
+        };
+    }
+
+    private List<FilterItem> GenerateRouteFilterItems()
+    {
+        return Routes?.Select(category => new FilterItem
+            {
+                Value = category.Name,
+                DisplayText = category.Name,
+                Selected = SelectedRoutes?.Contains(category.Name) ?? false
+            })
+        .ToList() ?? new List<FilterItem>();
+    }
+
+    private List<FilterItem> GenerateLevelFilterItems()
+    {
+        return Levels?.Select(level => new FilterItem
+            {
+                Value = level.Code.ToString(),
+                DisplayText = level.Title,
+                Selected = SelectedLevels?.Contains(level.Code) ?? false
+            })
+        .ToList() ?? new List<FilterItem>();
+    }
+
+    private IReadOnlyList<ClearFilterSection> CreateSelectedFilterSections()
     {
         var selectedFilters = new Dictionary<FilterType, List<string>>();
 
         AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+        if (!selectedFilters.ContainsKey(FilterType.Location))
+        {
+            Distance = null;
+        }
 
         if (Distance.HasValue && ValidDistances.IsValidDistance(Distance.Value))
         {
@@ -129,101 +178,16 @@ public class CoursesViewModel : PageLinksViewModelBase
             return [];
         }
 
-        return selectedFilters
-            .Where(filter => filter.Key != FilterType.Distance)
-            .Select(filter => new ClearFilterSection
-            {
-                Title = ClearFilterSectionHeadings[filter.Key],
-                Items = filter.Value
-                    .Select(value => new ClearFilterItem
-                    {
-                        DisplayText = GetDisplayValue(filter.Key, value),
-                        ClearLink = BuildQueryWithoutValue(filter.Key, value, selectedFilters)
-                    })
-                    .ToList()
-            })
-            .ToList();
-    }
-
-    private static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType type, string value)
-    {
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            filters[type] = new List<string> { value };
-        }
-    }
-
-    private static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType type, List<string> values)
-    {
-        if (values?.Count > 0)
-        {
-            filters[type] = values;
-        }
-    }
-
-    private string BuildQueryWithoutValue(FilterType filterType, string value, Dictionary<FilterType, List<string>> queryParams)
-    {
-        var queryBuilder = new StringBuilder();
-
-        foreach (var param in queryParams)
-        {
-            if (param.Key == filterType)
-            {
-                foreach (var val in param.Value.Where(v => v != value))
-                {
-                    AppendQueryParam(queryBuilder, param.Key, val);
-                }
-            }
-            else
-            {
-                foreach (var val in param.Value)
-                {
-                    AppendQueryParam(queryBuilder, param.Key, val);
-                }
-            }
-        }
-
-        return queryBuilder.ToString();
-    }
-
-    private void AppendQueryParam(StringBuilder builder, FilterType key, string value)
-    {
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            if (builder.Length > 0)
-            {
-                builder.Append('&');
-            }
-            else
-            {
-                builder.Append('?');
-            }
-
-            builder.Append($"{key.ToString().ToLower()}={GetQueryValue(key, value)}");
-        }
-    }
-
-    private string GetQueryValue(FilterType key, string filterValue)
-    {
-        return key switch
-        {
-            FilterType.Levels => GetLevelCodeValue(filterValue),
-            _ => filterValue
-        };
-    }
-
-    private string GetDisplayValue(FilterType key, string displayValue)
-    {
-        return key switch
-        {
-            FilterType.Location => GetWorkLocationDistanceDisplayMessage(),
-            _ => displayValue
-        };
+        return CreateClearFilterSections(
+            selectedFilters,
+            ValueFunctions,
+            [FilterType.Distance]
+        );
     }
 
     private string GetLevelCodeValue(string filterValue)
     {
-        var level = Levels.FirstOrDefault(a => a.Name == filterValue);
-        return level?.Code.ToString() ?? filterValue;
+        var level = Levels.FirstOrDefault(l => l.Name == filterValue);
+        return level?.Code.ToString() ?? string.Empty;
     }
 }

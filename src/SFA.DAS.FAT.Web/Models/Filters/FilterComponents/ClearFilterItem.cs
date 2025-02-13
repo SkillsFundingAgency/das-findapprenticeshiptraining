@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FAT.Domain.Filters;
+﻿namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
 public sealed class ClearFilterItem
 {

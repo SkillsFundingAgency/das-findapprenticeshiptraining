@@ -1,0 +1,20 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@model DropdownFilterSection
+
+<div class="govuk-form-group">
+    <label class="govuk-label das-filter__search-label" for="@Model.Id">
+        @Model.Heading
+    </label>
+
+    @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
+    {
+        <p class="govuk-hint">@Model.SubHeading</p>
+    }
+
+    <select class="govuk-select" id="@Model.Id" name="@Model.For">
+        @foreach (var item in Model.Items)
+        {
+            <option value="@item.Value" selected=@(item.Selected ? "selected" : null)>@item.DisplayText</option>
+        }
+    </select>
+</div>
