@@ -5,7 +5,6 @@ using System.Text;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
-using StructureMap.Pipeline;
 
 namespace SFA.DAS.FAT.Web.Models.Filters;
 
