@@ -352,6 +352,82 @@ public sealed class FilterFactoryTests
         Assert.That(_sut, Is.Empty, "Filter sections with no values should not be added.");
     }
 
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndDistance_ShouldReturnCorrectMessage()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>
+        {
+            { FilterType.Location, new List<string> { "M60 7RA" } },
+            { FilterType.Distance, new List<string> { "10" } }
+        };
+
+        var _sut = FilterFactory.CreateClearFilterSections(selectedFilters, null, [FilterType.Distance]);
+
+        var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.EqualTo("M60 7RA (within 10 miles)"));
+    }
+
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndNoDistance_ShouldReturnAcrossEngland()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>
+        {
+            { FilterType.Location, new List<string> { "M60 7RA" } }
+        };
+        var _sut = CreateClearFilterSections(selectedFilters);
+        var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.EqualTo("M60 7RA (Across England)"), "When distance is missing, it should show 'Across England'.");
+    }
+
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndInvalidDistance_ShouldReturnAcrossEngland()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>
+        {
+            { FilterType.Location, new List<string> { "M60 7RA" } },
+            { FilterType.Distance, new List<string> { "9999" } }
+        };
+
+        var _sut = CreateClearFilterSections(selectedFilters, null, [FilterType.Distance]);
+        var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.EqualTo("M60 7RA (Across England)"), "Invalid distances should default to 'Across England'.");
+    }
+
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithEmptyLocation_ShouldReturnEmpty()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>
+        {
+            { FilterType.Location, new List<string> { "" } }
+        };
+
+        var _sut = CreateClearFilterSections(selectedFilters);
+        var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.Empty, "Empty location should return null.");
+    }
+
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithWhitespaceLocation_ShouldReturnNull()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>
+        {
+            { FilterType.Location, new List<string> { "   " } }
+        };
+
+        var _sut = CreateClearFilterSections(selectedFilters);
+        var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.Empty);
+    }
+
+    [Test]
+    public void GetWorkLocationDistanceDisplayMessage_WithNoFilters_ShouldReturnNull()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var _sut = CreateClearFilterSections(selectedFilters);
+        var locationFilterClearSection = _sut.FirstOrDefault(a => a.FilterType == FilterType.Location);
+        Assert.That(locationFilterClearSection, Is.Null, "Empty filter dictionary should return null.");
+    }
+
     private static Fixture CreateFixture()
     {
         var fixture = new Fixture();
