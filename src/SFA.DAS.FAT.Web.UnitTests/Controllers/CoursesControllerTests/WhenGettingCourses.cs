@@ -155,47 +155,5 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel.Location.Should().BeEmpty();
             }
         }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Location_Cookie_Is_Checked_And_Added_To_Model(
-            GetCoursesRequest request,
-            GetCoursesResult response,
-            LocationCookieItem cookieItem,
-            string serviceStartUrl,
-            string shortlistUrl,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-            [Frozen] Mock<IMediator> mediator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
-
-            request.Location = string.Empty;
-            mediator.Setup(x =>
-                    x.Send(It.Is<GetCoursesQuery>(c
-                        => c.Keyword.Equals(request.Keyword)
-                           && c.RouteIds.Equals(request.Categories)
-                           && c.Levels.Equals(request.Levels)), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(cookieItem);
-
-            //Act
-            var actual = await controller.Courses(request);
-
-            //Assert
-            using (new AssertionScope())
-            {
-                actual.Should().NotBeNull();
-                var actualResult = actual as ViewResult;
-                actualResult.Should().NotBeNull();
-                var actualModel = actualResult!.Model as CoursesViewModel;
-                actualModel.Should().NotBeNull();
-                actualModel!.Location.Should().Be(cookieItem.Name);
-                actualModel.ShowSearchCrumb.Should().BeTrue();
-                actualModel.ShowShortListLink.Should().BeTrue();
-            }
-        }
     }
 }

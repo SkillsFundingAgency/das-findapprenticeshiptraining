@@ -65,7 +65,6 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("", Name = RouteNames.Courses)]
         public async Task<IActionResult> Courses(GetCoursesRequest request)
         {
-            var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
             int? validatedDistance = request.Distance.HasValue && ValidDistances.IsValidDistance(request.Distance.Value) ? request.Distance : null;
@@ -90,8 +89,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
-                //ShortListItemCount = result.ShortlistItemCount,
-                Location = location?.Name ?? string.Empty,
+                ShortListItemCount = result.ShortlistItemCount,
+                Location = request.Location ?? string.Empty,
                 Distance = validatedDistance,
                 ShowSearchCrumb = true,
                 ShowShortListLink = true

@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.FAT.Domain.Infrastructure;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace SFA.DAS.FAT.Domain.Infrastructure;
+
+[ExcludeFromCodeCoverage]
 public static class CacheKeys
 {
     public const string RegisteredProviders = nameof(RegisteredProviders);

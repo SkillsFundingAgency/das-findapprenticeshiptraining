@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
-using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;

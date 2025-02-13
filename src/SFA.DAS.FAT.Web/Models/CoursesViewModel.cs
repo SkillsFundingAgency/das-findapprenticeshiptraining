@@ -1,23 +1,37 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.Filters;
+using SFA.DAS.FAT.Web.Models.Filters.Abstract;
+using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
-    private OrderBy _orderBy = OrderBy.None;
-    public List<CourseViewModel> Courses { get; set; }
-    public string Keyword { get; set; }
+    public List<CourseViewModel> Courses { get; set; } = [];
+
+    public List<LevelViewModel> Levels { get; set; } = [];
+
+    public List<RouteViewModel> Routes { get; set; } = [];
+    public string Keyword { get; set; } = string.Empty;
+
     public int? Distance { get; set; }
+
+    public List<string> SelectedRoutes { get; set; } = [];
+
+    public List<int> SelectedLevels { get; set; } = [];
+
     public int Total { get; set; }
+
     public int TotalFiltered { get; set; }
-    public List<LevelViewModel> Levels { get; set; }
-    public List<RouteViewModel> Routes { get; set; }
-    public List<string> SelectedRoutes { get; set; }
-    public List<int> SelectedLevels { get; set; }
+
+    private OrderBy _orderBy = OrderBy.None;
+
     public OrderBy OrderBy
     {
         get => _orderBy;
@@ -38,193 +52,142 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    public bool ShowFilterOptions => ClearLinks.Count > 0;
-
-    public string WorkLocationDisplayMessage => GetWorkLocationDistanceDisplayMessage();
-
     public string TotalMessage => GetTotalMessage();
 
-    public string OrderByName => $"{GenerateFilterQueryString()}&orderby={nameof(OrderBy.Name).ToLower()}";
+    private readonly Dictionary<FilterType, Func<string, string>> ValueFunctions;
 
-    public string OrderByRelevance => $"{GenerateFilterQueryString()}&orderby={nameof(OrderBy.Relevance).ToLower()}";
+    public CoursesViewModel()
+    {
+        ValueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
+        };
+    }
 
     private string GetTotalMessage()
     {
         var totalToUse = string.IsNullOrEmpty(Keyword)
-                         && (SelectedRoutes == null || !SelectedRoutes.Any())
-                         && (SelectedLevels == null || !SelectedLevels.Any())
+                         && (SelectedRoutes == null || SelectedRoutes.Count < 1)
+                         && (SelectedLevels == null || SelectedLevels.Count < 1)
                                 ? Total
                                 : TotalFiltered;
 
         return $"{totalToUse} result" + (totalToUse != 1 ? "s" : "");
     }
 
-    private string GetWorkLocationDistanceDisplayMessage()
-    {
-        if(!this.Distance.HasValue || this.Distance < 1 || this.Distance > 100)
-        {
-            return $"{Location} (Across England)";
-        }
-        else
-        {
-            return $"{Location} (within {Distance.Value} miles)";
-        }
-    }
+    private FiltersViewModel? _filters;
 
-    private Dictionary<CoursesFilterType, Dictionary<string, string>> _clearLinks;
-
-    public Dictionary<CoursesFilterType, Dictionary<string, string>> ClearLinks
+    public FiltersViewModel Filters
     {
         get
         {
-            if (_clearLinks == null)
+            if (_filters == null)
             {
-                _clearLinks = GenerateFilterClearLinks();
+                _filters = CreateFilterSections();
             }
 
-            return _clearLinks;
+            return _filters;
         }
     }
 
-    public Dictionary<CoursesFilterType, List<string>> GetSelectedFilters()
+    public FiltersViewModel CreateFilterSections()
     {
-        var selectedFilters = new Dictionary<CoursesFilterType, List<string>>();
+        var selectedFilterSections = CreateSelectedFilterSections();
 
-        if (!string.IsNullOrWhiteSpace(Keyword))
+        return new FiltersViewModel()
         {
-            selectedFilters[CoursesFilterType.KeyWord] = new List<string> { Keyword };
-        }
-
-        if (!string.IsNullOrWhiteSpace(Location))
-        {
-            selectedFilters[CoursesFilterType.Location] = new List<string> { Location };
-
-            if(Distance.HasValue && ValidDistances.IsValidDistance(Distance.Value))
+            Route = RouteNames.Courses,
+            FilterSections = new List<FilterSection>
             {
-                selectedFilters[CoursesFilterType.Distance] = new List<string> { Distance.Value.ToString() };
-            }
-        }
-
-        if (SelectedLevels is not null && SelectedLevels.Count > 0 && Levels.Count > 0)
-        {
-            selectedFilters[CoursesFilterType.Levels] = Levels.Where(a => SelectedLevels.Contains(a.Code)).Select(a => a.Name).ToList();
-        }
-
-        if (SelectedRoutes is not null && SelectedRoutes.Count > 0 && Routes.Count > 0)
-        {
-            selectedFilters[CoursesFilterType.Categories] = SelectedRoutes.Where(a => Routes.Select(t => t.Name).Contains(a)).ToList();
-        }
-
-        return selectedFilters;
-    }
-
-    public Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterClearLinks()
-    {
-        var selectedFilters = GetSelectedFilters();
-
-        return GenerateFilterPermutations(selectedFilters);
-    }
-
-    public string GenerateFilterQueryString()
-    {
-        var queryBuilder = new StringBuilder();
-
-        foreach (var param in GetSelectedFilters())
-        {
-            foreach (var value in param.Value)
-            {
-                AppendQueryParam(queryBuilder, param.Key, value);
-            }
-        }
-
-        return queryBuilder.ToString();
-    }
-
-    private Dictionary<CoursesFilterType, Dictionary<string, string>> GenerateFilterPermutations(Dictionary<CoursesFilterType, List<string>> queryParams)
-    {
-        var filterPermutations = new Dictionary<CoursesFilterType, Dictionary<string, string>>();
-
-        foreach (var param in queryParams)
-        {
-            var clearLinks = new Dictionary<string, string>();
-
-            foreach (var value in param.Value)
-            {
-                var updatedQuery = BuildQueryWithoutValue(param.Key, value, queryParams);
-                clearLinks.Add(value, updatedQuery);
-            }
-
-            filterPermutations.Add(param.Key, clearLinks);
-        }
-
-        return filterPermutations;
-    }
-
-    public string BuildQueryWithoutValue(CoursesFilterType filterType, string value, Dictionary<CoursesFilterType, List<string>> queryParams)
-    {
-        var queryBuilder = new StringBuilder();
-
-        foreach (var param in queryParams)
-        {
-            if (param.Key == filterType)
-            {
-                foreach (var val in param.Value.Where(v => v != value))
-                {
-                    AppendQueryParam(queryBuilder, param.Key, val);
-                }
-            }
-            else
-            {
-                foreach (var val in param.Value)
-                {
-                    AppendQueryParam(queryBuilder, param.Key, val);
-                }
-            }
-        }
-
-        return queryBuilder.ToString();
-    }
-
-    private void AppendQueryParam(StringBuilder builder, CoursesFilterType key, string value)
-    {
-        string stringKey = key.ToString().ToLower();
-
-        if (!string.IsNullOrWhiteSpace(value))
-        {
-            if (builder.Length > 0)
-            {
-                builder.Append('&');
-            }
-            else
-            {
-                builder.Append('?');
-            }
-            builder.Append($"{stringKey}={GetValue(key, value)}");
-        }
-    }
-
-    private string GetValue(CoursesFilterType key, string filterValue)
-    {
-        return key switch
-        {
-            CoursesFilterType.Levels => GetLevelCodeValue(filterValue),
-            _ => filterValue
+                CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
+                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
+                CreateAccordionFilterSection(
+                    "multi-select",
+                    string.Empty,
+                    new List<FilterSection>()
+                    {
+                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
+                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, GenerateRouteFilterItems())
+                    }
+                )
+            },
+            ClearFilterSections = selectedFilterSections
         };
+    }
+
+    private List<FilterItemViewModel> GenerateRouteFilterItems()
+    {
+        return Routes?.Select(category => new FilterItemViewModel
+            {
+                Value = category.Name,
+                DisplayText = category.Name,
+                Selected = SelectedRoutes?.Contains(category.Name) ?? false
+            })
+        .ToList() ?? new List<FilterItemViewModel>();
+    }
+
+    private List<FilterItemViewModel> GenerateLevelFilterItems()
+    {
+        return Levels?.Select(level => new FilterItemViewModel
+            {
+                Value = level.Code.ToString(),
+                DisplayText = level.Title,
+                Selected = SelectedLevels?.Contains(level.Code) ?? false
+            })
+        .ToList() ?? new List<FilterItemViewModel>();
+    }
+
+    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>();
+
+        AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
+        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+        if (!selectedFilters.ContainsKey(FilterType.Location))
+        {
+            Distance = null;
+        }
+
+        if (Distance.HasValue && ValidDistances.IsValidDistance(Distance.Value))
+        {
+            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance.Value.ToString());
+        }
+
+        if (SelectedLevels?.Count > 0 && Levels.Count > 0)
+        {
+            var selectedLevelNames = Levels
+                .Where(level => SelectedLevels.Contains(level.Code))
+                .Select(level => level.Name)
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, FilterType.Levels, selectedLevelNames);
+        }
+
+        if (SelectedRoutes?.Count > 0 && Routes.Count > 0)
+        {
+            var validRoutes = SelectedRoutes
+                .Where(route => Routes.Any(r => r.Name == route))
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
+        }
+
+        if (selectedFilters.Count == 0)
+        {
+            return [];
+        }
+
+        return CreateClearFilterSections(
+            selectedFilters,
+            ValueFunctions,
+            [FilterType.Distance]
+        );
     }
 
     private string GetLevelCodeValue(string filterValue)
     {
-        var level = Levels.FirstOrDefault(a => a.Name == filterValue);
-        return level?.Code.ToString() ?? filterValue;
-    }
-
-    public enum CoursesFilterType
-    {
-        Location,
-        Levels,
-        Categories,
-        KeyWord,
-        OrderBy,
-        Distance
+        var level = Levels.FirstOrDefault(l => l.Name == filterValue);
+        return level?.Code.ToString() ?? string.Empty;
     }
 }

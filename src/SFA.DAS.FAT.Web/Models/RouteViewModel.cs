@@ -5,11 +5,6 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class RouteViewModel
 {
-    public RouteViewModel()
-    {
-        
-    }
-
     public RouteViewModel (Route route, ICollection<string> selectedRoutes)
     {
         Selected = selectedRoutes?.Contains(route.Name) ?? false;

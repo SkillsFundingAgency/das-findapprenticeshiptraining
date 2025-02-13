@@ -11,11 +11,6 @@ using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Services;
 
-public interface IRoutesService
-{
-    Task<IEnumerable<Route>> GetRoutesAsync(CancellationToken cancellationToken);
-}
-
 public sealed class RoutesService(IApiClient _apiClient, ISessionService _sessionService, IDistributedCacheService _distributedCacheService, IOptions<FindApprenticeshipTrainingApi> config) : IRoutesService
 {
     public async Task<IEnumerable<Route>> GetRoutesAsync(CancellationToken cancellationToken)
@@ -28,11 +23,11 @@ public sealed class RoutesService(IApiClient _apiClient, ISessionService _sessio
 
         var routesResponse = await _distributedCacheService.GetOrSetAsync(
             CacheSetting.Routes.Key,
-            async () => await _apiClient.Get<GetRoutesListResponse>(new GetCourseRoutesApiRequest(config.Value.BaseUrl)),
+            () => _apiClient.Get<GetRoutesListResponse>(new GetCourseRoutesApiRequest(config.Value.BaseUrl)),
             CacheSetting.Routes.CacheDuration
         );
 
-        _sessionService.Set<GetRoutesListResponse>(routesResponse);
+        _sessionService.Set(routesResponse);
 
         return routesResponse.Routes;
     }

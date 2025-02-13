@@ -1,0 +1,80 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@using SFA.DAS.FAT.Web.Models.Filters
+@model FiltersViewModel
+
+<div class="das-show-hide" data-module="das-show-hide">
+
+    <div class="das-filter das-!-show--from-tablet" id="fat-filter">
+
+        <div class="das-filter__header">
+
+            <h2 class="das-filter__heading">Filter</h2>
+
+        </div>
+
+        @if (Model.ShowFilterOptions)
+        {
+            <div class="das-filter__selected-filters">
+
+                <div class="das-filter__selected-header">
+
+                    <h3 class="das-filter__selected-heading">Selected filters</h3>
+
+                    <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@Model.Route">
+
+                        Clear <span class="govuk-visually-hidden">the selected filters</span>
+
+                    </a>
+
+                </div>
+
+                @foreach(ClearFilterSectionViewModel section in Model.ClearFilterSections)
+                {
+                    @await Html.PartialAsync("_clearFilterSection", section)
+                }
+            </div>
+        }
+
+        <div class="das-filter__body das-!-show--from-tablet" id="fat-filter-options">
+
+            <form asp-route="@Model.Route" method="GET">
+
+                @foreach (FilterSection section in @Model.FilterSections)
+                {
+                    switch (section.FilterComponentType)
+                    {
+                        case FilterFactory.FilterComponentType.TextBox:
+                            {
+                                @await Html.PartialAsync("_textBoxFilterSection", section)
+                            }
+                            break;
+                        case FilterFactory.FilterComponentType.Search:
+                            {
+                                @await Html.PartialAsync("_searchFilterSection", section)
+                            }
+                            break;
+                        case FilterFactory.FilterComponentType.Accordion:
+                            {
+                                @await Html.PartialAsync("_accordionFilterSection", section)
+                            }
+                            break;
+                        case FilterFactory.FilterComponentType.Dropdown:
+                            {
+                                @await Html.PartialAsync("_dropdownFilterSection", section)
+                            }
+                            break;
+                    }
+                }
+
+                <button type="submit" class="govuk-button" id="filters-submit">Apply filters</button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <button class="govuk-button das-filter__toggle das-show-hide__button" data-aria-controls="fat-filter@(Model.ShowFilterOptions ? "-options" : "")" data-button-string="filter @(Model.ShowFilterOptions ? " options" : "")" data-focus-id="fat-filter">Show/hide</button>
+
+</div>
