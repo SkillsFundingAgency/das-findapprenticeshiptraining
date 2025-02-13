@@ -14,7 +14,14 @@ public class GetCoursesQueryHandler(
 {
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
-        var coursesResponse = await _courseService.GetCourses(query.Keyword, query.RouteIds, query.Levels, query.OrderBy, cancellationToken);
+        var coursesResponse = await _courseService.GetCourses(
+            query.Keyword,
+            query.Location,
+            query.RouteIds, 
+            query.Levels, 
+            query.OrderBy, 
+            cancellationToken
+        );
 
         var levels = await _levelsService.GetLevelsAsync(cancellationToken);
 

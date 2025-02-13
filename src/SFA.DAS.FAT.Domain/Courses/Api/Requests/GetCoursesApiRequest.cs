@@ -15,9 +15,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public int? Distance { get; }
 
-    public decimal? Longitude { get; }
-
-    public decimal? Latitude { get; }
+    public string Location { get; }
 
     public int Page { get; } = 1;
 
@@ -26,6 +24,7 @@ public class GetCoursesApiRequest : IGetApiRequest
     public GetCoursesApiRequest(
         string baseUrl, 
         string keyword, 
+        string location,
         List<int> routes, 
         List<int> levels, 
         OrderBy orderBy
@@ -33,6 +32,7 @@ public class GetCoursesApiRequest : IGetApiRequest
     {
         BaseUrl = baseUrl;
         Keyword = keyword;
+        Location = location;
         RouteIds = routes;
         Levels = levels;
         OrderBy = orderBy;
