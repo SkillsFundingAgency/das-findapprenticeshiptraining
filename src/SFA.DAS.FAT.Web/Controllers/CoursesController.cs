@@ -73,6 +73,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             {
                 Keyword = request.Keyword,
                 Location = request.Location,
+                Distance = request.Distance,
                 RouteIds = [], //request.Categories
                 Levels = request.Levels,
                 OrderBy = request.OrderBy,

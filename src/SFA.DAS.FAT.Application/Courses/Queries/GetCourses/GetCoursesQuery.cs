@@ -9,6 +9,7 @@ public class GetCoursesQuery : IRequest<GetCoursesQueryResult>
 {
     public string Keyword { get; set; }
     public string Location { get; set; }
+    public int? Distance { get; set; }
     public List<int> RouteIds { get; set; }
     public List<int> Levels { get; set; }
     public OrderBy OrderBy { get; set; }

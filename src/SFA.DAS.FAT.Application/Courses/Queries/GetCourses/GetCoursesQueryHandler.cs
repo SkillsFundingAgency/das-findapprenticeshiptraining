@@ -17,6 +17,7 @@ public class GetCoursesQueryHandler(
         var coursesResponse = await _courseService.GetCourses(
             query.Keyword,
             query.Location,
+            query.Distance,
             query.RouteIds, 
             query.Levels, 
             query.OrderBy, 

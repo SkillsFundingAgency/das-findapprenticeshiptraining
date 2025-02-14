@@ -25,6 +25,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         string baseUrl, 
         string keyword, 
         string location,
+        int? distance,
         List<int> routes, 
         List<int> levels, 
         OrderBy orderBy
@@ -33,6 +34,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         BaseUrl = baseUrl;
         Keyword = keyword;
         Location = location;
+        Distance = distance;
         RouteIds = routes;
         Levels = levels;
         OrderBy = orderBy;
@@ -47,6 +49,16 @@ public class GetCoursesApiRequest : IGetApiRequest
         if (OrderBy != Courses.OrderBy.None)
         {
             url += $"&orderby={OrderBy}";
+        }
+
+        if(!string.IsNullOrWhiteSpace(Location))
+        {
+            url += $"&location={Location}";
+        }
+
+        if (Distance.HasValue)
+        {
+            url += $"&distance={Distance.Value}";
         }
 
         return url;
