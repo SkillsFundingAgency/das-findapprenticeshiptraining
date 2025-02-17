@@ -71,7 +71,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = "",
-                RouteIds = null,
+                Routes = null,
                 Levels = null,
                 OrderBy = OrderBy.Title,
                 ShortlistUserId = null

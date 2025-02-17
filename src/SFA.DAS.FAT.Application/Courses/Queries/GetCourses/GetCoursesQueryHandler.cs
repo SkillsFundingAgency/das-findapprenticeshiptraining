@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -13,19 +14,21 @@ public class GetCoursesQueryHandler(
 {
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
     {
+        var levels = await _levelsService.GetLevelsAsync(cancellationToken);
+
+        var routes = await _routesService.GetRoutesAsync(cancellationToken);
+
+        var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
+
         var coursesResponse = await _courseService.GetCourses(
             query.Keyword,
             query.Location,
             query.Distance,
-            query.RouteIds, 
+            routeIds,
             query.Levels, 
             query.OrderBy, 
             cancellationToken
         );
-
-        var levels = await _levelsService.GetLevelsAsync(cancellationToken);
-
-        var routes = await _routesService.GetRoutesAsync(cancellationToken);
 
         return new GetCoursesQueryResult()
         {
