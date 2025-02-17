@@ -2,7 +2,6 @@
 
 public enum OrderBy
 {
-    None = 0,
-    Relevance = 1,
-    Name = 2
+    Score,
+    Title
 }

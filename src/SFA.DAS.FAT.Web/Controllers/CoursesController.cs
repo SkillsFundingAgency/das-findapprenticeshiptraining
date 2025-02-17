@@ -8,6 +8,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,6 +40,8 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
+        private readonly IOptions<FindApprenticeshipTrainingWeb> _findApprenticeshipTrainingWebConfiguration;
+        private readonly IUrlHelper _urlHelper;
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -48,7 +52,11 @@ namespace SFA.DAS.FAT.Web.Controllers
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
             IValidator<GetCourseQuery> courseValidator,
-            IValidator<GetCourseProviderQuery> courseProviderValidator)
+            IValidator<GetCourseProviderQuery> courseProviderValidator,
+            IOptions<FindApprenticeshipTrainingWeb> findApprenticeshipTrainingWebConfiguration,
+            IUrlHelperFactory urlHelperFactory, 
+            IActionContextAccessor actionContextAccessor
+        )
         {
             _logger = logger;
             _mediator = mediator;
@@ -60,6 +68,8 @@ namespace SFA.DAS.FAT.Web.Controllers
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
+            _findApprenticeshipTrainingWebConfiguration = findApprenticeshipTrainingWebConfiguration;
+            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
         }
 
         [Route("", Name = RouteNames.Courses)]
@@ -74,15 +84,15 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Keyword = request.Keyword,
                 Location = request.Location,
                 Distance = request.Distance,
-                RouteIds = [], //request.Categories
+                RouteIds = [],// request.Categories,
                 Levels = request.Levels,
                 OrderBy = request.OrderBy,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
-            var viewModel = new CoursesViewModel
+            var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Value, _urlHelper)
             {
-                Courses = [], //result.Select(c => (CourseViewModel)c).ToList()
+                Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
                 Routes = result.Routes.Select(route => new RouteViewModel(route, request.Categories)).ToList(),
                 Total = result.TotalCount,
                 TotalFiltered = result.TotalCount,
@@ -91,7 +101,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
                 OrderBy = request.OrderBy,
-                ShortListItemCount = 0, //result.ShortlistItemCount,
+                ShortListItemCount = 0, //result.ShortListItemCount,
                 Location = request.Location ?? string.Empty,
                 Distance = validatedDistance,
                 ShowSearchCrumb = true,

@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
     ViewData["Title"] = "Apprenticeship training courses";
@@ -7,31 +8,17 @@
 }
 
 <main class="govuk-main-wrapper" id="main-content">
-
-    @if (DateTime.UtcNow < new DateTime(2024, 02, 12))
-    {
-        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Important notice
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">
-                    National Apprenticeship Week
-                </p>
-                <p>National Apprenticeship Week 2024 will run from Monday 5 to Sunday 11 February - find out how to get involved and download the toolkit at <a href="https://naw.appawards.co.uk/" class="govuk-link" target="_blank" rel="external" >National Apprenticeship Week</a>.</p>
-            </div>
-        </div>
-    }
-    
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Apprenticeship training courses</h1>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">Apprenticeship training courses</h1>
+            @if(!string.IsNullOrWhiteSpace(Model.CoursesSubHeader))
+            {
+                <p class="govuk-body">@Model.CoursesSubHeader</p>
+            }
         </div>
     </div>
 
-    <div class="govuk-grid-row">
+    <div class="govuk-grid-row govuk-!-margin-top-4">
 
         <div class="govuk-grid-column-one-third">
 
@@ -40,35 +27,80 @@
         </div>
 
         <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">@Model.TotalMessage</h2>
-            @if (Model.Courses.Count > 0)
-            {
 
-                if (Model.Courses.Count > 1)
-                {
-                    <p class="govuk-body govuk-!-margin-bottom-6">
-                        Sorted by:
-                        <span class="govuk-!-font-weight-bold">Name</span>
-                    </p>
-                }
-                
-                <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 ">
+            @if (Model.Standards.Count > 0)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <div class="govuk-grid-column-one-half govuk-!-padding-0">
+                            <p class="govuk-body govuk-!-font-weight-bold">@Model.TotalMessage</p>
+                        </div>
+                        @if(!string.IsNullOrWhiteSpace(Model.SortedDisplayMessage))
+                        {
+                            <div class="govuk-grid-column-one-half govuk-!-padding-0">
+                                <p class="govuk-body govuk-!-text-align-right">
+                                    Sorted by:
+                                    <span class="govuk-!-font-weight-bold">@Model.SortedDisplayMessage</span>
+                                </p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <hr class="govuk-section-break govuk-section-break--visible">
 
                 <div class="das-search-results">
                     <ol class="das-search-results__list">
-                        @foreach (var course in Model.Courses)
+                        @foreach (var standard in Model.Standards)
                         {
-                            <li class="das-search-results__list-item">
+                            <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
                                 <h2 class="govuk-heading-m das-search-results__heading">
-                                    <a class="das-search-results__link" id="standard-@course.Id" asp-route-id="@course.Id" asp-route-location="@Model.Location" asp-route="@RouteNames.CourseDetails">
-                                        @course.Title <span class="das-no-wrap">(level @course.Level)</span>
+                                    <a class="das-search-results__link"
+                                       id="standard-@standard.LarsCode"
+                                       asp-route-id="@standard.LarsCode" 
+                                        asp-route-location="@Model.Location" 
+                                        asp-route="@RouteNames.CourseDetails"
+                                    >
+                                        @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
                                     </a>
                                 </h2>
-                                <p class="govuk-body das-search-results__body">@course.OverviewOfRole</p>
-                                <dl class="das-definition-list das-definition-list--meta das-search-results__meta">
-                                    <dt class="das-definition-list__title">Apprenticeship category</dt>
-                                    <dd class="das-definition-list__definition">@course.Sector</dd>
-                                </dl>
+                                <p class="govuk-body das-search-results__body govuk-!-margin-bottom-3">@standard.OverviewOfRole</p>
+
+                                <div class="das-search-results__meta govuk-!-margin-bottom-4">
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Level</dt>
+                                        <dd class="das-definition-list__definition">@Model.GetLevelName(standard.Level)</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Job Category</dt>
+                                        <dd class="das-definition-list__definition">@standard.Route</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Duration</dt>
+                                        <dd class="das-definition-list__definition">@standard.TypicalDuration months</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Maximum funding from government</dt>
+                                        <dd class="das-definition-list__definition">£@standard.MaxFunding</dd>
+                                    </dl>
+                                </div>
+
+                                <div class="govuk-body das-inline-container">
+                                    @if (standard.ProvidersCount == 0)
+                                    {
+                                        <p class="das-inline-text">No providers run this course yet.</p>
+                                    }
+
+                                    <a class="das-search-results__link"
+                                       id="standard-@standard.LarsCode"
+                                       href="@Model.GetStandardLink(standard)"
+                                    >
+                                        @CoursesViewModel.GetStandardLinkDisplayMessage(standard)
+                                    </a>
+                                </div>
                             </li>
                         }
                     </ol>

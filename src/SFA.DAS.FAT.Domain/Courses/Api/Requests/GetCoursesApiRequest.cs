@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -11,7 +13,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public List<int> Levels { get; }
 
-    public OrderBy? OrderBy { get; }
+    public OrderBy OrderBy { get; }
 
     public int? Distance { get; }
 
@@ -41,27 +43,49 @@ public class GetCoursesApiRequest : IGetApiRequest
     }
 
     public string BaseUrl { get; }
+
     public string GetUrl => BuildUrl();
 
     private string BuildUrl()
     {
-        var url = $"{BaseUrl}courses?keyword={Keyword}";
-        if (OrderBy != Courses.OrderBy.None)
+        var queryParams = new List<string>();
+
+        queryParams.Add($"orderby={OrderBy}");
+
+        if (!string.IsNullOrWhiteSpace(Keyword))
         {
-            url += $"&orderby={OrderBy}";
+            queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
         }
 
-        if(!string.IsNullOrWhiteSpace(Location))
+        if (!string.IsNullOrWhiteSpace(Location))
         {
-            url += $"&location={Location}";
+            queryParams.Add($"location={Uri.EscapeDataString(Location)}");
         }
 
         if (Distance.HasValue)
         {
-            url += $"&distance={Distance.Value}";
+            queryParams.Add($"distance={Distance.Value}");
         }
 
-        return url;
+        if (RouteIds != null && RouteIds.Any())
+        {
+            foreach (int routeId in RouteIds)
+            {
+                queryParams.Add($"routeIds={routeId}");
+            }
+        }
+
+        if (Levels != null && Levels.Any())
+        {
+            foreach(int level in Levels)
+            {
+                queryParams.Add($"levels={level}");
+            }
+        }
+
+        var queryString = string.Join("&", queryParams);
+
+        return $"{BaseUrl}courses{(queryString.Any() ? "?" + queryString : string.Empty)}";
     }
 }
 

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -13,11 +15,12 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
-    public List<CourseViewModel> Courses { get; set; } = [];
+    public List<StandardViewModel> Standards { get; set; } = [];
 
     public List<LevelViewModel> Levels { get; set; } = [];
 
     public List<RouteViewModel> Routes { get; set; } = [];
+
     public string Keyword { get; set; } = string.Empty;
 
     public int? Distance { get; set; }
@@ -30,38 +33,114 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public int TotalFiltered { get; set; }
 
-    private OrderBy _orderBy = OrderBy.None;
+    public string SortedDisplayMessage => GetSortedDisplayMessage();
+
+    private OrderBy _orderBy = OrderBy.Title;
 
     public OrderBy OrderBy
     {
         get => _orderBy;
         set
         {
-            if (value == OrderBy.None && !string.IsNullOrEmpty(Keyword))
+            if (value != OrderBy.Score && !string.IsNullOrWhiteSpace(Keyword))
             {
-                _orderBy = OrderBy.Relevance;
+                _orderBy = OrderBy.Score;
             }
-            else if (value != OrderBy.None && string.IsNullOrEmpty(Keyword))
+            else if (value != OrderBy.Title && string.IsNullOrWhiteSpace(Keyword))
             {
-                _orderBy = OrderBy.None;
+                _orderBy = OrderBy.Title;
             }
             else
             {
-                _orderBy = value;
+                _orderBy = OrderBy.Title;
             }
         }
     }
 
     public string TotalMessage => GetTotalMessage();
 
+    public string CoursesSubHeader => PopulateCoursesSubHeader();
+
     private readonly Dictionary<FilterType, Func<string, string>> ValueFunctions;
 
-    public CoursesViewModel()
+    private readonly FindApprenticeshipTrainingWeb _findApprenticeshipTrainingWebConfiguration;
+
+    private readonly IUrlHelper _urlHelper;
+
+    public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
     {
+        _findApprenticeshipTrainingWebConfiguration = findApprenticeshipTrainingWebConfiguration;
+        _urlHelper = urlHelper;
         ValueFunctions = new Dictionary<FilterType, Func<string, string>>
         {
             { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
         };
+    }
+
+    private string GetSortedDisplayMessage()
+    {
+        if (_orderBy == OrderBy.Score)
+        {
+            return "Best match to course";
+        }
+        else if (_orderBy == OrderBy.Title)
+        {
+            return "Name of course";
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+
+    public string GetLevelName(int levelCode)
+    {
+        LevelViewModel? level = Levels.FirstOrDefault(a => a.Code == levelCode);
+
+        if (level is null)
+        {
+            return string.Empty;
+        }
+
+        return $"{levelCode} (equal to {level.Name})";
+    }
+
+    public static string GetStandardLinkDisplayMessage(StandardViewModel standard)
+    {
+        if (standard.ProvidersCount > 1)
+        {
+            return $"View {standard.ProvidersCount} training providers for this course";
+        }
+        else if (standard.ProvidersCount == 1)
+        {
+            return "View 1 provider for this course";
+        }
+        else
+        {
+            return "Ask if training providers can run this course";
+        }
+    }
+
+    public string GetStandardLink(StandardViewModel standard)
+    {
+        if (standard.ProvidersCount > 0)
+        {
+            return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
+        }
+        else
+        {
+            return _findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+        }
+    }
+
+    private string PopulateCoursesSubHeader()
+    {
+        if (!string.IsNullOrWhiteSpace(Keyword) && Total > 0)
+        {
+            return "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+        }
+
+        return string.Empty;
     }
 
     private string GetTotalMessage()
@@ -72,7 +151,13 @@ public class CoursesViewModel : PageLinksViewModelBase
                                 ? Total
                                 : TotalFiltered;
 
-        return $"{totalToUse} result" + (totalToUse != 1 ? "s" : "");
+        string resultDisplayMessage = $"{totalToUse} result";
+        if (totalToUse != 1)
+        {
+            resultDisplayMessage += "s";
+        }
+
+        return resultDisplayMessage;
     }
 
     private FiltersViewModel? _filters;

@@ -73,7 +73,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Keyword = "",
                 RouteIds = null,
                 Levels = null,
-                OrderBy = OrderBy.Name,
+                OrderBy = OrderBy.Title,
                 ShortlistUserId = null
             });
             

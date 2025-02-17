@@ -386,3 +386,13 @@
 .govuk-accordion-hide-controls .govuk-accordion__controls {
     display: none !important;
 }
+
+.das-inline-container {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.das-inline-text {
+    margin: 0;
+}
