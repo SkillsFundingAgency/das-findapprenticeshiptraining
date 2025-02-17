@@ -1,7 +1,6 @@
 ﻿using NUnit.Framework;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.Filters;
-using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters;

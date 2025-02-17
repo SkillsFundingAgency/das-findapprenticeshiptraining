@@ -132,7 +132,8 @@ public class CoursesViewModel : PageLinksViewModelBase
         return Levels?.Select(level => new FilterItemViewModel
             {
                 Value = level.Code.ToString(),
-                DisplayText = level.Title,
+                DisplayText = $"Level {level.Code}",
+                DisplayDescription = $"Equal to {level.Name}",
                 Selected = SelectedLevels?.Contains(level.Code) ?? false
             })
         .ToList() ?? new List<FilterItemViewModel>();
