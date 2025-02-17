@@ -31,7 +31,6 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
         SearchCoursesViewModel model = new SearchCoursesViewModel
         {
             ShortListItemCount = shortListItemCount,
-            ShowBackLink = true,
             ShowSearchCrumb = false,
             ShowShortListLink = true
         };

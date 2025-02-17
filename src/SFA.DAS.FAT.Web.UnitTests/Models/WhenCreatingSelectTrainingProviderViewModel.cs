@@ -15,8 +15,7 @@ public class WhenCreatingSelectTrainingProviderViewModel
         using (new AssertionScope())
         {
             vm.ShortListItemCount.Should().Be(shortlistItemCount);
-            vm.ShowBackLink.Should().BeTrue();
-            vm.ShowSearchCrumb.Should().BeFalse();
+            vm.ShowSearchCrumb.Should().BeTrue();
             vm.ShowShortListLink.Should().BeTrue();
         }
     }

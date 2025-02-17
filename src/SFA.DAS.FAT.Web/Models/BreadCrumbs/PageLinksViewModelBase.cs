@@ -12,6 +12,4 @@ public class PageLinksViewModelBase
     public int ShortListItemCount { get; set; }
 
     public bool ShowShortListLink { get; set; }
-
-    public bool ShowBackLink { get; set; } = false;
 }
