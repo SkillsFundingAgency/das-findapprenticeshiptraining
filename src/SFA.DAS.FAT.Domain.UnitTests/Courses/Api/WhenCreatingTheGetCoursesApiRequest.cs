@@ -1,111 +1,41 @@
-﻿using System.Web;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
-namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
+namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api;
+
+public class WhenCreatingTheGetCoursesApiRequest
 {
-    public class WhenCreatingTheGetCoursesApiRequest
+    [Test]
+    public void Constructor_Should_Set_Properties()
     {
-        [Test, AutoData]
-        public void Then_The_Get_Url_Is_Constructed_Correctly_With_Levels_And_Routes(string baseUrl, string keyword, List<string> sectors, List<int> levels)
+        var _sut = new GetCoursesApiRequest("https://api.test/", "test", "London", 10, new List<int> { 1, 2 }, new List<int> { 3, 4 }, OrderBy.Score);
+
+        Assert.Multiple(() =>
         {
-            //Arrange Act
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, sectors, levels);
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}&routeIds={string.Join("&routeIds=", sectors.Select(HttpUtility.HtmlEncode))}&levels={string.Join("&levels=", levels)}");
-        }
+            Assert.That(_sut.BaseUrl, Is.EqualTo("https://api.test/"));
+            Assert.That(_sut.Keyword, Is.EqualTo("test"));
+            Assert.That(_sut.Location, Is.EqualTo("London"));
+            Assert.That(_sut.Distance, Is.EqualTo(10));
+            Assert.That(_sut.RouteIds, Is.EquivalentTo(new List<int> { 1, 2 }));
+            Assert.That(_sut.Levels, Is.EquivalentTo(new List<int> { 3, 4 }));
+            Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Score));
+        });
+    }
 
-        [Test, AutoData]
-        public void Then_The_Get_Url_Is_Constructed_Correctly_With_Routes_And_Levels_Is_Null(string baseUrl, string keyword, List<string> sectors)
-        {
-            //Arrange Act
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, sectors);
+    [Test]
+    public void GetUrl_Should_Construct_Correct_Url()
+    {
+        var _sut = new GetCoursesApiRequest("https://api.test/", "test", "London", 10, new List<int> { 1, 2 }, new List<int> { 3, 4 }, OrderBy.Title);
+        var expectedUrl = "https://api.test/courses?orderby=Title&keyword=test&location=London&distance=10&routeIds=1&routeIds=2&levels=3&levels=4";
+        Assert.That(_sut.GetUrl, Is.EqualTo(expectedUrl));
+    }
 
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}&routeIds={string.Join("&routeIds=", sectors.Select(HttpUtility.HtmlEncode))}");
-        }
-
-        [Test, AutoData]
-        public void Then_If_The_List_Of_Sectors_And_Levels_Are_Null_The_Url_Is_Constructed_Correctly(string baseUrl, string keyword)
-        {
-            //Arrange Act
-            var actual = new GetCoursesApiRequest(baseUrl, keyword);
-
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}");
-        }
-
-
-        [Test, AutoData]
-        public void Then_If_The_List_Of_Sectors_And_Levels_Are_Empty_The_Url_Is_Constructed_Correctly(string baseUrl, string keyword)
-        {
-            //Arrange Act
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, new List<string>(), new List<int>());
-
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}");
-        }
-
-        [Test, AutoData]
-        public void Then_The_Get_Url_Is_Constructed_Correctly_With_Levels_And_Routes_Null(string baseUrl, string keyword, List<int> levels)
-        {
-            //Arrange Act
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, null, levels);
-
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}&levels={string.Join("&levels=", levels)}");
-        }
-
-        [Test, AutoData]
-        public void Then_The_Get_Url_Is_Constructed_Correctly_With_OrderBy(string baseUrl)
-        {
-            //Arrange Act
-            var orderBy = OrderBy.Name;
-            var actual = new GetCoursesApiRequest(baseUrl, "", null, null, orderBy);
-
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword=&orderby={orderBy}");
-        }
-
-        [Test, AutoData]
-        public void Then_OrderBy_Is_Not_Added_If_None(string baseUrl, string keyword)
-        {
-            //Arrange Act
-            var orderBy = OrderBy.None;
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, null, null, orderBy);
-
-            //Assert
-            actual.GetUrl.Should().NotContain("orderby");
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}");
-
-        }
-
-
-        [Test, AutoData]
-        public void Then_ShortlistId_Is_Not_Added_If_None(string baseUrl, string keyword)
-        {
-            //Arrange Act
-            var orderBy = OrderBy.None;
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, null, null, orderBy, null);
-
-            //Assert
-            actual.GetUrl.Should().NotContain("shortlistUserId");
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}");
-
-        }
-
-        [Test, AutoData]
-        public void Then_The_Get_Url_Is_Constructed_Correctly_With_Levels_And_Routes_And_OrderBy_And_ShortlistUserId(string baseUrl, string keyword, List<string> sectors, List<int> levels, Guid shortlistUserId)
-        {
-            //Arrange Act
-            var orderBy = OrderBy.Relevance;
-            var actual = new GetCoursesApiRequest(baseUrl, keyword, sectors, levels, orderBy, shortlistUserId);
-
-            //Assert
-            actual.GetUrl.Should().Be($"{baseUrl}trainingcourses?keyword={keyword}&orderby={orderBy}&routeIds={string.Join("&routeIds=", sectors.Select(HttpUtility.HtmlEncode))}&levels={string.Join("&levels=", levels)}&shortlistUserId={shortlistUserId}");
-        }
+    [Test]
+    public void GetUrl_Should_Exclude_Empty_Parameters()
+    {
+        var _sut = new GetCoursesApiRequest("https://api.test/", null, null, null, new List<int>(), new List<int>(), OrderBy.Title);
+        var expectedUrl = "https://api.test/courses?orderby=Title";
+        Assert.That(_sut.GetUrl, Is.EqualTo(expectedUrl));
     }
 }

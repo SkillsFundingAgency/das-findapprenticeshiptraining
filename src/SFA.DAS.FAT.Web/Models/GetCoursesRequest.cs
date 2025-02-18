@@ -16,11 +16,8 @@ public class GetCoursesRequest
     public List<int> Levels { get; set; } = [];
 
     [FromQuery]
-    public OrderBy OrderBy { get; set; }
-
-    [FromQuery]
     public string? Location { get; set; }
 
     [FromQuery]
-    public int? Distance { get; set; }
+    public string? Distance { get; set; }
 }

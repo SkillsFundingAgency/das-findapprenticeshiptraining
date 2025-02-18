@@ -44,7 +44,7 @@ public static class FilterFactory
     public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What qualification levels mean (opens in new tab or window)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
-    public const string ACROSS_ENGLAND_FILTER_VALUE = "Across England";
+    public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
 
     public static Dictionary<FilterType, string> ClearFilterSectionHeadings => _ClearFilterSectionHeadings;
 
@@ -56,7 +56,7 @@ public static class FilterFactory
         { FilterType.Categories, CATEGORIES_SECTION_HEADING }
     };
 
-    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
+    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string? inputValue)
     {
         return new TextBoxFilterSectionViewModel
         {
@@ -64,7 +64,7 @@ public static class FilterFactory
             For = filterFor,
             Heading = heading,
             SubHeading = subHeading,
-            InputValue = inputValue
+            InputValue = inputValue ?? string.Empty
         };
     }
 
@@ -160,25 +160,25 @@ public static class FilterFactory
         return clearFilterSections;
     }
 
-    public static List<FilterItemViewModel> GetDistanceFilterValues(int? selectedDistance)
+    public static List<FilterItemViewModel> GetDistanceFilterValues(string? selectedDistance)
     {
         var distanceFilterItems = ValidDistances.Distances
             .Select(distance => new FilterItemViewModel
             {
                 Value = distance.ToString(),
                 DisplayText = $"{distance} Miles",
-                Selected = selectedDistance == distance
+                Selected = ValidDistances.GetValidDistance(selectedDistance) == distance
             })
         .ToList();
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
-            Value = null,
-            DisplayText = ACROSS_ENGLAND_FILTER_VALUE,
-            Selected = !selectedDistance.HasValue
+            Value = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
+            DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
+            Selected = selectedDistance == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
         });
 
-        return distanceFilterItems;
+        return distanceFilterItems!;
     }
 
     private static string BuildQueryWithoutValue(
@@ -242,7 +242,7 @@ public static class FilterFactory
         }
     }
 
-    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string value)
+    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -285,12 +285,12 @@ public static class FilterFactory
 
         if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || distanceList.Count == 0)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_VALUE})";
+            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }
 
         if (!int.TryParse(distanceList[0], out int distance) || distance < 1 || distance > 100)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_VALUE})";
+            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }
 
         return $"{location[0]} (within {distance} miles)";

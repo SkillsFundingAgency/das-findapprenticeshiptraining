@@ -40,7 +40,6 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
-        private readonly IOptions<FindApprenticeshipTrainingWeb> _findApprenticeshipTrainingWebConfiguration;
         private readonly IUrlHelper _urlHelper;
 
         public CoursesController(
@@ -53,9 +52,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             IOptions<FindApprenticeshipTrainingWeb> config,
             IValidator<GetCourseQuery> courseValidator,
             IValidator<GetCourseProviderQuery> courseProviderValidator,
-            IOptions<FindApprenticeshipTrainingWeb> findApprenticeshipTrainingWebConfiguration,
-            IUrlHelperFactory urlHelperFactory, 
-            IActionContextAccessor actionContextAccessor
+            IUrlHelper urlHelper
         )
         {
             _logger = logger;
@@ -68,8 +65,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
-            _findApprenticeshipTrainingWebConfiguration = findApprenticeshipTrainingWebConfiguration;
-            _urlHelper = urlHelperFactory.GetUrlHelper(actionContextAccessor.ActionContext!);
+            _urlHelper = urlHelper;
         }
 
         [Route("", Name = RouteNames.Courses)]
@@ -77,20 +73,19 @@ namespace SFA.DAS.FAT.Web.Controllers
         {
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            int? validatedDistance = request.Distance.HasValue && ValidDistances.IsValidDistance(request.Distance.Value) ? request.Distance : null;
+            int validatedDistance = ValidDistances.GetValidDistance(request.Distance);
 
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = request.Keyword,
                 Location = request.Location,
-                Distance = request.Distance,
+                Distance = validatedDistance,
                 Routes = request.Categories,
                 Levels = request.Levels,
-                OrderBy = request.OrderBy,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
-            var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Value, _urlHelper)
+            var viewModel = new CoursesViewModel(_config, _urlHelper)
             {
                 Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
                 Routes = result.Routes.Select(route => new RouteViewModel(route, request.Categories)).ToList(),
@@ -100,10 +95,9 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedRoutes = request.Categories,
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
-                OrderBy = request.OrderBy,
                 ShortListItemCount = 0, //result.ShortListItemCount,
                 Location = request.Location ?? string.Empty,
-                Distance = validatedDistance,
+                Distance = ValidDistances.IsValidDistance(request.Distance) ? request.Distance : ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };

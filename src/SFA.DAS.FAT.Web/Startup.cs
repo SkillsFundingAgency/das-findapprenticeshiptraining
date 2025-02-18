@@ -72,6 +72,13 @@ public class Startup
         services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         services.AddSingleton<IUrlHelperFactory, UrlHelperFactory>();
 
+        services.AddScoped<IUrlHelper>(sp =>
+        {
+            var actionContext = sp.GetService<IActionContextAccessor>()!.ActionContext!;
+            var urlHelperFactory = sp.GetService<IUrlHelperFactory>()!;
+            return urlHelperFactory.GetUrlHelper(actionContext);
+        });
+
         services
             .Configure<RouteOptions>(options =>
             {

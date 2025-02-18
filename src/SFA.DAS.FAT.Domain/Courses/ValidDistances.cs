@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace SFA.DAS.FAT.Domain.Courses;
 
@@ -7,8 +8,36 @@ public static class ValidDistances
     private static readonly HashSet<int> _Distances = new() { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
     public static IReadOnlyCollection<int> Distances => _Distances;
 
-    public static bool IsValidDistance(int distance)
+    public const string ACROSS_ENGLAND_FILTER_VALUE = "All";
+    public const int DEFAULT_DISTANCE = 1000;
+
+    public static int GetValidDistance(string distance)
     {
-        return _Distances.Contains(distance);
+        if (string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
+        {
+            return DEFAULT_DISTANCE;
+        }
+
+        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
+        {
+            return validDistance;
+        }
+
+        return DEFAULT_DISTANCE;
+    }
+
+    public static bool IsValidDistance(string distance)
+    {
+        if (string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
+        {
+            return true;
+        }
+
+        return false;
     }
 }

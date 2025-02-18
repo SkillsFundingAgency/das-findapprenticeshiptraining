@@ -1,99 +1,255 @@
-﻿using AutoFixture.NUnit3;
-using FluentAssertions;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Infrastructure;
+using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests
+namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests;
+
+public class WhenCreatingCoursesViewModel
 {
-    public class WhenCreatingCoursesViewModel
+    private Mock<IUrlHelper> _urlHelper;
+    private Mock<FindApprenticeshipTrainingWeb> _findApprenticeshipTrainingWebConfiguration;
+
+    [SetUp]
+    public void SetUp()
     {
-        [TestCase(10, 5, "", "10 results")]
-        [TestCase(10, 5, "test", "5 results")]
-        [TestCase(1, 5, "", "1 result")]
-        [TestCase(5, 1, "test", "1 result")]
-        [TestCase(0, 5, "", "0 results")]
-        [TestCase(5, 0, "test", "0 results")]
-        public void Then_The_Total_Message_Is_Created_Correctly(int totalCount, int filterTotal, string keyword, string expectedMessage)
+        _findApprenticeshipTrainingWebConfiguration = new Mock<FindApprenticeshipTrainingWeb>();
+        _urlHelper = new Mock<IUrlHelper>();
+    }
+
+    [Test]
+    public void Then_The_Total_Message_Uses_Providers_Total_When_Unfiltered()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            var viewModel = new Web.Models.CoursesViewModel
+            Total = 1,
+            TotalFiltered = 1,
+            Keyword = string.Empty
+        };
+
+        Assert.That(_sut.TotalMessage, Is.EqualTo("1 result"));
+    }
+
+    [Test]
+    public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Routes()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Total = 10,
+            TotalFiltered = 5,
+            SelectedRoutes = ["Route"]
+        };
+
+        Assert.That(_sut.TotalMessage, Is.EqualTo("5 results"));
+    }
+
+    [Test]
+    public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Levels()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Total = 10,
+            TotalFiltered = 5,
+            SelectedLevels = [1]
+        };
+
+        Assert.That(_sut.TotalMessage, Is.EqualTo("5 results"));
+    }
+
+    [Test]
+    public void Then_The_Total_Message_Uses_Filtered_Total_If_Keyword_Is_Set()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Total = 10,
+            TotalFiltered = 5,
+            Keyword = "Keyword"
+        };
+
+        Assert.That(_sut.TotalMessage, Is.EqualTo("5 results"));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Set_Then_Courses_Are_Ordered_By_Score()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "Keyword"
+        };
+
+        Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Score));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Not_Set_Then_Courses_Are_Ordered_By_Title()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = string.Empty
+        };
+
+        Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Title));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Set_And_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Expected_Message()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "Construction",
+            Total = 10
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course."));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Set_But_Total_Is_Zero_Then_CoursesSubHeader_Returns_Empty_String()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "Contruction",
+            Total = 0
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Empty_And_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Empty_String()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = string.Empty,
+            Total = 10
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void When_Keyword_Is_Null_And_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Empty_String()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = null,
+            Total = 10
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void When_Order_By_Is_Score_Then_Message_Is_Best_Match_To_Course()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "Construction"
+        };
+
+        Assert.That(_sut.SortedDisplayMessage, Is.EqualTo("Best match to course"));
+    }
+
+    [Test]
+    public void When_OrderBy_Is_Title_Then_Sorted_Message_Is_Name_Of_Course()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = string.Empty
+        };
+
+        Assert.That(_sut.SortedDisplayMessage, Is.EqualTo("Name of course"));
+    }
+
+    [Test]
+    public void When_Level_Exists_Then_A_Combination_Of_Level_Code_And_Name_Is_Returned()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Levels = new List<LevelViewModel>()
             {
-                Total = totalCount,
-                TotalFiltered = filterTotal,
-                Keyword = keyword
-            };
+                new LevelViewModel(
+                    new Level()
+                    {
+                        Code = 3,
+                        Name = "GCSE"
+                    },
+                    []
+                )
+            }
+        };
 
-            viewModel.TotalMessage.Should().Be(expectedMessage);
-        }
+        Assert.That(_sut.GetLevelName(3), Is.EqualTo("3 (equal to GCSE)"));
+    }
 
-        [Test, AutoData]
-        public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Filters()
+    [Test]
+    public void When_Level_Does_Not_Exists_Then_An_Empty_String_Is_Returned()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            var viewModel = new Web.Models.CoursesViewModel
-            {
-                Total = 10,
-                TotalFiltered = 5,
-                SelectedRoutes = new List<string> { "" }
-            };
+            Levels = []
+        };
 
-            viewModel.TotalMessage.Should().Be("5 results");
-        }
+        Assert.That(_sut.GetLevelName(3), Is.EqualTo(string.Empty));
+    }
 
-        [Test, AutoData]
-        public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Levels()
-        {
-            var viewModel = new Web.Models.CoursesViewModel
-            {
-                Total = 10,
-                TotalFiltered = 5,
-                SelectedLevels = new List<int> { 1 }
-            };
+    [Test, MoqAutoData]
+    public void When_Standard_Providers_Count_Is_One_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 1;
+        var _sut = CoursesViewModel.GetStandardLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo("View 1 provider for this course"));
+    }
 
-            viewModel.TotalMessage.Should().Be("5 results");
-        }
+    [Test, MoqAutoData]
+    public void When_Standard_Providers_Count_Is_More_Than_One_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 2;
+        var _sut = CoursesViewModel.GetStandardLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course"));
+    }
 
-        [Test, AutoData]
-        public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Levels_Sectors_And_Keyword()
-        {
-            var viewModel = new Web.Models.CoursesViewModel
-            {
-                Total = 10,
-                TotalFiltered = 5,
-                SelectedLevels = new List<int> { 1 },
-                SelectedRoutes = new List<string> { "" },
-                Keyword = "Test"
-            };
+    [Test, MoqAutoData]
+    public void When_Standard_Providers_Count_Is_Zero_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 0;
+        var _sut = CoursesViewModel.GetStandardLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo("Ask if training providers can run this course"));
+    }
 
-            viewModel.TotalMessage.Should().Be("5 results");
-        }
+    [Test, MoqAutoData]
+    public void When_Providers_Count_Is_More_Than_Zero_Link_Returns_Providers_List_Url(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 2;
+        standardViewModel.LarsCode = 123;
 
-        [Test]
-        public void Then_If_There_Is_A_Keyword_Search_And_No_OrderBy_It_Is_Set_To_Relevance()
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(new List<string>(), "test", new List<int>(), OrderBy.None);
+        var expectedUrl = "https://localhost/course/123/providers";
+        var _mockUrlHelperMock = new Mock<IUrlHelper>();
+        _mockUrlHelperMock
+            .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName!.Equals(RouteNames.CourseProviders))))
+            .Returns(expectedUrl);
 
-            //Assert
-            model.OrderBy.Should().Be(OrderBy.Relevance);
-        }
+        var _viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _mockUrlHelperMock.Object);
 
-        [Test]
-        public void Then_If_There_Is_A_Keyword_Search_And_OrderBy_It_Is_Maintained()
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(new List<string>(), "test", new List<int>());
+        var result = _viewModel.GetStandardLink(standardViewModel);
 
-            //Assert
-            model.OrderBy.Should().Be(OrderBy.Name);
-        }
+        Assert.That(expectedUrl, Is.EqualTo(result));
+    }
 
-        [Test]
-        public void Then_If_There_Is_No_Keyword_Search_And_OrderBy_It_Is_Set_To_None()
-        {
-            //Arrange Act
-            var model = CoursesViewModelFactory.BuildModel(new List<string>(), "", new List<int>());
-
-            //Assert
-            model.OrderBy.Should().Be(OrderBy.None);
-        }
+    [Test, MoqAutoData]
+    public void When_Providers_Count_Is_Zero_Link_Returns_Request_Apprenticeship_Training_Url(
+        StandardViewModel standardViewModel,
+        FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
+    )
+    {
+        standardViewModel.ProvidersCount = 0;
+        var _sut = new CoursesViewModel(findApprenticeshipTrainingWebConfiguration, _urlHelper.Object);
+        var result = _sut.GetStandardLink(standardViewModel);
+        Assert.That(findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl, Is.EqualTo(result));
     }
 }

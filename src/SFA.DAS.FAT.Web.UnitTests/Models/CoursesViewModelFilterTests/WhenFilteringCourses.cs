@@ -14,7 +14,7 @@ public sealed class WhenFilteringCourses
     [SetUp]
     public void Setup()
     {
-        _coursesViewModel = new CoursesViewModel
+        _coursesViewModel = new CoursesViewModel(null, null)
         {
             Keyword = "Construction",
             Location = "M60 7RA",
@@ -232,7 +232,7 @@ public sealed class WhenFilteringCourses
     [Test]
     public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_Null()
     {
-        CoursesViewModel _sut = new CoursesViewModel()
+        CoursesViewModel _sut = new CoursesViewModel(null, null)
         {
             Location = null,
             Distance = 10

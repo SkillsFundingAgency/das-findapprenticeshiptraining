@@ -2,13 +2,8 @@
 
 namespace SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
-public sealed class GetCourseLevelsApiRequest : IGetApiRequest
+public sealed class GetCourseLevelsApiRequest(string baseUrl) : IGetApiRequest
 {
-    public GetCourseLevelsApiRequest(string baseUrl)
-    {
-        BaseUrl = baseUrl;
-    }
-
-    public string BaseUrl { get; }
+    public string BaseUrl { get; } = baseUrl;
     public string GetUrl => $"{BaseUrl}courses/levels";
 }

@@ -21,9 +21,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<RouteViewModel> Routes { get; set; } = [];
 
-    public string Keyword { get; set; } = string.Empty;
+    public string? Keyword { get; set; } = string.Empty;
 
-    public int? Distance { get; set; }
+    public string? Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
 
@@ -35,33 +35,31 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string SortedDisplayMessage => GetSortedDisplayMessage();
 
-    private OrderBy _orderBy = OrderBy.Title;
+    private OrderBy? _orderBy;
 
     public OrderBy OrderBy
     {
-        get => _orderBy;
-        set
+        get
         {
-            if (value != OrderBy.Score && !string.IsNullOrWhiteSpace(Keyword))
+            if (_orderBy == null)
             {
-                _orderBy = OrderBy.Score;
+                _orderBy = SetOrderBy();
             }
-            else if (value != OrderBy.Title && string.IsNullOrWhiteSpace(Keyword))
-            {
-                _orderBy = OrderBy.Title;
-            }
-            else
-            {
-                _orderBy = OrderBy.Title;
-            }
+
+            return _orderBy.Value;
         }
+    }
+
+    private OrderBy SetOrderBy()
+    {
+        return string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
     }
 
     public string TotalMessage => GetTotalMessage();
 
     public string CoursesSubHeader => PopulateCoursesSubHeader();
 
-    private readonly Dictionary<FilterType, Func<string, string>> ValueFunctions;
+    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
     private readonly FindApprenticeshipTrainingWeb _findApprenticeshipTrainingWebConfiguration;
 
@@ -71,7 +69,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         _findApprenticeshipTrainingWebConfiguration = findApprenticeshipTrainingWebConfiguration;
         _urlHelper = urlHelper;
-        ValueFunctions = new Dictionary<FilterType, Func<string, string>>
+        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
         {
             { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
         };
@@ -79,18 +77,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private string GetSortedDisplayMessage()
     {
-        if (_orderBy == OrderBy.Score)
-        {
-            return "Best match to course";
-        }
-        else if (_orderBy == OrderBy.Title)
-        {
-            return "Name of course";
-        }
-        else
-        {
-            return string.Empty;
-        }
+        return OrderBy == OrderBy.Score ? 
+            "Best match to course" : 
+            "Name of course";
     }
 
     public string GetLevelName(int levelCode)
@@ -105,32 +94,30 @@ public class CoursesViewModel : PageLinksViewModelBase
         return $"{levelCode} (equal to {level.Name})";
     }
 
-    public static string GetStandardLinkDisplayMessage(StandardViewModel standard)
+    public static string GetProvidersLinkDisplayMessage(StandardViewModel standard)
     {
-        if (standard.ProvidersCount > 1)
+        if (standard.ProvidersCount == 1)
         {
-            return $"View {standard.ProvidersCount} training providers for this course";
+            return "View 1 provider for this course.";
         }
-        else if (standard.ProvidersCount == 1)
+        else if (standard.ProvidersCount > 1)
         {
-            return "View 1 provider for this course";
+            return $"View {standard.ProvidersCount} training providers for this course.";
         }
         else
         {
-            return "Ask if training providers can run this course";
+            return "Ask if training providers can run this course.";
         }
     }
 
-    public string GetStandardLink(StandardViewModel standard)
+    public string GetProvidersLink(StandardViewModel standard)
     {
         if (standard.ProvidersCount > 0)
         {
             return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
         }
-        else
-        {
-            return _findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
-        }
+        
+        return _findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
     }
 
     private string PopulateCoursesSubHeader()
@@ -182,21 +169,19 @@ public class CoursesViewModel : PageLinksViewModelBase
         return new FiltersViewModel()
         {
             Route = RouteNames.Courses,
-            FilterSections = new List<FilterSection>
-            {
+            FilterSections = [
                 CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
                 CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
                     "multi-select",
                     string.Empty,
-                    new List<FilterSection>()
-                    {
+                    [
                         CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
                         CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, GenerateRouteFilterItems())
-                    }
+                    ]
                 )
-            },
+            ],
             ClearFilterSections = selectedFilterSections
         };
     }
@@ -209,7 +194,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                 DisplayText = category.Name,
                 Selected = SelectedRoutes?.Contains(category.Name) ?? false
             })
-        .ToList() ?? new List<FilterItemViewModel>();
+        .ToList() ?? [];
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
@@ -221,7 +206,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                 DisplayDescription = $"Equal to {level.Name}",
                 Selected = SelectedLevels?.Contains(level.Code) ?? false
             })
-        .ToList() ?? new List<FilterItemViewModel>();
+        .ToList() ?? [];
     }
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
@@ -232,12 +217,12 @@ public class CoursesViewModel : PageLinksViewModelBase
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = null;
+            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE;
         }
 
-        if (Distance.HasValue && ValidDistances.IsValidDistance(Distance.Value))
+        if (ValidDistances.IsValidDistance(Distance))
         {
-            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance.Value.ToString());
+            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
 
         if (SelectedLevels?.Count > 0 && Levels.Count > 0)
@@ -266,7 +251,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
         return CreateClearFilterSections(
             selectedFilters,
-            ValueFunctions,
+            _valueFunctions,
             [FilterType.Distance]
         );
     }

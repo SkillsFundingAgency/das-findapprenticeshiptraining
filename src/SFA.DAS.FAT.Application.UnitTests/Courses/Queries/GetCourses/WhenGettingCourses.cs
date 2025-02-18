@@ -1,156 +1,94 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using Moq;
+﻿using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
-using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
+namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses;
+
+public class WhenGettingCourses
 {
-    public class WhenGettingCourses
+    private Mock<ICourseService> _courseServiceMock;
+    private Mock<ILevelsService> _levelsServiceMock;
+    private Mock<IRoutesService> _routesServiceMock;
+    private GetCoursesQueryHandler _handler;
+
+    [SetUp]
+    public void Setup()
     {
+        _courseServiceMock = new Mock<ICourseService>();
+        _levelsServiceMock = new Mock<ILevelsService>();
+        _routesServiceMock = new Mock<IRoutesService>();
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Service_Is_Called_And_The_Data_Returned(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            [Frozen] Mock<ILevelsService> mockLevelService,
-            [Frozen] Mock<IRoutesService> mockRoutesService,
-            GetCoursesQueryHandler handler)
+        _handler = new GetCoursesQueryHandler(
+            _courseServiceMock.Object,
+            _levelsServiceMock.Object,
+            _routesServiceMock.Object
+        );
+    }
+
+    [Test]
+    public async Task Handle_Should_Return_Correct_Response()
+    {
+        var query = new GetCoursesQuery() {
+            Keyword = "test", 
+            Location = "London", 
+            Distance = 10, 
+            Routes = new List<string> { "Route1" }, 
+            Levels = new List<int> { 3 }, 
+            OrderBy = OrderBy.Title
+        };
+
+        var cancellationToken = new CancellationToken();
+
+        var levels = new List<Level> 
+        { 
+            new Level() 
+            { 
+                Code = 3, 
+                Name = "GCSE" 
+            } 
+        };
+
+        var routes = new List<Route> 
+        { 
+            new Route 
+            { 
+                Id = 1, 
+                Name = "Route1" 
+            }, 
+            new Route 
+            { 
+                Id = 2, 
+                Name = "Route2" 
+            } 
+        };
+
+        var coursesResponse = new GetCoursesResponse
         {
-            //Arrange
-            request.Keyword = null;
-            request.RouteIds = null;
-            request.Levels = null;
-            request.ShortlistUserId = null;
-            mockService.Setup(x => x.GetCourses(null, null, null, OrderBy.None, null)).ReturnsAsync(courseResponse);
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = 10,
+            TotalPages = 2,
+            TotalCount = 20
+        };
 
-            mockLevelService.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Levels);
+        _levelsServiceMock.Setup(x => x.GetLevelsAsync(cancellationToken)).ReturnsAsync(levels);
+        _routesServiceMock.Setup(x => x.GetRoutesAsync(cancellationToken)).ReturnsAsync(routes);
+        _courseServiceMock.Setup(x => x.GetCourses("test", "London", 10, new List<int> { 1 }, new List<int> { 3 }, OrderBy.Title, cancellationToken)).ReturnsAsync(coursesResponse);
 
-            mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Sectors);
+        var _sut = await _handler.Handle(query, cancellationToken);
 
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(null, null, null, OrderBy.None, null), Times.Once);
-            actual.Should().NotBeNull();
-            actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
-            actual.Routes.Should().BeEquivalentTo(courseResponse.Sectors);
-            actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
-            actual.Total.Should().Be(courseResponse.Total);
-            actual.ShortlistItemCount.Should().Be(courseResponse.ShortlistItemCount);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Service_Is_Called_Passing_Keywords_From_Query(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            [Frozen] Mock<ILevelsService> mockLevelService,
-            [Frozen] Mock<IRoutesService> mockRoutesService,
-            GetCoursesQueryHandler handler)
+        Assert.Multiple(() =>
         {
-            //Arrange
-            request.RouteIds = null;
-            request.Levels = null;
-            mockService.Setup(x => x.GetCourses(request.Keyword, null, null, OrderBy.None, request.ShortlistUserId)).ReturnsAsync(courseResponse);
-
-            mockLevelService.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Levels);
-
-            mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(courseResponse.Sectors);
-
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(request.Keyword, null, null, OrderBy.None, request.ShortlistUserId), Times.Once);
-            actual.Should().NotBeNull();
-            actual.Courses.Should().BeEquivalentTo(courseResponse.Courses);
-            actual.Routes.Should().BeEquivalentTo(courseResponse.Sectors);
-            actual.TotalFiltered.Should().Be(courseResponse.TotalFiltered);
-            actual.Total.Should().Be(courseResponse.Total);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Keywords_And_Sectors_Are_Passed_To_The_Service_And_Levels_Is_Null(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCoursesQueryHandler handler)
-        {
-            //Arrange
-            request.Levels = null;
-            mockService.Setup(x => x.GetCourses(request.Keyword, request.RouteIds, null, OrderBy.None, request.ShortlistUserId)).ReturnsAsync(courseResponse);
-
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, null, OrderBy.None, request.ShortlistUserId), Times.Once);
-            actual.Should().NotBeNull();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Keywords_And_Levels_Are_Passed_To_The_Service_And_Sectors_Is_Null(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCoursesQueryHandler handler)
-        {
-            //Arrange
-            request.RouteIds = null;
-            mockService.Setup(x => x.GetCourses(request.Keyword, null, request.Levels, OrderBy.None, request.ShortlistUserId)).ReturnsAsync(courseResponse);
-
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(request.Keyword, null, request.Levels, OrderBy.None, request.ShortlistUserId), Times.Once);
-            actual.Should().NotBeNull();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Keywords_And_Levels_And_Sectors_Are_Passed_To_The_Service_And_ShortlistId_Null(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCoursesQueryHandler handler)
-        {
-            //Arrange
-            request.ShortlistUserId = null;
-            mockService.Setup(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, null)).ReturnsAsync(courseResponse);
-
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, null), Times.Once);
-            actual.Should().NotBeNull();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_Keywords_And_Levels_And_Sectors_Are_Passed_To_The_Service(
-            GetCoursesQuery request,
-            TrainingCourses courseResponse,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCoursesQueryHandler handler)
-        {
-            //Arrange
-            mockService.Setup(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, request.ShortlistUserId)).ReturnsAsync(courseResponse);
-
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourses(request.Keyword, request.RouteIds, request.Levels, OrderBy.None, request.ShortlistUserId), Times.Once);
-            actual.Should().NotBeNull();
-        }
+            Assert.That(_sut.Standards, Is.EquivalentTo(coursesResponse.Standards));
+            Assert.That(_sut.Page, Is.EqualTo(coursesResponse.Page));
+            Assert.That(_sut.PageSize, Is.EqualTo(coursesResponse.PageSize));
+            Assert.That(_sut.TotalCount, Is.EqualTo(coursesResponse.TotalCount));
+            Assert.That(_sut.TotalPages, Is.EqualTo(coursesResponse.TotalPages));
+            Assert.That(_sut.Levels, Is.EquivalentTo(levels));
+            Assert.That(_sut.Routes, Is.EquivalentTo(routes));
+        });
     }
 }

@@ -1,5 +1,6 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
+@using System.Globalization
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
     ViewData["Title"] = "Apprenticeship training courses";
@@ -57,9 +58,9 @@
                                 <h2 class="govuk-heading-m das-search-results__heading">
                                     <a class="das-search-results__link"
                                        id="standard-@standard.LarsCode"
-                                       asp-route-id="@standard.LarsCode" 
-                                        asp-route-location="@Model.Location" 
-                                        asp-route="@RouteNames.CourseDetails"
+                                       asp-route-id="@standard.LarsCode"
+                                       asp-route-location="@Model.Location"
+                                       asp-route="@RouteNames.CourseDetails"
                                     >
                                         @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
                                     </a>
@@ -84,7 +85,7 @@
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Maximum funding from government</dt>
-                                        <dd class="das-definition-list__definition">£@standard.MaxFunding</dd>
+                                        <dd class="das-definition-list__definition">@standard.MaxFunding.ToString("C", new CultureInfo("en-GB"))</dd>
                                     </dl>
                                 </div>
 
@@ -96,9 +97,9 @@
 
                                     <a class="das-search-results__link"
                                        id="standard-@standard.LarsCode"
-                                       href="@Model.GetStandardLink(standard)"
+                                       href="@Model.GetProvidersLink(standard)"
                                     >
-                                        @CoursesViewModel.GetStandardLinkDisplayMessage(standard)
+                                        @CoursesViewModel.GetProvidersLinkDisplayMessage(standard)
                                     </a>
                                 </div>
                             </li>
