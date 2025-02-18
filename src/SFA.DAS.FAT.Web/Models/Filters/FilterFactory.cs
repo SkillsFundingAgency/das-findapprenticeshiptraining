@@ -244,9 +244,10 @@ public static class FilterFactory
 
     private static string? GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
     {
-        FilterType[] linkedFilters = LinkedFilters.ContainsKey(filterType) ?
-                LinkedFilters[filterType] :
-                Array.Empty<FilterType>();
+        if (!LinkedFilters.TryGetValue(filterType, out FilterType[]? linkedFilters) || linkedFilters is null)
+        {
+            linkedFilters = Array.Empty<FilterType>();
+        }
 
         var isParamLinked = linkedFilters.Contains(queryParamType);
 

@@ -7,7 +7,6 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
-using StructureMap.Pipeline;
 using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -21,7 +20,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     public List<RouteViewModel> Routes { get; set; } = [];
     public string Keyword { get; set; } = string.Empty;
 
-    public string Distance { get; set; }
+    public string Distance { get; set; } = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE;
 
     public List<string> SelectedRoutes { get; set; } = [];
 

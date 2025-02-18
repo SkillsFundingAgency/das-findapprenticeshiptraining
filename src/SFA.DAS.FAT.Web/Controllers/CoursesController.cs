@@ -91,7 +91,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 OrderBy = request.OrderBy,
                 ShortListItemCount = result.ShortlistItemCount,
                 Location = request.Location ?? string.Empty,
-                Distance = ValidDistances.IsValidDistance(request.Distance) ? request.Distance : ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
+                Distance = ValidDistances.IsValidDistance(request.Distance) ? request.Distance! : ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };
