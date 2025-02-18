@@ -8,7 +8,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void IsValidDistance_ShouldReturnTrue_ForValidDistances()
     {
-        var validDistances = new List<int> { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
+        var validDistances = new List<string> { "2", "5", "10", "15", "20", "30", "40", "50", "100" };
         foreach (var distance in validDistances)
         {
             Assert.That(ValidDistances.IsValidDistance(distance), Is.True);
@@ -18,7 +18,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void IsValidDistance_ShouldReturnFalse_ForInvalidDistances()
     {
-        var invalidDistances = new List<int> { 1, 3, 25, 60, 101, -10, 0 };
+        var invalidDistances = new List<string> { "1", "3", "25", "60", "101", "-10", "0" };
         foreach (var distance in invalidDistances)
         {
             Assert.That(ValidDistances.IsValidDistance(distance), Is.False);

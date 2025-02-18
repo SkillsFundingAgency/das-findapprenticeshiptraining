@@ -225,48 +225,48 @@ public sealed class FilterFactoryTests
     [Test]
     public void GetDistanceFilterValues_ShouldReturnAllValidDistances()
     {
-        int? selectedDistance = null;
+        string selectedDistance = "All";
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
             Assert.That(_sut, Has.Count.EqualTo(ValidDistances.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
-            Assert.That(_sut.Any(i => i.Value == null && i.DisplayText == FilterFactory.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' option should be present.");
+            Assert.That(_sut.Any(i => i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE && i.DisplayText == FilterFactory.ACROSS_ENGLAND_FILTER_TEXT), Is.True, "'Across England' option should be present.");
         });
     }
 
     [Test]
     public void GetDistanceFilterValues_WithSelectedDistance_ShouldMarkCorrectItemAsSelected()
     {
-        int selectedDistance = 20;
+        string selectedDistance = "20";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == selectedDistance.ToString()), Is.True, $"'{selectedDistance} Miles' should be marked as selected.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value == selectedDistance), Is.True, $"'{selectedDistance} Miles' should be marked as selected.");
             Assert.That(_sut.Any(i => i.Selected && i.Value == null), Is.False, "'Across England' should not be selected when a distance is provided.");
         });
     }
 
     [Test]
-    public void GetDistanceFilterValues_WithNullSelectedDistance_ShouldSelectAcrossEngland()
+    public void GetDistanceFilterValues_WithAllSelectedDistance_ShouldSelectAcrossEngland()
     {
-        int? selectedDistance = null;
+        string selectedDistance = "All";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == null), Is.True, "'Across England' should be selected when distance is null.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value != null), Is.False, "No specific distance should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value != ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
         });
     }
 
     [Test]
     public void GetDistanceFilterValues_WithInvalidDistance_ShouldNotSelectAnyDistance()
     {
-        int selectedDistance = 9999;
+        string selectedDistance = "9999";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 

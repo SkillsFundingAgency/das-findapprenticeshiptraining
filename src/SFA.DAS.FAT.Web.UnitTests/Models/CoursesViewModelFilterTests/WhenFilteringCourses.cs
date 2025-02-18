@@ -18,7 +18,7 @@ public sealed class WhenFilteringCourses
         {
             Keyword = "Construction",
             Location = "M60 7RA",
-            Distance = 20,
+            Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
             Levels = new List<LevelViewModel> 
@@ -94,7 +94,7 @@ public sealed class WhenFilteringCourses
             );
 
             var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
-            Assert.That(selectedDistanceValue.Value, Is.EqualTo(_coursesViewModel.Distance!.Value.ToString()));
+            Assert.That(selectedDistanceValue.Value, Is.EqualTo(_coursesViewModel.Distance));
             Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterFactory.DISTANCE_SECTION_HEADING));
             Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterFactory.DISTANCE_SECTION_SUB_HEADING));
         });
@@ -162,7 +162,7 @@ public sealed class WhenFilteringCourses
             var locationClearLink = _sut.First(a => a.FilterType == FilterFactory.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
             Assert.That(locationClearLink.Title, Is.EqualTo("Apprentice's work location"));
-            Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_coursesViewModel.Location} (within {_coursesViewModel.Distance.Value} miles)"));
+            Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_coursesViewModel.Location} (within {_coursesViewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.Not.Contain($"location={_coursesViewModel.Location}"));
         });
     }
@@ -230,12 +230,12 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_Null()
+    public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_All()
     {
         CoursesViewModel _sut = new CoursesViewModel()
         {
             Location = null,
-            Distance = 10
+            Distance = "10"
         };
 
         Assert.Multiple(() =>
@@ -244,7 +244,7 @@ public sealed class WhenFilteringCourses
             Assert.That(distanceFilterSection, Is.Not.Null);
 
             var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.Selected);
-            Assert.That(selectedItem.Value, Is.Null);
+            Assert.That(selectedItem.Value, Is.EqualTo(ValidDistances.ACROSS_ENGLAND_FILTER_VALUE));
         });
     }
 }

@@ -14,7 +14,6 @@ namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses
 {
     public class WhenGettingCourses
     {
-
         [Test, MoqAutoData]
         public async Task Then_The_Service_Is_Called_And_The_Data_Returned(
             GetCoursesQuery request,

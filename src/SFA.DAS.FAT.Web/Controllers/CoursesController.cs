@@ -67,7 +67,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         {
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            int? validatedDistance = request.Distance.HasValue && ValidDistances.IsValidDistance(request.Distance.Value) ? request.Distance : null;
+            int validatedDistance = ValidDistances.GetValidDistance(request.Distance);
 
             var result = await _mediator.Send(new GetCoursesQuery
             {
@@ -91,7 +91,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 OrderBy = request.OrderBy,
                 ShortListItemCount = result.ShortlistItemCount,
                 Location = request.Location ?? string.Empty,
-                Distance = validatedDistance,
+                Distance = ValidDistances.IsValidDistance(request.Distance) ? request.Distance : ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };

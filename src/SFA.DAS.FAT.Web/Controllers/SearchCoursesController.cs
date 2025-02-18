@@ -52,7 +52,7 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
         if (!string.IsNullOrEmpty(submitModel.Location))
         {
             request.Location = submitModel.Location;
-            request.Distance = Constants.DefaultDistance;
+            request.Distance = Constants.DefaultDistance.ToString();
         }
 
         return RedirectToAction("Index", "Courses", request);

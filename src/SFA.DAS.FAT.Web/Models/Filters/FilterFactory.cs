@@ -44,7 +44,7 @@ public static class FilterFactory
     public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What qualification levels mean (opens in new tab or window)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
-    public const string ACROSS_ENGLAND_FILTER_VALUE = "Across England";
+    public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
 
     public static Dictionary<FilterType, string> ClearFilterSectionHeadings => _ClearFilterSectionHeadings;
 
@@ -124,6 +124,11 @@ public static class FilterFactory
         };
     }
 
+    private static Dictionary<FilterType, FilterType[]> LinkedFilters = new Dictionary<FilterType, FilterType[]>()
+    {
+        { FilterType.Location, [FilterType.Distance] }
+    };
+
     public static IReadOnlyList<ClearFilterSectionViewModel> CreateClearFilterSections(
         Dictionary<FilterType, List<string>>? selectedFilters,
         Dictionary<FilterType, Func<string, string>>? overrideValueFunctions = null,
@@ -160,29 +165,29 @@ public static class FilterFactory
         return clearFilterSections;
     }
 
-    public static List<FilterItemViewModel> GetDistanceFilterValues(int? selectedDistance)
+    public static List<FilterItemViewModel> GetDistanceFilterValues(string? selectedDistance)
     {
         var distanceFilterItems = ValidDistances.Distances
             .Select(distance => new FilterItemViewModel
             {
                 Value = distance.ToString(),
                 DisplayText = $"{distance} Miles",
-                Selected = selectedDistance == distance
+                Selected = ValidDistances.GetValidDistance(selectedDistance) == distance
             })
         .ToList();
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
-            Value = null,
-            DisplayText = ACROSS_ENGLAND_FILTER_VALUE,
-            Selected = !selectedDistance.HasValue
+            Value = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
+            DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
+            Selected = selectedDistance == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
         });
 
-        return distanceFilterItems;
+        return distanceFilterItems!;
     }
 
     private static string BuildQueryWithoutValue(
-        FilterType filterType, 
+        FilterType filterType,
         string value, 
         Dictionary<FilterType, List<string>> queryParams, 
         Dictionary<FilterType, Func<string, string>>? overrideValueFunctions = null
@@ -208,19 +213,51 @@ public static class FilterFactory
             {
                 foreach (var val in param.Value.Where(v => v != value))
                 {
-                    AppendQueryParam(queryBuilder, param.Key, val, overrideValueFunction);
+                    string? paramValue = GetClearVal(val, filterType, param.Key);
+
+                    if(string.IsNullOrWhiteSpace(paramValue))
+                    {
+                        continue;
+                    }
+
+                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
                 }
             }
             else
             {
                 foreach (var val in param.Value)
                 {
-                    AppendQueryParam(queryBuilder, param.Key, val, overrideValueFunction);
+                    string? paramValue = GetClearVal(val, filterType, param.Key);
+
+                    if (string.IsNullOrWhiteSpace(paramValue))
+                    {
+                        continue;
+                    }
+
+                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
                 }
             }
         }
 
         return queryBuilder.ToString();
+    }
+
+    private static string? GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
+    {
+        FilterType[] linkedFilters = LinkedFilters.ContainsKey(filterType) ?
+                LinkedFilters[filterType] :
+                Array.Empty<FilterType>();
+
+        var isParamLinked = linkedFilters.Contains(queryParamType);
+
+        if (!isParamLinked)
+        {
+            return currentVal;
+        }
+        else
+        {
+            return null;
+        }
     }
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string>? overrideValueFunction = null)
@@ -285,12 +322,12 @@ public static class FilterFactory
 
         if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || distanceList.Count == 0)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_VALUE})";
+            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }
 
         if (!int.TryParse(distanceList[0], out int distance) || distance < 1 || distance > 100)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_VALUE})";
+            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }
 
         return $"{location[0]} (within {distance} miles)";

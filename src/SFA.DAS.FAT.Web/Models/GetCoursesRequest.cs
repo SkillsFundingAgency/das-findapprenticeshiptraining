@@ -22,6 +22,6 @@ namespace SFA.DAS.FAT.Web.Models
         public string Location { get; set; }
 
         [FromQuery]
-        public int? Distance { get; set; }
+        public string? Distance { get; set; }
     }
 }
