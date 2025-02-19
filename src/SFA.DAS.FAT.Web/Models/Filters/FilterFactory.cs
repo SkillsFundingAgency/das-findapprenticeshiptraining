@@ -56,7 +56,7 @@ public static class FilterFactory
         { FilterType.Categories, CATEGORIES_SECTION_HEADING }
     };
 
-    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
+    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string? inputValue)
     {
         return new TextBoxFilterSectionViewModel
         {
@@ -64,7 +64,7 @@ public static class FilterFactory
             For = filterFor,
             Heading = heading,
             SubHeading = subHeading,
-            InputValue = inputValue
+            InputValue = inputValue ?? string.Empty
         };
     }
 
@@ -94,7 +94,7 @@ public static class FilterFactory
 
     public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, List<FilterItemViewModel> items, string linkDisplayText = "", string linkDisplayUrl = "")
     {
-        CheckboxListFilterSectionViewModel section = new CheckboxListFilterSectionViewModel()
+        CheckboxListFilterSectionViewModel section = new ()
         {
             Id = id,
             For = filterFor,
@@ -140,7 +140,7 @@ public static class FilterFactory
             return Array.Empty<ClearFilterSectionViewModel>();
         }
 
-        List<ClearFilterSectionViewModel> clearFilterSections = new List<ClearFilterSectionViewModel>();
+        List<ClearFilterSectionViewModel> clearFilterSections = [];
 
         foreach(KeyValuePair<FilterType, List<string>> filter in selectedFilters)
         {
@@ -149,7 +149,7 @@ public static class FilterFactory
                 continue;
             }
 
-            clearFilterSections.Add(new ClearFilterSectionViewModel()
+            clearFilterSections.Add(new ClearFilterSectionViewModel
             {
                 FilterType = filter.Key,
                 Title = ClearFilterSectionHeadings[filter.Key],
@@ -167,23 +167,30 @@ public static class FilterFactory
 
     public static List<FilterItemViewModel> GetDistanceFilterValues(string? selectedDistance)
     {
-        var distanceFilterItems = ValidDistances.Distances
-            .Select(distance => new FilterItemViewModel
-            {
-                Value = distance.ToString(),
-                DisplayText = $"{distance} Miles",
-                Selected = ValidDistances.GetValidDistance(selectedDistance) == distance
-            })
-        .ToList();
+        var validDistance = ValidDistances.GetValidDistance(selectedDistance);
+
+        List<FilterItemViewModel> distanceFilterItems = [];
+
+        distanceFilterItems.AddRange(ValidDistances.Distances.Select(distance => new FilterItemViewModel
+        {
+            Value = distance.ToString(),
+            DisplayText = $"{distance} Miles",
+            Selected = validDistance == distance
+        }));
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
             Value = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
             DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
-            Selected = selectedDistance == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
+            Selected = 
+                string.Equals(
+                    selectedDistance, 
+                    ValidDistances.ACROSS_ENGLAND_FILTER_VALUE, 
+                    StringComparison.OrdinalIgnoreCase
+                ) || validDistance == ValidDistances.DEFAULT_DISTANCE
         });
 
-        return distanceFilterItems!;
+        return distanceFilterItems;
     }
 
     private static string BuildQueryWithoutValue(
@@ -202,12 +209,12 @@ public static class FilterFactory
 
         foreach (var param in queryParams)
         {
-            if (param.Value == null || param.Value.Count == 0)
+            if (param.Value is null || param.Value.Count < 1)
             {
                 continue;
             }
 
-            Func<string, string>? overrideValueFunction = (overrideValueFunctions != null && overrideValueFunctions.TryGetValue(param.Key, out var func)) ? func : null;
+            var overrideValueFunction = overrideValueFunctions?.TryGetValue(param.Key, out var func) == true ? func : null;
 
             if (param.Key == filterType)
             {
@@ -239,7 +246,7 @@ public static class FilterFactory
             }
         }
 
-        return queryBuilder.ToString();
+        return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
     }
 
     private static string? GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
@@ -251,36 +258,31 @@ public static class FilterFactory
 
         var isParamLinked = linkedFilters.Contains(queryParamType);
 
-        if (!isParamLinked)
-        {
-            return currentVal;
-        }
-        else
+        if (isParamLinked)
         {
             return null;
         }
+
+        return currentVal;
     }
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string>? overrideValueFunction = null)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            if (builder.Length > 0)
-            {
-                builder.Append('&');
-            }
-            else
-            {
-                builder.Append('?');
-            }
+            string queryValue = overrideValueFunction == null ? 
+                value : 
+                GetQueryValue(key, value, overrideValueFunction);
 
-            string queryValue = overrideValueFunction == null ? value : GetQueryValue(key, value, overrideValueFunction);
-
-            builder.Append($"{key.ToString().ToLower()}={queryValue}");
+            builder
+                .Append(builder.Length > 0 ? '&' : '?')
+                .Append(key.ToString().ToLowerInvariant())
+                .Append('=')
+                .Append(queryValue);
         }
     }
 
-    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string value)
+    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string? value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {

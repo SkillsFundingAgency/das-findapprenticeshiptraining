@@ -8,6 +8,8 @@ using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -38,6 +40,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly IDataProtector _shortlistDataProtector;
         private readonly IValidator<GetCourseQuery> _courseValidator;
         private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
+        private readonly IUrlHelper _urlHelper;
 
         public CoursesController(
             ILogger<CoursesController> logger,
@@ -48,7 +51,9 @@ namespace SFA.DAS.FAT.Web.Controllers
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
             IValidator<GetCourseQuery> courseValidator,
-            IValidator<GetCourseProviderQuery> courseProviderValidator)
+            IValidator<GetCourseProviderQuery> courseProviderValidator,
+            IUrlHelper urlHelper
+        )
         {
             _logger = logger;
             _mediator = mediator;
@@ -60,6 +65,7 @@ namespace SFA.DAS.FAT.Web.Controllers
             _config = config.Value;
             _providerDataProtector = provider.CreateProtector(Constants.GaDataProtectorName);
             _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
+            _urlHelper = urlHelper;
         }
 
         [Route("", Name = RouteNames.Courses)]
@@ -67,31 +73,31 @@ namespace SFA.DAS.FAT.Web.Controllers
         {
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-            int validatedDistance = ValidDistances.GetValidDistance(request.Distance);
+            int validatedDistance = ValidDistances.GetValidDistance(request.Distance, request.Location);
 
             var result = await _mediator.Send(new GetCoursesQuery
             {
                 Keyword = request.Keyword,
-                RouteIds = request.Categories,
+                Location = request.Location,
+                Distance = validatedDistance,
+                Routes = request.Categories,
                 Levels = request.Levels,
-                OrderBy = request.OrderBy,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
-            var viewModel = new CoursesViewModel
+            var viewModel = new CoursesViewModel(_config, _urlHelper)
             {
-                Courses = result.Courses.Select(c => (CourseViewModel)c).ToList(),
+                Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
                 Routes = result.Routes.Select(route => new RouteViewModel(route, request.Categories)).ToList(),
-                Total = result.Total,
-                TotalFiltered = result.TotalFiltered,
+                Total = result.TotalCount,
+                TotalFiltered = result.TotalCount,
                 Keyword = request.Keyword,
                 SelectedRoutes = request.Categories,
                 SelectedLevels = request.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
-                OrderBy = request.OrderBy,
-                ShortListItemCount = result.ShortlistItemCount,
+                ShortListItemCount = 0, //result.ShortListItemCount,
                 Location = request.Location ?? string.Empty,
-                Distance = ValidDistances.IsValidDistance(request.Distance) ? request.Distance! : ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
+                Distance = ValidDistances.GetDistanceQueryString(request.Distance, request.Location),
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };

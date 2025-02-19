@@ -5,6 +5,8 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -138,6 +140,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
              [Frozen] Mock<IMediator> mediator,
              [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
              [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+             [Frozen] IUrlHelper urlHelper,
              [Greedy] CoursesController controller)
         {
             //Arrange

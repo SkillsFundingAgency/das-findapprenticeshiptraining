@@ -273,7 +273,7 @@ public sealed class FilterFactoryTests
         Assert.Multiple(() =>
         {
             Assert.That(_sut.Any(i => i.Selected && i.Value == $"{selectedDistance} Miles"), Is.False, "An invalid distance should not be marked as selected.");
-            Assert.That(_sut.Any(i => i.Selected), Is.False, "No distance should be selected if an invalid distance is provided.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
         });
     }
 

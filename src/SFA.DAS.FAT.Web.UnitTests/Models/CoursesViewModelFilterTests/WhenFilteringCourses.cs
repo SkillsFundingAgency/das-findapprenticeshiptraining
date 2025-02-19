@@ -1,5 +1,8 @@
 ﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
 using NUnit.Framework;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Filters;
@@ -11,10 +14,20 @@ public sealed class WhenFilteringCourses
 {
     private CoursesViewModel _coursesViewModel;
 
+    private FindApprenticeshipTrainingWeb _findApprenticeshipTrainingWebConfiguration;
+
+    private Mock<IUrlHelper> _urlHelperMock;
+
     [SetUp]
     public void Setup()
     {
-        _coursesViewModel = new CoursesViewModel
+        _urlHelperMock = new Mock<IUrlHelper>();
+        _findApprenticeshipTrainingWebConfiguration = new FindApprenticeshipTrainingWeb()
+        {
+            RequestApprenticeshipTrainingUrl = "https://localhost"
+        };
+
+        _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
             Keyword = "Construction",
             Location = "M60 7RA",
@@ -232,7 +245,7 @@ public sealed class WhenFilteringCourses
     [Test]
     public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_All()
     {
-        CoursesViewModel _sut = new CoursesViewModel()
+        CoursesViewModel _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
             Location = null,
             Distance = "10"
