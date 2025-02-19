@@ -39,7 +39,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(request.Distance) &&
+                    c.Distance.Equals(1000) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.ShortlistUserId.Equals(cookieItem.ShortlistUserId)
