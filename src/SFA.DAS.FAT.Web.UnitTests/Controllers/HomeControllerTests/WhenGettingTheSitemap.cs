@@ -202,7 +202,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Cache_Object_Exists_Then_It_Is_Returned(
-            GetCoursesResult result,
+            GetCoursesQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)

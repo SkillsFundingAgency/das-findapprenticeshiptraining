@@ -1,13 +1,11 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
@@ -15,145 +13,116 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
+namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests;
+
+public class WhenGettingCourses
 {
-    public class WhenGettingCourses
+    [Test]
+    [MoqAutoData]
+    public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
+        GetCoursesRequest request,
+        GetCoursesQueryResult response,
+        ShortlistCookieItem cookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CoursesController controller
+    )
     {
-        //[Test, MoqAutoData]
-        //public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
-        //    GetCoursesRequest request,
-        //    GetCoursesQueryResult response,
-        //    ShortlistCookieItem cookieItem,
-        //    [Frozen] Mock<IMediator> mediator,
-        //    [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        //    [Greedy] CoursesController controller)
-        //{
-        //    //Arrange
-        //    controller.AddUrlHelperMock()
-        //        .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-        //        .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+        request.Distance = "1000";
 
-        //    mediator.Setup(x =>
-        //            x.Send(It.Is<GetCoursesQuery>(c =>
-        //                c.Keyword.Equals(request.Keyword)
-        //                && c.ShortlistUserId.Equals(cookieItem.ShortlistUserId)), It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(response);
-        //    shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-        //        .Returns(cookieItem);
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+            .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
 
-        //    //Act
-        //    var actual = await controller.Courses(request);
-        //    var actualResult = actual as ViewResult;
+        mediator.Setup(x =>
+            x.Send(
+                It.Is<GetCoursesQuery>(c =>
+                    c.Keyword.Equals(request.Keyword) &&
+                    c.Location.Equals(request.Location) &&
+                    c.Distance.Equals(request.Distance) &&
+                    c.Levels.SequenceEqual(request.Levels) &&
+                    c.Routes.SequenceEqual(request.Categories) &&
+                    c.ShortlistUserId.Equals(cookieItem.ShortlistUserId)
+                ), 
+                It.IsAny<CancellationToken>()
+            )
+        )
+        .ReturnsAsync(response);
 
-        //    //Assert
-        //    actual.Should().NotBeNull();
-        //    actualResult.Should().NotBeNull();
-        //}
+        shortlistCookieService.Setup(x =>
+            x.Get(Constants.ShortlistCookieName)
+        )
+        .Returns(cookieItem);
 
-        //[Test, MoqAutoData]
-        //public async Task Then_The_Keyword_And_Sectors_And_Levels_And_Location_Are_Added_To_The_Query_And_Returned_To_The_View(
-        //    GetCoursesRequest request,
-        //    GetCoursesResult response,
-        //    Guid shortlistUrl,
-        //    [Frozen] Mock<IMediator> mediator,
-        //    [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        //    [Greedy] CoursesController controller)
-        //{
-        //    //Arrange
-        //    controller.AddUrlHelperMock()
-        //        .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-        //        .AddUrlForRoute(RouteNames.ShortList, shortlistUrl.ToString());
+        var _sut = await controller.Courses(request);
+        var actualResult = _sut as ViewResult;
 
-        //    mediator.Setup(x =>
-        //            x.Send(It.Is<GetCoursesQuery>(c
-        //                => c.Keyword.Equals(request.Keyword)
-        //                && c.RouteIds.Equals(request.Categories)
-        //                && c.Levels.Equals(request.Levels)), It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(response);
-        //    shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-        //        .Returns((ShortlistCookieItem)null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.Not.Null);
+            Assert.That(actualResult, Is.Not.Null);
+        });
+    }
 
+    [Test, MoqAutoData]
+    public async Task Should_Add_Keyword_Categories_Levels_And_Location_To_Query_And_Return_View(
+        GetCoursesRequest request,
+        GetCoursesQueryResult response,
+        Guid shortlistUrl,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CoursesController controller
+    )
+    {
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
+            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl.ToString());
 
-        //    //Act
-        //    var actual = await controller.Courses(request);
+        mediator.Setup(x =>
+            x.Send(
+                It.Is<GetCoursesQuery>(c =>
+                    c.Keyword.Equals(request.Keyword) &&
+                    c.Location.Equals(request.Location) &&
+                    c.Distance.Equals(1000) &&
+                    c.Levels.SequenceEqual(request.Levels) &&
+                    c.Routes.SequenceEqual(request.Categories)
+                ),
+                It.IsAny<CancellationToken>()
+            )
+        )
+        .ReturnsAsync(response);
 
-        //    //Assert
-        //    using (new AssertionScope())
-        //    {
-        //        actual.Should().NotBeNull();
-        //        var actualResult = actual as ViewResult;
-        //        actualResult.Should().NotBeNull();
-        //        var actualModel = actualResult!.Model as CoursesViewModel;
-        //        actualModel.Should().NotBeNull();
-        //        actualModel!.Courses.Should()
-        //            .BeEquivalentTo(response.Courses, options => options.Including(course => course.Id));
-        //        actualModel.Routes.Should().BeEquivalentTo(response.Routes);
-        //        actualModel.Levels.Should().BeEquivalentTo(response.Levels);
-        //        actualModel.Keyword.Should().Be(request.Keyword);
-        //        actualModel.SelectedLevels.Should().BeEquivalentTo(request.Levels);
-        //        actualModel.SelectedRoutes.Should().BeEquivalentTo(request.Categories);
-        //        actualModel.Total.Should().Be(response.Total);
-        //        actualModel.TotalFiltered.Should().Be(response.TotalFiltered);
-        //        actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
-        //        actualModel.Location.Should().Be(request.Location);
-        //        actualModel.ShowShortListLink.Should().BeTrue();
-        //        actualModel.ShowSearchCrumb.Should().BeTrue();
-        //        actualModel.CourseId.Should().Be(0);
-        //        actualModel.ShowApprenticeTrainingCourseCrumb.Should().BeFalse();
-        //        actualModel.ShowApprenticeTrainingCoursesCrumb.Should().BeFalse();
-        //        actualModel.ShowApprenticeTrainingCourseProvidersCrumb.Should().BeFalse();
-        //    }
-        //}
+        shortlistCookieService.Setup(x => 
+            x.Get(Constants.ShortlistCookieName)
+        )
+        .Returns((ShortlistCookieItem)null);
 
-        //[Test, MoqAutoData]
-        //public async Task Then_Any_Sectors_In_The_Request_Are_Marked_As_Selected_On_The_ViewModel(
-        //    GetCoursesRequest request,
-        //    GetCoursesResult response,
-        //    [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        //    [Frozen] Mock<IMediator> mediator,
-        //    [Greedy] CoursesController controller)
-        //{
-        //    //Arrange
-        //    controller.AddUrlHelperMock()
-        //        .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-        //        .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-        //    request.Location = "";
+        var _sut = await controller.Courses(request);
 
-        //    response.Routes = new List<Route>() {
-        //        new Route 
-        //        {
-        //            Name = request.Categories[0]
-        //        },
-        //        new Route
-        //        {
-        //            Name = request.Categories[1]
-        //        }
-        //    };
+        var expectedStandards = response.Standards.Select(s => (StandardViewModel)s).ToList();
+        var expectedRoutes = response.Routes.Select(r => new RouteViewModel(r, request.Categories)).ToList();
+        var expectedLevels = response.Levels.Select(l => new LevelViewModel(l, request.Levels)).ToList();
 
-        //    mediator.Setup(x =>
-        //            x.Send(It.Is<GetCoursesQuery>(c
-        //                => c.Keyword.Equals(request.Keyword)
-        //                   && c.RouteIds.Equals(request.Categories)), It.IsAny<CancellationToken>()))
-        //        .ReturnsAsync(response);
-        //    locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns((LocationCookieItem)null);
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.Not.Null);
+            var result = _sut as ViewResult;
 
-        //    //Act
-        //    var actual = await controller.Courses(request);
+            Assert.That(result, Is.Not.Null);
+            var model = result!.Model as CoursesViewModel;
 
-        //    //Assert
-        //    using (new AssertionScope())
-        //    {
-        //        actual.Should().NotBeNull();
-        //        var actualResult = actual as ViewResult;
-        //        actualResult.Should().NotBeNull();
-        //        var actualModel = actualResult!.Model as CoursesViewModel;
-        //        actualModel.Should().NotBeNull();
-        //        actualModel!.Routes.Count(sector => sector.Selected).Should().Be(2);
-        //        actualModel.Routes.SingleOrDefault(c => c.Name.Equals(request.Categories.First())).Should().NotBeNull();
-        //        actualModel.Routes.SingleOrDefault(c => c.Name.Equals(request.Categories.Skip(1).First())).Should()
-        //            .NotBeNull();
-        //        actualModel.Location.Should().BeEmpty();
-        //    }
-        //}
+            Assert.That(model, Is.Not.Null);
+            Assert.That(model.TotalFiltered, Is.EqualTo(response.TotalCount));
+
+            model.Standards.Should().BeEquivalentTo(expectedStandards);
+            model.Routes.Should().BeEquivalentTo(expectedRoutes);
+            model.Levels.Should().BeEquivalentTo(expectedLevels);
+
+            Assert.That(model.Keyword, Is.EqualTo(request.Keyword));
+            Assert.That(model.SelectedLevels, Is.EquivalentTo(request.Levels));
+            Assert.That(model.SelectedRoutes, Is.EquivalentTo(request.Categories));
+            Assert.That(model.ShowShortListLink, Is.True);
+            Assert.That(model.ShowSearchCrumb, Is.True);
+        });
     }
 }

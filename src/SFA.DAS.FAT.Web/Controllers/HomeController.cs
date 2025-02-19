@@ -83,8 +83,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Url.RouteUrl(RouteNames.Courses,null,Request.Scheme, Request.Host.Host),
             
             };
-            //urlList.AddRange(result.Select(course => Url.RouteUrl(RouteNames.CourseDetails, new {course.Id}, Request.Scheme, Request.Host.Host)));
-            //urlList.AddRange(result.Courses.Select(course => Url.RouteUrl(RouteNames.CourseProviders, new {course.Id}, Request.Scheme, Request.Host.Host)));
+            urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseDetails, new { id = course.LarsCode }, Request.Scheme, Request.Host.Host)));
+            urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseProviders, new { id = course.LarsCode }, Request.Scheme, Request.Host.Host)));
 
             urlList.Add(Url.RouteUrl(RouteNames.ShortList, null, Request.Scheme, Request.Host.Host));
             urlList.Add(Url.RouteUrl(RouteNames.Cookies, null, Request.Scheme, Request.Host.Host));
