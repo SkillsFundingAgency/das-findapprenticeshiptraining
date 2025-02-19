@@ -55,21 +55,18 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
-    private readonly FindApprenticeshipTrainingWeb _findApprenticeshipTrainingWebConfiguration;
-
     private readonly IUrlHelper _urlHelper;
 
     private readonly string _requestApprenticeshipTrainingUrl;
 
     public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
     {
-        _findApprenticeshipTrainingWebConfiguration = findApprenticeshipTrainingWebConfiguration;
         _urlHelper = urlHelper;
         _valueFunctions = new Dictionary<FilterType, Func<string, string>>
         {
             { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
         };
-        _requestApprenticeshipTrainingUrl = _findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+        _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
     }
 
     private OrderBy SetOrderBy()

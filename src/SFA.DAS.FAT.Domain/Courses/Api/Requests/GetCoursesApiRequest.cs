@@ -67,7 +67,7 @@ public class GetCoursesApiRequest : IGetApiRequest
             queryParams.Add($"distance={Distance.Value}");
         }
 
-        if (RouteIds != null && RouteIds.Any())
+        if (RouteIds != null && RouteIds.Count > 0)
         {
             foreach (int routeId in RouteIds)
             {
@@ -75,7 +75,7 @@ public class GetCoursesApiRequest : IGetApiRequest
             }
         }
 
-        if (Levels != null && Levels.Any())
+        if (Levels != null && Levels.Count > 0)
         {
             foreach(int level in Levels)
             {
@@ -85,7 +85,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
         var queryString = string.Join("&", queryParams);
 
-        return $"{BaseUrl}courses{(queryString.Any() ? "?" + queryString : string.Empty)}";
+        return $"{BaseUrl}courses{(queryString.Length > 0 ? "?" + queryString : string.Empty)}";
     }
 }
 
