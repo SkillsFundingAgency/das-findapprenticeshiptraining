@@ -80,6 +80,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Distance = validatedDistance,
                 Routes = request.Categories,
                 Levels = request.Levels,
+                OrderBy = string.IsNullOrWhiteSpace(request.Keyword) ? OrderBy.Title : OrderBy.Score,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
