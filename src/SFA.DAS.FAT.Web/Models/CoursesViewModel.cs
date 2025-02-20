@@ -134,7 +134,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
 
-    private const string _LOCATION_COURSES_SUB_HEADER = $"{_COURSES_SUB_HEADER} in the apprentice’s work location.";
+    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location.";
 
     private string PopulateCoursesSubHeader()
     {
@@ -143,7 +143,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if(!string.IsNullOrWhiteSpace(Location))
+        if(!string.IsNullOrWhiteSpace(Location) && Distance != ValidDistances.ACROSS_ENGLAND_FILTER_VALUE)
         {
             return _LOCATION_COURSES_SUB_HEADER;
         }
