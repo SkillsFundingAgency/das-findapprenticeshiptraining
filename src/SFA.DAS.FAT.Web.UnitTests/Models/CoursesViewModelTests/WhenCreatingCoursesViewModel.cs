@@ -97,11 +97,36 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Keyword_Is_Set_And_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Expected_Message()
+    public void When_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Default_Message()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            Keyword = "Construction",
+            Total = 10
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course."));
+    }
+
+    [Test]
+    public void When_Location_Is_Set_And_Distance_Is_Not_All_Then_CoursesSubHeader_Returns_Location_Message()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Distance = "10",
+            Location = "SW1",
+            Total = 10
+        };
+
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location."));
+    }
+
+    [Test]
+    public void When_Location_Is_Set_And_Distance_Is_All_Then_CoursesSubHeader_Returns_Default_Message()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Distance = "All",
+            Location = "SW1",
             Total = 10
         };
 
@@ -241,9 +266,6 @@ public class WhenCreatingCoursesViewModel
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
         Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course."));
     }
-
-
-
 
     [Test, MoqAutoData]
     public void Returns_Singular_Distance_Message_When_Distance_And_Location_Is_Set(StandardViewModel standardViewModel)
