@@ -109,10 +109,22 @@
             }
             else
             {
-                <p class="govuk-body govuk-!-margin-top-4">
-                    No apprenticeship training courses for the selected filters.
+                <p class="govuk-body govuk-!-font-weight-bold">No results</p>
+                
+                <p class="govuk-body">There are no courses that match your search.</p>
+
+                <p class="govuk-body">You may need to:</p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>clear filters you’ve selected</li>
+                    <li>increase the distance that the apprentice can travel</li>
+                    <li>check your spelling or enter another search term and try again</li>
+                </ul>
+
+                <p class="govuk-body">
+                    Change your search using the filters on this page or 
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">start a new search</a>.
                 </p>
-                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear filters</a></p>
             }
         </div>
     </div>
