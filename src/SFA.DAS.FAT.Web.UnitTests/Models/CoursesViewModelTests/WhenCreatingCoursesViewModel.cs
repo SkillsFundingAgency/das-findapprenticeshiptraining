@@ -175,27 +175,102 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_One_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void When_Standard_Providers_Count_Is_One_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
     {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = null
+        };
+
         standardViewModel.ProvidersCount = 1;
-        var _sut = CoursesViewModel.GetProvidersLinkDisplayMessage(standardViewModel);
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
         Assert.That(_sut, Is.EqualTo("View 1 training provider for this course."));
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_More_Than_One_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void When_Standard_Providers_Count_Is_More_Than_One_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
     {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = null
+        };
+
         standardViewModel.ProvidersCount = 2;
-        var _sut = CoursesViewModel.GetProvidersLinkDisplayMessage(standardViewModel);
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
         Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course."));
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_Zero_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void When_Standard_Providers_Count_Is_Zero_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
     {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = null
+        };
+
         standardViewModel.ProvidersCount = 0;
-        var _sut = CoursesViewModel.GetProvidersLinkDisplayMessage(standardViewModel);
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
         Assert.That(_sut, Is.EqualTo("Ask if training providers can run this course."));
+    }
+
+    [Test, MoqAutoData]
+    public void Returns_Singular_Provider_Message_When_All_Distance_Is_Selected_And_Location_Is_Set(StandardViewModel standardViewModel)
+    {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
+        };
+
+        standardViewModel.ProvidersCount = 1;
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo("View 1 training provider for this course."));
+    }
+
+    [Test, MoqAutoData]
+    public void Returns_Plural_Provider_Message_When_All_Distance_Is_Selected_And_Location_Is_Set(StandardViewModel standardViewModel)
+    {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            
+            Location = "SW1",
+            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
+        };
+
+        standardViewModel.ProvidersCount = 2;
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course."));
+    }
+
+
+
+
+    [Test, MoqAutoData]
+    public void Returns_Singular_Distance_Message_When_Distance_And_Location_Is_Set(StandardViewModel standardViewModel)
+    {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = "40"
+        };
+
+        standardViewModel.ProvidersCount = 1;
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training provider within {model.Distance} miles."));
+    }
+
+    [Test, MoqAutoData]
+    public void Returns_Plural_Distance_Message_When_Distance_And_Location_Is_Set(StandardViewModel standardViewModel)
+    {
+        CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = "40"
+        };
+
+        standardViewModel.ProvidersCount = 2;
+        var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers within {model.Distance} miles."));
     }
 
     [Test, MoqAutoData]

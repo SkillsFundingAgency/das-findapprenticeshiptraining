@@ -97,24 +97,29 @@ public class CoursesViewModel : PageLinksViewModelBase
         return $"{levelCode} (equal to {level.Name})";
     }
 
-    private const string _VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE = "View 1 training provider for this course.";
+    private const string _ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
 
     private const string _ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
 
-    public static string GetProvidersLinkDisplayMessage(StandardViewModel standard)
+    public string GetProvidersLinkDisplayMessage(StandardViewModel standard)
     {
-        if (standard.ProvidersCount == 1)
-        {
-            return _VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE;
-        }
-        else if (standard.ProvidersCount > 1)
-        {
-            return $"View {standard.ProvidersCount} training providers for this course.";
-        }
-        else
+        if (standard.ProvidersCount < 1)
         {
             return _ASK_TRAINING_PROVIDER;
         }
+
+        bool isNationalSearch = 
+            string.IsNullOrWhiteSpace(Location) || 
+            Distance == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE;
+        
+        string providerText = 
+            standard.ProvidersCount == 1 ?
+                _ONE_TRAINING_PROVIDER_MESSAGE : 
+                $"{standard.ProvidersCount} training providers";
+
+        return isNationalSearch
+            ? $"View {providerText} for this course."
+            : $"View {providerText} within {Distance} miles.";
     }
 
     public string GetProvidersLink(StandardViewModel standard)
@@ -129,11 +134,18 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
 
+    private const string _LOCATION_COURSES_SUB_HEADER = $"{_COURSES_SUB_HEADER} in the apprentice’s work location.";
+
     private string PopulateCoursesSubHeader()
     {
         if(Total == 0)
         {
             return string.Empty;
+        }
+
+        if(!string.IsNullOrWhiteSpace(Location))
+        {
+            return _LOCATION_COURSES_SUB_HEADER;
         }
 
         return _COURSES_SUB_HEADER;
