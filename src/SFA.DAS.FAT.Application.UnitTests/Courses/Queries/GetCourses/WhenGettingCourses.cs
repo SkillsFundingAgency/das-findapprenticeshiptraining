@@ -36,7 +36,8 @@ public class WhenGettingCourses
             Location = "London", 
             Distance = 10, 
             Routes = new List<string> { "Route1" }, 
-            Levels = new List<int> { 3 }, 
+            Levels = new List<int> { 3 },
+            Page = 1,
             OrderBy = OrderBy.Title
         };
 
@@ -76,7 +77,7 @@ public class WhenGettingCourses
 
         _levelsServiceMock.Setup(x => x.GetLevelsAsync(cancellationToken)).ReturnsAsync(levels);
         _routesServiceMock.Setup(x => x.GetRoutesAsync(cancellationToken)).ReturnsAsync(routes);
-        _courseServiceMock.Setup(x => x.GetCourses("test", "London", 10, new List<int> { 1 }, new List<int> { 3 }, OrderBy.Title, cancellationToken)).ReturnsAsync(coursesResponse);
+        _courseServiceMock.Setup(x => x.GetCourses("test", "London", 10, new List<int> { 1 }, new List<int> { 3 }, 1, OrderBy.Title, cancellationToken)).ReturnsAsync(coursesResponse);
 
         var _sut = await _handler.Handle(query, cancellationToken);
 
@@ -87,6 +88,7 @@ public class WhenGettingCourses
             Assert.That(_sut.PageSize, Is.EqualTo(coursesResponse.PageSize));
             Assert.That(_sut.TotalCount, Is.EqualTo(coursesResponse.TotalCount));
             Assert.That(_sut.TotalPages, Is.EqualTo(coursesResponse.TotalPages));
+            Assert.That(_sut.Page, Is.EqualTo(coursesResponse.Page));
             Assert.That(_sut.Levels, Is.EquivalentTo(levels));
             Assert.That(_sut.Routes, Is.EquivalentTo(routes));
         });

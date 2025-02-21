@@ -19,4 +19,7 @@ public class GetCoursesRequest
 
     [FromQuery]
     public string? Distance { get; set; }
+
+    [FromQuery]
+    public int? PageNumber { get; set; }
 }

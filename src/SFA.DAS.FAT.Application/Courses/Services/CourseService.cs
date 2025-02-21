@@ -31,7 +31,7 @@ namespace SFA.DAS.FAT.Application.Courses.Services
             return response;
         }
 
-        public async Task<GetCoursesResponse> GetCourses(string keyword, string location, int? distance, List<int> routeIds, List<int> levels, OrderBy orderBy, CancellationToken cancellationToken)
+        public async Task<GetCoursesResponse> GetCourses(string keyword, string location, int? distance, List<int> routeIds, List<int> levels, int? page, OrderBy orderBy, CancellationToken cancellationToken)
         {
             var request = new GetCoursesApiRequest(
                 _config.BaseUrl, 
@@ -39,7 +39,8 @@ namespace SFA.DAS.FAT.Application.Courses.Services
                 location,
                 distance,
                 routeIds,
-                levels, 
+                levels,
+                page,
                 orderBy
             );
 

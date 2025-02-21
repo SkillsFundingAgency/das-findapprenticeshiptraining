@@ -29,7 +29,8 @@ public class GetCoursesApiRequest : IGetApiRequest
         string location,
         int? distance,
         List<int> routes, 
-        List<int> levels, 
+        List<int> levels,
+        int? page,
         OrderBy orderBy
     )
     {
@@ -39,6 +40,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         Distance = distance;
         RouteIds = routes;
         Levels = levels;
+        Page = page ?? 1;
         OrderBy = orderBy;
     }
 
@@ -50,28 +52,30 @@ public class GetCoursesApiRequest : IGetApiRequest
     {
         var queryParams = new List<string>();
 
-        queryParams.Add($"orderby={OrderBy}");
+        queryParams.Add($"OrderBy={OrderBy}");
 
         if (!string.IsNullOrWhiteSpace(Keyword))
         {
-            queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
+            queryParams.Add($"Keyword={Uri.EscapeDataString(Keyword)}");
         }
 
         if (!string.IsNullOrWhiteSpace(Location))
         {
-            queryParams.Add($"location={Uri.EscapeDataString(Location)}");
+            queryParams.Add($"Location={Uri.EscapeDataString(Location)}");
         }
 
         if (Distance.HasValue)
         {
-            queryParams.Add($"distance={Distance.Value}");
+            queryParams.Add($"Distance={Distance.Value}");
         }
+
+        queryParams.Add($"Page={Page}");
 
         if (RouteIds != null && RouteIds.Count > 0)
         {
             foreach (int routeId in RouteIds)
             {
-                queryParams.Add($"routeIds={routeId}");
+                queryParams.Add($"RouteIds={routeId}");
             }
         }
 
@@ -79,7 +83,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         {
             foreach(int level in Levels)
             {
-                queryParams.Add($"levels={level}");
+                queryParams.Add($"Levels={level}");
             }
         }
 

@@ -12,6 +12,7 @@ public class GetCoursesQuery : IRequest<GetCoursesQueryResult>
     public int? Distance { get; set; }
     public List<string> Routes { get; set; }
     public List<int> Levels { get; set; }
+    public int? Page { get; set; }
     public OrderBy OrderBy { get; set; }
     public Guid? ShortlistUserId { get ; set ; }
 }

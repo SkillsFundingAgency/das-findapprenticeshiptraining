@@ -26,7 +26,8 @@ public class GetCoursesQueryHandler(
             query.Distance,
             routeIds,
             query.Levels, 
-            query.OrderBy, 
+            query.Page,
+            query.OrderBy,
             cancellationToken
         );
 

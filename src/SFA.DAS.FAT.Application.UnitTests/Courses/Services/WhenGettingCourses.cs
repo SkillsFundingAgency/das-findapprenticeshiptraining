@@ -40,6 +40,7 @@ public class WhenGettingCourses
         var distance = 10;
         var routeIds = new List<int> { 1, 2 };
         var levels = new List<int> { 3, 4 };
+        var pageNumber = 1;
         var orderBy = OrderBy.Title;
         var cancellationToken = new CancellationToken();
 
@@ -49,7 +50,7 @@ public class WhenGettingCourses
         )
         .ReturnsAsync(response);
 
-        var _sut = await _service.GetCourses(keyword, location, distance, routeIds, levels, orderBy, cancellationToken);
+        var _sut = await _service.GetCourses(keyword, location, distance, routeIds, levels, pageNumber, orderBy, cancellationToken);
 
         Assert.That(_sut, Is.EqualTo(response));
         _apiClientMock.Verify(x => x.Get<GetCoursesResponse>(It.Is<GetCoursesApiRequest>(r =>
@@ -58,6 +59,7 @@ public class WhenGettingCourses
             r.Distance == distance &&
             r.RouteIds == routeIds &&
             r.Levels == levels &&
+            r.Page == pageNumber &&
             r.OrderBy == orderBy
         )), Times.Once);
     }
