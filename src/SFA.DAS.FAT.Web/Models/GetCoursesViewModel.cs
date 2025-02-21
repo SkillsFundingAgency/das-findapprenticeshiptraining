@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class GetCoursesRequest
+public class GetCoursesViewModel
 {
     [FromQuery]
-    public string? Keyword { get; set; }
+    public string Keyword { get; set; }
 
     [FromQuery]
     public List<string> Categories { get; set; } = [];
@@ -15,8 +15,8 @@ public class GetCoursesRequest
     public List<int> Levels { get; set; } = [];
 
     [FromQuery]
-    public string? Location { get; set; }
+    public string Location { get; set; }
 
     [FromQuery]
-    public string? Distance { get; set; }
+    public string Distance { get; set; }
 }

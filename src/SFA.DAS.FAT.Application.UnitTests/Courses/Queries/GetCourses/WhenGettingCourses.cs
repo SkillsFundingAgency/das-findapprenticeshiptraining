@@ -1,34 +1,38 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Options;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses;
 
 public class WhenGettingCourses
 {
-    private Mock<ICourseService> _courseServiceMock;
+    private Mock<IApiClient> _apiClientMock;
     private Mock<ILevelsService> _levelsServiceMock;
     private Mock<IRoutesService> _routesServiceMock;
-    private GetCoursesQueryHandler _handler;
+    private Mock<IOptions<FindApprenticeshipTrainingApi>> _config;
+    private const string BASE_URL = "https://test.local/";
 
     [SetUp]
     public void Setup()
     {
-        _courseServiceMock = new Mock<ICourseService>();
+        _apiClientMock = new Mock<IApiClient>();
         _levelsServiceMock = new Mock<ILevelsService>();
         _routesServiceMock = new Mock<IRoutesService>();
-
-        _handler = new GetCoursesQueryHandler(
-            _courseServiceMock.Object,
-            _levelsServiceMock.Object,
-            _routesServiceMock.Object
-        );
+        _config = new Mock<IOptions<FindApprenticeshipTrainingApi>>();
+        _config.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi()
+        {
+            BaseUrl = BASE_URL
+        });
     }
 
-    [Test]
+    [Test, MoqAutoData]
     public async Task Handle_Should_Return_Correct_Response()
     {
         var query = new GetCoursesQuery() {
@@ -76,19 +80,51 @@ public class WhenGettingCourses
 
         _levelsServiceMock.Setup(x => x.GetLevelsAsync(cancellationToken)).ReturnsAsync(levels);
         _routesServiceMock.Setup(x => x.GetRoutesAsync(cancellationToken)).ReturnsAsync(routes);
-        _courseServiceMock.Setup(x => x.GetCourses("test", "London", 10, new List<int> { 1 }, new List<int> { 3 }, OrderBy.Title, cancellationToken)).ReturnsAsync(coursesResponse);
 
-        var _sut = await _handler.Handle(query, cancellationToken);
+        _apiClientMock.Setup(x => x.Get<GetCoursesResponse>(
+                It.Is<GetCoursesApiRequest>(r =>
+                    r.BaseUrl == BASE_URL &&
+                    r.Keyword == query.Keyword &&
+                    r.Location == query.Location &&
+                    r.Distance == query.Distance &&
+                    r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
+                    r.Levels.SequenceEqual(query.Levels) &&
+                    r.OrderBy == query.OrderBy
+                )
+            )
+        )
+        .ReturnsAsync(coursesResponse);
+
+        var _sut = new GetCoursesQueryHandler(
+            _levelsServiceMock.Object,
+            _routesServiceMock.Object,
+            _config.Object,
+            _apiClientMock.Object
+        );
+
+        var response = await _sut.Handle(query, cancellationToken);
+
+        _apiClientMock.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r =>
+                r.Keyword == query.Keyword &&
+                r.Location == query.Location &&
+                r.Distance == query.Distance &&
+                r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
+                r.Levels.SequenceEqual(query.Levels) &&
+                r.OrderBy == query.OrderBy &&
+                r.BaseUrl == BASE_URL
+            )
+        ), Times.Once);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Standards, Is.EquivalentTo(coursesResponse.Standards));
-            Assert.That(_sut.Page, Is.EqualTo(coursesResponse.Page));
-            Assert.That(_sut.PageSize, Is.EqualTo(coursesResponse.PageSize));
-            Assert.That(_sut.TotalCount, Is.EqualTo(coursesResponse.TotalCount));
-            Assert.That(_sut.TotalPages, Is.EqualTo(coursesResponse.TotalPages));
-            Assert.That(_sut.Levels, Is.EquivalentTo(levels));
-            Assert.That(_sut.Routes, Is.EquivalentTo(routes));
+            Assert.That(response.Standards, Is.EquivalentTo(coursesResponse.Standards));
+            Assert.That(response.Page, Is.EqualTo(coursesResponse.Page));
+            Assert.That(response.PageSize, Is.EqualTo(coursesResponse.PageSize));
+            Assert.That(response.TotalCount, Is.EqualTo(coursesResponse.TotalCount));
+            Assert.That(response.TotalPages, Is.EqualTo(coursesResponse.TotalPages));
+            Assert.That(response.Levels, Is.EquivalentTo(levels));
+            Assert.That(response.Routes, Is.EquivalentTo(routes));
         });
     }
 }

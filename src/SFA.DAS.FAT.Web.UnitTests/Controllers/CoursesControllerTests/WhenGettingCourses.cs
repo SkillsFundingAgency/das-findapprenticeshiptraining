@@ -20,7 +20,7 @@ public class WhenGettingCourses
     [Test]
     [MoqAutoData]
     public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
-        GetCoursesRequest request,
+        GetCoursesViewModel request,
         GetCoursesQueryResult response,
         ShortlistCookieItem cookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -66,7 +66,7 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Should_Add_Keyword_Categories_Levels_And_Location_To_Query_And_Return_View(
-        GetCoursesRequest request,
+        GetCoursesViewModel request,
         GetCoursesQueryResult response,
         Guid shortlistUrl,
         [Frozen] Mock<IMediator> mediator,

@@ -6,9 +6,9 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
-namespace SFA.DAS.FAT.Web.Models.Filters;
+namespace SFA.DAS.FAT.Web.Services;
 
-public static class FilterFactory
+public static class FilterService
 {
     public enum FilterComponentType
     {
@@ -56,7 +56,7 @@ public static class FilterFactory
         { FilterType.Categories, CATEGORIES_SECTION_HEADING }
     };
 
-    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string? inputValue)
+    public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
     {
         return new TextBoxFilterSectionViewModel
         {
@@ -94,7 +94,7 @@ public static class FilterFactory
 
     public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, List<FilterItemViewModel> items, string linkDisplayText = "", string linkDisplayUrl = "")
     {
-        CheckboxListFilterSectionViewModel section = new ()
+        CheckboxListFilterSectionViewModel section = new()
         {
             Id = id,
             For = filterFor,
@@ -130,9 +130,9 @@ public static class FilterFactory
     };
 
     public static IReadOnlyList<ClearFilterSectionViewModel> CreateClearFilterSections(
-        Dictionary<FilterType, List<string>>? selectedFilters,
-        Dictionary<FilterType, Func<string, string>>? overrideValueFunctions = null,
-        FilterType[]? excludedFilterTypes = null
+        Dictionary<FilterType, List<string>> selectedFilters,
+        Dictionary<FilterType, Func<string, string>> overrideValueFunctions = null,
+        FilterType[] excludedFilterTypes = null
     )
     {
         if (selectedFilters == null || selectedFilters.Count == 0)
@@ -142,9 +142,9 @@ public static class FilterFactory
 
         List<ClearFilterSectionViewModel> clearFilterSections = [];
 
-        foreach(KeyValuePair<FilterType, List<string>> filter in selectedFilters)
+        foreach (var filter in selectedFilters)
         {
-            if((excludedFilterTypes is not null && excludedFilterTypes.Contains(filter.Key)) || filter.Value.Count == 0)
+            if (excludedFilterTypes is not null && excludedFilterTypes.Contains(filter.Key) || filter.Value.Count == 0)
             {
                 continue;
             }
@@ -154,10 +154,10 @@ public static class FilterFactory
                 FilterType = filter.Key,
                 Title = ClearFilterSectionHeadings[filter.Key],
                 Items = filter.Value.Select(value => new ClearFilterItemViewModel
-                    {
-                        DisplayText = GetDisplayValue(filter.Key, value, selectedFilters),
-                        ClearLink = BuildQueryWithoutValue(filter.Key, value, selectedFilters, overrideValueFunctions)
-                    })
+                {
+                    DisplayText = GetDisplayValue(filter.Key, value, selectedFilters),
+                    ClearLink = BuildQueryWithoutValue(filter.Key, value, selectedFilters, overrideValueFunctions)
+                })
                 .ToList()
             });
         }
@@ -165,13 +165,13 @@ public static class FilterFactory
         return clearFilterSections;
     }
 
-    public static List<FilterItemViewModel> GetDistanceFilterValues(string? selectedDistance)
+    public static List<FilterItemViewModel> GetDistanceFilterValues(string selectedDistance)
     {
-        var validDistance = ValidDistances.GetValidDistance(selectedDistance);
+        var validDistance = DistanceService.GetValidDistance(selectedDistance);
 
         List<FilterItemViewModel> distanceFilterItems = [];
 
-        distanceFilterItems.AddRange(ValidDistances.Distances.Select(distance => new FilterItemViewModel
+        distanceFilterItems.AddRange(DistanceService.Distances.Select(distance => new FilterItemViewModel
         {
             Value = distance.ToString(),
             DisplayText = $"{distance} Miles",
@@ -180,14 +180,14 @@ public static class FilterFactory
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
-            Value = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE,
+            Value = DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
             DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
-            Selected = 
+            Selected =
                 string.Equals(
-                    selectedDistance, 
-                    ValidDistances.ACROSS_ENGLAND_FILTER_VALUE, 
+                    selectedDistance,
+                    DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
                     StringComparison.OrdinalIgnoreCase
-                ) || validDistance == ValidDistances.DEFAULT_DISTANCE
+                ) || validDistance == DistanceService.DEFAULT_DISTANCE
         });
 
         return distanceFilterItems;
@@ -195,9 +195,9 @@ public static class FilterFactory
 
     private static string BuildQueryWithoutValue(
         FilterType filterType,
-        string value, 
-        Dictionary<FilterType, List<string>> queryParams, 
-        Dictionary<FilterType, Func<string, string>>? overrideValueFunctions = null
+        string value,
+        Dictionary<FilterType, List<string>> queryParams,
+        Dictionary<FilterType, Func<string, string>> overrideValueFunctions = null
     )
     {
         if (queryParams == null || queryParams.Count == 0)
@@ -220,9 +220,9 @@ public static class FilterFactory
             {
                 foreach (var val in param.Value.Where(v => v != value))
                 {
-                    string? paramValue = GetClearVal(val, filterType, param.Key);
+                    var paramValue = GetClearVal(val, filterType, param.Key);
 
-                    if(string.IsNullOrWhiteSpace(paramValue))
+                    if (string.IsNullOrWhiteSpace(paramValue))
                     {
                         continue;
                     }
@@ -234,7 +234,7 @@ public static class FilterFactory
             {
                 foreach (var val in param.Value)
                 {
-                    string? paramValue = GetClearVal(val, filterType, param.Key);
+                    var paramValue = GetClearVal(val, filterType, param.Key);
 
                     if (string.IsNullOrWhiteSpace(paramValue))
                     {
@@ -249,9 +249,9 @@ public static class FilterFactory
         return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
     }
 
-    private static string? GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
+    private static string GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
     {
-        if (!LinkedFilters.TryGetValue(filterType, out FilterType[]? linkedFilters) || linkedFilters is null)
+        if (!LinkedFilters.TryGetValue(filterType, out var linkedFilters) || linkedFilters is null)
         {
             linkedFilters = Array.Empty<FilterType>();
         }
@@ -266,12 +266,12 @@ public static class FilterFactory
         return currentVal;
     }
 
-    private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string>? overrideValueFunction = null)
+    private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string> overrideValueFunction = null)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            string queryValue = overrideValueFunction == null ? 
-                value : 
+            var queryValue = overrideValueFunction == null ?
+                value :
                 GetQueryValue(key, value, overrideValueFunction);
 
             builder
@@ -282,7 +282,7 @@ public static class FilterFactory
         }
     }
 
-    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string? value)
+    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -328,7 +328,7 @@ public static class FilterFactory
             return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }
 
-        if (!int.TryParse(distanceList[0], out int distance) || distance < 1 || distance > 100)
+        if (!int.TryParse(distanceList[0], out var distance) || distance < 1 || distance > 100)
         {
             return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
         }

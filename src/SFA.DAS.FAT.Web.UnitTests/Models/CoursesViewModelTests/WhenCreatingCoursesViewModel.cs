@@ -121,7 +121,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Order_By_Is_Score_Then_Message_Is_Best_Match_To_Course()
+    public void When_Keyword_Is_Given_Then_Message_Is_Best_Match_To_Course()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {

@@ -8,7 +8,7 @@ using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
-using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
+using static SFA.DAS.FAT.Web.Services.FilterService;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -20,9 +20,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<RouteViewModel> Routes { get; set; } = [];
 
-    public string? Keyword { get; set; } = string.Empty;
+    public string Keyword { get; set; } = string.Empty;
 
-    public string? Distance { get; set; } = "All";
+    public string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
 
@@ -74,20 +74,20 @@ public class CoursesViewModel : PageLinksViewModelBase
         return string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
     }
 
-    private const string _BEST_MATCH_TO_COURSE = "Best match to course";
+    public const string BEST_MATCH_TO_COURSE = "Best match to course";
 
-    private const string _NAME_OF_COURSE = "Name of course";
+    public const string NAME_OF_COURSE = "Name of course";
 
     private string GetSortedDisplayMessage()
     {
         return OrderBy == OrderBy.Score ?
-            _BEST_MATCH_TO_COURSE :
-            _NAME_OF_COURSE;
+            BEST_MATCH_TO_COURSE :
+            NAME_OF_COURSE;
     }
 
     public string GetLevelName(int levelCode)
     {
-        LevelViewModel? level = Levels.FirstOrDefault(a => a.Code == levelCode);
+        LevelViewModel level = Levels.FirstOrDefault(a => a.Code == levelCode);
 
         if (level is null)
         {
@@ -97,15 +97,15 @@ public class CoursesViewModel : PageLinksViewModelBase
         return $"{levelCode} (equal to {level.Name})";
     }
 
-    private const string _VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE = "View 1 training provider for this course.";
+    public const string VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE = "View 1 training provider for this course.";
 
-    private const string _ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
+    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
 
     public static string GetProvidersLinkDisplayMessage(StandardViewModel standard)
     {
         if (standard.ProvidersCount == 1)
         {
-            return _VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE;
+            return VIEW_ONE_TRAINING_PROVIDER_FOR_THIS_COURSE;
         }
         else if (standard.ProvidersCount > 1)
         {
@@ -113,7 +113,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
         else
         {
-            return _ASK_TRAINING_PROVIDER;
+            return ASK_TRAINING_PROVIDER;
         }
     }
 
@@ -156,7 +156,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         return resultDisplayMessage;
     }
 
-    private FiltersViewModel? _filters;
+    private FiltersViewModel _filters;
 
     public FiltersViewModel Filters
     {
@@ -227,10 +227,10 @@ public class CoursesViewModel : PageLinksViewModelBase
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE;
+            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
         }
 
-        if (ValidDistances.IsValidDistance(Distance))
+        if (DistanceService.IsValidDistance(Distance))
         {
             AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
