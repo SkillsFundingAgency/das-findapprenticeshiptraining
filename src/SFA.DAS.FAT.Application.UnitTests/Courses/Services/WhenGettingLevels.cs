@@ -86,4 +86,69 @@ public sealed class WhenGettingLevels
             It.IsAny<Func<Task<GetLevelsListResponse>>>(),
             CacheSetting.Levels.CacheDuration), Times.Once);
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_Levels_Are_Returned_From_The_Outer_Api_If_Not_In_Cache_Or_Session(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+        [Frozen] Mock<IApiClient> apiClientMock,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+        GetLevelsListResponse response,
+        FindApprenticeshipTrainingApi config,
+        LevelsService sut,
+        CancellationToken cancellationToken
+    )
+    {
+        sessionServiceMock
+            .Setup(x => x.Contains<GetLevelsListResponse>())
+            .Returns(false);
+
+        configMock
+            .Setup(x => x.Value)
+            .Returns(config);
+
+        sessionServiceMock
+            .Setup(x => x.Contains<GetLevelsListResponse>())
+            .Returns(false);
+
+        sessionServiceMock
+            .Setup(x => x.Get<GetLevelsListResponse>())
+            .Returns((GetLevelsListResponse)null);
+
+        distributedCacheServiceMock
+        .Setup(x => x.GetOrSetAsync(
+            CacheSetting.Levels.Key,
+            It.IsAny<Func<Task<GetLevelsListResponse>>>(),
+            CacheSetting.Levels.CacheDuration))
+        .Returns<Func<Task<GetLevelsListResponse>>, TimeSpan>((func, duration) => func());
+
+        distributedCacheServiceMock
+            .Setup(x => x.GetOrSetAsync(
+                CacheSetting.Levels.Key,
+                It.IsAny<Func<Task<GetLevelsListResponse>>>(),
+                CacheSetting.Levels.CacheDuration))
+            .Returns(async (string key, Func<Task<GetLevelsListResponse>> func, TimeSpan duration) => await func());
+
+        apiClientMock
+            .Setup(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()))
+            .ReturnsAsync(response);
+
+        var result = await sut.GetLevelsAsync(cancellationToken);
+
+        result.Should().BeEquivalentTo(response.Levels);
+
+        sessionServiceMock.Verify(x => x.Contains<GetLevelsListResponse>(), Times.Once);
+
+        sessionServiceMock.Verify(x => x.Get<GetLevelsListResponse>(), Times.Never);
+
+        sessionServiceMock.Verify(x => x.Set(response), Times.Once);
+
+        apiClientMock.Verify(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()), Times.Once);
+
+        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(
+            CacheSetting.Levels.Key,
+            It.IsAny<Func<Task<GetLevelsListResponse>>>(),
+            CacheSetting.Levels.CacheDuration
+        ), Times.Once);
+    }
 }

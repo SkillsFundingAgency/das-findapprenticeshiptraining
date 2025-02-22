@@ -2,6 +2,7 @@
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters;
 
@@ -12,7 +13,7 @@ public sealed class WhenCreatingFiltersViewModelTests
     {
         var clearFilterSections = new List<ClearFilterSectionViewModel>
         {
-            new ClearFilterSectionViewModel { FilterType = FilterFactory.FilterType.Categories, Title = "Category", Items = new List<ClearFilterItemViewModel>() }
+            new ClearFilterSectionViewModel { FilterType = FilterService.FilterType.Categories, Title = "Category", Items = new List<ClearFilterItemViewModel>() }
         };
 
         var _sut = new FiltersViewModel

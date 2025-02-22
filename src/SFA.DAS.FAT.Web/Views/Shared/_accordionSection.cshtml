@@ -1,5 +1,5 @@
-﻿@using SFA.DAS.FAT.Web.Models.Filters
-@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+﻿@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+@using SFA.DAS.FAT.Web.Services
 @model FilterSection
 
 <div class="govuk-accordion__section">
@@ -14,7 +14,7 @@
     <div id="accordion-@Model.Id-section" class="govuk-accordion__section-content govuk-!-padding-bottom-2">
         @switch (Model.FilterComponentType)
         {
-            case FilterFactory.FilterComponentType.CheckboxList:
+            case FilterService.FilterComponentType.CheckboxList:
             {
                 @await Html.PartialAsync("_checkboxList", Model)
             }

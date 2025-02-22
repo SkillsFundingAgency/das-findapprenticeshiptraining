@@ -146,7 +146,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Order_By_Is_Score_Then_Message_Is_Best_Match_To_Course()
+    public void When_Keyword_Is_Given_Then_Message_Is_Best_Match_To_Course()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -244,7 +244,7 @@ public class WhenCreatingCoursesViewModel
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
             Location = "SW1",
-            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
+            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
         };
 
         standardViewModel.ProvidersCount = 1;
@@ -259,7 +259,7 @@ public class WhenCreatingCoursesViewModel
         {
             
             Location = "SW1",
-            Distance = ValidDistances.ACROSS_ENGLAND_FILTER_VALUE
+            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
         };
 
         standardViewModel.ProvidersCount = 2;

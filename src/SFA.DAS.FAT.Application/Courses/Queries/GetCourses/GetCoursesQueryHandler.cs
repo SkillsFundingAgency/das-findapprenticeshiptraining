@@ -2,14 +2,19 @@
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
+using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
+using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 
 public class GetCoursesQueryHandler(
-    ICourseService _courseService, 
     ILevelsService _levelsService,
-    IRoutesService _routesService
+    IRoutesService _routesService,
+    IOptions<FindApprenticeshipTrainingApi> _config,
+    IApiClient _apiClient
 ) : IRequestHandler<GetCoursesQuery, GetCoursesQueryResult>
 {
     public async Task<GetCoursesQueryResult> Handle(GetCoursesQuery query, CancellationToken cancellationToken)
@@ -20,15 +25,15 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var coursesResponse = await _courseService.GetCourses(
-            query.Keyword,
-            query.Location,
-            query.Distance,
-            routeIds,
-            query.Levels, 
-            query.OrderBy, 
-            cancellationToken
-        );
+        var coursesResponse = await _apiClient.Get<GetCoursesResponse>(new GetCoursesApiRequest(
+                _config.Value.BaseUrl,
+                query.Keyword,
+                query.Location,
+                query.Distance,
+                routeIds,
+                query.Levels,
+                query.OrderBy
+            ));
 
         return new GetCoursesQueryResult()
         {
