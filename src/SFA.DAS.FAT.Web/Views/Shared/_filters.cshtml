@@ -1,6 +1,7 @@
-﻿@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+﻿@using SFA.DAS.FAT.Web.Models.Filters
+@using SFA.DAS.FAT.Web.Models.Filters.Abstract
 @using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
-@using SFA.DAS.FAT.Web.Models.Filters
+@using SFA.DAS.FAT.Web.Services
 @model FiltersViewModel
 
 <div class="das-show-hide" data-module="das-show-hide">
@@ -44,22 +45,22 @@
                 {
                     switch (section.FilterComponentType)
                     {
-                        case FilterFactory.FilterComponentType.TextBox:
+                        case FilterService.FilterComponentType.TextBox:
                             {
                                 @await Html.PartialAsync("_textBoxFilterSection", section)
                             }
                             break;
-                        case FilterFactory.FilterComponentType.Search:
+                        case FilterService.FilterComponentType.Search:
                             {
                                 @await Html.PartialAsync("_searchFilterSection", section)
                             }
                             break;
-                        case FilterFactory.FilterComponentType.Accordion:
+                        case FilterService.FilterComponentType.Accordion:
                             {
                                 @await Html.PartialAsync("_accordionFilterSection", section)
                             }
                             break;
-                        case FilterFactory.FilterComponentType.Dropdown:
+                        case FilterService.FilterComponentType.Dropdown:
                             {
                                 @await Html.PartialAsync("_dropdownFilterSection", section)
                             }

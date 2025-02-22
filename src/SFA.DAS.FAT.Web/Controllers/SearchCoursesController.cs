@@ -42,7 +42,7 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
     [HttpPost]
     public IActionResult Index(SearchCoursesViewModel submitModel, CancellationToken cancellationToken)
     {
-        var request = new GetCoursesRequest();
+        var request = new GetCoursesViewModel();
 
         if (!string.IsNullOrEmpty(submitModel.CourseTerm))
         {

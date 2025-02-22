@@ -1,17 +1,15 @@
-﻿using NUnit.Framework;
+﻿using AutoFixture;
+using AutoFixture.Kernel;
+using NUnit.Framework;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
-using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.Testing.AutoFixture;
-using AutoFixture;
-using AutoFixture.Kernel;
-using static SFA.DAS.FAT.Web.Models.Filters.FilterFactory;
-using SFA.DAS.FAT.Domain.Courses;
-using System.Linq;
+using static SFA.DAS.FAT.Web.Services.FilterService;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters;
+namespace SFA.DAS.FAT.Web.UnitTests.Services;
 
-public sealed class FilterFactoryTests
+public sealed class FilterServiceTests
 {
     [Test, MoqAutoData]
     public void CreateInputFilterSection_ShouldReturnTextBoxFilterSection_WithCorrectValues(
@@ -21,7 +19,7 @@ public sealed class FilterFactoryTests
         string filterFor,
         string inputValue
     )
-    { 
+    {
         var _sut = CreateInputFilterSection(id, heading, subHeading, filterFor, inputValue);
 
         Assert.Multiple(() =>
@@ -68,7 +66,7 @@ public sealed class FilterFactoryTests
         List<FilterItemViewModel> items
     )
     {
-        var _sut = FilterFactory.CreateDropdownFilterSection(id, filterFor, heading, subHeading, items);
+        var _sut = CreateDropdownFilterSection(id, filterFor, heading, subHeading, items);
 
         Assert.Multiple(() =>
         {
@@ -91,12 +89,12 @@ public sealed class FilterFactoryTests
         string linkDisplayUrl
     )
     {
-        var _sut = FilterFactory.CreateCheckboxListFilterSection(
-            id, 
-            filterFor, 
-            heading, 
-            items, 
-            linkDisplayText, 
+        var _sut = CreateCheckboxListFilterSection(
+            id,
+            filterFor,
+            heading,
+            items,
+            linkDisplayText,
             linkDisplayUrl
         );
 
@@ -123,7 +121,7 @@ public sealed class FilterFactoryTests
         List<FilterItemViewModel> items
     )
     {
-        var _sut = FilterFactory.CreateCheckboxListFilterSection(id, filterFor, heading, items, "", "");
+        var _sut = CreateCheckboxListFilterSection(id, filterFor, heading, items, "", "");
 
         Assert.Multiple(() =>
         {
@@ -142,7 +140,7 @@ public sealed class FilterFactoryTests
 
         var children = fixture.Create<List<FilterSection>>();
 
-        var _sut = FilterFactory.CreateAccordionFilterSection(id, sectionFor, children);
+        var _sut = CreateAccordionFilterSection(id, sectionFor, children);
 
         Assert.Multiple(() =>
         {
@@ -158,9 +156,9 @@ public sealed class FilterFactoryTests
     {
         var _sut = new Dictionary<FilterType, List<string>>();
         var filterType = FilterType.KeyWord;
-        string value = "Construction";
+        var value = "Construction";
 
-        FilterFactory.AddSelectedFilter(_sut, filterType, value);
+        AddSelectedFilter(_sut, filterType, value);
 
         Assert.Multiple(() =>
         {
@@ -225,20 +223,20 @@ public sealed class FilterFactoryTests
     [Test]
     public void GetDistanceFilterValues_ShouldReturnAllValidDistances()
     {
-        string selectedDistance = "All";
+        var selectedDistance = "All";
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Has.Count.EqualTo(ValidDistances.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
-            Assert.That(_sut.Any(i => i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE && i.DisplayText == FilterFactory.ACROSS_ENGLAND_FILTER_TEXT), Is.True, "'Across England' option should be present.");
+            Assert.That(_sut, Has.Count.EqualTo(DistanceService.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
+            Assert.That(_sut.Any(i => i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE && i.DisplayText == ACROSS_ENGLAND_FILTER_TEXT), Is.True, "'Across England' option should be present.");
         });
     }
 
     [Test]
     public void GetDistanceFilterValues_WithSelectedDistance_ShouldMarkCorrectItemAsSelected()
     {
-        string selectedDistance = "20";
+        var selectedDistance = "20";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 
@@ -252,28 +250,28 @@ public sealed class FilterFactoryTests
     [Test]
     public void GetDistanceFilterValues_WithAllSelectedDistance_ShouldSelectAcrossEngland()
     {
-        string selectedDistance = "All";
+        var selectedDistance = "All";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value != ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value != DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
         });
     }
 
     [Test]
     public void GetDistanceFilterValues_WithInvalidDistance_ShouldNotSelectAnyDistance()
     {
-        string selectedDistance = "9999";
+        var selectedDistance = "9999";
 
         var _sut = GetDistanceFilterValues(selectedDistance);
 
         Assert.Multiple(() =>
         {
             Assert.That(_sut.Any(i => i.Selected && i.Value == $"{selectedDistance} Miles"), Is.False, "An invalid distance should not be marked as selected.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value == ValidDistances.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
+            Assert.That(_sut.Any(i => i.Selected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
         });
     }
 
@@ -385,7 +383,7 @@ public sealed class FilterFactoryTests
             { FilterType.Distance, new List<string> { "10" } }
         };
 
-        var _sut = FilterFactory.CreateClearFilterSections(selectedFilters, null, [FilterType.Distance]);
+        var _sut = CreateClearFilterSections(selectedFilters, null, [FilterType.Distance]);
 
         var locationFilterClearSection = _sut.First(a => a.FilterType == FilterType.Location);
         Assert.That(locationFilterClearSection.Items[0].DisplayText, Is.EqualTo("M60 7RA (within 10 miles)"));

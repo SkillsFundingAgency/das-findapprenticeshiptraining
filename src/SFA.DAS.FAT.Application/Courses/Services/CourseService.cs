@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
-using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Services
@@ -27,23 +25,6 @@ namespace SFA.DAS.FAT.Application.Courses.Services
             var request = new GetCourseApiRequest(_config.BaseUrl, courseId, lat, lon, locationName, shortlistUserId);
 
             var response = await _apiClient.Get<TrainingCourse>(request);
-
-            return response;
-        }
-
-        public async Task<GetCoursesResponse> GetCourses(string keyword, string location, int? distance, List<int> routeIds, List<int> levels, OrderBy orderBy, CancellationToken cancellationToken)
-        {
-            var request = new GetCoursesApiRequest(
-                _config.BaseUrl, 
-                keyword,
-                location,
-                distance,
-                routeIds,
-                levels, 
-                orderBy
-            );
-
-            var response = await _apiClient.Get<GetCoursesResponse>(request);
 
             return response;
         }

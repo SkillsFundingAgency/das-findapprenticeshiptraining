@@ -5,8 +5,8 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
-using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelFilterTests;
 
@@ -57,10 +57,10 @@ public sealed class WhenFilteringCourses
             Assert.That(keyWordFilterSection, Is.TypeOf<TextBoxFilterSectionViewModel>());
             Assert.That(keyWordFilterSection.Id, Is.EqualTo("keyword-input"));
             Assert.That(keyWordFilterSection.For, Is.EqualTo(nameof(_coursesViewModel.Keyword)));
-            Assert.That(keyWordFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.TextBox));
+            Assert.That(keyWordFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.TextBox));
             Assert.That(((TextBoxFilterSectionViewModel)keyWordFilterSection).InputValue, Is.EqualTo(_coursesViewModel.Keyword));
-            Assert.That(keyWordFilterSection.Heading, Is.EqualTo(FilterFactory.KEYWORD_SECTION_HEADING));
-            Assert.That(keyWordFilterSection.SubHeading, Is.EqualTo(FilterFactory.KEYWORD_SECTION_SUB_HEADING));
+            Assert.That(keyWordFilterSection.Heading, Is.EqualTo(FilterService.KEYWORD_SECTION_HEADING));
+            Assert.That(keyWordFilterSection.SubHeading, Is.EqualTo(FilterService.KEYWORD_SECTION_SUB_HEADING));
         });
     }
 
@@ -77,10 +77,10 @@ public sealed class WhenFilteringCourses
             Assert.That(locationFilterSection, Is.TypeOf<SearchFilterSectionViewModel>());
             Assert.That(locationFilterSection.Id, Is.EqualTo("search-location"));
             Assert.That(locationFilterSection.For, Is.EqualTo(nameof(_coursesViewModel.Location)));
-            Assert.That(locationFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.Search));
+            Assert.That(locationFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Search));
             Assert.That(((SearchFilterSectionViewModel)locationFilterSection).InputValue, Is.EqualTo(_coursesViewModel.Location));
-            Assert.That(locationFilterSection.Heading, Is.EqualTo(FilterFactory.LOCATION_SECTION_HEADING));
-            Assert.That(locationFilterSection.SubHeading, Is.EqualTo(FilterFactory.LOCATION_SECTION_SUB_HEADING));
+            Assert.That(locationFilterSection.Heading, Is.EqualTo(FilterService.LOCATION_SECTION_HEADING));
+            Assert.That(locationFilterSection.SubHeading, Is.EqualTo(FilterService.LOCATION_SECTION_SUB_HEADING));
         });
     }
 
@@ -97,19 +97,19 @@ public sealed class WhenFilteringCourses
             Assert.That(distanceFilterSection, Is.TypeOf<DropdownFilterSectionViewModel>());
             Assert.That(distanceFilterSection.Id, Is.EqualTo("distance-filter"));
             Assert.That(distanceFilterSection.For, Is.EqualTo(nameof(_coursesViewModel.Distance)));
-            Assert.That(distanceFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.Dropdown));
+            Assert.That(distanceFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Dropdown));
 
             var dropdownFilter = ((DropdownFilterSectionViewModel)distanceFilterSection);
 
             dropdownFilter.Items.Should().BeEquivalentTo(
-                FilterFactory.GetDistanceFilterValues(_coursesViewModel.Distance),
+                FilterService.GetDistanceFilterValues(_coursesViewModel.Distance),
                 options => options.WithStrictOrdering()
             );
 
             var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(_coursesViewModel.Distance));
-            Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterFactory.DISTANCE_SECTION_HEADING));
-            Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterFactory.DISTANCE_SECTION_SUB_HEADING));
+            Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterService.DISTANCE_SECTION_HEADING));
+            Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterService.DISTANCE_SECTION_SUB_HEADING));
         });
     }
 
@@ -123,20 +123,20 @@ public sealed class WhenFilteringCourses
             var accordionFilterSection = _sut.First(a => a.Id == "multi-select");
             Assert.That(accordionFilterSection, Is.TypeOf<AccordionFilterSectionViewModel>());
             Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
-            Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.Accordion));
+            Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
 
             var levelsFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(_coursesViewModel.Levels));
             Assert.That(levelsFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
             Assert.That(levelsFilterSection.Id, Is.EqualTo("levels-filter"));
-            Assert.That(levelsFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.CheckboxList));
+            Assert.That(levelsFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
 
             var levelsCheckBoxList = ((CheckboxListFilterSectionViewModel)levelsFilterSection);
             Assert.That(levelsCheckBoxList.Items, Has.Count.EqualTo(_coursesViewModel.Levels.Count));
             Assert.That(levelsCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedLevels.Count));
-            Assert.That(levelsCheckBoxList.Heading, Is.EqualTo(FilterFactory.LEVELS_SECTION_HEADING));
+            Assert.That(levelsCheckBoxList.Heading, Is.EqualTo(FilterService.LEVELS_SECTION_HEADING));
             Assert.That(levelsCheckBoxList.Link, Is.Not.Null);
-            Assert.That(levelsCheckBoxList.Link.DisplayText, Is.EqualTo(FilterFactory.LEVEL_INFORMATION_DISPLAY_TEXT));
-            Assert.That(levelsCheckBoxList.Link.Url, Is.EqualTo(FilterFactory.LEVEL_INFORMATION_URL));
+            Assert.That(levelsCheckBoxList.Link.DisplayText, Is.EqualTo(FilterService.LEVEL_INFORMATION_DISPLAY_TEXT));
+            Assert.That(levelsCheckBoxList.Link.Url, Is.EqualTo(FilterService.LEVEL_INFORMATION_URL));
         });
     }
 
@@ -150,17 +150,17 @@ public sealed class WhenFilteringCourses
             var accordionFilterSection = _sut.First(a => a.Id == "multi-select");
             Assert.That(accordionFilterSection, Is.TypeOf<AccordionFilterSectionViewModel>());
             Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
-            Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.Accordion));
+            Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
 
-            var categoryFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(FilterFactory.FilterType.Categories));
+            var categoryFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(FilterService.FilterType.Categories));
             Assert.That(categoryFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
             Assert.That(categoryFilterSection.Id, Is.EqualTo("categories-filter"));
-            Assert.That(categoryFilterSection.FilterComponentType, Is.EqualTo(FilterFactory.FilterComponentType.CheckboxList));
+            Assert.That(categoryFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
 
             var categoriesCheckBoxList = ((CheckboxListFilterSectionViewModel)categoryFilterSection);
             Assert.That(categoriesCheckBoxList.Items, Has.Count.EqualTo(_coursesViewModel.Routes.Count));
             Assert.That(categoriesCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedRoutes.Count));
-            Assert.That(categoriesCheckBoxList.Heading, Is.EqualTo(FilterFactory.CATEGORIES_SECTION_HEADING));
+            Assert.That(categoriesCheckBoxList.Heading, Is.EqualTo(FilterService.CATEGORIES_SECTION_HEADING));
             Assert.That(categoriesCheckBoxList.Link, Is.Null);
         });
     }
@@ -172,7 +172,7 @@ public sealed class WhenFilteringCourses
 
         Assert.Multiple(() =>
         {
-            var locationClearLink = _sut.First(a => a.FilterType == FilterFactory.FilterType.Location);
+            var locationClearLink = _sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
             Assert.That(locationClearLink.Title, Is.EqualTo("Apprentice's work location"));
             Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_coursesViewModel.Location} (within {_coursesViewModel.Distance} miles)"));
@@ -187,7 +187,7 @@ public sealed class WhenFilteringCourses
 
         Assert.Multiple(() =>
         {
-            var levelsClearLinks = _sut.First(a => a.FilterType == FilterFactory.FilterType.Levels);
+            var levelsClearLinks = _sut.First(a => a.FilterType == FilterService.FilterType.Levels);
             Assert.That(levelsClearLinks, Is.Not.Null);
             Assert.That(levelsClearLinks.Items, Has.Count.EqualTo(2));
 
@@ -208,7 +208,7 @@ public sealed class WhenFilteringCourses
 
         Assert.Multiple(() =>
         {
-            var keywordClearLink = _sut.First(a => a.FilterType == FilterFactory.FilterType.KeyWord);
+            var keywordClearLink = _sut.First(a => a.FilterType == FilterService.FilterType.KeyWord);
             Assert.That(keywordClearLink, Is.Not.Null);
             Assert.That(keywordClearLink.Items, Has.Count.EqualTo(1));
             Assert.That(keywordClearLink.Items[0].DisplayText, Is.EqualTo("Construction"));
@@ -223,7 +223,7 @@ public sealed class WhenFilteringCourses
 
         Assert.Multiple(() =>
         {
-            var categoryClearLinks = _sut.First(a => a.FilterType == FilterFactory.FilterType.Categories);
+            var categoryClearLinks = _sut.First(a => a.FilterType == FilterService.FilterType.Categories);
             Assert.That(categoryClearLinks, Is.Not.Null);
             Assert.That(categoryClearLinks.Items, Has.Count.EqualTo(1));
 
@@ -238,7 +238,7 @@ public sealed class WhenFilteringCourses
     {
         var clearFilterSections = _coursesViewModel.Filters.ClearFilterSections;
 
-        var locationClearLink = clearFilterSections.FirstOrDefault(a => a.FilterType == FilterFactory.FilterType.Distance);
+        var locationClearLink = clearFilterSections.FirstOrDefault(a => a.FilterType == FilterService.FilterType.Distance);
         Assert.That(locationClearLink, Is.Null);
     }
 
@@ -257,7 +257,7 @@ public sealed class WhenFilteringCourses
             Assert.That(distanceFilterSection, Is.Not.Null);
 
             var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.Selected);
-            Assert.That(selectedItem.Value, Is.EqualTo(ValidDistances.ACROSS_ENGLAND_FILTER_VALUE));
+            Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
         });
     }
 }
