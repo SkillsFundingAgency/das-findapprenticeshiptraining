@@ -39,7 +39,7 @@ public static class FilterService
     public const string DISTANCE_SECTION_SUB_HEADING = "Distance apprentice can travel to training";
 
     public const string LEVELS_SECTION_HEADING = "Apprenticeship level";
-    public const string CATEGORIES_SECTION_HEADING = "Job Categories";
+    public const string CATEGORIES_SECTION_HEADING = "Job categories";
 
     public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What qualification levels mean (opens in new tab or window)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
@@ -174,7 +174,7 @@ public static class FilterService
         distanceFilterItems.AddRange(DistanceService.Distances.Select(distance => new FilterItemViewModel
         {
             Value = distance.ToString(),
-            DisplayText = $"{distance} Miles",
+            DisplayText = $"{distance} miles",
             Selected = validDistance == distance
         }));
 
