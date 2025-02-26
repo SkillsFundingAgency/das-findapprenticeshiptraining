@@ -22,6 +22,9 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<IShortlistService, ShortlistService>();
         services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddTransient<IRoutesService, RoutesService>();
+        services.AddTransient<ILevelsService, LevelsService>();
+
         services.AddTransient(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
     }
 }

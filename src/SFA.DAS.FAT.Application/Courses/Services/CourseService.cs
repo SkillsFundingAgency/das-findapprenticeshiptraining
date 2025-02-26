@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Courses.Api;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Services
@@ -19,6 +19,7 @@ namespace SFA.DAS.FAT.Application.Courses.Services
             _apiClient = apiClient;
             _config = config.Value;
         }
+
         public async Task<TrainingCourse> GetCourse(int courseId, double lat, double lon, string locationName, Guid? shortlistUserId)
         {
             var request = new GetCourseApiRequest(_config.BaseUrl, courseId, lat, lon, locationName, shortlistUserId);
@@ -28,15 +29,7 @@ namespace SFA.DAS.FAT.Application.Courses.Services
             return response;
         }
 
-        public async Task<TrainingCourses> GetCourses(string keyword, List<string> requestRouteIds, List<int> requestLevelCodes, OrderBy orderBy, Guid? shortlistUserId)
-        {
-            var request = new GetCoursesApiRequest(_config.BaseUrl, keyword, requestRouteIds, requestLevelCodes, orderBy, shortlistUserId);
-
-            var response = await _apiClient.Get<TrainingCourses>(request);
-
-            return response;
-        }
-        public async Task<TrainingCourseProviderDetails> GetCourseProviderDetails(    int providerId, int courseId,
+        public async Task<TrainingCourseProviderDetails> GetCourseProviderDetails(int providerId, int courseId,
             string location, double lat, double lon, Guid shortlistUserId)
         {
             var request = new GetCourseProviderDetailsApiRequest(_config.BaseUrl,courseId, providerId, location,shortlistUserId, lat, lon);

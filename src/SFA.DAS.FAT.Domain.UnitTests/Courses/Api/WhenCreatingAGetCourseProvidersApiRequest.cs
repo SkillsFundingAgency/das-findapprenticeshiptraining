@@ -6,6 +6,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
 namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api
 {

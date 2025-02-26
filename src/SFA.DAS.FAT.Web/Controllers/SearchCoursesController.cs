@@ -41,7 +41,7 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
     [HttpPost]
     public IActionResult Index(SearchCoursesViewModel submitModel, CancellationToken cancellationToken)
     {
-        var request = new GetCoursesRequest();
+        var request = new GetCoursesViewModel();
 
         if (!string.IsNullOrEmpty(submitModel.CourseTerm))
         {
@@ -51,7 +51,7 @@ public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> 
         if (!string.IsNullOrEmpty(submitModel.Location))
         {
             request.Location = submitModel.Location;
-            request.Distance = Constants.DefaultDistance;
+            request.Distance = Constants.DefaultDistance.ToString();
         }
 
         return RedirectToAction("Index", "Courses", request);

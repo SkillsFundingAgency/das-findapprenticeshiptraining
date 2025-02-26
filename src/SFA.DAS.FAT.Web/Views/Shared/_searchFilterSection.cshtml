@@ -1,0 +1,20 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@model SearchFilterSectionViewModel
+
+<div class="govuk-form-group">
+    <label for="@Model.Id" class="govuk-label das-filter__search-label">
+        @Model.Heading
+    </label>
+    @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
+    {
+        <p class="govuk-hint">@Model.SubHeading</p>
+    }
+    <input id="@Model.Id"
+           asp-for="@Model.For"
+           name="@Model.For"
+           type="search"
+           value="@Model.InputValue"
+           title="Search"
+           class="govuk-input"
+           data-default-value="@Model.InputValue">
+</div>
