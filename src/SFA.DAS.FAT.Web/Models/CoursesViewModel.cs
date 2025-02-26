@@ -1,167 +1,285 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.Filters;
+using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using static SFA.DAS.FAT.Web.Services.FilterService;
 
-namespace SFA.DAS.FAT.Web.Models
+namespace SFA.DAS.FAT.Web.Models;
+
+public class CoursesViewModel : PageLinksViewModelBase
 {
-    public class CoursesViewModel : PageLinksViewModelBase
+    public List<StandardViewModel> Standards { get; set; } = [];
+
+    public List<LevelViewModel> Levels { get; set; } = [];
+
+    public List<RouteViewModel> Routes { get; set; } = [];
+
+    public string Keyword { get; set; } = string.Empty;
+
+    public string Distance { get; set; } = "All";
+
+    public List<string> SelectedRoutes { get; set; } = [];
+
+    public List<int> SelectedLevels { get; set; } = [];
+
+    public int Total { get; set; }
+
+    public int TotalFiltered { get; set; }
+
+    public string SortedDisplayMessage => GetSortedDisplayMessage();
+
+    private OrderBy? _orderBy;
+
+    public OrderBy OrderBy
     {
-        private OrderBy _orderBy = OrderBy.None;
-        public List<CourseViewModel> Courses { get; set; }
-        public string Keyword { get; set; }
-        public int Total { get; set; }
-        public int TotalFiltered { get; set; }
-        public List<LevelViewModel> Levels { get; set; }
-        public List<SectorViewModel> Sectors { get; set; }
-        public List<string> SelectedSectors { get; set; }
-        public List<int> SelectedLevels { get; set; }
-        public OrderBy OrderBy
+        get
         {
-            get => _orderBy;
-            set
+            if (_orderBy == null)
             {
-                if (value == OrderBy.None && !string.IsNullOrEmpty(Keyword))
-                {
-                    _orderBy = OrderBy.Relevance;
-                }
-                else if (value != OrderBy.None && string.IsNullOrEmpty(Keyword))
-                {
-                    _orderBy = OrderBy.None;
-                }
-                else
-                {
-                    _orderBy = value;
-                }
-            }
-        }
-
-        public bool ShowFilterOptions => ClearSectorLinks.Any() || ClearLevelLinks.Any() || !string.IsNullOrEmpty(Keyword);
-
-        public string TotalMessage => GetTotalMessage();
-        public Dictionary<string, string> ClearSectorLinks => BuildClearSectorFilterLinks();
-        public string ClearKeywordLink => BuildClearKeywordFilterLink();
-        public Dictionary<string, string> ClearLevelLinks => BuildClearLevelFilterLinks();
-        public string OrderByName => BuildOrderByLink(OrderBy.Name);
-        public string OrderByRelevance => BuildOrderByLink(OrderBy.Relevance);
-
-
-        private string GetTotalMessage()
-        {
-            var totalToUse = string.IsNullOrEmpty(Keyword)
-                             && (SelectedSectors == null || !SelectedSectors.Any())
-                             && (SelectedLevels == null || !SelectedLevels.Any())
-                                    ? Total
-                                    : TotalFiltered;
-
-            return $"{totalToUse} result" + (totalToUse != 1 ? "s" : "");
-        }
-        private string BuildOrderByLink(OrderBy order)
-        {
-            var buildOrderByNameLink = !string.IsNullOrEmpty(Keyword) ? $"?keyword={Keyword}" : "";
-
-            buildOrderByNameLink += !string.IsNullOrEmpty(order.ToString()) ? $"{GetSeparator(buildOrderByNameLink)}orderby={order}" : "";
-
-            buildOrderByNameLink += BuildSelectedSectorListLink(buildOrderByNameLink);
-
-            buildOrderByNameLink += BuildSelectedLevelsListLink(buildOrderByNameLink);
-
-            return buildOrderByNameLink;
-        }
-
-        private string BuildClearKeywordFilterLink()
-        {
-            var buildClearKeywordFilterLink = BuildSelectedSectorListLink("");
-            buildClearKeywordFilterLink += BuildSelectedLevelsListLink(buildClearKeywordFilterLink);
-            return buildClearKeywordFilterLink;
-        }
-
-        private Dictionary<string, string> BuildClearSectorFilterLinks()
-        {
-            var clearFilterLinks = new Dictionary<string, string>();
-            if (SelectedSectors?.FirstOrDefault() == null)
-            {
-                return clearFilterLinks;
+                _orderBy = SetOrderBy();
             }
 
-            var levels = BuildSelectedLevelsListLink("appendTo");
+            return _orderBy.Value;
+        }
+    }
 
-            foreach (var selectedSector in SelectedSectors)
+    public string TotalMessage => GetTotalMessage();
+
+    public string CoursesSubHeader => PopulateCoursesSubHeader();
+
+    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+
+    private readonly IUrlHelper _urlHelper;
+
+    private readonly string _requestApprenticeshipTrainingUrl;
+
+    public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
+    {
+        _urlHelper = urlHelper;
+        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
+        };
+        _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+    }
+
+    private OrderBy SetOrderBy()
+    {
+        return string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
+    }
+
+    public const string BEST_MATCH_TO_COURSE = "Best match to course";
+
+    public const string NAME_OF_COURSE = "Name of course";
+
+    private string GetSortedDisplayMessage()
+    {
+        return OrderBy == OrderBy.Score ?
+            BEST_MATCH_TO_COURSE :
+            NAME_OF_COURSE;
+    }
+
+    public string GetLevelName(int levelCode)
+    {
+        LevelViewModel level = Levels.FirstOrDefault(a => a.Code == levelCode);
+
+        if (level is null)
+        {
+            return string.Empty;
+        }
+
+        return $"{levelCode} (equal to {level.Name})";
+    }
+
+    public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
+
+    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
+
+    public string GetProvidersLinkDisplayMessage(StandardViewModel standard)
+    {
+        if (standard.ProvidersCount < 1)
+        {
+            return ASK_TRAINING_PROVIDER;
+        }
+
+        bool isNationalSearch = 
+            string.IsNullOrWhiteSpace(Location) || 
+            Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
+        
+        string providerText = 
+            standard.ProvidersCount == 1 ?
+                ONE_TRAINING_PROVIDER_MESSAGE : 
+                $"{standard.ProvidersCount} training providers";
+
+        return isNationalSearch
+            ? $"View {providerText} for this course."
+            : $"View {providerText} within {Distance} miles.";
+    }
+
+    public string GetProvidersLink(StandardViewModel standard)
+    {
+        if (standard.ProvidersCount > 0)
+        {
+            return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
+        }
+        
+        return _requestApprenticeshipTrainingUrl;
+    }
+
+    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+
+    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location.";
+
+    private string PopulateCoursesSubHeader()
+    {
+        if(Total == 0)
+        {
+            return string.Empty;
+        }
+
+        if(!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        {
+            return _LOCATION_COURSES_SUB_HEADER;
+        }
+
+        return _COURSES_SUB_HEADER;
+    }
+
+    private string GetTotalMessage()
+    {
+        var totalToUse = string.IsNullOrEmpty(Keyword)
+                         && (SelectedRoutes == null || SelectedRoutes.Count < 1)
+                         && (SelectedLevels == null || SelectedLevels.Count < 1)
+                                ? Total
+                                : TotalFiltered;
+
+        string resultDisplayMessage = $"{totalToUse} result";
+        if (totalToUse != 1)
+        {
+            resultDisplayMessage += "s";
+        }
+
+        return resultDisplayMessage;
+    }
+
+    private FiltersViewModel _filters;
+
+    public FiltersViewModel Filters
+    {
+        get
+        {
+            if (_filters == null)
             {
-                var clearFilterString = BuildClearFilterStringForKeywordAndOrderBy();
-
-                clearFilterString += $"{GetSeparator(clearFilterString)}sectors=" + string.Join("&sectors=", SelectedSectors.Where(c => !c.Equals(selectedSector, StringComparison.CurrentCultureIgnoreCase)).Select(HttpUtility.HtmlEncode));
-                clearFilterString += levels;
-
-                var sector = Sectors.SingleOrDefault(c => c.Route.Equals(selectedSector, StringComparison.CurrentCultureIgnoreCase));
-                if (sector != null)
-                {
-                    clearFilterLinks.Add(sector.Route, clearFilterString);
-                }
-
+                _filters = CreateFilterSections();
             }
 
-            return clearFilterLinks;
+            return _filters;
         }
+    }
 
-        private Dictionary<string, string> BuildClearLevelFilterLinks()
+    public FiltersViewModel CreateFilterSections()
+    {
+        var selectedFilterSections = CreateSelectedFilterSections();
+
+        return new FiltersViewModel()
         {
-            var clearLevelLink = new Dictionary<string, string>();
-            if (SelectedLevels == null || !SelectedLevels.Any())
+            Route = RouteNames.Courses,
+            FilterSections = 
+            [
+                CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
+                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
+                CreateAccordionFilterSection(
+                    "multi-select",
+                    string.Empty,
+                    [
+                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
+                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, GenerateRouteFilterItems())
+                    ]
+                )
+            ],
+            ClearFilterSections = selectedFilterSections
+        };
+    }
+
+    private List<FilterItemViewModel> GenerateRouteFilterItems()
+    {
+        return Routes?.Select(category => new FilterItemViewModel
             {
-                return clearLevelLink;
-            }
+                Value = category.Name,
+                DisplayText = category.Name,
+                Selected = SelectedRoutes?.Contains(category.Name) ?? false
+            })
+        .ToList() ?? [];
+    }
 
-            var sectors = BuildSelectedSectorListLink("appendTo");
-
-            foreach (var selectedLevel in SelectedLevels)
+    private List<FilterItemViewModel> GenerateLevelFilterItems()
+    {
+        return Levels?.Select(level => new FilterItemViewModel
             {
-                var clearFilterString = BuildClearFilterStringForKeywordAndOrderBy();
+                Value = level.Code.ToString(),
+                DisplayText = $"Level {level.Code}",
+                DisplayDescription = $"Equal to {level.Name}",
+                Selected = SelectedLevels?.Contains(level.Code) ?? false
+            })
+        .ToList() ?? [];
+    }
 
-                clearFilterString += $"{GetSeparator(clearFilterString)}levels=" + string.Join("&levels=", SelectedLevels.Where(c => !c.Equals(selectedLevel)));
-                clearFilterString += sectors;
-                var level = Levels.SingleOrDefault(c => c.Code.Equals(selectedLevel));
-                if (level != null)
-                {
-                    clearLevelLink.Add(level.Title, clearFilterString);
-                }
-            }
+    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
+    {
+        var selectedFilters = new Dictionary<FilterType, List<string>>();
 
-            return clearLevelLink;
-        }
-
-        private string BuildClearFilterStringForKeywordAndOrderBy()
+        AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
+        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+        if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            var clearFilterString = "";
-
-            if (!string.IsNullOrEmpty(Keyword))
-            {
-                clearFilterString = $"?keyword={Keyword}";
-            }
-
-            if (OrderBy != OrderBy.None)
-            {
-                clearFilterString += $"{GetSeparator(clearFilterString)}orderby={OrderBy}";
-            }
-
-            return clearFilterString;
+            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
         }
 
-        private string BuildSelectedLevelsListLink(string linkToAppendTo)
+        if (DistanceService.IsValidDistance(Distance))
         {
-            return SelectedLevels != null && SelectedLevels.Any() ? $"{GetSeparator(linkToAppendTo)}levels=" + string.Join("&levels=", SelectedLevels) : "";
+            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
 
-        private string BuildSelectedSectorListLink(string linkToAppendTo)
+        if (SelectedLevels?.Count > 0 && Levels.Count > 0)
         {
-            return SelectedSectors != null && SelectedSectors.Any() ? $"{GetSeparator(linkToAppendTo)}sectors=" + string.Join("&sectors=", SelectedSectors.Select(HttpUtility.HtmlEncode)) : "";
+            var selectedLevelNames = Levels
+                .Where(level => SelectedLevels.Contains(level.Code))
+                .Select(level => level.Name)
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, FilterType.Levels, selectedLevelNames);
         }
 
-        private string GetSeparator(string url)
+        if (SelectedRoutes?.Count > 0 && Routes.Count > 0)
         {
-            return string.IsNullOrEmpty(url) ? "?" : "&";
+            var validRoutes = SelectedRoutes
+                .Where(route => Routes.Any(r => r.Name == route))
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
+
+        if (selectedFilters.Count == 0)
+        {
+            return [];
+        }
+
+        return CreateClearFilterSections(
+            selectedFilters,
+            _valueFunctions,
+            [FilterType.Distance]
+        );
+    }
+
+    private string GetLevelCodeValue(string filterValue)
+    {
+        return Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
     }
 }

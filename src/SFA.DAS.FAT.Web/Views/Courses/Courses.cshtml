@@ -1,6 +1,6 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
-@using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models
+@using System.Globalization
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
     ViewData["Title"] = "Apprenticeship training courses";
@@ -9,181 +9,99 @@
 }
 
 <main class="govuk-main-wrapper" id="main-content">
-    @if (DateTime.UtcNow < new DateTime(2024, 02, 12))
-    {
-        <div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
-            <div class="govuk-notification-banner__header">
-                <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
-                    Important notice
-                </h2>
-            </div>
-            <div class="govuk-notification-banner__content">
-                <p class="govuk-notification-banner__heading">
-                    National Apprenticeship Week
-                </p>
-                <p>National Apprenticeship Week 2024 will run from Monday 5 to Sunday 11 February - find out how to get involved and download the toolkit at <a href="https://naw.appawards.co.uk/" class="govuk-link" target="_blank" rel="external" >National Apprenticeship Week</a>.</p>
-            </div>
-        </div>
-    }
-    
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">Apprenticeship training courses</h1>
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">Apprenticeship training courses</h1>
+            @if(!string.IsNullOrWhiteSpace(Model.CoursesSubHeader))
+            {
+                <p class="govuk-body">@Model.CoursesSubHeader</p>
+            }
         </div>
     </div>
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-one-third">
-            <div class="das-show-hide" data-module="das-show-hide">
-                <div class="das-filter das-!-show--from-tablet" id="fat-filter" tabindex="0">
-                    <div class="das-filter__header">
-                        <h2 class="das-filter__heading">Filter</h2>
-                    </div>
-                    @if (Model.ShowFilterOptions)
-                    {
-                        <div class="das-filter__selected-filters">
-                            <div class="das-filter__selected-header">
-                                <h3 class="das-filter__selected-heading">Selected filters</h3>
-                                <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear <span class="govuk-visually-hidden">the selected filters</span></a>
-                            </div>
-                            @if (!string.IsNullOrEmpty(Model.Keyword))
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Apprenticeship training course</h4>
-                                <a asp-querystring="@Model.ClearKeywordLink" title="Clear this filter '@Model.Keyword'" class="das-filter__tag das-breakable">&lsquo;@Model.Keyword&rsquo;</a>
-                            }
-                            @if (Model.ClearLevelLinks.Any())
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Qualification level</h4>
-                                @foreach (var levelLink in Model.ClearLevelLinks)
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@levelLink.Value" title="Clear this level filter @levelLink.Key">@levelLink.Key</a>
-                                }
-                            }
-                            @if (Model.ClearSectorLinks.Any())
-                            {
-                                <h4 class="das-filter__selected-sub-heading">Apprenticeship category</h4>
-                                @foreach (var filterLink in Model.ClearSectorLinks)
-                                {
-                                    <a class="das-filter__tag" asp-querystring="@filterLink.Value" title="Clear this sector filter @filterLink.Key">@filterLink.Key</a>
-                                }
-                            }
-                        </div>
-                    }
-                    <div class="das-filter__body das-!-show--from-tablet" id="fat-filter-options">
-                        <form asp-route="@RouteNames.Courses" method="GET">
-                            @if (Model.OrderBy != OrderBy.None)
-                            {
-                                <input type="hidden" asp-for="OrderBy" name="orderby" />
-                            }
 
-                            <button type="submit" class="govuk-button" id="filters-submit">Apply filters</button>
-                            <div class="govuk-form-group">
-                                <label for="Keyword" class="govuk-label das-filter__search-label">Apprenticeship training course
-                                    <p class="govuk-hint">Enter a job role or keywords</p>
-                                    </label>
-                                <input asp-for="Keyword" name="keyword" type="search" title="Search" class="govuk-input">
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+
+        <div class="govuk-grid-column-one-third">
+
+            @await Html.PartialAsync("_filters", Model.Filters)
+            
+        </div>
+
+        <div class="govuk-grid-column-two-thirds">
+
+            @if (Model.Standards.Count > 0)
+            {
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-full">
+                        <div class="govuk-grid-column-one-half govuk-!-padding-0">
+                            <p class="govuk-body govuk-!-font-weight-bold">@Model.TotalMessage</p>
+                        </div>
+                        @if(!string.IsNullOrWhiteSpace(Model.SortedDisplayMessage))
+                        {
+                            <div class="govuk-grid-column-one-half govuk-!-padding-0">
+                                <p class="govuk-body govuk-!-text-align-right">
+                                    Sorted by:
+                                    <span class="govuk-!-font-weight-bold">@Model.SortedDisplayMessage</span>
+                                </p>
                             </div>
-                            <div class="govuk-form-group">
-                                <fieldset class="govuk-fieldset">
-                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                        Qualification level
-                                    </legend>
-                                    <div class="govuk-checkboxes govuk-checkboxes--small">
-                                        @foreach (var level in Model.Levels)
-                                        {
-                                            <div class="govuk-checkboxes__item">
-                                                <input @(level.Selected ? "checked='checked" : "") class="govuk-checkboxes__input" id="level-@level.Code" name="levels" type="checkbox" value="@level.Code" />
-                                                <label class="govuk-label govuk-checkboxes__label" for="level-@level.Code">
-                                                    @level.Title
-                                                </label>
-                                            </div>
-                                        }
-                                    </div>
-                                </fieldset>
-                                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3"><a class="govuk-link govuk-link--no-visited-state" href="https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels" target="_blank" rel="external">What qualification levels mean (opens in new tab or window)</a></p>
-                            </div>
-                            
-                            <div class="govuk-form-group">
-                                <fieldset class="govuk-fieldset">
-                                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--m">
-                                        Apprenticeship category
-                                    </legend>
-                                    <div class="govuk-checkboxes govuk-checkboxes--small">
-                                        @foreach (var sector in Model.Sectors)
-                                        {
-                                            <div class="govuk-checkboxes__item">
-                                                <input @(sector.Selected ? "checked='checked'" : "") class="govuk-checkboxes__input" id="route-@sector.Id" name="sectors" type="checkbox" value="@sector.Route">
-                                                <label class="govuk-label govuk-checkboxes__label" for="route-@sector.Id">
-                                                    @sector.Route
-                                                </label>
-                                            </div>
-                                        }
-                                    </div>
-                                </fieldset>
-                            </div>
-                            <button type="submit" class="govuk-button" id="filters-submit-second">Apply filters</button>
-                        </form>
+                        }
                     </div>
                 </div>
-                <button class="govuk-button das-filter__toggle das-show-hide__button" data-aria-controls="fat-filter@(Model.ShowFilterOptions ? "-options" : "")" data-button-string="filter @(Model.ShowFilterOptions ? " options" : "")" data-focus-id="fat-filter">Show/hide</button>
-            </div>
-        </div>
-        <div class="govuk-grid-column-two-thirds">
-            <h2 class="govuk-heading-m">@Model.TotalMessage</h2>
-            @if (Model.Courses.Count > 0)
-            {
 
-                if (Model.Courses.Count > 1)
-                {
-                    if (!string.IsNullOrEmpty(Model.Keyword))
-                    {
-                        if (Model.OrderBy == OrderBy.Relevance)
-                        {
-                            <p class="govuk-body govuk-!-margin-bottom-6">
-                                Sort by:
-
-                                <span class="govuk-!-font-weight-bold">Relevance</span>,
-                                <a id="sort-by-name" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByName">Name</a>
-
-                            </p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-bottom-6">
-                                Sort by:
-
-                                <a id="sort-by-relevance" class="govuk-link govuk-link--no-visited-state" asp-querystring="@Model.OrderByRelevance">Relevance</a>,
-                                <span class="govuk-!-font-weight-bold">Name</span>
-
-                            </p>
-                        }
-
-                    }
-                    else
-                    {
-                        <p class="govuk-body govuk-!-margin-bottom-6">
-                            Sorted by:
-                            <span class="govuk-!-font-weight-bold">Name</span>
-                        </p>
-                    }
-                }
-                
-                <hr class="govuk-section-break govuk-section-break--visible govuk-!-margin-bottom-3 ">
+                <hr class="govuk-section-break govuk-section-break--visible">
 
                 <div class="das-search-results">
                     <ol class="das-search-results__list">
-                        @foreach (var course in Model.Courses)
+                        @foreach (var standard in Model.Standards)
                         {
-                            <li class="das-search-results__list-item">
+                            <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
                                 <h2 class="govuk-heading-m das-search-results__heading">
-                                    <a class="das-search-results__link" id="standard-@course.Id" asp-route-id="@course.Id" asp-route-location="@Model.Location" asp-route="@RouteNames.CourseDetails">
-                                        @course.Title <span class="das-no-wrap">(level @course.Level)</span>
+                                    <a class="das-search-results__link"
+                                       id="standard-@standard.LarsCode"
+                                       asp-route-id="@standard.LarsCode"
+                                       asp-route-location="@Model.Location"
+                                       asp-route="@RouteNames.CourseDetails"
+                                    >
+                                        @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
                                     </a>
                                 </h2>
-                                <p class="govuk-body das-search-results__body">@course.OverviewOfRole</p>
-                                <dl class="das-definition-list das-definition-list--meta das-search-results__meta">
-                                    <dt class="das-definition-list__title">Apprenticeship category</dt>
-                                    <dd class="das-definition-list__definition">@course.Sector</dd>
-                                </dl>
+                                <p class="govuk-body das-search-results__body govuk-!-margin-bottom-3">@standard.OverviewOfRole</p>
+
+                                <div class="das-search-results__meta govuk-!-margin-bottom-4">
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Level</dt>
+                                        <dd class="das-definition-list__definition">@Model.GetLevelName(standard.Level)</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Job Category</dt>
+                                        <dd class="das-definition-list__definition">@standard.Route</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Duration</dt>
+                                        <dd class="das-definition-list__definition">@standard.TypicalDuration months</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Maximum funding from government</dt>
+                                        <dd class="das-definition-list__definition">@standard.MaxFunding.ToString("C0", new CultureInfo("en-GB"))</dd>
+                                    </dl>
+                                </div>
+
+                                <div class="govuk-body das-inline-container">
+                                    @if (standard.ProvidersCount == 0)
+                                    {
+                                        <p class="das-inline-text">No providers run this course yet.</p>
+                                    }
+
+                                    <a class="das-search-results__link"
+                                       id="standard-@standard.LarsCode"
+                                       href="@Model.GetProvidersLink(standard)"
+                                    >
+                                        @Model.GetProvidersLinkDisplayMessage(standard)
+                                    </a>
+                                </div>
                             </li>
                         }
                     </ol>
@@ -191,10 +109,22 @@
             }
             else
             {
-                <p class="govuk-body govuk-!-margin-top-4">
-                    No apprenticeship training courses for the selected filters.
+                <p class="govuk-body govuk-!-font-weight-bold">No results</p>
+                
+                <p class="govuk-body">There are no courses that match your search.</p>
+
+                <p class="govuk-body">You may need to:</p>
+
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>clear filters you’ve selected</li>
+                    <li>increase the distance that the apprentice can travel</li>
+                    <li>check your spelling or enter another search term and try again</li>
+                </ul>
+
+                <p class="govuk-body">
+                    Change your search using the filters on this page or 
+                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">start a new search</a>.
                 </p>
-                <p class="govuk-body"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.Courses">Clear filters</a></p>
             }
         </div>
     </div>

@@ -8,7 +8,7 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Courses.Api;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 

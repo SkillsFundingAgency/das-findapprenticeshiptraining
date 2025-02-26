@@ -35,7 +35,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             string cookiesUrl,
             string cookiesDetailsUrl,
             string coursesUrl,
-            GetCoursesResult result,
+            GetCoursesQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -68,9 +68,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals("")
                     && c.Levels == null
-                    && c.RouteIds == null
+                    && c.Routes == null
                     && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Name)
+                    && c.OrderBy.Equals(OrderBy.Title)
                 ), CancellationToken.None))
                 .ReturnsAsync(result);
             var controller = new HomeController(mediator.Object, cache.Object, configuration.Object)
@@ -109,7 +109,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_The_Courses_Query_Is_Called_And_Nodes_Built_For_Each_Course_And_Provider_List(
             string courseUrl,
             string courseProvidersUrl,
-            GetCoursesResult result,
+            GetCoursesQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -138,9 +138,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals("")
                     && c.Levels == null
-                    && c.RouteIds == null
+                    && c.Routes == null
                     && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Name)
+                    && c.OrderBy.Equals(OrderBy.Title)
                     ), CancellationToken.None))
                 .ReturnsAsync(result);
 
@@ -156,8 +156,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             newNode.Should().NotBeNull();
             var nodes = newNode.Descendants(newNode.GetDefaultNamespace() + "loc").ToList();
 
-            nodes.Count(c => c.Value.Equals(courseUrl)).Should().Be(result.Courses.Count);
-            nodes.Count(c => c.Value.Equals(courseProvidersUrl)).Should().Be(result.Courses.Count);
+            nodes.Count(c => c.Value.Equals(courseUrl)).Should().Be(result.Standards.Count);
+            nodes.Count(c => c.Value.Equals(courseProvidersUrl)).Should().Be(result.Standards.Count);
 
         }
 
@@ -165,7 +165,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_The_Sitemap_Content_Is_Added_To_The_Cache(
             string courseUrl,
             string courseProvidersUrl,
-            GetCoursesResult result,
+            GetCoursesQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -179,9 +179,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals("")
                     && c.Levels == null
-                    && c.RouteIds == null
+                    && c.Routes == null
                     && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Name)
+                    && c.OrderBy.Equals(OrderBy.Title)
                 ), CancellationToken.None))
                 .ReturnsAsync(result);
             var controller = new HomeController(mediator.Object, cache.Object, configuration.Object)
@@ -202,7 +202,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Cache_Object_Exists_Then_It_Is_Returned(
-            GetCoursesResult result,
+            GetCoursesQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)

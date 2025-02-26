@@ -16,10 +16,12 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviders;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-
+using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
+using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
 namespace SFA.DAS.FAT.Web.Controllers
 {
@@ -46,7 +48,8 @@ namespace SFA.DAS.FAT.Web.Controllers
             IDataProtectionProvider provider,
             IOptions<FindApprenticeshipTrainingWeb> config,
             IValidator<GetCourseQuery> courseValidator,
-            IValidator<GetCourseProviderQuery> courseProviderValidator)
+            IValidator<GetCourseProviderQuery> courseProviderValidator
+        )
         {
             _logger = logger;
             _mediator = mediator;
@@ -61,33 +64,36 @@ namespace SFA.DAS.FAT.Web.Controllers
         }
 
         [Route("", Name = RouteNames.Courses)]
-        public async Task<IActionResult> Courses(GetCoursesRequest request)
+        public async Task<IActionResult> Courses(GetCoursesViewModel model)
         {
-            var location = CheckLocation(request.Location);
             var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+
+            int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
 
             var result = await _mediator.Send(new GetCoursesQuery
             {
-                Keyword = request.Keyword,
-                RouteIds = request.Sectors,
-                Levels = request.Levels,
-                OrderBy = request.OrderBy,
+                Keyword = model.Keyword,
+                Location = model.Location,
+                Distance = validatedDistance,
+                Routes = model.Categories,
+                Levels = model.Levels,
+                OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
 
-            var viewModel = new CoursesViewModel
+            var viewModel = new CoursesViewModel(_config, Url)
             {
-                Courses = result.Courses.Select(c => (CourseViewModel)c).ToList(),
-                Sectors = result.Sectors.Select(sector => new SectorViewModel(sector, request.Sectors)).ToList(),
-                Total = result.Total,
-                TotalFiltered = result.TotalFiltered,
-                Keyword = request.Keyword,
-                SelectedSectors = request.Sectors,
-                SelectedLevels = request.Levels,
-                Levels = result.Levels.Select(level => new LevelViewModel(level, request.Levels)).ToList(),
-                OrderBy = request.OrderBy,
-                ShortListItemCount = result.ShortlistItemCount,
-                Location = location?.Name ?? "",
+                Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
+                Routes = result.Routes.Select(route => new RouteViewModel(route, model.Categories)).ToList(),
+                Total = result.TotalCount,
+                TotalFiltered = result.TotalCount,
+                Keyword = model.Keyword,
+                SelectedRoutes = model.Categories,
+                SelectedLevels = model.Levels,
+                Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
+                ShortListItemCount = 0, //result.ShortListItemCount,
+                Location = model.Location ?? string.Empty,
+                Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };

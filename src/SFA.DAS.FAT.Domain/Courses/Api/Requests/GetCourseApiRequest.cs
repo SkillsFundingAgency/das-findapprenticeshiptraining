@@ -1,7 +1,7 @@
 using System;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Domain.Courses.Api
+namespace SFA.DAS.FAT.Domain.Courses.Api.Requests
 {
     public class GetCourseApiRequest : IGetApiRequest
     {
@@ -10,7 +10,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
         private readonly string _locationName;
         private readonly Guid? _shortlistUserId;
 
-        public GetCourseApiRequest (string baseUrl, int id, double lat, double lon, string locationName, Guid? shortlistUserId = null)
+        public GetCourseApiRequest(string baseUrl, int id, double lat, double lon, string locationName, Guid? shortlistUserId = null)
         {
             _lat = lat;
             _lon = lon;

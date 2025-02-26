@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Domain.Courses.Api
+namespace SFA.DAS.FAT.Domain.Courses.Api.Requests
 {
     public class GetCourseProvidersApiRequest : IGetApiRequest
     {
@@ -19,7 +19,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
         private readonly Guid? _shortlistUserId;
         private readonly int _id;
 
-        public GetCourseProvidersApiRequest(       string baseUrl, int id, string location,
+        public GetCourseProvidersApiRequest(string baseUrl, int id, string location,
             IEnumerable<DeliveryModeType> deliveryModeTypes, IEnumerable<ProviderRating> employerProviderRatingTypes,
             IEnumerable<ProviderRating> apprenticeProviderRatingTypes, int sortOrder = 0, double lat = 0, double lon = 0, Guid? shortlistUserId = null)
         {
@@ -41,7 +41,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
         private string BuildUrl()
         {
             var buildUrl = $"{BaseUrl}trainingcourses/{_id}/providers?location={HttpUtility.UrlEncode(_location)}&sortOrder={_sortOrder}";
-            if (_deliveryModeTypes!= null && _deliveryModeTypes.Any())
+            if (_deliveryModeTypes != null && _deliveryModeTypes.Any())
             {
                 buildUrl += $"&deliveryModes={string.Join("&deliveryModes=", _deliveryModeTypes)}";
             }
@@ -67,7 +67,7 @@ namespace SFA.DAS.FAT.Domain.Courses.Api
             {
                 buildUrl += $"&shortlistUserId={_shortlistUserId}";
             }
-            
+
             return buildUrl;
         }
     }
