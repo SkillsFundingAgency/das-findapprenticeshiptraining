@@ -1,0 +1,24 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+@using SFA.DAS.FAT.Web.Services
+@model FilterSection
+
+<div class="govuk-accordion__section">
+    <div class="govuk-accordion__section-header">
+        <h2 class="govuk-accordion__section-heading">
+            <button type="button" class="govuk-accordion__section-button govuk-!-padding-bottom-1 govuk-!-padding-top-6" id="accordion-@Model.Id">
+                @Model.Heading
+            </button>
+        </h2>
+    </div>
+
+    <div id="accordion-@Model.Id-section" class="govuk-accordion__section-content govuk-!-padding-bottom-2">
+        @switch (Model.FilterComponentType)
+        {
+            case FilterService.FilterComponentType.CheckboxList:
+            {
+                @await Html.PartialAsync("_checkboxList", Model)
+            }
+            break;
+        }
+    </div>
+</div>

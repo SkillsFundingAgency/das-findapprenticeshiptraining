@@ -2,9 +2,9 @@
 using System.Web;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Domain.Courses.Api
+namespace SFA.DAS.FAT.Domain.Courses.Api.Requests
 {
-    public class GetCourseProviderDetailsApiRequest :  IGetApiRequest
+    public class GetCourseProviderDetailsApiRequest : IGetApiRequest
     {
         private readonly int _providerId;
         private readonly string _location;
