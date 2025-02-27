@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -86,8 +87,17 @@ public class CourseProvidersController : Controller
             QarPeriod = result.QarPeriod,
             ReviewPeriod = result.ReviewPeriod,
             TotalCount = result.TotalCount,
-            Providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList()
+            Providers = new List<CoursesProviderViewModel>()
         };
+
+        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
+        foreach (var provider in providers)
+        {
+            provider.Distance = request.Distance;
+            provider.Location = request.Location;
+        }
+
+        courseProvidersViewModel.Providers = providers;
 
         return View(courseProvidersViewModel);
     }

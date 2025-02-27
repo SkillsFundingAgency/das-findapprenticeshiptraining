@@ -35,6 +35,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<CoursesProviderViewModel> Providers { get; set; }
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
 
+
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
     {
         var dropdown = new List<ProviderOrderByOptionViewModel>();
@@ -61,6 +62,12 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
 
         var totalMessage = $"{totalToUse} result{(totalToUse != "1" ? "s" : "")}";
+
+        if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
+            Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        {
+            totalMessage = $"{totalMessage} within {Distance} miles";
+        }
 
         return totalMessage;
     }
