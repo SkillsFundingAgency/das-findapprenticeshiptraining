@@ -9,6 +9,7 @@ using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -27,20 +28,18 @@ public class CourseProvidersController : Controller
         _config = config.Value;
     }
 
-
     [Route("courses/{id}/providers", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(int id, CourseProvidersRequest request)
     {
         request.Id = id;
-        var shortListItemCount = 0;
+
+        var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+        var shortlistUserId = shortlistItem?.ShortlistUserId;
 
         if (!string.IsNullOrEmpty(request.Location) && (string.IsNullOrEmpty(request.Distance) || !DistanceService.IsValidDistance(request.Distance)))
         {
             request.Distance = Constants.DefaultDistance.ToString();
         }
-
-        var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-        var shortlistUserId = shortlistItem?.ShortlistUserId;
 
         int? distanceToRequest = null;
         if (request.Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE && int.TryParse(request.Distance, out var actualDistance))
@@ -63,8 +62,11 @@ public class CourseProvidersController : Controller
             ShortlistUserId = shortlistUserId
         });
 
+
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
+            Id = request.Id,
+            OrderBy = request.OrderBy,
             CourseTitleAndLevel = result.StandardName,
             CourseId = request.Id,
             Location = request.Location,
@@ -76,11 +78,12 @@ public class CourseProvidersController : Controller
             SelectedQarRatings = request.QarRatings.Select(q => q.ToString()).ToList(),
             ShowSearchCrumb = true,
             ShowShortListLink = true,
-            ShortListItemCount = shortListItemCount,
             ShowApprenticeTrainingCoursesCrumb = true,
             ShowApprenticeTrainingCourseCrumb = true,
             QarPeriod = result.QarPeriod,
-            ReviewPeriod = result.ReviewPeriod
+            ReviewPeriod = result.ReviewPeriod,
+            TotalCount = result.TotalCount,
+            Providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList()
         };
 
         return View(courseProvidersViewModel);

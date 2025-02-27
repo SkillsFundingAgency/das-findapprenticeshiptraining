@@ -1,0 +1,26 @@
+﻿@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsViewModel
+<div class="govuk-grid-column-one-third">
+    <h3 class="govuk-heading-s">Training options</h3>
+</div>
+<div class="govuk-grid-column-two-thirds">
+
+    @if (Model.IsEmployerLocationAvailable)
+    {
+        <div class="govuk-body">At apprentice's workplace
+            <div class="govuk-body-s das-hint-colour">Training at the employer’s location.</div>
+        </div>
+    }
+    @if (Model.IsBlockReleaseAvailable)
+    {
+        <div class="govuk-body">Block release
+            <div class="govuk-body-s das-hint-colour">Blocks of a week or more at the provider’s location.</div>
+        </div>
+    }
+    @if (Model.IsDayReleaseAvailable)
+    {
+        <div class="govuk-body">
+            Day release
+            <div class="govuk-body-s das-hint-colour">One day a week at the provider’s location. </div>
+        </div>
+    }
+</div>

@@ -87,7 +87,6 @@ public class WhenGettingCourseProviders
         List<QarRating> qarRatings,
         int page, int pageSize, Guid shortlistUserId)
     {
-
         //Arrange
         var courseProvidersParams = new CourseProvidersParameters
         {

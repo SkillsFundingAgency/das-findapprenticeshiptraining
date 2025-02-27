@@ -6,7 +6,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
-using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
 
@@ -338,5 +338,4 @@ public sealed class WhenFilteringCourseProviders
             });
         });
     }
-
 }

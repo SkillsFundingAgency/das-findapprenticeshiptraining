@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -28,10 +27,11 @@ public class CourseProvidersRequest
     public IReadOnlyList<QarRating> QarRatings { get; set; } = new List<QarRating>();
 
     [FromQuery]
-    public string Distance { get; set; } = String.Empty;
+    public string Distance { get; set; } = string.Empty;
 
     [FromQuery]
     public int Page { get; set; } = 1;
 
-    [FromQuery] public int PageSize { get; set; } = Constants.DefaultPageSize;
+    [FromQuery]
+    public int PageSize { get; set; } = Constants.DefaultPageSize;
 }
