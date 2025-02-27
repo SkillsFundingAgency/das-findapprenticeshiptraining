@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SFA.DAS.FAT.Application.Courses.Services;
 using SFA.DAS.FAT.Application.Locations.Services;
 using SFA.DAS.FAT.Application.Providers.Services;
+using SFA.DAS.FAT.Application.Services;
 using SFA.DAS.FAT.Application.Shortlist.Services;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Infrastructure.Api;
@@ -22,6 +22,7 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<ILocationService, LocationService>();
         services.AddTransient<IShortlistService, ShortlistService>();
         services.AddTransient<IDateTimeService, DateTimeService>();
+        services.AddTransient<IAcademicYearsService, AcademicYearService>();
         services.AddTransient<IRoutesService, RoutesService>();
         services.AddTransient<ILevelsService, LevelsService>();
 

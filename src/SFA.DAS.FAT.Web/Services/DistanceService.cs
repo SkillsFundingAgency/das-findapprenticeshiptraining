@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace SFA.DAS.FAT.Domain.Courses;
+namespace SFA.DAS.FAT.Web.Services;
 
 public static class DistanceService
 {
