@@ -14,6 +14,7 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -63,8 +64,7 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings.Select(type => type))
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings.Select(type => type))
                  && c.Qar.SequenceEqual(request.QarRatings.Select(type => type))
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(shortlistUserId)
                 ),
                 It.IsAny<CancellationToken>()))
@@ -138,8 +138,7 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings.Select(type => type))
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings.Select(type => type))
                  && c.Qar.SequenceEqual(request.QarRatings.Select(type => (QarRating)type))
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(null)
                 ),
                 It.IsAny<CancellationToken>()))
@@ -275,7 +274,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(string.Empty);
+            actualModel!.Distance.Should().Be("All");
         }
     }
 
@@ -365,6 +364,47 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController controller)
     {
         response.TotalCount = totalCount;
+        request.Location = null;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        //Act
+        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.TotalMessage.Should().Be(expectedMessage);
+        }
+    }
+
+    [Test]
+    [MoqInlineAutoData(1, "Coventry", "10", "1 result within 10 miles")]
+    [MoqInlineAutoData(2, "Coventry", "20", "2 results within 20 miles")]
+    [MoqInlineAutoData(2, "Coventry", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "2 results")]
+    [MoqInlineAutoData(2, "Coventry", "", "2 results within 10 miles")]
+    public async Task Then_TotalMessage_With_Distance_And_Location_Is_Set(
+        int totalCount,
+        string location,
+        string distance,
+        string expectedMessage,
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        response.TotalCount = totalCount;
+        request.Location = location;
+        request.Distance = distance;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -454,5 +494,4 @@ public class WhenGettingCourseProviders
             actualModel!.ProviderOrderDropdown.Should().BeEquivalentTo(expectedProviderOrderDropdown);
         }
     }
-
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using MediatR;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 
@@ -19,6 +18,5 @@ public class GetCourseProvidersQuery : IRequest<GetCourseProvidersResult>
     public List<ProviderRating> ApprenticeProviderRatings { get; set; }
     public List<QarRating> Qar { get; set; }
     public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = Constants.DefaultPageSize;
     public Guid? ShortlistUserId { get; set; }
 }

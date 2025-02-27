@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 
@@ -30,8 +29,5 @@ public class CourseProvidersRequest
     public string Distance { get; set; } = string.Empty;
 
     [FromQuery]
-    public int Page { get; set; } = 1;
-
-    [FromQuery]
-    public int PageSize { get; set; } = Constants.DefaultPageSize;
+    public int PageNumber { get; set; } = 1;
 }

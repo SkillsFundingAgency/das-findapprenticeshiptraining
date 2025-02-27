@@ -19,6 +19,11 @@ public class CoursesProviderViewModel
         get => Locations.Any(x => x.AtEmployer);
     }
 
+    public decimal? NearestEmployerLocation
+    {
+        get => Locations.FirstOrDefault(x => x.AtEmployer)?.CourseDistance;
+    }
+
     public bool IsBlockReleaseAvailable
     {
         get => Locations.Any(x => x.BlockRelease);
@@ -27,6 +32,26 @@ public class CoursesProviderViewModel
     public bool IsDayReleaseAvailable
     {
         get => Locations.Any(l => l.DayRelease);
+    }
+
+    public bool IsBlockReleaseMultiple
+    {
+        get => Locations.Count(x => x.BlockRelease) > 1;
+    }
+
+    public bool IsDayReleaseMultiple
+    {
+        get => Locations.Count(x => x.DayRelease) > 1;
+    }
+
+    public decimal? NearestBlockRelease
+    {
+        get => Locations.FirstOrDefault(x => x.BlockRelease)?.CourseDistance;
+    }
+
+    public decimal? NearestDayRelease
+    {
+        get => Locations.FirstOrDefault(x => x.DayRelease)?.CourseDistance;
     }
 
     public string Leavers { get; set; }

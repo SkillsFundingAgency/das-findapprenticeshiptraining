@@ -1,15 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -42,10 +44,13 @@ public class CourseProvidersController : Controller
         }
 
         int? distanceToRequest = null;
+
         if (request.Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE && int.TryParse(request.Distance, out var actualDistance))
         {
             distanceToRequest = actualDistance;
         }
+
+        var deliveryModes = request.DeliveryModes.ToList();
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
@@ -53,15 +58,13 @@ public class CourseProvidersController : Controller
             Location = request.Location,
             OrderBy = request.OrderBy,
             Distance = distanceToRequest,
-            DeliveryModes = request.DeliveryModes.ToList(),
+            DeliveryModes = deliveryModes,
             EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatings = request.ApprenticeProviderRatings.ToList(),
             Qar = request.QarRatings.ToList(),
-            Page = request.Page,
-            PageSize = request.PageSize,
+            Page = request.PageNumber,
             ShortlistUserId = shortlistUserId
         });
-
 
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
@@ -70,9 +73,8 @@ public class CourseProvidersController : Controller
             CourseTitleAndLevel = result.StandardName,
             CourseId = request.Id,
             Location = request.Location,
-            Distance = distanceToRequest.ToString(),
-            SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
-                .Select(d => d.ToString()).ToList(),
+            Distance = request.Distance,
+            SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()).ToList(),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()).ToList(),
             SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()).ToList(),
             SelectedQarRatings = request.QarRatings.Select(q => q.ToString()).ToList(),
@@ -85,6 +87,21 @@ public class CourseProvidersController : Controller
             TotalCount = result.TotalCount,
             Providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList()
         };
+
+        courseProvidersViewModel.Pagination = new PaginationViewModel(1, 0, Constants.DefaultPageSize,
+            Url, RouteNames.CourseProviders, new List<ValueTuple<string, string>>());
+
+        if (result.Providers.Count > 0)
+        {
+            courseProvidersViewModel.Pagination = new PaginationViewModel(
+                result.Page,
+                result.TotalCount,
+                result.PageSize,
+                Url,
+                RouteNames.CourseProviders,
+                courseProvidersViewModel.ToQueryString()
+            );
+        }
 
         return View(courseProvidersViewModel);
     }

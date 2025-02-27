@@ -72,4 +72,131 @@ public class WhenCreatingCoursesProviderViewModel
 
         sut.AchievementRateMessage.Should().Be(expectedMessage);
     }
+
+    [TestCase(null, null, true, null)]
+    [TestCase(1.5, null, false, null)]
+    [TestCase(1.5, null, true, 1.5)]
+    [TestCase(1.5, 2.5, true, 1.5)]
+    [TestCase(2.5, 1.5, true, 2.5)]
+    public void Then_NearestEmployerLocation_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool atEmployer, decimal? expectedValue)
+    {
+        var sut = new CoursesProviderViewModel
+        {
+            Locations = new List<ProviderLocation>()
+        };
+
+        if (courseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, AtEmployer = atEmployer });
+        }
+
+        if (secondCourseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, AtEmployer = atEmployer });
+        }
+
+        sut.NearestEmployerLocation.Should().Be(expectedValue);
+    }
+
+    [TestCase(null, null, true, null)]
+    [TestCase(1.5, null, false, null)]
+    [TestCase(1.5, null, true, 1.5)]
+    [TestCase(1.5, 2.5, true, 1.5)]
+    [TestCase(2.5, 1.5, true, 2.5)]
+    public void Then_NearestBlockRelease_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool blockRelease, decimal? expectedValue)
+    {
+        var sut = new CoursesProviderViewModel
+        {
+            Locations = new List<ProviderLocation>()
+        };
+
+        if (courseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, BlockRelease = blockRelease });
+        }
+
+        if (secondCourseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, BlockRelease = blockRelease });
+        }
+
+        sut.NearestBlockRelease.Should().Be(expectedValue);
+    }
+
+    [TestCase(null, null, true, null)]
+    [TestCase(1.5, null, false, null)]
+    [TestCase(1.5, null, true, 1.5)]
+    [TestCase(1.5, 2.5, true, 1.5)]
+    [TestCase(2.5, 1.5, true, 2.5)]
+    public void Then_NearestDayRelease_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool dayRelease, decimal? expectedValue)
+    {
+        var sut = new CoursesProviderViewModel
+        {
+            Locations = new List<ProviderLocation>()
+        };
+
+        if (courseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, DayRelease = dayRelease });
+        }
+
+        if (secondCourseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, DayRelease = dayRelease });
+        }
+
+        sut.NearestDayRelease.Should().Be(expectedValue);
+    }
+
+
+    [TestCase(null, null, true, false)]
+    [TestCase(1.5, null, false, false)]
+    [TestCase(1.5, 2.5, false, false)]
+    [TestCase(1.5, 2.5, true, true)]
+    [TestCase(2.5, 1.5, true, true)]
+    public void Then_DayReleaseMultiple_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool dayRelease, bool expectedValue)
+    {
+        var sut = new CoursesProviderViewModel
+        {
+            Locations = new List<ProviderLocation>()
+        };
+
+        if (courseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, DayRelease = dayRelease });
+        }
+
+        if (secondCourseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, DayRelease = dayRelease });
+        }
+
+        sut.IsDayReleaseMultiple.Should().Be(expectedValue);
+    }
+
+
+    [TestCase(null, null, true, false)]
+    [TestCase(1.5, null, false, false)]
+    [TestCase(1.5, 2.5, false, false)]
+    [TestCase(1.5, 2.5, true, true)]
+    [TestCase(2.5, 1.5, true, true)]
+    public void Then_BlockReleaseMultiple_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool blockRelease, bool expectedValue)
+    {
+        var sut = new CoursesProviderViewModel
+        {
+            Locations = new List<ProviderLocation>()
+        };
+
+        if (courseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, BlockRelease = blockRelease });
+        }
+
+        if (secondCourseDistance != null)
+        {
+            sut.Locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, BlockRelease = blockRelease });
+        }
+
+        sut.IsBlockReleaseMultiple.Should().Be(expectedValue);
+    }
 }
