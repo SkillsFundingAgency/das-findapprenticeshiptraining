@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -19,7 +18,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public string Location { get; }
 
-    public int Page { get; } = 1;
+    public int Page { get; }
 
     public int PageSize { get; } = 10;
 
@@ -30,6 +29,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         int? distance,
         List<int> routes, 
         List<int> levels, 
+        int page,
         OrderBy orderBy
     )
     {
@@ -39,6 +39,7 @@ public class GetCoursesApiRequest : IGetApiRequest
         Distance = distance;
         RouteIds = routes;
         Levels = levels;
+        Page = page;
         OrderBy = orderBy;
     }
 
@@ -82,6 +83,8 @@ public class GetCoursesApiRequest : IGetApiRequest
                 queryParams.Add($"levels={level}");
             }
         }
+
+        queryParams.Add($"Page={Page}");
 
         var queryString = string.Join("&", queryParams);
 

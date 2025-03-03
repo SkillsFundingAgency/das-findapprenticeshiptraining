@@ -25,15 +25,18 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var coursesResponse = await _apiClient.Get<GetCoursesResponse>(new GetCoursesApiRequest(
+        var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
+            new GetCoursesApiRequest(
                 _config.Value.BaseUrl,
                 query.Keyword,
                 query.Location,
                 query.Distance,
                 routeIds,
                 query.Levels,
+                query.Page,
                 query.OrderBy
-            ));
+            )
+        );
 
         return new GetCoursesQueryResult()
         {
