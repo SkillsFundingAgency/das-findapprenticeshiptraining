@@ -2,38 +2,46 @@
 @using SFA.DAS.FAT.Web.TagHelpers
 @using SFA.DAS.FAT.Web.Infrastructure
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-<div class="govuk-grid-row">
 
-    <div class="govuk-grid-column-full">
-        <div class="govuk-body">
-            <p class="govuk-body">We're improving Find apprenticeship training. <a href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What do you think of this service? (opens in a new tab)</a></p>
-            <hr/>
-        </div>
-    </div>
+<div class="govuk-phase-banner">
+    <p class="govuk-phase-banner__content">We're improving Find apprenticeship training. <a
+            href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What do you
+            think of this service? (opens in a new tab)</a></p>
+</div>
+
+<div class="govuk-grid-row">
     @if (Model is PageLinksViewModelBase pageLinks)
     {
         <div class="govuk-grid-column-three-quarters">
             <div class="govuk-breadcrumbs">
                 <ol class="govuk-breadcrumbs__list">
                     <li asp-show="@Model.ShowSearchCrumb" class="govuk-breadcrumbs__list-item">
-                        <a id="home-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.SearchCourses">Search</a>
+                        <a id="home-breadcrumb" class="govuk-breadcrumbs__link"
+                            asp-route="@RouteNames.SearchCourses">Search</a>
                     </li>
                     <li asp-show="pageLinks.ShowApprenticeTrainingCoursesCrumb" class="govuk-breadcrumbs__list-item">
-                        <a id="courses-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.Courses" asp-route-location="@pageLinks.Location">Course search results</a>
+                        <a id="courses-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.Courses"
+                            asp-route-location="@pageLinks.Location">Course search results</a>
                     </li>
 
                     <li asp-show="pageLinks.ShowApprenticeTrainingCourseCrumb" class="govuk-breadcrumbs__list-item">
-                        <a id="course-detail-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@pageLinks.CourseId" asp-route-location="@pageLinks.Location">Course details</a>
+                        <a id="course-detail-breadcrumb" class="govuk-breadcrumbs__link"
+                            asp-route="@RouteNames.CourseDetails" asp-route-id="@pageLinks.CourseId"
+                            asp-route-location="@pageLinks.Location">Course details</a>
                     </li>
 
-                    <li asp-show="pageLinks.ShowApprenticeTrainingCourseProvidersCrumb" class="govuk-breadcrumbs__list-item">
-                        <a id="providers-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseProviders" asp-all-route-data="@Model.GetCourseProvidersRequest">Training provider details</a>
+                    <li asp-show="pageLinks.ShowApprenticeTrainingCourseProvidersCrumb"
+                        class="govuk-breadcrumbs__list-item">
+                        <a id="providers-breadcrumb" class="govuk-breadcrumbs__link" asp-route="@RouteNames.CourseProviders"
+                            asp-all-route-data="@Model.GetCourseProvidersRequest">Training provider details</a>
                     </li>
                 </ol>
             </div>
         </div>
         <div asp-show="@Model.ShowShortListLink" class="govuk-grid-column-one-quarter">
-            <a id="header-view-shortlist" asp-route="@RouteNames.ShortList" class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@pageLinks.ShortListItemCount</span></a>
+            <a id="header-view-shortlist" asp-route="@RouteNames.ShortList"
+                class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span
+                    class="app-view-shortlist-link__number" aria-hidden="true">@pageLinks.ShortListItemCount</span></a>
         </div>
     }
 </div>
