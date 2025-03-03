@@ -7,67 +7,55 @@
     ViewData["Description"] = "Search for apprenticeship training courses and training providers";
 }
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-three-quarters">
-        <div class="govuk-form-group">
-            <fieldset class="govuk-fieldset">
-                <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                    <h1 class="govuk-fieldset__heading">
-                        Search for apprenticeship training courses and training providers
-                    </h1>
-                </legend>
-                <input asp-for="ShortListItemCount" id="ShortlistItemCount" type="hidden"/>
-                <p class="govuk-body">
-                    Search for a training course or training for a job. We’ll show you a list of relevant and similar courses and training providers that run them. You can also enter the apprentice’s work location to find providers near that location.
-                </p>
-                <p class="govuk-body">
-                    If you want to find a specific training provider, you can <a asp-route="@RouteNames.SelectProvider" class="govuk-link govuk-link--no-visited-state">search for a training provider</a>
-                </p>
-
-                      
-            </fieldset>
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-three-quarters">
+            <h1 class="govuk-heading-l">
+                Search for apprenticeship training courses and training providers
+            </h1>
+            </legend>
+            <input asp-for="ShortListItemCount" id="ShortlistItemCount" type="hidden" />
+            <p class="govuk-body">
+                Search for a training course or training for a job. We’ll show you a list of relevant and
+                similar courses and training providers that run them. You can also enter the apprentice’s work
+                location
+                to find providers near that location.
+            </p>
+            <p class="govuk-body">
+                If you want to find a specific training provider, you can <a asp-route="@RouteNames.SelectProvider"
+                    class="govuk-link govuk-link--no-visited-state">search for a training provider</a>
+            </p>
         </div>
     </div>
-</div>
 
-<div class="govuk-grid-row das-highlight">
-    <br/>
-    <form asp-route="@RouteNames.SearchCourses" method="POST">
-        <div class="govuk-grid-column-full">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-body">
-                    <h2 class="govuk-heading-m">Course</h2>
-                    <p class="govuk-hint">Enter the name of a course, job or standard (optional)</p>
+    <div class="app-home-panel">
+
+        <form asp-route="@RouteNames.SearchCourses" method="POST">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-one-third">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--m" for="CourseTerm">Course</label>
+                        <p class="govuk-hint">Enter the name of a course, job or standard (optional)</p>
+                        <input id="CourseTerm" name="CourseTerm" type="text" asp-for="CourseTerm" class="govuk-input"
+                            sfa-validationerror-class="form-control-error" />
+                    </div>
+
+                </div>
+                <div class="govuk-grid-column-one-half">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--m" for="search-location">Apprentice's work
+                            location</label>
+                        <p class="govuk-hint">Enter the city or postcode where the apprentice will work (optional)</p>
+                        <input type="search" id="search-location" name="location" title="Search work locations"
+                            class="govuk-input" data-submit-on-selection="true">
+                    </div>
                 </div>
             </div>
-            <div class="govuk-grid-column-one-half">
-                <h2 class="govuk-heading-m">Apprentice's work location</h2>
-                <p class="govuk-hint">Enter the city or postcode where the apprentice will work (optional)</p>
+            <div class="govuk-button-group govuk-!-margin-bottom-0">
+                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+                <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">Browse all
+                    courses</a>
             </div>
-        </div>
-
-        <div class="govuk-grid-column-full">
-            <div class="govuk-grid-column-one-third">
-                <p>
-                    <input id="CourseTerm" name="CourseTerm" type="text"
-                           asp-for="CourseTerm" class="govuk-input" sfa-validationerror-class="form-control-error"/>
-                </p>
-            </div>
-            <div data-module="govuk-input" class="govuk-grid-column-one-half">
-                <p>
-                    <input type="search" id="search-location" name="location" title="Search work locations" class="govuk-input" data-submit-on-selection="true">
-                </p>
-            </div>
-        </div>
-
-        <div class="govuk-grid-column-full">
-            <div class="govuk-grid-column-one-third">
-                <div class="govuk-button-group">
-                    <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
-                    <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">Browse all courses</a>
-                </div>
-            </div>
-        </div>
-    </form>
-</div>
-
+        </form>
+    </div>
+</main>
