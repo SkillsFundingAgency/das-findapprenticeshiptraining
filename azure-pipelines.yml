@@ -4,6 +4,13 @@ trigger:
     include:
       - "master"
 
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - "master"
+      - "FAT25-Development"
+
 resources:
   repositories:
   - repository: das-platform-building-blocks
