@@ -107,7 +107,7 @@ public sealed class PaginationViewModel
         return $"{_urlHelper.RouteUrl(_routeName)}?{queryString}";
     }
 
-    static (int startPage, int endPage) GetPageRange(int currentPage, int totalRecords, int pageSize)
+    public static (int startPage, int endPage) GetPageRange(int currentPage, int totalRecords, int pageSize)
     {
         int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
 

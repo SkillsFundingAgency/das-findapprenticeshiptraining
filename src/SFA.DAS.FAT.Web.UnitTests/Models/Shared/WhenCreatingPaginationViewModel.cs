@@ -104,18 +104,35 @@ public sealed class WhenCreatingPaginationViewModel
         {
             sut.Pages.Should().HaveCount(5);
             sut.Pages[0].Title.Should().Be(PaginationViewModel.PreviousPageTitle);
-            sut.Pages[0].Url.Should().Contain($"PageNumber={1}");
+            sut.Pages[0].Url.Should().Contain("PageNumber=1");
             sut.Pages[1].Title.Should().Be("1");
-            sut.Pages[1].Url.Should().Contain($"PageNumber={1}");
+            sut.Pages[1].Url.Should().Contain("PageNumber=1");
             sut.Pages[2].Title.Should().Be("2");
             sut.Pages[2].Url.Should().BeNull();
             sut.Pages[3].Title.Should().Be("3");
-            sut.Pages[3].Url.Should().Contain($"PageNumber={3}");
+            sut.Pages[3].Url.Should().Contain("PageNumber=3");
             sut.Pages[4].Title.Should().Be(PaginationViewModel.NextPageTitle);
-            sut.Pages[4].Url.Should().Contain($"PageNumber={3}");
+            sut.Pages[4].Url.Should().Contain("PageNumber=3");
         }
     }
 
+    [Test]
+    public void When_Params_Do_Not_Contain_PageNumber_Then_PageNumber_Is_Added_And_Correct_Page_Links_Are_Set()
+    {
+        int currentPage = 1;
+        int totalCount = 20;
+
+        List<ValueTuple<string, string>> queryParams = [];
+
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, queryParams);
+
+        using (new AssertionScope())
+        {
+            sut.Pages.Should().HaveCount(3);
+            sut.Pages[1].Title.Should().Be("2");
+            sut.Pages[1].Url.Should().Contain("PageNumber=2");
+        }
+    }
 
     [TestCase(1, 10, 0, 0, "When there is only 1 page")]
     [TestCase(2, 11, 2, 1, "When there is only 1 page")]
@@ -142,5 +159,27 @@ public sealed class WhenCreatingPaginationViewModel
                 }
             }
         }
+    }
+
+
+    [TestCase(1, 70, 10, 1, 6, TestName = "First Page - Expands End")]
+    [TestCase(2, 70, 10, 1, 6, TestName = "Second Page - Expands End")]
+    [TestCase(3, 70, 10, 1, 6, TestName = "Third Page - Expands End")]
+    [TestCase(5, 70, 10, 2, 7, TestName = "Middle Page - Keeps Balance")]
+    [TestCase(6, 70, 10, 2, 7, TestName = "Sixth Page - Expands Start")]
+    [TestCase(7, 70, 10, 2, 7, TestName = "Seventh Page - Expands Start")]
+    [TestCase(7, 80, 10, 3, 8, TestName = "Eighth Page - Expands Start")]
+    public void Then_Get_Page_Range_Adjusts_Correctly(
+        int currentPage,
+        int totalRecords,
+        int pageSize,
+        int expectedStartPage,
+        int expectedEndPage
+    )
+    {
+        var (startPage, endPage) = PaginationViewModel.GetPageRange(currentPage, totalRecords, pageSize);
+
+        Assert.That(startPage, Is.EqualTo(expectedStartPage), "Start page did not match expected value.");
+        Assert.That(endPage, Is.EqualTo(expectedEndPage), "End page did not match expected value.");
     }
 }
