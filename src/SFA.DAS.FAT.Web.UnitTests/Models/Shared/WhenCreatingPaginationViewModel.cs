@@ -161,7 +161,6 @@ public sealed class WhenCreatingPaginationViewModel
         }
     }
 
-
     [TestCase(1, 70, 10, 1, 6, TestName = "First Page - Expands End")]
     [TestCase(2, 70, 10, 1, 6, TestName = "Second Page - Expands End")]
     [TestCase(3, 70, 10, 1, 6, TestName = "Third Page - Expands End")]
@@ -169,6 +168,7 @@ public sealed class WhenCreatingPaginationViewModel
     [TestCase(6, 70, 10, 2, 7, TestName = "Sixth Page - Expands Start")]
     [TestCase(7, 70, 10, 2, 7, TestName = "Seventh Page - Expands Start")]
     [TestCase(7, 80, 10, 3, 8, TestName = "Eighth Page - Expands Start")]
+    [TestCase(20, 100, 10, 3, 8, TestName = "Current Page Exceeds Last Page - Resets Spread")]
     public void Then_Get_Page_Range_Adjusts_Correctly(
         int currentPage,
         int totalRecords,
@@ -181,5 +181,19 @@ public sealed class WhenCreatingPaginationViewModel
 
         Assert.That(startPage, Is.EqualTo(expectedStartPage), "Start page did not match expected value.");
         Assert.That(endPage, Is.EqualTo(expectedEndPage), "End page did not match expected value.");
+    }
+
+    [Test]
+    public void When_Url_Is_Set_Then_Page_Link_Has_Link_Is_True()
+    {
+        PageLink pageLink = new PageLink("Title", "//dummyurl");
+        Assert.That(pageLink.HasLink, Is.True);
+    }
+
+    [Test]
+    public void When_Url_Is_Not_Set_Then_Page_Link_Has_Link_Is_False()
+    {
+        PageLink pageLink = new PageLink("Title", string.Empty);
+        Assert.That(pageLink.HasLink, Is.False);
     }
 }
