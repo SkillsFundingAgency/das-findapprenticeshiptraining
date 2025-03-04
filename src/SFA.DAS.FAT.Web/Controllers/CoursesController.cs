@@ -101,7 +101,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 PageNumber = result.Page
             };
 
-            if (result.TotalCount > 0)
+            if (result.Standards.Count > 0)
             {
                 viewModel.Pagination = new PaginationViewModel(
                     result.Page,

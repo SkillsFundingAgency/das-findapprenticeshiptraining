@@ -325,4 +325,95 @@ public class WhenCreatingCoursesViewModel
         var result = _sut.GetProvidersLink(standardViewModel);
         Assert.That(findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl, Is.EqualTo(result));
     }
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_Keyword_When_Set()
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "test"
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "Keyword"), Is.AtLeast(0));
+    }
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_Location_And_Distance_When_Set()
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = "10"
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "Location"), Is.AtLeast(0));
+        Assert.That(_sut.FindIndex(a => a.Item1 == "Distance"), Is.AtLeast(0));
+    }
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_Levels_When_SelectedLevels_Are_Set()
+    {
+        var selectedLevels = new List<int>() { 1 };
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Levels = new List<LevelViewModel>()
+        {
+            new LevelViewModel(
+                new Level()
+                {
+                    Code = 1,
+                    Name = "Level"
+                },
+                selectedLevels
+            )
+        },
+            SelectedLevels = selectedLevels
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "Levels"), Is.AtLeast(0));
+    }
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_Routes_When_SelectedRoutes_Are_Set()
+    {
+        var selectedRoutes = new List<string> { "Construction" };
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Routes = new List<RouteViewModel>()
+        {
+            new RouteViewModel(
+                new Route()
+                {
+                    Id = 1,
+                    Name = "Construction"
+                },
+                selectedRoutes
+            )
+        },
+            SelectedRoutes = selectedRoutes
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "Categories"), Is.AtLeast(0));
+    }
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_PageNumber()
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            PageNumber = 3
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "PageNumber"), Is.AtLeast(0));
+    }
 }
