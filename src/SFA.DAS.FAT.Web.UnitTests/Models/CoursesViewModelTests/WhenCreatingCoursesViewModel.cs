@@ -350,8 +350,11 @@ public class WhenCreatingCoursesViewModel
 
         var _sut = viewModel.ToQueryString();
 
-        Assert.That(_sut.FindIndex(a => a.Item1 == "Location"), Is.AtLeast(0));
-        Assert.That(_sut.FindIndex(a => a.Item1 == "Distance"), Is.AtLeast(0));
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut.FindIndex(a => a.Item1 == "Location"), Is.AtLeast(0));
+            Assert.That(_sut.FindIndex(a => a.Item1 == "Distance"), Is.AtLeast(0));
+        });
     }
 
     [Test]
