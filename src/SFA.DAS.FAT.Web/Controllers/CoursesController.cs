@@ -97,8 +97,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Location = model.Location ?? string.Empty,
                 Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
                 ShowSearchCrumb = true,
-                ShowShortListLink = true,
-                PageNumber = result.Page
+                ShowShortListLink = true
             };
 
             if (result.Standards.Count > 0)

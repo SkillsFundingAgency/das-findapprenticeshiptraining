@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Infrastructure;
-using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 
@@ -34,13 +33,26 @@ public sealed class WhenCreatingPaginationViewModel
     }
 
     [Test]
+    public void Then_Page_Number_Should_Be_Set()
+    {
+        var sut = new PaginationViewModel(
+            1, 
+            1, 
+            PageSize, 
+            _urlHelperMock.Object, 
+            RouteNames.Courses, new List<(string, string)>()
+        );
+
+        Assert.That(sut.PageNumber, Is.EqualTo(1));
+    }
+
+    [Test]
     [InlineAutoData(1, 0, "When no records")]
     [InlineAutoData(1, 10, "When only enough records for one page")]
     [InlineAutoData(3, 10, "When page number is greater than total pages")]
     public void Then_Returns_Empty_Model(int currentPage, int totalCount, string testMessage)
     {
-        List<ValueTuple<string, string>> queryParams = new() { ValueTuple.Create(nameof(CoursesViewModel.PageNumber), currentPage.ToString()) };
-        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, queryParams);
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, new List<(string, string)>());
         sut.Pages.Count.Should().Be(0, testMessage);
     }
 
@@ -54,8 +66,7 @@ public sealed class WhenCreatingPaginationViewModel
     {
         Mock<IUrlHelper> urlHelperMock = new Mock<IUrlHelper>();
 
-        List<ValueTuple<string, string>> queryParams = new() { ValueTuple.Create(nameof(CoursesViewModel.PageNumber), currentPage.ToString()) };
-        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, urlHelperMock.Object, RouteNames.Courses, queryParams);
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, urlHelperMock.Object, RouteNames.Courses, new List<(string, string)>());
 
         if (expectedPageNumberInPreviousLink > 0)
         {
@@ -75,8 +86,7 @@ public sealed class WhenCreatingPaginationViewModel
     [InlineAutoData(1, 20, 2, "Next link should point to current page + 1 when current page is less than total pages")]
     public void Then_Model_Adds_Next_Link(int currentPage, int totalCount, int expectedPageNumberInTheNextLink, string testMessage)
     {
-        List<ValueTuple<string, string>> queryParams = new() { ValueTuple.Create(nameof(CoursesViewModel.PageNumber), currentPage.ToString()) };
-        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, queryParams);
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, new List<(string, string)>());
 
         if (expectedPageNumberInTheNextLink > 0)
         {
@@ -96,9 +106,7 @@ public sealed class WhenCreatingPaginationViewModel
         int currentPage = 2;
         int totalCount = 30;
 
-        List<ValueTuple<string, string>> queryParams = new() { ValueTuple.Create(nameof(CoursesViewModel.PageNumber), currentPage.ToString()) };
-
-        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, queryParams);
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, new List<(string, string)>());
 
         using (new AssertionScope())
         {
@@ -141,8 +149,7 @@ public sealed class WhenCreatingPaginationViewModel
     [TestCase(9, 90, 6, 4, "When there is only 1 page")]
     public void Then_Model_Creates_Correct_Number_Of_Page_Links(int currentPage, int totalCount, int expectedPageLinksCount, int startPageNumber, string testMessage)
     {
-        List<ValueTuple<string, string>> queryParams = new() { ValueTuple.Create(nameof(CoursesViewModel.PageNumber), currentPage.ToString()) };
-        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, queryParams);
+        var sut = new PaginationViewModel(currentPage, totalCount, PageSize, _urlHelperMock.Object, RouteNames.Courses, new List<(string, string)>());
 
         sut.Pages.RemoveAll(p => p.Title == PaginationViewModel.PreviousPageTitle || p.Title == PaginationViewModel.NextPageTitle);
 

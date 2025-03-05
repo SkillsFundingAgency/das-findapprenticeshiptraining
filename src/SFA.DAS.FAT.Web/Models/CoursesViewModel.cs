@@ -37,8 +37,6 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string SortedDisplayMessage => GetSortedDisplayMessage();
 
-    public int PageNumber { get; set; } = 1;
-
     private OrderBy? _orderBy;
 
     public OrderBy OrderBy
@@ -329,8 +327,6 @@ public class CoursesViewModel : PageLinksViewModelBase
                     break;
             }
         }
-
-        result.Add(ValueTuple.Create(nameof(PageNumber), PageNumber.ToString()));
 
         return result;
     }

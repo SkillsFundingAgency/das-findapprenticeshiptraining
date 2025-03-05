@@ -406,17 +406,4 @@ public class WhenCreatingCoursesViewModel
 
         Assert.That(_sut.FindIndex(a => a.Item1 == "Categories"), Is.AtLeast(0));
     }
-
-    [Test]
-    public void Then_ToQueryString_Should_Include_PageNumber()
-    {
-        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
-        {
-            PageNumber = 3
-        };
-
-        var _sut = viewModel.ToQueryString();
-
-        Assert.That(_sut.FindIndex(a => a.Item1 == "PageNumber"), Is.AtLeast(0));
-    }
 }

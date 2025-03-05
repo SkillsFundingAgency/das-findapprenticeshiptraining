@@ -7,6 +7,8 @@ namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public sealed class PaginationViewModel
 {
+    public int PageNumber { get; set; } = 1;
+
     public const string PreviousPageTitle = "« Previous";
 
     public const string NextPageTitle = "Next »";
@@ -30,18 +32,11 @@ public sealed class PaginationViewModel
         List<ValueTuple<string, string>> queryParams
     )
     {
+        PageNumber = pageNumber;
+
         _routeName = routeName;
         _queryParams = queryParams;
         _urlHelper = urlHelper;
-
-        int currentPage = 1;
-
-        var queryPageNumber = queryParams.FirstOrDefault(a => a.Item1 == PageNumberQueryName);
-
-        if (!string.IsNullOrWhiteSpace(queryPageNumber.Item2) && int.TryParse(queryPageNumber.Item2, out var _currentPage))
-        {
-            currentPage = _currentPage;
-        }
 
         if (totalCount == 0)
         {
@@ -50,18 +45,18 @@ public sealed class PaginationViewModel
 
         var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
 
-        if (totalPages <= 1 || currentPage > totalPages)
+        if (totalPages <= 1 || PageNumber > totalPages)
         {
             return;
         }
 
-        var (startPage, endPage) = GetPageRange(currentPage, totalCount, pageSize);
+        var (startPage, endPage) = GetPageRange(PageNumber, totalCount, pageSize);
 
-        AddPreviousLinkIfApplicable(totalPages, currentPage);
+        AddPreviousLinkIfApplicable(totalPages, PageNumber);
 
-        AddPageLinks(currentPage, startPage, endPage);
+        AddPageLinks(PageNumber, startPage, endPage);
 
-        AddNextLinkIfApplicable(totalPages, currentPage);
+        AddNextLinkIfApplicable(totalPages, PageNumber);
     }
 
     private void AddPreviousLinkIfApplicable(int totalPages, int currentPage)
