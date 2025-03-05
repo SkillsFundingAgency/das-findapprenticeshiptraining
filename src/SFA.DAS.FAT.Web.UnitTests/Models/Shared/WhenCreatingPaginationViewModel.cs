@@ -168,7 +168,7 @@ public sealed class WhenCreatingPaginationViewModel
     [TestCase(6, 70, 10, 2, 7, TestName = "Sixth Page - Expands Start")]
     [TestCase(7, 70, 10, 2, 7, TestName = "Seventh Page - Expands Start")]
     [TestCase(7, 80, 10, 3, 8, TestName = "Eighth Page - Expands Start")]
-    [TestCase(20, 100, 10, 1, 10, TestName = "Current Page Exceeds Last Page - Resets Start Page")]
+    [TestCase(20, 100, 10, 5, 10, TestName = "Current Page Exceeds Last Page - Resets Start Page")]
     public void Then_Get_Page_Range_Adjusts_Correctly(
         int currentPage,
         int totalRecords,
