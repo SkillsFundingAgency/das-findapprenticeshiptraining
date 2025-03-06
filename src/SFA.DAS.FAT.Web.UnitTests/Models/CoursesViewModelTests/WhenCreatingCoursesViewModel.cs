@@ -315,14 +315,37 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_Zero_Link_Returns_Request_Apprenticeship_Training_Url(
+    public void When_Providers_Count_Is_Zero_And_Location_Is_Set_Link_Returns_Request_Apprenticeship_Training_Url_With_Location(
         StandardViewModel standardViewModel,
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
+        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=sw1")}";
+
+        standardViewModel.ProvidersCount = 0;
+        var _sut = new CoursesViewModel(findApprenticeshipTrainingWebConfiguration, _urlHelper.Object)
+        {
+            Location = "sw1"
+        };
+
+        var result = _sut.GetProvidersLink(standardViewModel);
+        Assert.That(expectedLink, Is.EqualTo(result));
+    }
+
+    [Test, MoqAutoData]
+    public void When_Providers_Count_Is_Zero_And_Location_Is_Not_Set_Link_Returns_Request_Apprenticeship_Training_Url_Without_Location(
+        StandardViewModel standardViewModel,
+        FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
+    )
+    {
+        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+
         standardViewModel.ProvidersCount = 0;
         var _sut = new CoursesViewModel(findApprenticeshipTrainingWebConfiguration, _urlHelper.Object);
+
         var result = _sut.GetProvidersLink(standardViewModel);
-        Assert.That(findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl, Is.EqualTo(result));
+        Assert.That(expectedLink, Is.EqualTo(result));
     }
 }
