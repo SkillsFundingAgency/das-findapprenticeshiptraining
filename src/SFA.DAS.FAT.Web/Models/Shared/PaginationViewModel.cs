@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public sealed class PaginationViewModel
 {
-    public int PageNumber { get; set; } = 1;
+    public int PageNumber { get; set; }
 
     public const string PreviousPageTitle = "« Previous";
 
