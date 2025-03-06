@@ -59,6 +59,8 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private readonly string _requestApprenticeshipTrainingUrl;
 
+    private readonly string _employerAccountsUrl;
+
     public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
     {
         _urlHelper = urlHelper;
@@ -67,6 +69,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
         };
         _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+        _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
     private OrderBy SetOrderBy()
@@ -129,7 +132,16 @@ public class CoursesViewModel : PageLinksViewModelBase
             return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
         }
         
-        return _requestApprenticeshipTrainingUrl;
+        return GetHelpFindingCourseUrl(standard.StandardUId);
+    }
+
+    private string GetHelpFindingCourseUrl(string standardId)
+    {
+        string redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardId}&requestType={EntryPoint.CourseDetail}";
+        
+        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+
+        return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
     private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
