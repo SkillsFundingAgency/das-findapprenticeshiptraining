@@ -320,7 +320,7 @@ public class WhenCreatingCoursesViewModel
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.StandardUId}&requestType={EntryPoint.CourseDetail}";
+        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.LarsCode}&requestType={EntryPoint.CourseDetail}";
         string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=sw1")}";
 
         standardViewModel.ProvidersCount = 0;
@@ -339,7 +339,7 @@ public class WhenCreatingCoursesViewModel
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.StandardUId}&requestType={EntryPoint.CourseDetail}";
+        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardViewModel.LarsCode}&requestType={EntryPoint.CourseDetail}";
         string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
 
         standardViewModel.ProvidersCount = 0;

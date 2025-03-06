@@ -132,12 +132,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
         }
         
-        return GetHelpFindingCourseUrl(standard.StandardUId);
+        return GetHelpFindingCourseUrl(standard.LarsCode);
     }
 
-    private string GetHelpFindingCourseUrl(string standardId)
+    private string GetHelpFindingCourseUrl(int larsCode)
     {
-        string redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={standardId}&requestType={EntryPoint.CourseDetail}";
+        string redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
         
         var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
 
