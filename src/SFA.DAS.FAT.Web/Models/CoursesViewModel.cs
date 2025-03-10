@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Shared;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -19,6 +20,8 @@ public class CoursesViewModel : PageLinksViewModelBase
     public List<LevelViewModel> Levels { get; set; } = [];
 
     public List<RouteViewModel> Routes { get; set; } = [];
+
+    public PaginationViewModel Pagination { get; set; } 
 
     public string Keyword { get; set; } = string.Empty;
 
@@ -293,5 +296,50 @@ public class CoursesViewModel : PageLinksViewModelBase
     private string GetLevelCodeValue(string filterValue)
     {
         return Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
+    }
+
+    public List<ValueTuple<string, string>> ToQueryString()
+    {
+        List<ValueTuple<string, string>> result = new();
+
+        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
+        {
+            switch (clearFilterSection.FilterType)
+            {
+                case FilterType.KeyWord:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Keyword), Keyword!));
+                    }
+                    break;
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        if (!string.IsNullOrWhiteSpace(Distance))
+                        {
+                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
+                        }
+                    }
+                    break;
+                case FilterType.Levels:
+                    {
+                        foreach (int level in SelectedLevels)
+                        {
+                            result.Add(ValueTuple.Create(nameof(FilterType.Levels), level.ToString()));
+                        }
+                    }
+                    break;
+                case FilterType.Categories:
+                    {
+                        foreach (string category in SelectedRoutes)
+                        {
+                            result.Add(ValueTuple.Create(nameof(FilterType.Categories), category));
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return result;
     }
 }

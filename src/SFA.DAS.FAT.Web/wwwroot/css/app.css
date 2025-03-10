@@ -407,3 +407,13 @@
   }
 }
 
+.navigation-flexbox {
+    display: flex;
+    justify-content: center;
+}
+
+    .navigation-flexbox nav {
+        gap: 13px;
+        display: flex;
+    }
+
