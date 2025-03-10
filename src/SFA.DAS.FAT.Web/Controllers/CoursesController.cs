@@ -20,6 +20,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.Shared;
 using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
 using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
@@ -77,6 +78,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 Distance = validatedDistance,
                 Routes = model.Categories,
                 Levels = model.Levels,
+                Page = model.PageNumber,
                 OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
                 ShortlistUserId = shortlistItem?.ShortlistUserId
             });
@@ -97,6 +99,18 @@ namespace SFA.DAS.FAT.Web.Controllers
                 ShowSearchCrumb = true,
                 ShowShortListLink = true
             };
+
+            if (result.Standards.Count > 0)
+            {
+                viewModel.Pagination = new PaginationViewModel(
+                    result.Page,
+                    result.TotalCount,
+                    result.PageSize,
+                    Url,
+                    RouteNames.Courses,
+                    viewModel.ToQueryString()
+                );
+            }
 
             return View(viewModel);
         }
