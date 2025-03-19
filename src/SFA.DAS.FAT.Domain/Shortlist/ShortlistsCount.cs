@@ -1,3 +1,6 @@
 ﻿namespace SFA.DAS.FAT.Domain.Shortlist;
 
-public record ShortlistsCount(int Count);
+public class ShortlistsCount
+{
+    public int Count { get; set; }
+}

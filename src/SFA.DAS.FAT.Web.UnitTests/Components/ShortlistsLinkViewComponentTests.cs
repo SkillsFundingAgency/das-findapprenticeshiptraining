@@ -45,6 +45,5 @@ public class ShortlistsLinkViewComponentTests
         // Assert
         result.As<ViewViewComponentResult>().ViewData.Model.As<ShortlistsLinkComponentViewModel>().Count.Should().Be(0);
         shortlistServiceMock.Verify(x => x.GetShortlistsCountForUser(shortlistCookieItem.ShortlistUserId), Times.Never);
-
     }
 }
