@@ -60,10 +60,27 @@
                                 @await Html.PartialAsync("_accordionFilterSection", section)
                             }
                             break;
+                        case FilterService.FilterComponentType.AccordionGroup:
+                            {
+                                @await Html.PartialAsync("_accordionGroupFilterSection", section)
+                            }
+                            break;
                         case FilterService.FilterComponentType.Dropdown:
                             {
                                 @await Html.PartialAsync("_dropdownFilterSection", section)
                             }
+                            break;
+                        case FilterService.FilterComponentType.CheckboxList:
+                        {
+                            if (section.For == nameof(FilterService.FilterType.DeliveryModes))
+                            {
+                                @await Html.PartialAsync("_deliveryModesFilterSection", section)
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("_checkboxList", section)
+                            }
+                        }
                             break;
                     }
                 }

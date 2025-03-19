@@ -35,45 +35,46 @@ public class WhenGettingCourses
     [Test, MoqAutoData]
     public async Task Handle_Should_Return_Correct_Response()
     {
-        var query = new GetCoursesQuery() {
-            Keyword = "test", 
-            Location = "London", 
-            Distance = 10, 
-            Routes = new List<string> { "Route1" }, 
-            Levels = new List<int> { 3 }, 
+        var query = new GetCoursesQuery()
+        {
+            Keyword = "test",
+            Location = "London",
+            Distance = 10,
+            Routes = new List<string> { "Route1" },
+            Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
 
         var cancellationToken = new CancellationToken();
 
-        var levels = new List<Level> 
-        { 
-            new Level() 
-            { 
-                Code = 3, 
-                Name = "GCSE" 
-            } 
+        var levels = new List<Level>
+        {
+            new Level()
+            {
+                Code = 3,
+                Name = "GCSE"
+            }
         };
 
-        var routes = new List<Route> 
-        { 
-            new Route 
-            { 
-                Id = 1, 
-                Name = "Route1" 
-            }, 
-            new Route 
-            { 
-                Id = 2, 
-                Name = "Route2" 
-            } 
+        var routes = new List<Route>
+        {
+            new Route
+            {
+                Id = 1,
+                Name = "Route1"
+            },
+            new Route
+            {
+                Id = 2,
+                Name = "Route2"
+            }
         };
 
         var coursesResponse = new GetCoursesResponse
         {
             Standards = new List<StandardModel>(),
             Page = 1,
-            PageSize = 10,
+            PageSize = Constants.DefaultPageSize,
             TotalPages = 2,
             TotalCount = 20
         };

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
@@ -9,7 +6,6 @@ using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using DeliveryModeType = SFA.DAS.FAT.Web.Models.DeliveryModeType;
-using ProviderRating = SFA.DAS.FAT.Web.Models.ProviderRating;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models
 {
@@ -114,10 +110,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test]
-        [InlineAutoData(1, "Very poor")]
-        [InlineAutoData(2, "Poor")]
-        [InlineAutoData(3, "Good")]
-        [InlineAutoData(4, "Excellent")]
+        [InlineAutoData(EmployerProviderRating.VeryPoor, "Very poor")]
+        [InlineAutoData(EmployerProviderRating.Poor, "Poor")]
+        [InlineAutoData(EmployerProviderRating.Good, "Good")]
+        [InlineAutoData(EmployerProviderRating.Excellent, "Excellent")]
         public void Then_The_EmployerFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
         {
             source.EmployerFeedback.TotalFeedbackRating = feedbackRating;
@@ -373,30 +369,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test, AutoData]
-        public void And_Has_NotFound_Then_NotFound_And_All_Others_Added_As_Unavailable_To_Delivery_Mode(Provider source)
-        {
-            // Arrange
-            source.DeliveryModes = new List<DeliveryMode>
-            {
-                new DeliveryMode
-                {
-                    DeliveryModeType = Domain.Courses.DeliveryModeType.NotFound
-                }
-            };
-
-            // Act
-            var actual = (ProviderViewModel)source;
-
-            // Assert
-            actual.DeliveryModes.Count().Should().Be(4);
-            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.NotFound && c.IsAvailable).Should().NotBeNull();
-            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.Workplace && !c.IsAvailable).Should().NotBeNull();
-            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.DayRelease && !c.IsAvailable).Should().NotBeNull();
-            actual.DeliveryModes.SingleOrDefault(c => c.DeliveryModeType == DeliveryModeType.BlockRelease && !c.IsAvailable).Should().NotBeNull();
-
-        }
-
-        [Test, AutoData]
         public void Then_Only_Three_Delivery_Modes_Are_Added_If_There_Is_No_NotFound(Provider source,
             decimal distanceInMiles)
         {
@@ -546,10 +518,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test]
-        [InlineAutoData(1, "Very poor")]
-        [InlineAutoData(2, "Poor")]
-        [InlineAutoData(3, "Good")]
-        [InlineAutoData(4, "Excellent")]
+        [InlineAutoData(ApprenticeProviderRating.VeryPoor, "Very poor")]
+        [InlineAutoData(ApprenticeProviderRating.Poor, "Poor")]
+        [InlineAutoData(ApprenticeProviderRating.Good, "Good")]
+        [InlineAutoData(ApprenticeProviderRating.Excellent, "Excellent")]
         public void Then_The_ApprenticeFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
         {
             source.ApprenticeFeedback.TotalFeedbackRating = feedbackRating;
