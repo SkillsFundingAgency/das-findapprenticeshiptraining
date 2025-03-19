@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Configuration;
 
 namespace SFA.DAS.FAT.Domain.Courses.Api.Responses;
 
 public sealed class GetCoursesResponse
 {
     public int Page { get; set; } = 1;
-    public int PageSize { get; set; } = 10;
+    public int PageSize { get; set; } = Constants.DefaultPageSize;
     public int TotalPages { get; set; }
     public int TotalCount { get; set; }
     public List<StandardModel> Standards { get; set; } = new List<StandardModel>();

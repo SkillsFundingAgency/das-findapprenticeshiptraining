@@ -6,6 +6,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests;
@@ -257,7 +258,6 @@ public class WhenCreatingCoursesViewModel
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            
             Location = "SW1",
             Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
         };

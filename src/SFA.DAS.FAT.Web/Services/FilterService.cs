@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
@@ -16,7 +15,8 @@ public static class FilterService
         Dropdown,
         TextBox,
         Search,
-        Accordion
+        Accordion,
+        AccordionGroup
     }
 
     public enum FilterType
@@ -26,7 +26,12 @@ public static class FilterService
         Categories,
         KeyWord,
         OrderBy,
-        Distance
+        Distance,
+        DeliveryModes,
+        QarRatings,
+        EmployerProviderRatings,
+        ApprenticeProviderRatings,
+        Reviews
     }
 
     public const string KEYWORD_SECTION_HEADING = "Course";
@@ -36,7 +41,7 @@ public static class FilterService
     public const string LOCATION_SECTION_SUB_HEADING = "Enter city or postcode";
 
     public const string DISTANCE_SECTION_HEADING = "Apprentice can travel";
-    public const string DISTANCE_SECTION_SUB_HEADING = "Distance apprentice can travel to training";
+    public const string DISTANCE_SECTION_SUB_HEADING = "Distance apprentice can travel";
 
     public const string LEVELS_SECTION_HEADING = "Apprenticeship level";
     public const string CATEGORIES_SECTION_HEADING = "Job categories";
@@ -46,6 +51,18 @@ public static class FilterService
 
     public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
 
+
+    public const string DELIVERYMODES_SECTION_HEADING = "Training options";
+    public const string DELIVERYMODES_SECTION_SUB_HEADING = "Select a training option";
+
+
+    public const string QAR_SECTION_HEADING = "Achievement rate";
+
+    public const string REVIEW_SECTION_HEADING = "Reviews";
+
+    public const string EMPLOYER_REVIEWS_SECTION_HEADING = "Average employer review";
+    public const string APPRENTICE_REVIEWS_SECTION_HEADING = "Average apprentice review";
+
     public static Dictionary<FilterType, string> ClearFilterSectionHeadings => _ClearFilterSectionHeadings;
 
     private static readonly Dictionary<FilterType, string> _ClearFilterSectionHeadings = new Dictionary<FilterType, string>()
@@ -53,7 +70,11 @@ public static class FilterService
         { FilterType.KeyWord, KEYWORD_SECTION_HEADING },
         { FilterType.Location, LOCATION_SECTION_HEADING},
         { FilterType.Levels, LEVELS_SECTION_HEADING },
-        { FilterType.Categories, CATEGORIES_SECTION_HEADING }
+        { FilterType.Categories, CATEGORIES_SECTION_HEADING },
+        { FilterType.DeliveryModes, DELIVERYMODES_SECTION_HEADING },
+        { FilterType.QarRatings, QAR_SECTION_HEADING },
+        { FilterType.EmployerProviderRatings, EMPLOYER_REVIEWS_SECTION_HEADING},
+        { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING}
     };
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
@@ -92,13 +113,14 @@ public static class FilterService
         };
     }
 
-    public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, List<FilterItemViewModel> items, string linkDisplayText = "", string linkDisplayUrl = "")
+    public static FilterSection CreateCheckboxListFilterSection(string id, string filterFor, string heading, string subHeading, List<FilterItemViewModel> items, string linkDisplayText = "", string linkDisplayUrl = "")
     {
         CheckboxListFilterSectionViewModel section = new()
         {
             Id = id,
             For = filterFor,
             Heading = heading,
+            SubHeading = subHeading,
             Items = items
         };
 
@@ -114,13 +136,27 @@ public static class FilterService
         return section;
     }
 
-    public static FilterSection CreateAccordionFilterSection(string id, string sectionFor, List<FilterSection> children)
+    public static FilterSection CreateAccordionFilterSection(string id, string sectionFor, List<FilterSection> children, string heading = "", string subHeading = "")
     {
         return new AccordionFilterSectionViewModel
         {
             Id = id,
             For = sectionFor,
-            Children = children
+            Children = children,
+            Heading = heading,
+            SubHeading = subHeading
+        };
+    }
+
+    public static FilterSection CreateAccordionGroupFilterSection(string id, string sectionFor, List<FilterSection> children, string heading = "", string subHeading = "")
+    {
+        return new AccordionGroupFilterSectionViewModel
+        {
+            Id = id,
+            For = sectionFor,
+            Children = children,
+            Heading = heading,
+            SubHeading = subHeading
         };
     }
 
@@ -216,37 +252,43 @@ public static class FilterService
 
             var overrideValueFunction = overrideValueFunctions?.TryGetValue(param.Key, out var func) == true ? func : null;
 
-            if (param.Key == filterType)
-            {
-                foreach (var val in param.Value.Where(v => v != value))
-                {
-                    var paramValue = GetClearVal(val, filterType, param.Key);
-
-                    if (string.IsNullOrWhiteSpace(paramValue))
-                    {
-                        continue;
-                    }
-
-                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
-                }
-            }
-            else
-            {
-                foreach (var val in param.Value)
-                {
-                    var paramValue = GetClearVal(val, filterType, param.Key);
-
-                    if (string.IsNullOrWhiteSpace(paramValue))
-                    {
-                        continue;
-                    }
-
-                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
-                }
-            }
+            AppendQueryParameters(filterType, value, param, queryBuilder, overrideValueFunction);
         }
 
         return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
+    }
+
+    private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, List<string>> param,
+        StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
+    {
+        if (param.Key == filterType)
+        {
+            foreach (var val in param.Value.Where(v => v != value))
+            {
+                var paramValue = GetClearVal(val, filterType, param.Key);
+
+                if (string.IsNullOrWhiteSpace(paramValue))
+                {
+                    continue;
+                }
+
+                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+            }
+        }
+        else
+        {
+            foreach (var val in param.Value)
+            {
+                var paramValue = GetClearVal(val, filterType, param.Key);
+
+                if (string.IsNullOrWhiteSpace(paramValue))
+                {
+                    continue;
+                }
+
+                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+            }
+        }
     }
 
     private static string GetClearVal(string currentVal, FilterType filterType, FilterType queryParamType)
@@ -270,9 +312,9 @@ public static class FilterService
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            var queryValue = overrideValueFunction == null ?
-                value :
-                GetQueryValue(key, value, overrideValueFunction);
+            var queryValue = overrideValueFunction == null
+                ? value
+                : overrideValueFunction(value);
 
             builder
                 .Append(builder.Length > 0 ? '&' : '?')
@@ -296,15 +338,6 @@ public static class FilterService
         {
             filters[filterType] = values;
         }
-    }
-
-    private static string GetQueryValue(FilterType key, string filterValue, Func<string, string> overrideValueFunction)
-    {
-        return key switch
-        {
-            FilterType.Levels => overrideValueFunction(filterValue),
-            _ => filterValue
-        };
     }
 
     private static string GetDisplayValue(FilterType key, string displayValue, Dictionary<FilterType, List<string>> queryParams)

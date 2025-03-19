@@ -9,5 +9,7 @@
         public static string ShortlistProtectorName => "Shortlist";
 
         public static int DefaultDistance => 10;
+
+        public static int DefaultPageSize => 10;
     }
 }

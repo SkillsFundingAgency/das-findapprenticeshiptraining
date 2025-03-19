@@ -28,4 +28,10 @@
     <ProjectReference Include="..\SFA.DAS.FAT.Application\SFA.DAS.FAT.Application.csproj" />
     <ProjectReference Include="..\SFA.DAS.FAT.Infrastructure\SFA.DAS.FAT.Infrastructure.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Update="Views\Shared\_accordionGroupFilterSection.cshtml">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
