@@ -1,5 +1,5 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Domain.UnitTests.Courses;
 

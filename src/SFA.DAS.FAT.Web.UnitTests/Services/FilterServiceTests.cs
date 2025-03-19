@@ -1,9 +1,9 @@
 ﻿using AutoFixture;
 using AutoFixture.Kernel;
 using NUnit.Framework;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
@@ -93,6 +93,7 @@ public sealed class FilterServiceTests
             id,
             filterFor,
             heading,
+            null,
             items,
             linkDisplayText,
             linkDisplayUrl
@@ -121,7 +122,7 @@ public sealed class FilterServiceTests
         List<FilterItemViewModel> items
     )
     {
-        var _sut = CreateCheckboxListFilterSection(id, filterFor, heading, items, "", "");
+        var _sut = CreateCheckboxListFilterSection(id, filterFor, heading, string.Empty, items, "", "");
 
         Assert.Multiple(() =>
         {

@@ -39,18 +39,7 @@ namespace SFA.DAS.FAT.Domain.Courses
     {
         Workplace = 0,
         DayRelease = 1,
-        BlockRelease = 2,
-        NotFound = 3,
-        National = 4
-    }
-
-    public enum ProviderRating
-    {
-        NotYetReviewed = 0,
-        VeryPoor = 1,
-        Poor = 2,
-        Good = 3,
-        Excellent = 4
+        BlockRelease = 2
     }
 
     public class EmployerFeedback
@@ -58,7 +47,7 @@ namespace SFA.DAS.FAT.Domain.Courses
         public int TotalEmployerResponses { get; set; }
         public int TotalFeedbackRating { get; set; }
         public IEnumerable<EmployerFeedbackDetail> FeedbackDetail { get; set; }
-        public List<EmployerFeedbackAttributeDetail> FeedbackAttributes {get; set; }
+        public List<EmployerFeedbackAttributeDetail> FeedbackAttributes { get; set; }
     }
 
     public class ApprenticeFeedback
@@ -75,7 +64,7 @@ namespace SFA.DAS.FAT.Domain.Courses
     }
 
     public class EmployerFeedbackAttributeDetail
-    { 
+    {
         public string AttributeName { get; set; }
         public int Strength { get; set; }
         public int Weakness { get; set; }
