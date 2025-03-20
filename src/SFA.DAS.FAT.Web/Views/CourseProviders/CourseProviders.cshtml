@@ -2,7 +2,6 @@
 @using SFA.DAS.FAT.Web.Infrastructure
 @using Microsoft.Extensions.Options
 @using Microsoft.AspNetCore.Mvc.TagHelpers
-@using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models.CourseProviders
 @using SFA.DAS.FAT.Web.Models.Shared
 @model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProvidersViewModel
@@ -86,55 +85,17 @@
 
                     @foreach (var provider in Model.Providers)
                     {
-                        var providerRouteData = new Dictionary<string, string>
-                        {
-                            { "location", Model.Location },
-                            { "id", Model.Id.ToString() },
-                            { "providerId", provider.Ukprn.ToString() },
-                            { "distance", Model.Distance }
-                        };
-
                         <li>
                             <div class="govuk-grid-row course-provider-results-top-panel">
-                                <div class="govuk-grid-column-full das-bottom-margin">
-                                    @if (provider.ShortlistId != null)
-                                    {
-                                        <span class="govuk-tag govuk-!-font-size-16">
-                                            Shortlisted
-                                        </span>
-                                    }
-                                </div>
-                                        <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
-                                    <h2 class="govuk-heading-m das-search-results__heading">
-                                        <a class="das-search-results__link das-button--inline-link" id="provider-@provider.Ukprn"
-                                           asp-all-route-data="@providerRouteData"
-                                           asp-route="@RouteNames.CourseProviderDetails">
-                                            @provider.ProviderName
-                                        </a>
-                                    </h2>
-                                </div>
-
-                                <div class="govuk-grid-column-one-third govuk-body">
-                                    <div class="app-provider-shortlist-control @(provider.ShortlistId == null ? "" : "app-provider-shortlist-added")">
-                                        <div class="app-provider-shortlist-add">
-                                            <form method="post" asp-route="@RouteNames.CreateShortlistItem">
-                                                <input type="hidden" name="providerName" value="@provider.ProviderName"/>
-                                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
-                                                <button id="add-to-shortlist-@(provider.Ukprn)" class="das-button--inline-link" type="submit">Add to shortlist</button>
-                                            </form>
-                                        </div>
-                                        <div class="app-provider-shortlist-remove">
-                                            <strong class="govuk-tag app-provider-shortlist-tag">Shortlisted</strong>
-                                            <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(provider.ShortlistId ?? Guid.Empty)">
-                                                <input type="hidden" name="ukprn" value="@provider.Ukprn"/>
-                                                <input type="hidden" name="providerName" value="@provider.ProviderName"/>
-                                                <input type="hidden" name="trainingCode" value="@Model.Id"/>
-                                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
-                                                <button id="remove-from-shortlist-@(provider.Ukprn)" class="das-button--inline-link" type="submit">Remove from shortlist</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
+                                @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
+                                {
+                                    CourseId = Model.Id.ToString(),
+                                    ProviderName = provider.ProviderName,
+                                    ShortlistId = provider.ShortlistId,
+                                    Ukprn = provider.Ukprn,
+                                    Location = Model.Location,
+                                    Distance = Model.Distance
+                                })
                             </div>
                             <div class="govuk-grid-row course-provider-results-middle-panels">
                                 @await Html.PartialAsync("_trainingOptions", new TrainingOptionsViewModel
@@ -145,11 +106,11 @@
                                 })
                             </div>
 
-                            <hr class="das-hr-no-margin" />
+                            <hr class="das-hr-no-margin"/>
 
                             <div class="govuk-grid-row course-provider-results-middle-panels">
                                 <div class="govuk-grid-column-one-third">
-                                    <h3 class="govuk-heading-s"> @Model.ProviderReviewsHeading 
+                                    <h3 class="govuk-heading-s"> @Model.ProviderReviewsHeading
                                     </h3>
                                 </div>
                                 <div class="govuk-grid-column-two-thirds das-bottom-margin">
@@ -157,25 +118,25 @@
                                     {
                                         Stars = provider.EmployerStars,
                                         Reviews = provider.EmployerReviews,
-                                        ProviderRating = (ProviderRating)provider.EmployerRating,
+                                        ProviderRating = provider.EmployerRating,
                                         ProviderRatingType = ProviderRatingType.Employer
                                     })
                                     @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
                                     {
                                         Stars = provider.ApprenticeStars,
                                         Reviews = provider.ApprenticeReviews,
-                                        ProviderRating = (ProviderRating)provider.ApprenticeRating,
+                                        ProviderRating = provider.ApprenticeRating,
                                         ProviderRatingType = ProviderRatingType.Apprentice
                                     })
                                 </div>
                             </div>
 
-                            <hr class="das-hr-no-margin" />
+                            <hr class="das-hr-no-margin"/>
 
                             <div class="govuk-grid-row course-provider-results-bottom-panel">
-                                    
+
                                 <div class="govuk-grid-column-one-third">
-                                            <h3 class="govuk-heading-s">@Model.CourseAchievementRateHeading</h3>
+                                    <h3 class="govuk-heading-s">@Model.CourseAchievementRateHeading</h3>
                                 </div>
                                 <div class="govuk-grid-column-two-thirds">
                                     <div class="govuk-body">

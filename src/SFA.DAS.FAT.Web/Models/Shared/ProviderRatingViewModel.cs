@@ -15,10 +15,12 @@ public class ProviderRatingViewModel
     {
         get
         {
-            int.TryParse(Reviews, out int reviews);
+            if (!int.TryParse(Reviews, out int reviews))
+            {
+                return $"0 {ProviderRatingType.GetDescription()} reviews";
+            }
 
             var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} review{(reviews != 1 ? "s" : "")}";
-
             return totalMessage;
         }
     }
@@ -27,8 +29,9 @@ public class ProviderRatingViewModel
     {
         get
         {
-            int.TryParse(Stars, out int stars);
-            return stars;
+            return int.TryParse(Stars, out int stars)
+                ? stars
+                : 0;
         }
     }
 

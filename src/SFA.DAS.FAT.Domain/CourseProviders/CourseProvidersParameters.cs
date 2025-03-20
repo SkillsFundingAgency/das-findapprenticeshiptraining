@@ -12,8 +12,8 @@ public class CourseProvidersParameters
     public string Location { get; set; }
     public List<ProviderDeliveryMode> DeliveryModeTypes { get; set; } = [];
 
-    public List<EmployerProviderRating> EmployerProviderRatingTypes { get; set; } = [];
-    public List<ApprenticeProviderRating> ApprenticeProviderRatingTypes { get; set; } = [];
+    public List<ProviderRating> EmployerProviderRatingTypes { get; set; } = [];
+    public List<ProviderRating> ApprenticeProviderRatingTypes { get; set; } = [];
 
     public List<QarRating> QarRatings { get; set; } = [];
     public int Page { get; set; } = 1;

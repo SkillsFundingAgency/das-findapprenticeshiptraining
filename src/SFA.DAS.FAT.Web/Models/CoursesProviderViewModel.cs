@@ -33,10 +33,10 @@ public class CoursesProviderViewModel
     public string AchievementRate { get; set; }
     public string EmployerReviews { get; set; }
     public string EmployerStars { get; set; }
-    public EmployerProviderRating EmployerRating { get; set; }
+    public ProviderRating EmployerRating { get; set; }
     public string ApprenticeReviews { get; set; }
     public string ApprenticeStars { get; set; }
-    public ApprenticeProviderRating ApprenticeRating { get; set; }
+    public ProviderRating ApprenticeRating { get; set; }
 
     public string AchievementRateMessage
     {

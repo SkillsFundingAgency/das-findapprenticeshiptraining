@@ -49,6 +49,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     public List<CoursesProviderViewModel> Providers { get; set; }
 
+
     public List<ProviderOrderByOptionViewModel> ProviderOrderDropdown { get => GenerateProviderOrderDropdown(); }
 
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
@@ -117,7 +118,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<EmployerProviderRatingOptionViewModel>();
 
-        foreach (EmployerProviderRating rating in Enum.GetValues(typeof(EmployerProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
         {
             ratingViewModels.Add(new EmployerProviderRatingOptionViewModel()
             {
@@ -133,7 +134,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<ApprenticeProviderRatingOptionViewModel>();
 
-        foreach (ApprenticeProviderRating rating in Enum.GetValues(typeof(ApprenticeProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
         {
             ratingViewModels.Add(new ApprenticeProviderRatingOptionViewModel()
             {
@@ -227,7 +228,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return ratings?.Select(rating => new FilterItemViewModel
         {
             Value = rating.ProviderRatingType.ToString(),
-            DisplayText = rating.ProviderRatingType.GetDescription(),
+            DisplayText =
+                rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                ? "No employer reviews"
+                : rating.ProviderRatingType.GetDescription(),
             Selected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
@@ -240,7 +244,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return ratings?.Select(rating => new FilterItemViewModel
         {
             Value = rating.ProviderRatingType.ToString(),
-            DisplayText = rating.ProviderRatingType.GetDescription(),
+            DisplayText =
+                rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                    ? "No apprentice reviews"
+                    : rating.ProviderRatingType.GetDescription(),
             Selected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];

@@ -11,7 +11,7 @@ namespace SFA.DAS.FAT.Web.Models
         public int TotalFeedbackRating { get; set; }
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
-        public EmployerProviderRating TotalFeedbackText { get; set; }
+        public ProviderRating TotalFeedbackText { get; set; }
         public List<EmployerFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public EmployerFeedbackViewModel(EmployerFeedback employerFeedback)
@@ -23,7 +23,7 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackResponses = employerFeedback.TotalEmployerResponses;
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
-            TotalFeedbackText = (EmployerProviderRating)employerFeedback.TotalFeedbackRating;
+            TotalFeedbackText = (ProviderRating)employerFeedback.TotalFeedbackRating;
             FeedbackAttributeSummary = GenerateAttributeSummary(employerFeedback.FeedbackAttributes);
         }
 

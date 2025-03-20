@@ -83,7 +83,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, AutoData]
-    public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, int id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<EmployerProviderRating> employerProviderRatingTypes, List<ApprenticeProviderRating> apprenticeProviderRatingTypes,
+    public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, int id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
         List<QarRating> qarRatings,
         int page, int pageSize, Guid shortlistUserId)
     {
@@ -116,13 +116,13 @@ public class WhenGettingCourseProviders
     [TestCase(5, null, null, null, null, null, 1, null, null, "&distance=5&pageSize=10")]
     [TestCase(null, "loc", null, null, null, null, null, null, null, "&location=loc&pageSize=10")]
     [TestCase(null, null, ProviderDeliveryMode.Provider, null, null, null, null, null, null, "&deliveryModes=Provider&pageSize=10")]
-    [TestCase(null, null, null, EmployerProviderRating.VeryPoor, null, null, null, null, null, "&employerProviderRatings=VeryPoor&pageSize=10")]
-    [TestCase(null, null, null, null, ApprenticeProviderRating.VeryPoor, null, null, null, null, "&apprenticeProviderRatings=VeryPoor&pageSize=10")]
+    [TestCase(null, null, null, ProviderRating.VeryPoor, null, null, null, null, null, "&employerProviderRatings=VeryPoor&pageSize=10")]
+    [TestCase(null, null, null, null, ProviderRating.VeryPoor, null, null, null, null, "&apprenticeProviderRatings=VeryPoor&pageSize=10")]
     [TestCase(null, null, null, null, null, QarRating.Excellent, null, null, null, "&qar=Excellent&pageSize=10")]
     [TestCase(null, null, null, null, null, null, 2, null, null, "&page=2&pageSize=10")]
     [TestCase(null, null, null, null, null, null, 1, 10, null, "&pageSize=10")]
     [TestCase(null, null, null, null, null, null, 1, null, "3f616821-64a2-4dda-97cd-138f428d26b5", "&pageSize=10&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
-    [TestCase(5, "loc", ProviderDeliveryMode.DayRelease, EmployerProviderRating.VeryPoor, ApprenticeProviderRating.Good, QarRating.Good, 2, 25, "3f616821-64a2-4dda-97cd-138f428d26b5",
+    [TestCase(5, "loc", ProviderDeliveryMode.DayRelease, ProviderRating.VeryPoor, ProviderRating.Good, QarRating.Good, 2, 25, "3f616821-64a2-4dda-97cd-138f428d26b5",
             "&distance=5&location=loc" +
             "&deliveryModes=DayRelease" +
             "&employerProviderRatings=VeryPoor" +
@@ -131,7 +131,7 @@ public class WhenGettingCourseProviders
             "&page=2" +
             "&pageSize=25" +
             "&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
-    public void Then_The_Get_Url_Is_Constructed_Correctly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, EmployerProviderRating? employerProviderRating, ApprenticeProviderRating? apprenticeProviderRating,
+    public void Then_The_Get_Url_Is_Constructed_Correctly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
         QarRating? qarRating,
         int? page, int? pageSize, Guid? shortlistUserId, string expectedUrl)
     {
@@ -152,11 +152,11 @@ public class WhenGettingCourseProviders
         var deliveryModeTypes = new List<ProviderDeliveryMode>();
         if (deliveryModeType != null) deliveryModeTypes.Add((ProviderDeliveryMode)deliveryModeType);
 
-        var employerProviderRatings = new List<EmployerProviderRating>();
-        if (employerProviderRating != null) employerProviderRatings.Add((EmployerProviderRating)employerProviderRating);
+        var employerProviderRatings = new List<ProviderRating>();
+        if (employerProviderRating != null) employerProviderRatings.Add((ProviderRating)employerProviderRating);
 
-        var apprenticeProviderRatings = new List<ApprenticeProviderRating>();
-        if (apprenticeProviderRating != null) apprenticeProviderRatings.Add((ApprenticeProviderRating)apprenticeProviderRating);
+        var apprenticeProviderRatings = new List<ProviderRating>();
+        if (apprenticeProviderRating != null) apprenticeProviderRatings.Add((ProviderRating)apprenticeProviderRating);
 
         var qarRatings = new List<QarRating>();
         if (qarRating != null) qarRatings.Add((QarRating)qarRating);

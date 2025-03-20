@@ -19,9 +19,9 @@ public class CourseProvidersRequest
     [FromQuery]
     public IReadOnlyList<ProviderDeliveryMode> DeliveryModes { get; set; } = new List<ProviderDeliveryMode>();
     [FromQuery]
-    public IReadOnlyList<EmployerProviderRating> EmployerProviderRatings { get; set; } = new List<EmployerProviderRating>();
+    public IReadOnlyList<ProviderRating> EmployerProviderRatings { get; set; } = new List<ProviderRating>();
     [FromQuery]
-    public IReadOnlyList<ApprenticeProviderRating> ApprenticeProviderRatings { get; set; } = new List<ApprenticeProviderRating>();
+    public IReadOnlyList<ProviderRating> ApprenticeProviderRatings { get; set; } = new List<ProviderRating>();
 
     [FromQuery]
     public IReadOnlyList<QarRating> QarRatings { get; set; } = new List<QarRating>();

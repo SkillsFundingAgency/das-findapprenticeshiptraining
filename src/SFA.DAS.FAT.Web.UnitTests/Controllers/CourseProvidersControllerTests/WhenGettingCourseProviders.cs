@@ -364,9 +364,6 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
-        // var totalCount = 0;
-        // var expectedMessage = "0 results";
-
         response.TotalCount = totalCount;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
