@@ -4,10 +4,11 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models
 {
-    [Obsolete("FAT25 - Use Model SFA.DAS.FAT.Web.Models.CourseViewModel_V2 - Unit tests SFA.DAS.FAT.Web.UnitTests.Models.WhenCreatingCourseDetailsV2ViewModel")]
+    [Obsolete($"FAT25 - Use Model {nameof(CourseViewModelv2)} - Unit tests {nameof(WhenCreatingCourseV2ViewModel)}")]
     public class WhenCreatingCourseDetailViewModel
     {
         [Test, AutoData]

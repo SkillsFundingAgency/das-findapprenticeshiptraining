@@ -154,7 +154,7 @@ namespace SFA.DAS.FAT.Web.Controllers
                 return RedirectToRoute(RouteNames.Error404);
             }
 
-            var viewModel = (CourseViewModel_v2)result;
+            var viewModel = (CourseViewModelv2)result;
             viewModel.Location = location;
             viewModel.Distance = distance;
 

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.DotNet.Scaffolding.Shared;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
@@ -9,7 +8,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class CourseViewModel_v2 : PageLinksViewModelBase
+public class CourseViewModelv2 : PageLinksViewModelBase
 {
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -32,9 +31,9 @@ public class CourseViewModel_v2 : PageLinksViewModelBase
     public string[] Behaviours { get; set; }
     public List<Level> Levels { get; set; } = [];
 
-    public static implicit operator CourseViewModel_v2(GetCourseQueryResult source)
+    public static implicit operator CourseViewModelv2(GetCourseQueryResult source)
     {
-        return new CourseViewModel_v2
+        return new CourseViewModelv2
         {
             StandardUId = source.StandardUId,
             IFateReferenceNumber = source.IFateReferenceNumber,

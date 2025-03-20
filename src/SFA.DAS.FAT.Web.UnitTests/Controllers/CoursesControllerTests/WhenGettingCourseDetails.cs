@@ -51,7 +51,7 @@ public class WhenGettingCourseDetails
         {
             Assert.That(result, Is.Not.Null);
 
-            var viewModel = result.Model as CourseViewModel_v2;
+            var viewModel = result.Model as CourseViewModelv2;
             Assert.That(viewModel, Is.Not.Null);
             Assert.That(viewModel.Title, Is.EqualTo(queryResult.Title));
             Assert.That(viewModel.Location, Is.EqualTo(location));
