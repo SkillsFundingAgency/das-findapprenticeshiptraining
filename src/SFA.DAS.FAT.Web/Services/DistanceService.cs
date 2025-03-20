@@ -12,8 +12,6 @@ public static class DistanceService
 
     public const int DEFAULT_DISTANCE = 1000;
 
-    public const int MINUMUM_DEFAULT_DISTANCE = 10;
-
     public const int TEN_MILES = 10;
 
     public const string ACROSS_ENGLAND_DISPLAY_TEXT = "across England";
