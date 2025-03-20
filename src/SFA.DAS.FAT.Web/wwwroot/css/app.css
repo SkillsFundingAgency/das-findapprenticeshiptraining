@@ -407,3 +407,21 @@
   }
 }
 
+.navigation-flexbox {
+    display: flex;
+    justify-content: center;
+}
+
+    .navigation-flexbox nav {
+        gap: 13px;
+        display: flex;
+    }
+
+.course-details-call-to-action {
+    display: flex;
+    gap: 25px;
+}
+
+    .course-details-call-to-action a {
+        align-self: center;
+    }

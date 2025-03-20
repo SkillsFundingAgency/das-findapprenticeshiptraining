@@ -22,7 +22,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string Keyword { get; set; } = string.Empty;
 
-    public string Distance { get; set; } = "All";
+    public new string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
 

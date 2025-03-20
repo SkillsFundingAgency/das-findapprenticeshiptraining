@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
@@ -9,6 +7,7 @@ using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models
 {
+    [Obsolete("FAT25 - Use Model SFA.DAS.FAT.Web.Models.CourseViewModel_V2 - Unit tests SFA.DAS.FAT.Web.UnitTests.Models.WhenCreatingCourseDetailsV2ViewModel")]
     public class WhenCreatingCourseDetailViewModel
     {
         [Test, AutoData]

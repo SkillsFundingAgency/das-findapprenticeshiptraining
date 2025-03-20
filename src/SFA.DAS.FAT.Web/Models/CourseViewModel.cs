@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
 namespace SFA.DAS.FAT.Web.Models
 {
+    [Obsolete("FAT25 - Use SFA.DAS.FAT.Web.Models.CourseViewModel_V2")]
     public class CourseViewModel : PageLinksViewModelBase
     {
         public int Id { get; set; }

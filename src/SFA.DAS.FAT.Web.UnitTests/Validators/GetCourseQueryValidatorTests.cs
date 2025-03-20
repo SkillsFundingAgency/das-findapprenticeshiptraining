@@ -22,14 +22,14 @@ public class GetCourseQueryValidatorTests
         var result = _validator.TestValidate(new GetCourseQuery());
 
         result.IsValid.Should().BeFalse();
-        result.ShouldHaveValidationErrorFor(c => c.CourseId)
+        result.ShouldHaveValidationErrorFor(c => c.LarsCode)
             .WithErrorMessage(GetCourseQueryValidator.CourseIdErrorMessage);
     }
 
     [Test]
     public void TestValidator_CourseIdValid_ReturnsValid()
     {
-        var result = _validator.TestValidate(new GetCourseQuery { CourseId = 1 });
+        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = 1 });
 
         result.IsValid.Should().BeTrue();
     }
