@@ -34,7 +34,7 @@ public class CourseProvidersController : Controller
         request.Id = id;
         var shortListItemCount = 0;
 
-        if (!string.IsNullOrEmpty(request.Location) && (string.IsNullOrEmpty(request.Distance) || !DistanceService.IsValidDistance(request.Distance)))
+        if (!string.IsNullOrWhiteSpace(request.Location) && (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance)))
         {
             request.Distance = Constants.DefaultDistance.ToString();
         }
