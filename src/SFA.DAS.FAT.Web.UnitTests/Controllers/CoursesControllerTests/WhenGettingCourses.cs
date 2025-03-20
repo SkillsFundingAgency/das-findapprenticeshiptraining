@@ -42,6 +42,7 @@ public class WhenGettingCourses
                     c.Distance.Equals(1000) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
+                    c.Page.Equals(request.PageNumber) &&
                     c.ShortlistUserId.Equals(cookieItem.ShortlistUserId)
                 ), 
                 It.IsAny<CancellationToken>()
@@ -85,7 +86,8 @@ public class WhenGettingCourses
                     c.Location.Equals(request.Location) &&
                     c.Distance.Equals(1000) &&
                     c.Levels.SequenceEqual(request.Levels) &&
-                    c.Routes.SequenceEqual(request.Categories)
+                    c.Routes.SequenceEqual(request.Categories) &&
+                    c.Page.Equals(request.PageNumber)
                 ),
                 It.IsAny<CancellationToken>()
             )
@@ -123,6 +125,82 @@ public class WhenGettingCourses
             Assert.That(model.SelectedRoutes, Is.EquivalentTo(request.Categories));
             Assert.That(model.ShowShortListLink, Is.True);
             Assert.That(model.ShowSearchCrumb, Is.True);
+        });
+    }
+
+    [Test, MoqAutoData]
+    public async Task Should_Add_Pagination_Object_And_Return_View_When_Courses_Exist(
+        GetCoursesViewModel request,
+        GetCoursesQueryResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] CoursesController controller
+    )
+    {
+        mediator.Setup(x =>
+            x.Send(
+                It.Is<GetCoursesQuery>(c =>
+                    c.Keyword.Equals(request.Keyword) &&
+                    c.Location.Equals(request.Location) &&
+                    c.Distance.Equals(1000) &&
+                    c.Levels.SequenceEqual(request.Levels) &&
+                    c.Routes.SequenceEqual(request.Categories)
+                ),
+                It.IsAny<CancellationToken>()
+            )
+        )
+        .ReturnsAsync(response);
+
+        var _sut = await controller.Courses(request);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.Not.Null);
+            var result = _sut as ViewResult;
+
+            Assert.That(result, Is.Not.Null);
+            var model = result!.Model as CoursesViewModel;
+
+            Assert.That(model.Standards, Has.Count.AtLeast(1));
+            Assert.That(model.Pagination, Is.Not.Null);
+        });
+    }
+
+    [Test, MoqAutoData]
+    public async Task Should_Not_Add_Pagination_When_Courses_Are_Empty(
+        GetCoursesViewModel request,
+        GetCoursesQueryResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Greedy] CoursesController controller
+    )
+    {
+        response.Standards = [];
+
+        mediator.Setup(x =>
+            x.Send(
+                It.Is<GetCoursesQuery>(c =>
+                    c.Keyword.Equals(request.Keyword) &&
+                    c.Location.Equals(request.Location) &&
+                    c.Distance.Equals(1000) &&
+                    c.Levels.SequenceEqual(request.Levels) &&
+                    c.Routes.SequenceEqual(request.Categories)
+                ),
+                It.IsAny<CancellationToken>()
+            )
+        )
+        .ReturnsAsync(response);
+
+        var _sut = await controller.Courses(request);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut, Is.Not.Null);
+            var result = _sut as ViewResult;
+
+            Assert.That(result, Is.Not.Null);
+            var model = result!.Model as CoursesViewModel;
+
+            Assert.That(model.Standards, Has.Count.EqualTo(0));
+            Assert.That(model.Pagination, Is.Null);
         });
     }
 }

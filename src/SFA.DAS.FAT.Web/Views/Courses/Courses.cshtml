@@ -75,7 +75,7 @@
                                     </dl>
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Job Category</dt>
+                                        <dt class="das-definition-list__title">Job category</dt>
                                         <dd class="das-definition-list__definition">@standard.Route</dd>
                                     </dl>
 
@@ -107,6 +107,8 @@
                         }
                     </ol>
                 </div>
+
+                @await Html.PartialAsync("_pagination", Model.Pagination)
             }
             else
             {

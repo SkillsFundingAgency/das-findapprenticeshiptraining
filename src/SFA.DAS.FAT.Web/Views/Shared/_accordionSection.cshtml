@@ -7,8 +7,13 @@
         <h2 class="govuk-accordion__section-heading">
             <button type="button" class="govuk-accordion__section-button govuk-!-padding-bottom-1 govuk-!-padding-top-6" id="accordion-@Model.Id">
                 @Model.Heading
+                @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
+                {
+                    <p class="govuk-hint">@Model.SubHeading</p>
+                }
             </button>
         </h2>
+      
     </div>
 
     <div id="accordion-@Model.Id-section" class="govuk-accordion__section-content govuk-!-padding-bottom-2">

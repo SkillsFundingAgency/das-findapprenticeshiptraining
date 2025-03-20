@@ -1,0 +1,38 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.Abstract
+@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@using SFA.DAS.FAT.Web.Services
+@model AccordionGroupFilterSectionViewModel
+
+<div class="govuk-accordion accordion-item-bottom-no-margin  govuk-accordion-hide-controls" data-module="govuk-accordion" style="margin-bottom: -1px;">
+    <div class="govuk-accordion__section">
+        <div class="govuk-accordion__section-header">
+            <h2 class="govuk-accordion__section-heading">
+                <button type="button" class="govuk-accordion__section-button govuk-!-padding-bottom-1 govuk-!-padding-top-6" id="accordion-@Model.Id">
+                    @Model.Heading
+                    @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
+                    {
+                        <p class="govuk-hint">@Model.SubHeading</p>
+                    }
+                </button>
+            </h2>
+        </div>
+        <div id="accordion-@Model.Id-section" class="govuk-accordion__section-content govuk-!-padding-bottom-2">
+
+        @foreach (FilterSection child in @Model.Children)
+            {
+                <div id="@child.Id-section" class="govuk-!-padding-bottom-2">
+                    @switch (child.FilterComponentType)
+                    {
+                        case FilterService.FilterComponentType.CheckboxList:
+                        {
+                            @await Html.PartialAsync("_checkboxListGroup", child)
+                        }
+                            break;
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+                

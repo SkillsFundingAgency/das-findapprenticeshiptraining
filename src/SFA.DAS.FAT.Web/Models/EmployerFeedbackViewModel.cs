@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
 {
@@ -12,7 +11,7 @@ namespace SFA.DAS.FAT.Web.Models
         public int TotalFeedbackRating { get; set; }
         public string TotalFeedbackRatingText { get; set; }
         public string TotalFeedbackRatingTextProviderDetail { get; set; }
-        public ProviderRating TotalFeedbackText { get; set; }
+        public EmployerProviderRating TotalFeedbackText { get; set; }
         public List<EmployerFeedbackDetailViewModel> FeedbackAttributeSummary { get; set; }
 
         public EmployerFeedbackViewModel(EmployerFeedback employerFeedback)
@@ -24,7 +23,7 @@ namespace SFA.DAS.FAT.Web.Models
             TotalFeedbackResponses = employerFeedback.TotalEmployerResponses;
             TotalFeedbackRatingText = GetFeedbackRatingText(false);
             TotalFeedbackRatingTextProviderDetail = GetFeedbackRatingText(true);
-            TotalFeedbackText = (ProviderRating)employerFeedback.TotalFeedbackRating;
+            TotalFeedbackText = (EmployerProviderRating)employerFeedback.TotalFeedbackRating;
             FeedbackAttributeSummary = GenerateAttributeSummary(employerFeedback.FeedbackAttributes);
         }
 
@@ -75,19 +74,6 @@ namespace SFA.DAS.FAT.Web.Models
             public int TotalCount { get; set; }
             public double StrengthPerc { get; set; }
             public double WeaknessPerc { get; set; }
-        }
-
-        public class EmployerFeedBackDetail
-        {
-            public ProviderRating Rating { get; set; }
-            public decimal RatingPercentage { get; set; }
-            public int RatingCount { get; set; }
-            public string RatingText => GetRatingText();
-
-            private string GetRatingText()
-            {
-                return RatingCount == 1 ? "1 review" : $"{RatingCount} reviews";
-            }
         }
     }
 }

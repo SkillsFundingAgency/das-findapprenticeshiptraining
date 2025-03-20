@@ -439,3 +439,37 @@ var feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
 nodeListForEach(feedbackGraphs, function (feedbackGraph) {
   new FeedbackGraph(feedbackGraph).init();
 });
+
+var buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
+var buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
+var buttonDeliveryModeBlockRelease = document.getElementById('filteritem-modes-filter-BlockRelease')
+
+buttonDeliveryModeProvider.addEventListener('click', e => {
+    if (buttonDeliveryModeProvider.checked) {
+        buttonDeliveryModeDayRelease.checked = true;
+        buttonDeliveryModeBlockRelease.checked = true;
+    }
+
+    if (!buttonDeliveryModeProvider.checked) {
+        buttonDeliveryModeDayRelease.checked = false;
+        buttonDeliveryModeBlockRelease.checked = false;
+    }
+});
+
+buttonDeliveryModeDayRelease.addEventListener('click', e => {
+    toggleDeliveryModeParent();
+});
+
+buttonDeliveryModeBlockRelease.addEventListener('click', e => {
+    toggleDeliveryModeParent();
+});
+
+function toggleDeliveryModeParent() {
+    if (!buttonDeliveryModeDayRelease.checked || !buttonDeliveryModeBlockRelease.checked) {
+        buttonDeliveryModeProvider.checked = false;
+    }
+
+    if (buttonDeliveryModeDayRelease.checked || buttonDeliveryModeBlockRelease.checked) {
+        buttonDeliveryModeProvider.checked = true;
+    }
+}

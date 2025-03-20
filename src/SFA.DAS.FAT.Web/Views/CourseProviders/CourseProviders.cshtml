@@ -1,0 +1,29 @@
+﻿@using SFA.DAS.FAT.Domain.Configuration
+@using Microsoft.Extensions.Options
+@model SFA.DAS.FAT.Web.Models.CourseProvidersViewModel
+@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
+
+@{
+    ViewData["Title"] = $"Training providers for {Model.CourseTitleAndLevel}";
+    ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.CourseTitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
+
+    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
+}
+<main class="govuk-main-wrapper" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">
+                <span>Training providers for</span>
+                <span class="das-no-wrap">@Model.CourseTitleAndLevel</span>
+            </h1>
+        </div>
+    </div>
+    
+    <div class="govuk-grid-row govuk-!-margin-top-4">
+        <div class="govuk-grid-column-one-third">
+
+            @await Html.PartialAsync("_filters", Model.Filters)
+                
+        </div>
+    </div>
+</main>

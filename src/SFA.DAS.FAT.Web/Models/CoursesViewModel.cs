@@ -8,6 +8,8 @@ using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -19,6 +21,8 @@ public class CoursesViewModel : PageLinksViewModelBase
     public List<LevelViewModel> Levels { get; set; } = [];
 
     public List<RouteViewModel> Routes { get; set; } = [];
+
+    public PaginationViewModel Pagination { get; set; } 
 
     public string Keyword { get; set; } = string.Empty;
 
@@ -111,13 +115,13 @@ public class CoursesViewModel : PageLinksViewModelBase
             return ASK_TRAINING_PROVIDER;
         }
 
-        bool isNationalSearch = 
-            string.IsNullOrWhiteSpace(Location) || 
+        bool isNationalSearch =
+            string.IsNullOrWhiteSpace(Location) ||
             Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
-        
-        string providerText = 
+
+        string providerText =
             standard.ProvidersCount == 1 ?
-                ONE_TRAINING_PROVIDER_MESSAGE : 
+                ONE_TRAINING_PROVIDER_MESSAGE :
                 $"{standard.ProvidersCount} training providers";
 
         return isNationalSearch
@@ -131,7 +135,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode })!;
         }
-        
+
         return GetHelpFindingCourseUrl(standard.LarsCode);
     }
 
@@ -150,12 +154,12 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private string PopulateCoursesSubHeader()
     {
-        if(Total == 0)
+        if (Total == 0)
         {
             return string.Empty;
         }
 
-        if(!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
         {
             return _LOCATION_COURSES_SUB_HEADER;
         }
@@ -202,7 +206,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         return new FiltersViewModel()
         {
             Route = RouteNames.Courses,
-            FilterSections = 
+            FilterSections =
             [
                 CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
                 CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
@@ -211,8 +215,8 @@ public class CoursesViewModel : PageLinksViewModelBase
                     "multi-select",
                     string.Empty,
                     [
-                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
-                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, GenerateRouteFilterItems())
+                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING,null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
+                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null,GenerateRouteFilterItems())
                     ]
                 )
             ],
@@ -223,23 +227,23 @@ public class CoursesViewModel : PageLinksViewModelBase
     private List<FilterItemViewModel> GenerateRouteFilterItems()
     {
         return Routes?.Select(category => new FilterItemViewModel
-            {
-                Value = category.Name,
-                DisplayText = category.Name,
-                Selected = SelectedRoutes?.Contains(category.Name) ?? false
-            })
+        {
+            Value = category.Name,
+            DisplayText = category.Name,
+            Selected = SelectedRoutes?.Contains(category.Name) ?? false
+        })
         .ToList() ?? [];
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
     {
         return Levels?.Select(level => new FilterItemViewModel
-            {
-                Value = level.Code.ToString(),
-                DisplayText = $"Level {level.Code}",
-                DisplayDescription = $"Equal to {level.Name}",
-                Selected = SelectedLevels?.Contains(level.Code) ?? false
-            })
+        {
+            Value = level.Code.ToString(),
+            DisplayText = $"Level {level.Code}",
+            DisplayDescription = $"Equal to {level.Name}",
+            Selected = SelectedLevels?.Contains(level.Code) ?? false
+        })
         .ToList() ?? [];
     }
 
@@ -293,5 +297,50 @@ public class CoursesViewModel : PageLinksViewModelBase
     private string GetLevelCodeValue(string filterValue)
     {
         return Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
+    }
+
+    public List<ValueTuple<string, string>> ToQueryString()
+    {
+        List<ValueTuple<string, string>> result = new();
+
+        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
+        {
+            switch (clearFilterSection.FilterType)
+            {
+                case FilterType.KeyWord:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Keyword), Keyword!));
+                    }
+                    break;
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        if (!string.IsNullOrWhiteSpace(Distance))
+                        {
+                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
+                        }
+                    }
+                    break;
+                case FilterType.Levels:
+                    {
+                        foreach (int level in SelectedLevels)
+                        {
+                            result.Add(ValueTuple.Create(nameof(FilterType.Levels), level.ToString()));
+                        }
+                    }
+                    break;
+                case FilterType.Categories:
+                    {
+                        foreach (string category in SelectedRoutes)
+                        {
+                            result.Add(ValueTuple.Create(nameof(FilterType.Categories), category));
+                        }
+                    }
+                    break;
+            }
+        }
+
+        return result;
     }
 }
