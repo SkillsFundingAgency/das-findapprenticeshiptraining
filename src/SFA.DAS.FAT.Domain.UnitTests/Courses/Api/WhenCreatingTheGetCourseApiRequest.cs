@@ -13,11 +13,4 @@ public class WhenCreatingTheGetCourseApiRequest
         var actual = new GetCourseApiRequest(baseUrl, id, locationName, distance);
         actual.GetUrl.Should().Be($"{baseUrl}courses/{id}?location={locationName}&distance={distance}");
     }
-
-    [Test, AutoData]
-    public void Then_The_Get_Url_Is_Constructed_Correctly_With_ShortlistUserId(string baseUrl, int id, int? distance, string locationName, Guid shortlistUserId)
-    {
-        var actual = new GetCourseApiRequest(baseUrl, id, locationName, distance);
-        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}?location={locationName}&distance={distance}");
-    }
 }
