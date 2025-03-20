@@ -10,7 +10,6 @@ using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
-using StructureMap.Query;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
 namespace SFA.DAS.FAT.Web.Models;
