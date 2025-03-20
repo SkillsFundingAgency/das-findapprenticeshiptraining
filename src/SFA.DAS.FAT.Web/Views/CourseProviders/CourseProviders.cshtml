@@ -1,6 +1,10 @@
 ﻿@using SFA.DAS.FAT.Domain.Configuration
+@using SFA.DAS.FAT.Web.Infrastructure
 @using Microsoft.Extensions.Options
-@model SFA.DAS.FAT.Web.Models.CourseProvidersViewModel
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using SFA.DAS.FAT.Web.Models.CourseProviders
+@using SFA.DAS.FAT.Web.Models.Shared
+@model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProvidersViewModel
 @inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 
 @{
@@ -12,18 +16,158 @@
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
                 <span>Training providers for</span>
                 <span class="das-no-wrap">@Model.CourseTitleAndLevel</span>
             </h1>
+            @if (Model.Providers.Count > 0)
+            {
+                <h2 class="govuk-body  govuk-!-margin-bottom-5">Select the training provider name to view more details.</h2>
+            }
         </div>
     </div>
     
     <div class="govuk-grid-row govuk-!-margin-top-4">
+        <form asp-route="@RouteNames.CourseProviders" id="course-providers-form" method="GET">
         <div class="govuk-grid-column-one-third">
-
             @await Html.PartialAsync("_filters", Model.Filters)
-                
         </div>
+
+        <div class="govuk-grid-column-two-thirds  govuk-!-padding-0">
+        <div class="govuk-grid-row das-bottom-margin">
+            <div class="govuk-grid-column-full govuk-!-padding-right-0">
+                <div class="govuk-grid-column-one-third govuk-!-padding-10">
+                    <p class="govuk-body govuk-!-font-weight-bold">@Model.TotalMessage</p>
+                </div>
+                @if (Model.Providers.Count > 0)
+                {
+                    <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
+                        <p class="govuk-body govuk-!-text-align-right">
+                              
+                            <label class="govuk-label" for="sort">
+                                Sort results &nbsp;&nbsp;
+
+                                <select class="govuk-select" id="course-providers-orderby" name="OrderBy">
+                                    
+                                    @foreach (var orderBy in Model.ProviderOrderDropdown)
+                                    {
+                                        <option value="@orderBy.ProviderOrderBy" selected=@(orderBy.Selected ? "selected" : null)>@orderBy.Description</option>
+                                    }
+                                </select>
+                            </label>
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+        @if (Model.Providers.Count == 0)
+        {
+            <div class="das-left-margin">
+                <p class="govuk-body">
+                    There are no training providers to match your search.
+                </p>
+                <p class="govuk-body">
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>clear the filters you've selected</li>
+                        <li>increase the distance that the apprentice can travel</li>
+                    </ul>
+                </p>
+                <p class="govuk-body">
+                    Change your search using the filters on this page or <a asp-route="@RouteNames.SearchCourses" class="govuk-link govuk-link--no-visited-state">start a new search</a>.
+                </p>
+                <hr/>
+            </div>
+        }
+        else
+        {
+            <div class="das-search-results course-provider-results-main">
+                <ol class="das-search-results__list">
+
+                    @foreach (var provider in Model.Providers)
+                    {
+                        <li>
+                            <div class="govuk-grid-row course-provider-results-top-panel">
+                                @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
+                                {
+                                    CourseId = Model.Id.ToString(),
+                                    ProviderName = provider.ProviderName,
+                                    ShortlistId = provider.ShortlistId,
+                                    Ukprn = provider.Ukprn,
+                                    Location = Model.Location,
+                                    Distance = Model.Distance
+                                })
+                            </div>
+                            <div class="govuk-grid-row course-provider-results-middle-panels">
+                                @await Html.PartialAsync("_trainingOptions", new TrainingOptionsViewModel
+                                {
+                                    IsEmployerLocationAvailable = provider.IsEmployerLocationAvailable,
+                                    IsDayReleaseAvailable = provider.IsDayReleaseAvailable,
+                                    IsBlockReleaseAvailable = provider.IsBlockReleaseAvailable
+                                })
+                            </div>
+
+                            <hr class="das-hr-no-margin"/>
+
+                            <div class="govuk-grid-row course-provider-results-middle-panels">
+                                <div class="govuk-grid-column-one-third">
+                                    <h3 class="govuk-heading-s"> @Model.ProviderReviewsHeading
+                                    </h3>
+                                </div>
+                                <div class="govuk-grid-column-two-thirds das-bottom-margin">
+                                    @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                    {
+                                        Stars = provider.EmployerStars,
+                                        Reviews = provider.EmployerReviews,
+                                        ProviderRating = provider.EmployerRating,
+                                        ProviderRatingType = ProviderRatingType.Employer
+                                    })
+                                    @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                    {
+                                        Stars = provider.ApprenticeStars,
+                                        Reviews = provider.ApprenticeReviews,
+                                        ProviderRating = provider.ApprenticeRating,
+                                        ProviderRatingType = ProviderRatingType.Apprentice
+                                    })
+                                </div>
+                            </div>
+
+                            <hr class="das-hr-no-margin"/>
+
+                            <div class="govuk-grid-row course-provider-results-bottom-panel">
+
+                                <div class="govuk-grid-column-one-third">
+                                    <h3 class="govuk-heading-s">@Model.CourseAchievementRateHeading</h3>
+                                </div>
+                                <div class="govuk-grid-column-two-thirds">
+                                    <div class="govuk-body">
+                                        @provider.AchievementRateMessage
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ol>
+            </div>
+        }
+            <div class="das-highlight-adjustment">
+                <div class="das-highlight">
+                    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">If you cannot find a suitable training provider</h3>
+                    <p class="govuk-body">
+                        If the training providers listed are not suitable or there are none listed, we can ask training providers if they can run @Model.CourseTitleAndLevel.
+                        If a training provider can offer a course, we'll send you their contact details.
+                    </p>
+                    <p class="govuk-body">You can use this service if you employ apprentices. You'll need to be signed into your apprenticeship service account.
+                    </p>
+
+                    <p class="govuk-!-margin-0">
+                        <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.CourseId)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+
+
+        </form>
     </div>
 </main>

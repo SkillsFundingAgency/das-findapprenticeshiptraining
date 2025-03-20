@@ -6,6 +6,6 @@ namespace SFA.DAS.FAT.Web.Models
     {
         public bool Selected { get; set; }
         public string Description { get; set; }
-        public ApprenticeProviderRating ProviderRatingType { get; set; }
+        public ProviderRating ProviderRatingType { get; set; }
     }
 }

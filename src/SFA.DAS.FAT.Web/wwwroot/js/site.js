@@ -428,8 +428,6 @@ ShowHidePanels.prototype.showPanel = function(panel) {
 }
 
 
-
-
 var showHidePanels = document.querySelectorAll('[data-show-hide-panels]');
 nodeListForEach(showHidePanels, function (showHidePanel) {
   new ShowHidePanels(showHidePanel).init();
@@ -439,6 +437,14 @@ var feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
 nodeListForEach(feedbackGraphs, function (feedbackGraph) {
   new FeedbackGraph(feedbackGraph).init();
 });
+
+
+var courseProvidersOrderBy = document.getElementById('course-providers-orderby');
+
+courseProvidersOrderBy.addEventListener('change', function() {
+   document.getElementById("course-providers-form").submit();
+});
+
 
 var buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
 var buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
