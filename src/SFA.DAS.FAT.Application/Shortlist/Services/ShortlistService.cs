@@ -52,21 +52,6 @@ public class ShortlistService : IShortlistService
 
     }
 
-    [Obsolete("Use CreateShortlistItemForUser(PostShortlistForUserRequest request) instead")]
-    public async Task<Guid> CreateShortlistItemForUser(Guid shortlistUserId, int ukprn, int trainingCode, double? lat, double? lon, string locationDescription)
-    {
-        var request = new PostShortlistForUserRequest
-        {
-            Lat = lat,
-            Lon = lon,
-            LocationDescription = locationDescription,
-            Ukprn = ukprn,
-            LarsCode = trainingCode,
-            ShortlistUserId = shortlistUserId
-        };
-        return await CreateShortlistItemForUser(request);
-    }
-
     public async Task<Guid> CreateShortlistItemForUser(PostShortlistForUserRequest request)
     {
         var response = await _apiClient.Post<string, PostShortlistForUserRequest>(new CreateShortlistForUserRequest(_configValue.BaseUrl) { Data = request });

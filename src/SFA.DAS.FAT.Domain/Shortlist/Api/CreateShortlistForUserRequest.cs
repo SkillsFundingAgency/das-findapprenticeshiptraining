@@ -20,7 +20,5 @@ public class PostShortlistForUserRequest
     public Guid ShortlistUserId { get; set; }
     public int LarsCode { get; set; }
     public int Ukprn { get; set; }
-    public double? Lat { get; set; } = null;
-    public double? Lon { get; set; } = null;
-    public string LocationDescription { get; set; } = null;
+    public string LocationName { get; set; } = null;
 }
