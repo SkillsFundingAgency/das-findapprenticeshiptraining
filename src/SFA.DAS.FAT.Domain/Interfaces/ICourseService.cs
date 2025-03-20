@@ -11,10 +11,4 @@ public interface ICourseService
     Task<GetCourseResponse> GetCourse(int larsCode, string location, int? distance);
     Task<CourseProvidersDetails> GetCourseProviders(CourseProvidersParameters courseProvidersParameters);
     Task<TrainingCourseProviderDetails> GetCourseProviderDetails(int providerId, int standardId, string location, double lat, double lon, Guid shortlistUserId);
-    Task<TrainingCourse> GetCourse(int courseId, double lat, double lon, string locationName, Guid? shortlistUserId);
-
-    Task<CourseProvidersDetails> GetCourseProviders(CourseProvidersParameters courseProvidersParameters);
-
-    Task<TrainingCourseProviderDetails> GetCourseProviderDetails(int providerId, int standardId,
-    string location, double lat, double lon, Guid shortlistUserId);
 }
