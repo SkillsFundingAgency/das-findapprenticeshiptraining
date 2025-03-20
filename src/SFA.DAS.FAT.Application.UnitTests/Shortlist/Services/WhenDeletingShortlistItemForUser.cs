@@ -19,7 +19,7 @@ public class WhenDeletingShortlistItemForUser
         ShortlistService sut)
     {
         //Act
-        await sut.DeleteShortlistItemForUser(id, shortlistUserId);
+        await sut.DeleteShortlistItemForUser(id);
 
         //Assert
         apiClient.Verify(x =>
@@ -38,7 +38,7 @@ public class WhenDeletingShortlistItemForUser
         ShortlistsCount shortlistsCount = new() { Count = count };
         sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(shortlistsCount);
         //Act
-        await sut.DeleteShortlistItemForUser(id, shortlistUserId);
+        await sut.DeleteShortlistItemForUser(id);
 
         //Assert
         sessionService.Verify(x => x.Set(It.Is<ShortlistsCount>(c => c.Count == count - 1)), Times.Once);

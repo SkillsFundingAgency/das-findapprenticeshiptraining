@@ -37,35 +37,7 @@ public class WhenDeletingShortlistItemForUser
 
         //Assert
         actual.Should().NotBeNull();
-        mockMediator.Verify(x => x.Send(It.Is<DeleteShortlistItemForUserCommand>(c =>
-            c.ShortlistUserId.Equals(shortlistCookie.ShortlistUserId)
-            && c.Id.Equals(request.ShortlistId)
-        ), It.IsAny<CancellationToken>()), Times.Once);
-
-    }
-
-    [Test, MoqAutoData]
-    public async Task And_Cookie_Does_Not_Exists_Then_Deletes_Command_Is_Not_Called(
-        Guid id,
-        DeleteShortlistItemRequest request,
-        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
-        [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
-    {
-        //Arrange
-        mockShortlistCookieService
-            .Setup(service => service.Get(Constants.ShortlistCookieName))
-            .Returns((ShortlistCookieItem)null);
-        request.RouteName = string.Empty;
-
-        //Act
-        var actual = await controller.DeleteShortlistItemForUser(request) as AcceptedResult;
-
-        //Assert
-        actual.Should().NotBeNull();
-        mockMediator.Verify(x => x.Send(It.IsAny<DeleteShortlistItemForUserCommand>(),
-            It.IsAny<CancellationToken>()), Times.Never);
-
+        mockMediator.Verify(x => x.Send(It.Is<DeleteShortlistItemForUserCommand>(c => c.Id.Equals(request.ShortlistId)), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -121,8 +93,7 @@ public class WhenDeletingShortlistItemForUser
         await controller.DeleteShortlistItemForUser(request);
 
         //Assert
-        protector.Verify(c => c.Protect(It.Is<byte[]>(
-            x => x[0].Equals(Encoding.UTF8.GetBytes($"{request.ProviderName}")[0]))), Times.Once);
+        protector.Verify(c => c.Protect(It.Is<byte[]>(x => x[0].Equals(Encoding.UTF8.GetBytes($"{request.ProviderName}")[0]))), Times.Once);
     }
 
 }

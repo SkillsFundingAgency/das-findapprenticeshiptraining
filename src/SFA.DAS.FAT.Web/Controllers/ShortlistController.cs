@@ -120,15 +120,10 @@ public class ShortlistController : Controller
     [Route("items/{id}", Name = RouteNames.DeleteShortlistItem)]
     public async Task<IActionResult> DeleteShortlistItemForUser(DeleteShortlistItemRequest request)
     {
-        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-        if (cookie != null)
+        await _mediator.Send(new DeleteShortlistItemForUserCommand
         {
-            await _mediator.Send(new DeleteShortlistItemForUserCommand
-            {
-                Id = request.ShortlistId,
-                ShortlistUserId = cookie.ShortlistUserId
-            });
-        }
+            Id = request.ShortlistId,
+        });
 
         if (!string.IsNullOrEmpty(request.RouteName))
         {

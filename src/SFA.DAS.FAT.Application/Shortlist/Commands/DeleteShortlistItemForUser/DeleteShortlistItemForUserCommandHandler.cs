@@ -3,21 +3,12 @@ using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser
-{
-    public class DeleteShortlistItemForUserCommandHandler : IRequestHandler<DeleteShortlistItemForUserCommand, Unit>
-    {
-        private readonly IShortlistService _service;
+namespace SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 
-        public DeleteShortlistItemForUserCommandHandler (IShortlistService service)
-        {
-            _service = service;
-        }
-        public async Task<Unit> Handle(DeleteShortlistItemForUserCommand request, CancellationToken cancellationToken)
-        {
-            await _service.DeleteShortlistItemForUser(request.Id, request.ShortlistUserId);
-            
-            return Unit.Value;
-        }
+public class DeleteShortlistItemForUserCommandHandler(IShortlistService _service) : IRequestHandler<DeleteShortlistItemForUserCommand>
+{
+    public async Task Handle(DeleteShortlistItemForUserCommand request, CancellationToken cancellationToken)
+    {
+        await _service.DeleteShortlistItemForUser(request.Id);
     }
 }

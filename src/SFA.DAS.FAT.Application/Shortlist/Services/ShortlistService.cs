@@ -42,7 +42,7 @@ public class ShortlistService : IShortlistService
         return apiResponse;
     }
 
-    public async Task DeleteShortlistItemForUser(Guid id, Guid shortlistUserId)
+    public async Task DeleteShortlistItemForUser(Guid id)
     {
         await _apiClient.Delete(new DeleteShortlistForUserRequest(_configValue.BaseUrl, id));
 
