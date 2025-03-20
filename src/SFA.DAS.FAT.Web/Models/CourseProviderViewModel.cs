@@ -11,6 +11,7 @@ namespace SFA.DAS.FAT.Web.Models
         public ProviderCoursesViewModel AdditionalCourses { get; set; }
 
         public int ProvidersAtLocation { get; set; }
+
         public Dictionary<string, string> GetCourseProvidersRequest { get; set; } = new Dictionary<string, string>();
 
         public string BannerUpdateMessage { get; set; }

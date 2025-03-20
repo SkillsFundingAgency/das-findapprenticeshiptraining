@@ -6,7 +6,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
-using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
 
@@ -38,8 +38,8 @@ public sealed class WhenFilteringCourseProviders
             Location = "M60 7RA",
             Distance = "20",
             SelectedDeliveryModes = new List<string> { ProviderDeliveryMode.Provider.ToString(), ProviderDeliveryMode.DayRelease.ToString(), ProviderDeliveryMode.BlockRelease.ToString() },
-            SelectedEmployerApprovalRatings = new List<string>() { EmployerProviderRating.Good.ToString(), EmployerProviderRating.Excellent.ToString() },
-            SelectedApprenticeApprovalRatings = new List<string>() { ApprenticeProviderRating.Poor.ToString(), ApprenticeProviderRating.VeryPoor.ToString() },
+            SelectedEmployerApprovalRatings = new List<string>() { ProviderRating.Good.ToString(), ProviderRating.Excellent.ToString() },
+            SelectedApprenticeApprovalRatings = new List<string>() { ProviderRating.Poor.ToString(), ProviderRating.VeryPoor.ToString() },
             SelectedQarRatings = new List<string> { QarRating.VeryPoor.ToString(), QarRating.Excellent.ToString() },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -198,7 +198,7 @@ public sealed class WhenFilteringCourseProviders
 
             var checkBoxList = ((CheckboxListFilterSectionViewModel)employerProviderRatingsFilterSection);
 
-            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(EmployerProviderRating)).Length));
+            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
             Assert.That(checkBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.EMPLOYER_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
@@ -223,12 +223,12 @@ public sealed class WhenFilteringCourseProviders
             Assert.Multiple(() =>
             {
                 var employerProviderReviewsGoodLink =
-                    clearLinks.Items.First(a => a.DisplayText == EmployerProviderRating.Good.GetDescription());
+                    clearLinks.Items.First(a => a.DisplayText == ProviderRating.Good.GetDescription());
                 Assert.That(employerProviderReviewsGoodLink, Is.Not.Null);
                 Assert.That(employerProviderReviewsGoodLink.ClearLink, Is.EqualTo(urlWithoutEmployerProviderReviewsGood));
 
                 var employerProviderReviewsExcellentLink =
-                    clearLinks.Items.First(a => a.DisplayText == EmployerProviderRating.Excellent.GetDescription());
+                    clearLinks.Items.First(a => a.DisplayText == ProviderRating.Excellent.GetDescription());
                 Assert.That(employerProviderReviewsExcellentLink, Is.Not.Null);
                 Assert.That(employerProviderReviewsExcellentLink.ClearLink, Is.EqualTo(urlWithoutEmployerProviderReviewsExcellent));
             });
@@ -250,7 +250,7 @@ public sealed class WhenFilteringCourseProviders
 
             var checkBoxList = ((CheckboxListFilterSectionViewModel)apprenticeProviderRatingsFilterSection);
 
-            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ApprenticeProviderRating)).Length));
+            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
             Assert.That(checkBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.APPRENTICE_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
@@ -275,12 +275,12 @@ public sealed class WhenFilteringCourseProviders
             Assert.Multiple(() =>
             {
                 var apprenticeProviderReviewsVeryPoorLink =
-                    clearLinks.Items.First(a => a.DisplayText == ApprenticeProviderRating.VeryPoor.GetDescription());
+                    clearLinks.Items.First(a => a.DisplayText == ProviderRating.VeryPoor.GetDescription());
                 Assert.That(apprenticeProviderReviewsVeryPoorLink, Is.Not.Null);
                 Assert.That(apprenticeProviderReviewsVeryPoorLink.ClearLink, Is.EqualTo(urlWithoutApprenticeProviderReviewsVeryPoor));
 
                 var apprenticeProviderReviewsPoorLink =
-                    clearLinks.Items.First(a => a.DisplayText == ApprenticeProviderRating.Poor.GetDescription());
+                    clearLinks.Items.First(a => a.DisplayText == ProviderRating.Poor.GetDescription());
                 Assert.That(apprenticeProviderReviewsPoorLink, Is.Not.Null);
                 Assert.That(apprenticeProviderReviewsPoorLink.ClearLink, Is.EqualTo(urlWithoutApprenticeProviderReviewsPoor));
             });
@@ -338,5 +338,4 @@ public sealed class WhenFilteringCourseProviders
             });
         });
     }
-
 }

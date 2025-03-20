@@ -11,8 +11,8 @@ public class CourseProvidersApiRequest : IGetApiRequest
 {
     private readonly string _location;
     private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes;
-    private readonly IEnumerable<EmployerProviderRating> _employerProviderRatingTypes;
-    private readonly IEnumerable<ApprenticeProviderRating> _apprenticeProviderRatingTypes;
+    private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes;
+    private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes;
     private readonly IEnumerable<QarRating> _qarRatings;
 
     private readonly ProviderOrderBy _orderBy;
