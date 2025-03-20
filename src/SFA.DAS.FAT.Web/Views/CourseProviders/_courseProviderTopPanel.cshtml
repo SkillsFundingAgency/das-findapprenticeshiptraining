@@ -1,0 +1,43 @@
+﻿@using SFA.DAS.FAT.Web.Infrastructure
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProviderTopPanelViewModel
+
+    <div class="govuk-grid-column-full das-bottom-margin">
+        @if (Model.ShortlistId != null)
+        {
+            <span class="govuk-tag govuk-!-font-size-16">
+                Shortlisted
+            </span>
+        }
+    </div>
+    <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
+        <h2 class="govuk-heading-m das-search-results__heading">
+            <a class="das-search-results__link das-button--inline-link" id="provider-@Model.Ukprn"
+               asp-all-route-data="@Model.ProviderRouteData"
+               asp-route="@RouteNames.CourseProviderDetails">
+                @Model.ProviderName
+            </a>
+        </h2>
+    </div>
+
+    <div class="govuk-grid-column-one-third govuk-body">
+        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? "" : "app-provider-shortlist-added")">
+            <div class="app-provider-shortlist-add">
+                <form method="post" asp-route="@RouteNames.CreateShortlistItem">
+                    <input type="hidden" name="providerName" value="@Model.ProviderName" />
+                    <input type="hidden" name="routeName" value="@RouteNames.CourseProviders" />
+                    <button id="add-to-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Add to shortlist</button>
+                </form>
+            </div>
+            <div class="app-provider-shortlist-remove">
+                <strong class="govuk-tag app-provider-shortlist-tag">Shortlisted</strong>
+                <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
+                    <input type="hidden" name="ukprn" value="@Model.Ukprn" />
+                    <input type="hidden" name="providerName" value="@Model.ProviderName" />
+                    <input type="hidden" name="trainingCode" value="@Model.CourseId" />
+                    <input type="hidden" name="routeName" value="@RouteNames.CourseProviders" />
+                    <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Remove from shortlist</button>
+                </form>
+            </div>
+        </div>
+    </div>

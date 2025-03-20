@@ -8,10 +8,12 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -38,6 +40,7 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
+
         request.Distance = "123";
 
         var qarStart = "21";
@@ -67,6 +70,8 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        var expectedProviders = response.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
+
         //Act
         var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
 
@@ -79,7 +84,7 @@ public class WhenGettingCourseProviders
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.CourseId.Should().Be(request.Id);
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
-            actualModel.Distance.Should().Be(request.Distance.ToString());
+            actualModel.Distance.Should().Be(Constants.DefaultDistance.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
             actualModel.SelectedEmployerApprovalRatings.Should()
@@ -98,6 +103,7 @@ public class WhenGettingCourseProviders
             actualModel.QarPeriodEndYear.Should().Be($"20{qarEnd}");
             actualModel.ReviewPeriodStartYear.Should().Be($"20{reviewStart}");
             actualModel.ReviewPeriodEndYear.Should().Be($"20{reviewEnd}");
+            actualModel.Providers.Should().BeEquivalentTo(expectedProviders);
         }
     }
 
@@ -272,4 +278,181 @@ public class WhenGettingCourseProviders
             actualModel!.Distance.Should().Be(string.Empty);
         }
     }
+
+    [Test, MoqAutoData]
+    public async Task Then_ReviewPeriod_Details_Are_Set(
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        var startReviewPeriod = "22";
+        var endReviewPeriod = "23";
+        response.ReviewPeriod = $"{startReviewPeriod}{endReviewPeriod}";
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        //Act
+        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.ReviewPeriodStartYear.Should().Be($"20{startReviewPeriod}");
+            actualModel.ReviewPeriodEndYear.Should().Be($"20{endReviewPeriod}");
+            actualModel.ProviderReviewsHeading.Should().Be($"Provider reviews in {actualModel.ReviewPeriodStartYear} to {actualModel.ReviewPeriodEndYear}");
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_QarPeriod_Details_Are_Set(
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        var startQarPeriod = "22";
+        var endQarPeriod = "23";
+        response.QarPeriod = $"{startQarPeriod}{endQarPeriod}";
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        //Act
+        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.QarPeriodStartYear.Should().Be($"20{startQarPeriod}");
+            actualModel.QarPeriodEndYear.Should().Be($"20{endQarPeriod}");
+            actualModel.CourseAchievementRateHeading.Should().Be($"Course achievement rate in {actualModel.QarPeriodStartYear} to {actualModel.QarPeriodEndYear}");
+        }
+    }
+
+    [Test]
+    [MoqInlineAutoData(0, "No results")]
+    [MoqInlineAutoData(1, "1 result")]
+    [MoqInlineAutoData(2, "2 results")]
+    [MoqInlineAutoData(500, "500 results")]
+    [MoqInlineAutoData(-1, "No results")]
+    public async Task Then_TotalMessage_Is_Set(
+        int totalCount,
+        string expectedMessage,
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        response.TotalCount = totalCount;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        //Act
+        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.TotalMessage.Should().Be(expectedMessage);
+        }
+    }
+
+    [Test]
+    [MoqInlineAutoData(ProviderOrderBy.Distance, true, false, false, false)]
+    [MoqInlineAutoData(ProviderOrderBy.AchievementRate, false, true, false, false)]
+    [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating, false, false, true, false)]
+    [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating, false, false, false, true)]
+    public async Task Then_ProviderOrderDropdown_Is_Set(
+        ProviderOrderBy orderBy,
+        bool distanceSelected,
+        bool achievementRateSelected,
+        bool employerProviderRatingSelected,
+        bool apprenticeProviderRatingSelected,
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        request.OrderBy = orderBy;
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var expectedProviderOrderDropdown = new List<ProviderOrderByOptionViewModel>
+        {
+            new()
+            {
+                Description = ProviderOrderBy.Distance.GetDescription(),
+                ProviderOrderBy = ProviderOrderBy.Distance,
+                Selected = distanceSelected
+            },
+            new()
+            {
+                Description = ProviderOrderBy.AchievementRate.GetDescription(),
+                ProviderOrderBy = ProviderOrderBy.AchievementRate,
+                Selected = achievementRateSelected
+            },
+            new()
+            {
+                Description = ProviderOrderBy.EmployerProviderRating.GetDescription(),
+                ProviderOrderBy = ProviderOrderBy.EmployerProviderRating,
+                Selected = employerProviderRatingSelected
+            },
+            new()
+            {
+                Description = ProviderOrderBy.ApprenticeProviderRating.GetDescription(),
+                ProviderOrderBy = ProviderOrderBy.ApprenticeProviderRating,
+                Selected = apprenticeProviderRatingSelected
+            }
+        };
+
+        //Act
+        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.ProviderOrderDropdown.Should().BeEquivalentTo(expectedProviderOrderDropdown);
+        }
+    }
+
 }

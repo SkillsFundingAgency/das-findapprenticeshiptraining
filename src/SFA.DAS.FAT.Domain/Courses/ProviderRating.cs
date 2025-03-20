@@ -3,7 +3,7 @@
 namespace SFA.DAS.FAT.Domain.Courses;
 
 
-public enum ApprenticeProviderRating
+public enum ProviderRating
 {
     [Description("Excellent")]
     Excellent,
@@ -13,20 +13,6 @@ public enum ApprenticeProviderRating
     Poor,
     [Description("Very poor")]
     VeryPoor,
-    [Description("No apprentice reviews")]
-    NotYetReviewed
-}
-
-public enum EmployerProviderRating
-{
-    [Description("Excellent")]
-    Excellent,
-    [Description("Good")]
-    Good,
-    [Description("Poor")]
-    Poor,
-    [Description("Very poor")]
-    VeryPoor,
-    [Description("No employer reviews")]
+    [Description("Not yet reviewed")]
     NotYetReviewed
 }

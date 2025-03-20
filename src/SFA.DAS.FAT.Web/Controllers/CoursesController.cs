@@ -205,8 +205,8 @@ namespace SFA.DAS.FAT.Web.Controllers
                     {
                         providersRequestCookie.Id = id;
                         providersRequestCookie.DeliveryModes = new List<ProviderDeliveryMode>();
-                        providersRequestCookie.EmployerProviderRatings = new List<EmployerProviderRating>();
-                        providersRequestCookie.ApprenticeProviderRatings = new List<ApprenticeProviderRating>();
+                        providersRequestCookie.EmployerProviderRatings = new List<ProviderRating>();
+                        providersRequestCookie.ApprenticeProviderRatings = new List<ProviderRating>();
                     }
 
                     providersRequestCookie.Location = result.Location;
