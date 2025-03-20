@@ -429,4 +429,76 @@ public class WhenCreatingCoursesViewModel
 
         Assert.That(_sut.FindIndex(a => a.Item1 == "Categories"), Is.AtLeast(0));
     }
+
+    [Test]
+    public void When_Location_Is_Set_Then_Location_And_Distance_Must_Be_Added_To_Standard_Routes()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = "10"
+        };
+
+        int larsCode = 123;
+
+        var result = _sut.GenerateStandardRouteValues(larsCode);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContainsKey("id"), Is.True);
+            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+
+            Assert.That(result.ContainsKey("location"), Is.True);
+            Assert.That(result["location"], Is.EqualTo(_sut.Location));
+
+            Assert.That(result.ContainsKey("distance"), Is.True);
+            Assert.That(result["distance"], Is.EqualTo(_sut.Distance));
+        });
+    }
+
+    [Test]
+    public void When_Location_Is_Empty_Then_Location_And_Distance_Must_Not_Be_Added_To_Standard_Routes()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = string.Empty,
+            Distance = "10"
+        };
+
+        int larsCode = 123;
+
+        var result = _sut.GenerateStandardRouteValues(larsCode);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContainsKey("id"), Is.True);
+            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+
+            Assert.That(result.ContainsKey("location"), Is.False);
+            Assert.That(result.ContainsKey("distance"), Is.False);
+        });
+    }
+
+    [Test]
+    public void When_Location_Is_Null_Then_Location_And_Distance_Must_Not_Be_Added_To_Standard_Routes()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = null,
+            Distance = "10"
+        };
+
+        int larsCode = 123;
+
+        var result = _sut.GenerateStandardRouteValues(larsCode);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContainsKey("id"), Is.True);
+            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+
+            Assert.That(result.ContainsKey("location"), Is.False);
+            Assert.That(result.ContainsKey("distance"), Is.False);
+        });
+    }
 }

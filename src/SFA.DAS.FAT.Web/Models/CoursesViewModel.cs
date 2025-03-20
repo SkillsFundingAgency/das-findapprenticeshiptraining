@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
+using StructureMap.Query;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -343,4 +344,20 @@ public class CoursesViewModel : PageLinksViewModelBase
 
         return result;
     }
+
+    public Dictionary<string, string> GenerateStandardRouteValues(int larsCode)
+    {
+        var routeValues = new Dictionary<string, string>
+        {
+            { "id", larsCode.ToString() },
+        };
+
+        if (!string.IsNullOrWhiteSpace(Location))
+        {
+            routeValues.Add("location", Location);
+            routeValues.Add("distance", Distance.ToString());
+        }
+
+        return routeValues;
+    }     
 }
