@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -20,6 +21,8 @@ namespace SFA.DAS.FAT.Web.Controllers;
 [Route("[controller]")]
 public class ShortlistController : Controller
 {
+    public const int ShortlistExpiryInDays = 30;
+
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ILogger<ShortlistController> _logger;
@@ -92,7 +95,6 @@ public class ShortlistController : Controller
                 ShortlistUserId = Guid.NewGuid()
             };
         }
-        _shortlistCookieService.Update(Constants.ShortlistCookieName, cookie, 30);
 
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand
         {
@@ -101,6 +103,8 @@ public class ShortlistController : Controller
             LarsCode = request.LarsCode,
             ShortlistUserId = cookie.ShortlistUserId
         });
+
+        _shortlistCookieService.Update(Constants.ShortlistCookieName, cookie, ShortlistExpiryInDays);
 
         if (!string.IsNullOrEmpty(request.RouteName))
         {
@@ -137,5 +141,17 @@ public class ShortlistController : Controller
         }
 
         return Accepted();
+    }
+
+    /// <summary>
+    /// This is a workaround to update the shortlist component via java script
+    /// </summary>
+    /// <returns></returns>
+    [ExcludeFromCodeCoverage]
+    [HttpGet]
+    [Route("UpdateCount")]
+    public async Task<IActionResult> UpdateShortlistsCount()
+    {
+        return await Task.FromResult(ViewComponent("ShortlistsLink"));
     }
 }

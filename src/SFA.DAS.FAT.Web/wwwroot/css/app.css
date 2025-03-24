@@ -136,6 +136,14 @@
   display: block;
 }
 
+.app-provider-not-shortlisted {
+  display: none;
+}
+
+.app-provider-shortlisted{
+  display: block;
+}
+
 .das-button--inline-link {
   text-align: inherit;
 }

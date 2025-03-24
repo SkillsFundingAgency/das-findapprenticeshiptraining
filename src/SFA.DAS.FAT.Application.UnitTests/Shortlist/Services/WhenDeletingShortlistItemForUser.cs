@@ -30,7 +30,6 @@ public class WhenDeletingShortlistItemForUser
     [Test, MoqAutoData]
     public async Task Then_The_Count_Is_Reduced_In_Session(
         Guid id,
-        Guid shortlistUserId,
         int count,
         [Frozen] Mock<ISessionService> sessionService,
         ShortlistService sut)
@@ -42,5 +41,19 @@ public class WhenDeletingShortlistItemForUser
 
         //Assert
         sessionService.Verify(x => x.Set(It.Is<ShortlistsCount>(c => c.Count == count - 1)), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_If_Session_Is_Empty_Count_Is_Not_Updated(
+        Guid id,
+        [Frozen] Mock<ISessionService> sessionService,
+        ShortlistService sut)
+    {
+        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(() => null);
+        //Act
+        await sut.DeleteShortlistItemForUser(id);
+
+        //Assert
+        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
     }
 }

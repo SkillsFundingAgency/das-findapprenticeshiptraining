@@ -3,7 +3,9 @@
 @using SFA.DAS.FAT.Web.Models.Shared.Components
 @model ShortlistsLinkComponentViewModel
 
-<a id="header-view-shortlist" asp-route="@RouteNames.ShortList"
-    class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">
-    View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@Model.Count</span>
-</a>
+<div id="ShortlistsCountContainer">
+  <a id="header-view-shortlist" asp-route="@RouteNames.ShortList"
+      class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">
+      View shortlist <span class="app-view-shortlist-link__number" aria-hidden="true">@Model.Count</span>
+  </a>
+</div>

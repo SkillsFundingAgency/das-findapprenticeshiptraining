@@ -47,9 +47,11 @@ public class ShortlistService : IShortlistService
         await _apiClient.Delete(new DeleteShortlistForUserRequest(_configValue.BaseUrl, id));
 
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
-        shortlistCount.Count--;
-        _sessionService.Set(shortlistCount);
-
+        if (shortlistCount != null)
+        {
+            shortlistCount.Count--;
+            _sessionService.Set(shortlistCount);
+        }
     }
 
     public async Task<Guid> CreateShortlistItemForUser(PostShortlistForUserRequest request)
@@ -58,9 +60,12 @@ public class ShortlistService : IShortlistService
 
         if (response.IsCreated)
         {
-            var shortlistCount = _sessionService.Get<ShortlistsCount>() ?? new ShortlistsCount();
-            shortlistCount.Count += 1;
-            _sessionService.Set(shortlistCount);
+            var shortlistCount = _sessionService.Get<ShortlistsCount>();
+            if (shortlistCount != null)
+            {
+                shortlistCount.Count += 1;
+                _sessionService.Set(shortlistCount);
+            }
         }
 
         return response.ShortlistId;

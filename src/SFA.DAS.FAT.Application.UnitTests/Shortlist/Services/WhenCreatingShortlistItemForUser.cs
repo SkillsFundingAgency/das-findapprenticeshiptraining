@@ -58,7 +58,6 @@ public class WhenCreatingShortlistItemForUser
     public async Task Then_The_Count_Is_Not_Increased_In_Session_If_Shortlist_Was_Not_Created(
         Guid shortlistId,
         PostShortlistForUserRequest postShortlistForUserRequest,
-        int count,
         [Frozen] Mock<IApiClient> apiClient,
         [Frozen] Mock<ISessionService> sessionService,
         ShortlistService sut)
@@ -71,6 +70,27 @@ public class WhenCreatingShortlistItemForUser
 
         //Assert
         sessionService.Verify(s => s.Get<ShortlistsCount>(), Times.Never);
+        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_If_Session_Is_Empty_Then_Count_Is_Not_Changed(
+        Guid shortlistId,
+        PostShortlistForUserRequest postShortlistForUserRequest,
+        int count,
+        [Frozen] Mock<IApiClient> apiClient,
+        [Frozen] Mock<ISessionService> sessionService,
+        ShortlistService sut)
+    {
+        //Arrange
+        CreateShortlistForUserResponse apiResponse = new(shortlistId, true);
+        apiClient.Setup(x => x.Post<CreateShortlistForUserResponse, PostShortlistForUserRequest>(It.IsAny<CreateShortlistForUserRequest>())).ReturnsAsync(apiResponse);
+        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(() => null);
+        //Act
+        await sut.CreateShortlistItemForUser(postShortlistForUserRequest);
+
+        //Assert
+        sessionService.Verify(s => s.Get<ShortlistsCount>(), Times.Once);
         sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
     }
 }

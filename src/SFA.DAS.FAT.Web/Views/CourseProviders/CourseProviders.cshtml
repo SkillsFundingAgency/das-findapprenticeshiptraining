@@ -10,8 +10,6 @@
 @{
     ViewData["Title"] = $"Training providers for {Model.CourseTitleAndLevel}";
     ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.CourseTitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
-
-    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
 }
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
@@ -26,40 +24,49 @@
             }
         </div>
     </div>
-    
+
     <div class="govuk-grid-row govuk-!-margin-top-4">
-        <form asp-route="@RouteNames.CourseProviders" id="course-providers-form" method="GET">
         <div class="govuk-grid-column-one-third">
-            @await Html.PartialAsync("_filters", Model.Filters)
+            <form id="course-providers-form" method="GET">
+                <input type="hidden" name="orderBy" value="@Context.Request.Query["OrderBy"]"/>
+                @await Html.PartialAsync("_filters", Model.Filters)
+            </form>
         </div>
 
         <div class="govuk-grid-column-two-thirds  govuk-!-padding-0">
-        <div class="govuk-grid-row das-bottom-margin">
-            <div class="govuk-grid-column-full govuk-!-padding-right-0">
-                <div class="govuk-grid-column-one-third govuk-!-padding-10">
-                    <p class="govuk-body govuk-!-font-weight-bold">@Model.TotalMessage</p>
-                </div>
-                @if (Model.Providers.Count > 0)
-                {
-                    <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
-                        <p class="govuk-body govuk-!-text-align-right">
-                              
-                            <label class="govuk-label" for="sort">
-                                Sort results &nbsp;&nbsp;
-
-                                <select class="govuk-select" id="course-providers-orderby" name="OrderBy">
-                                    
-                                    @foreach (var orderBy in Model.ProviderOrderDropdown)
-                                    {
-                                        <option value="@orderBy.ProviderOrderBy" selected=@(orderBy.Selected ? "selected" : null)>@orderBy.Description</option>
-                                    }
-                                </select>
-                            </label>
-                        </p>
+            <div class="govuk-grid-row das-bottom-margin">
+                <div class="govuk-grid-column-full govuk-!-padding-right-0">
+                    <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET">
+                        @foreach (var q in Context.Request.Query)
+                        {
+                            <input type="hidden" name="@q.Key" value="@q.Value" />
+                        }
+                        <div class="govuk-grid-column-one-third govuk-!-padding-10">
+                        <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2">@Model.TotalMessage</p>
                     </div>
-                }
+                    @if (Model.Providers.Count > 0)
+                    {
+                        <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
+                            <p class="govuk-body govuk-!-text-align-right">
+                                <label class="govuk-label" for="sort">
+                                    Sort results &nbsp;&nbsp;
+                                    <select class="govuk-select" id="course-providers-orderby" name="OrderBy">
+                                        @foreach (var orderByOption in Model.ProviderOrderOptions)
+                                        {
+                                            <option value="@orderByOption.ProviderOrderBy" selected=@(orderByOption.Selected ? "selected" : null)>@orderByOption.Description</option>
+                                        }
+                                    </select>
+                                </label>
+                            </p>
+                        </div>
+                    }
+                    </form>
+                </div>
             </div>
         </div>
+
+        <div class="govuk-grid-column-two-thirds  govuk-!-padding-0">
+
         @if (Model.Providers.Count == 0)
         {
             <div class="das-left-margin">
@@ -75,7 +82,7 @@
                 <p class="govuk-body">
                     Change your search using the filters on this page or <a asp-route="@RouteNames.SearchCourses" class="govuk-link govuk-link--no-visited-state">start a new search</a>.
                 </p>
-                <hr/>
+                <hr />
             </div>
         }
         else
@@ -106,11 +113,12 @@
                                 })
                             </div>
 
-                            <hr class="das-hr-no-margin"/>
+                            <hr class="das-hr-no-margin" />
 
                             <div class="govuk-grid-row course-provider-results-middle-panels">
                                 <div class="govuk-grid-column-one-third">
-                                    <h3 class="govuk-heading-s"> @Model.ProviderReviewsHeading
+                                    <h3 class="govuk-heading-s">
+                                        @Model.ProviderReviewsHeading
                                     </h3>
                                 </div>
                                 <div class="govuk-grid-column-two-thirds das-bottom-margin">
@@ -131,7 +139,7 @@
                                 </div>
                             </div>
 
-                            <hr class="das-hr-no-margin"/>
+                            <hr class="das-hr-no-margin" />
 
                             <div class="govuk-grid-row course-provider-results-bottom-panel">
 
@@ -149,25 +157,22 @@
                 </ol>
             </div>
         }
-            <div class="das-highlight-adjustment">
-                <div class="das-highlight">
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-2">If you cannot find a suitable training provider</h3>
-                    <p class="govuk-body">
-                        If the training providers listed are not suitable or there are none listed, we can ask training providers if they can run @Model.CourseTitleAndLevel.
-                        If a training provider can offer a course, we'll send you their contact details.
-                    </p>
-                    <p class="govuk-body">You can use this service if you employ apprentices. You'll need to be signed into your apprenticeship service account.
-                    </p>
+        <div class="das-highlight-adjustment">
+            <div class="das-highlight">
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-2">If you cannot find a suitable training provider</h3>
+                <p class="govuk-body">
+                    If the training providers listed are not suitable or there are none listed, we can ask training providers if they can run @Model.CourseTitleAndLevel.
+                    If a training provider can offer a course, we'll send you their contact details.
+                </p>
+                <p class="govuk-body">
+                    You can use this service if you employ apprentices. You'll need to be signed into your apprenticeship service account.
+                </p>
 
-                    <p class="govuk-!-margin-0">
-                        <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.CourseId)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
-                    </p>
-                </div>
+                <p class="govuk-!-margin-0">
+                    <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.CourseId)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
+                </p>
             </div>
         </div>
-
-
-
-        </form>
+    </div>
     </div>
 </main>

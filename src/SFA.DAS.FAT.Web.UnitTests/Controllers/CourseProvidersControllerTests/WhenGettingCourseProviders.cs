@@ -59,10 +59,10 @@ public class WhenGettingCourseProviders
                 It.Is<GetCourseProvidersQuery>(c => c.Id.Equals(request.Id)
                  && c.Location.Equals(request.Location)
                  && c.OrderBy.Equals(request.OrderBy)
-                 && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Select(type => type))
-                 && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings.Select(type => type))
-                 && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings.Select(type => type))
-                 && c.Qar.SequenceEqual(request.QarRatings.Select(type => type))
+                 && c.DeliveryModes.SequenceEqual(request.DeliveryModes)
+                 && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
+                 && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
+                 && c.Qar.SequenceEqual(request.QarRatings)
                  && c.Page.Equals(request.Page)
                  && c.PageSize.Equals(request.PageSize)
                  && c.ShortlistUserId.Equals(shortlistUserId)
@@ -73,7 +73,7 @@ public class WhenGettingCourseProviders
         var expectedProviders = response.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -134,10 +134,10 @@ public class WhenGettingCourseProviders
                 It.Is<GetCourseProvidersQuery>(c => c.Id.Equals(request.Id)
                  && c.Location.Equals(request.Location)
                  && c.OrderBy.Equals(request.OrderBy)
-                 && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Select(type => (ProviderDeliveryMode)type))
-                 && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings.Select(type => type))
-                 && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings.Select(type => type))
-                 && c.Qar.SequenceEqual(request.QarRatings.Select(type => (QarRating)type))
+                 && c.DeliveryModes.SequenceEqual(request.DeliveryModes)
+                 && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
+                 && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
+                 && c.Qar.SequenceEqual(request.QarRatings)
                  && c.Page.Equals(request.Page)
                  && c.PageSize.Equals(request.PageSize)
                  && c.ShortlistUserId.Equals(null)
@@ -146,7 +146,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -186,7 +186,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -227,7 +227,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -267,7 +267,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -300,7 +300,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -335,7 +335,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -374,7 +374,7 @@ public class WhenGettingCourseProviders
             .ReturnsAsync(response);
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -442,7 +442,7 @@ public class WhenGettingCourseProviders
         };
 
         //Act
-        var sut = await controller.CourseProviders(request.Id, request) as ViewResult;
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
 
         //Assert
@@ -451,7 +451,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.ProviderOrderDropdown.Should().BeEquivalentTo(expectedProviderOrderDropdown);
+            actualModel!.ProviderOrderOptions.Should().BeEquivalentTo(expectedProviderOrderDropdown);
         }
     }
 
