@@ -13,6 +13,8 @@ using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
+
+[Route("courses/{id}/providers")]
 public class CourseProvidersController : Controller
 {
     private readonly IMediator _mediator;
@@ -28,11 +30,9 @@ public class CourseProvidersController : Controller
         _config = config.Value;
     }
 
-    [Route("courses/{id}/providers", Name = RouteNames.CourseProviders)]
-    public async Task<IActionResult> CourseProviders(int id, CourseProvidersRequest request)
+    [Route("", Name = RouteNames.CourseProviders)]
+    public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
-        request.Id = id;
-
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
 

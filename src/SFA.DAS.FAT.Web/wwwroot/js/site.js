@@ -442,7 +442,7 @@ nodeListForEach(feedbackGraphs, function (feedbackGraph) {
 var courseProvidersOrderBy = document.getElementById('course-providers-orderby');
 
 courseProvidersOrderBy.addEventListener('change', function() {
-   document.getElementById("course-providers-form").submit();
+   document.getElementById("course-providers-order-form").submit();
 });
 
 

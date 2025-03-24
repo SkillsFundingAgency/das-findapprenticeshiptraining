@@ -54,12 +54,15 @@ public class ShortlistService : IShortlistService
 
     public async Task<Guid> CreateShortlistItemForUser(PostShortlistForUserRequest request)
     {
-        var response = await _apiClient.Post<string, PostShortlistForUserRequest>(new CreateShortlistForUserRequest(_configValue.BaseUrl) { Data = request });
+        var response = await _apiClient.Post<CreateShortlistForUserResponse, PostShortlistForUserRequest>(new CreateShortlistForUserRequest(_configValue.BaseUrl) { Data = request });
 
-        var shortlistCount = _sessionService.Get<ShortlistsCount>() ?? new ShortlistsCount();
-        shortlistCount.Count++;
-        _sessionService.Set(shortlistCount);
+        if (response.IsCreated)
+        {
+            var shortlistCount = _sessionService.Get<ShortlistsCount>() ?? new ShortlistsCount();
+            shortlistCount.Count += 1;
+            _sessionService.Set(shortlistCount);
+        }
 
-        return Guid.Parse(response);
+        return response.ShortlistId;
     }
 }
