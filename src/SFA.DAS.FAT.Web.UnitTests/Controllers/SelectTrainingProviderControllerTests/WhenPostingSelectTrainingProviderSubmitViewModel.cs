@@ -56,7 +56,6 @@ public class WhenPostingSelectTrainingProviderSubmitViewModel
         result.Should().NotBeNull();
         var model = result!.Model as SelectTrainingProviderViewModel;
 
-        model!.ShortListItemCount.Should().Be(viewModel.ShortListItemCount);
         model.ShowSearchCrumb.Should().BeTrue();
         model.ShowShortListLink.Should().BeTrue();
     }

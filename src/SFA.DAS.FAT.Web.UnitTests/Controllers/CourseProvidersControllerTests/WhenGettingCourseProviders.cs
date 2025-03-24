@@ -94,7 +94,6 @@ public class WhenGettingCourseProviders
             actualModel.SelectedQarRatings = request.QarRatings.Select(q => q.ToString()).ToList();
             actualModel!.ShowSearchCrumb.Should().BeTrue();
             actualModel.ShowShortListLink.Should().BeTrue();
-            actualModel.ShortListItemCount = 0;
             actualModel.ShowApprenticeTrainingCourseCrumb.Should().BeTrue();
             actualModel.ShowApprenticeTrainingCoursesCrumb.Should().BeTrue();
             actualModel.QarPeriod.Should().Be(response.QarPeriod);
