@@ -28,7 +28,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
         <div class="govuk-grid-column-one-third">
             <form id="course-providers-form" method="GET">
-                <input type="hidden" name="orderBy" value="@Context.Request.Query["OrderBy"]"/>
+                <input type="hidden" name="OrderBy" value="@Context.Request.Query["OrderBy"]"/>
                 @await Html.PartialAsync("_filters", Model.Filters)
             </form>
         </div>
@@ -39,6 +39,7 @@
                     <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET">
                         @foreach (var q in Context.Request.Query)
                         {
+                            if (q.Key == "OrderBy") continue;
                             <input type="hidden" name="@q.Key" value="@q.Value" />
                         }
                         <div class="govuk-grid-column-one-third govuk-!-padding-10">
