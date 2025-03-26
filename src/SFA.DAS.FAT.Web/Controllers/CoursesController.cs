@@ -92,8 +92,6 @@ namespace SFA.DAS.FAT.Web.Controllers
                 SelectedRoutes = model.Categories,
                 SelectedLevels = model.Levels,
                 Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
-                // SHORTLIST_WORK
-                ShortListItemCount = 0, //result.ShortListItemCount,
                 Location = model.Location ?? string.Empty,
                 Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
                 ShowSearchCrumb = true,
@@ -148,7 +146,6 @@ namespace SFA.DAS.FAT.Web.Controllers
             viewModel.LocationName = location?.Name;
             viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
             viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
-            viewModel.ShortListItemCount = result.ShortlistItemCount;
             viewModel.ShowSearchCrumb = true;
             viewModel.ShowShortListLink = true;
             viewModel.ShowApprenticeTrainingCoursesCrumb = true;
@@ -213,7 +210,6 @@ namespace SFA.DAS.FAT.Web.Controllers
                     viewModel.GetCourseProvidersRequest = providersRequestCookie.ToDictionary();
                 }
 
-                viewModel.ShortListItemCount = result.ShortlistItemCount;
                 viewModel.ShowSearchCrumb = true;
 
 

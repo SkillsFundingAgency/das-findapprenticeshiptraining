@@ -18,7 +18,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
             actual.Provider.Should().BeEquivalentTo((ProviderViewModel)source.Provider);
             actual.ProvidersAtLocation.Should().Be(source.ProvidersAtLocation);
             actual.TotalProviders.Should().Be(source.TotalProviders);
-            actual.ShortListItemCount.Should().Be(source.ShortlistItemCount);
         }
 
         [Test, AutoData]

@@ -8,13 +8,12 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models;
 public class WhenCreatingSelectTrainingProviderViewModel
 {
     [Test, AutoData]
-    public void Then_The_Fields_Are_Mapped(int shortlistItemCount)
+    public void Then_The_Fields_Are_Mapped()
     {
-        var vm = new SelectTrainingProviderViewModel(shortlistItemCount);
+        var vm = new SelectTrainingProviderViewModel();
 
         using (new AssertionScope())
         {
-            vm.ShortListItemCount.Should().Be(shortlistItemCount);
             vm.ShowSearchCrumb.Should().BeTrue();
             vm.ShowShortListLink.Should().BeTrue();
         }

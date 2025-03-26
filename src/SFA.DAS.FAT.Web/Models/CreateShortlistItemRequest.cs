@@ -1,14 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿namespace SFA.DAS.FAT.Web.Models;
 
-namespace SFA.DAS.FAT.Web.Models
+public class CreateShortlistItemRequest
 {
-    public class CreateShortlistItemRequest
-    {
-        [FromRoute(Name = "providerId")]
-        public int Ukprn { get ; set ; }
-        [FromRoute(Name="id")]
-        public int TrainingCode { get ; set ; }
-        public string RouteName { get; set; }
-        public string ProviderName { get ; set ; }
-    }
+    public int Ukprn { get; set; }
+    public int LarsCode { get; set; }
+    public string RouteName { get; set; }
+    public string ProviderName { get; set; }
+    public string LocationName { get; set; } = null;
 }
