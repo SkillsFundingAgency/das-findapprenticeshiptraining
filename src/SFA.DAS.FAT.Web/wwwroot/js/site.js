@@ -1,16 +1,16 @@
 ﻿
 // AUTOCOMPLETE
 
-var $locationInput = $('#search-location');
-var $submitOnConfirm = $('#search-location').data('submit-on-selection');
-var $defaultValue = $('#search-location').data('default-value');
+let $locationInput = $('#search-location');
+let $submitOnConfirm = $('#search-location').data('submit-on-selection');
+let $defaultValue = $('#search-location').data('default-value');
 if ($locationInput.length > 0) {
     $locationInput.wrap('<div id="autocomplete-container" class="das-autocomplete-wrap"></div>');
-    var container = document.querySelector('#autocomplete-container');
-    var apiUrl = '/locations';
+    let container = document.querySelector('#autocomplete-container');
+    let apiUrl = '/locations';
     $(container).empty();
     function getSuggestions(query, updateResults) {
-        var results = [];
+        let results = [];
         $.ajax({
             url: apiUrl,
             type: "get",
@@ -24,8 +24,8 @@ if ($locationInput.length > 0) {
         });
     }
     function onConfirm() {
-        var form = this.element.parentElement.parentElement;  
-        var form2 = this.element.parentElement.parentElement.parentElement;
+        let form = this.element.parentElement.parentElement;  
+        let form2 = this.element.parentElement.parentElement.parentElement;
         setTimeout(function(){
             if (form.tagName.toLocaleLowerCase() === 'form' && $submitOnConfirm) {
                 form.submit()
@@ -72,12 +72,12 @@ $('#deliveryMode-Workplace').on('change', function(){
 // If users history-1 does not come from this site, 
 // then show a link to homepage
 
-var $backLinkOrHome = $('.das-js-back-link-or-home');
-var backLinkOrHome = function () {
+let $backLinkOrHome = $('.das-js-back-link-or-home');
+let backLinkOrHome = function () {
 
-    var referrer = document.referrer;
+    let referrer = document.referrer;
 
-    var backLink = $('<a>')
+    let backLink = $('<a>')
         .attr({'href': '#', 'class': 'govuk-back-link'})
         .text('Back')
         .on('click', function (e) {
@@ -101,12 +101,12 @@ if ($backLinkOrHome) {
 
 $(window).bind('scroll', function() {
 
-    var isCookieBannerVisible = $('.das-cookie-banner:visible').length,
+    let isCookieBannerVisible = $('.das-cookie-banner:visible').length,
         showHeaderDistance = 150 + (isCookieBannerVisible * 240),
         $breadcrumbs = $('.govuk-breadcrumbs');
 
     if ($breadcrumbs.length > 0) {
-        var breadcrumbDistanceFromTop = $breadcrumbs.offset().top,
+        let breadcrumbDistanceFromTop = $breadcrumbs.offset().top,
             breadcrumbHeight = $breadcrumbs.outerHeight();
 
         showHeaderDistance = breadcrumbDistanceFromTop + breadcrumbHeight;
@@ -127,59 +127,67 @@ $(window).bind('scroll', function() {
 // the back-to-top header
 
 $("a[data-scroll-to-target]").on('click', function () {
-    var target = $(this).data('scroll-to-target'),
+    let target = $(this).data('scroll-to-target'),
         $target = $(target);
         headerOffset = $('.app-shortlist-banner__fixed').outerHeight() || 50;
 
     setTimeout(function() {
         if ($target.length > 0) {
-            var scrollTo = $target.offset().top - headerOffset;
+            let scrollTo = $target.offset().top - headerOffset;
             $('html, body').animate({scrollTop: scrollTo}, 0);
         }
     }, 10)
 
 });
 
+
+
 // SHORTLIST
 
-var shortlistAddForms = $('.app-provider-shortlist-add form');
-var shortlistRemoveForms = $('.app-provider-shortlist-remove form');
+let shortlistAddForms = $('.app-provider-shortlist-add form');
+let shortlistRemoveForms = $('.app-provider-shortlist-remove form');
 
-var providerAddedClassName = 'app-provider-shortlist-added'
+let providerAddedClassName = 'app-provider-shortlist-added'
 
 shortlistAddForms.on('submit', function(e) {
-    var form = $(this);
-    var formData = new FormData(this);
+    let form = $(this);
+    let formData = new FormData(this);
     formData.delete('routeName');
     sendData(formData, this.action, addFormDone, form);
     e.preventDefault();
 });
 
 shortlistRemoveForms.on('submit', function(e) {
-    var form = $(this);
-    var formData = new FormData(this);
+    let form = $(this);
+    let formData = new FormData(this);
     formData.delete('routeName');
     sendData(formData, this.action, removeFormDone, form);
     e.preventDefault();
 });
 
-var addFormDone = function(data, form) {
-    var wrapper = form.closest('.app-provider-shortlist-control');
-    var removeForm = wrapper.find('.app-provider-shortlist-remove form');
+let addFormDone = function(data, form) {
+    let wrapper = form.closest('.app-provider-shortlist-control');
+    let removeForm = wrapper.find('.app-provider-shortlist-remove form');
     removeForm.attr("action", "/shortlist/items/" + data);
     wrapper.addClass(providerAddedClassName)
+    let courseProvider = form.closest('.app-course-provider')[0];
+    let shortlistedTag = courseProvider.querySelector('.app-course-provider-shortlisted-tag')
+    if (shortlistedTag) { shortlistedTag.style.display = 'block';  }
     updateShortlistCount();
 }
 
-var removeFormDone = function(data, form) {
-    var wrapper = form.closest('.app-provider-shortlist-control');
-    var removeForm = wrapper.find('.app-provider-shortlist-remove form');
+let removeFormDone = function(data, form) {
+    let wrapper = form.closest('.app-provider-shortlist-control');
+    let removeForm = wrapper.find('.app-provider-shortlist-remove form');
     removeForm.attr("action", "/shortlist/items/00000000-0000-0000-0000-000000000000");
     wrapper.removeClass(providerAddedClassName);
-    updateShortlistCount(true);
+    let courseProvider = form.closest('.app-course-provider')[0];
+    let shortlistedTag = courseProvider.querySelector('.app-course-provider-shortlisted-tag')
+    if (shortlistedTag) { shortlistedTag.style.display = 'none'; }
+    updateShortlistCount();
 }
 
-var sendData = function(formData, action, doneCallBack, form){
+let sendData = function(formData, action, doneCallBack, form){
     $.ajax({
         type: "POST",
         url: action,
@@ -191,19 +199,24 @@ var sendData = function(formData, action, doneCallBack, form){
     });
 }
 
-var updateShortlistCount = function(remove) {
-    var currentCount = $('body').data('shortlistcount');
-    var shortlistCountsUi = $('.app-view-shortlist-link__number');
-    
-    currentCount += remove ? -1 : 1;
-
-    $('body').data('shortlistcount', currentCount)
-    shortlistCountsUi.text(currentCount).addClass('app-view-shortlist-link__number-update')
+let updateShortlistCount = function () {
+    refreshComponent();
+    let shortlistCountsUi = $('.app-view-shortlist-link__number');
+    shortlistCountsUi.addClass('app-view-shortlist-link__number-update')
 
     setTimeout(function() {
         shortlistCountsUi.removeClass('app-view-shortlist-link__number-update')
     }, 1000);
 }
+
+function refreshComponent() {
+    fetch('/shortlist/UpdateCount')
+        .then(response => response.text())
+        .then(html => {
+            document.getElementById("ShortlistsCountContainer").innerHTML = html;
+        });
+}
+
 
 
 
@@ -215,7 +228,7 @@ function nodeListForEach(nodes, callback) {
     if (window.NodeList.prototype.forEach) {
         return nodes.forEach(callback)
     }
-    for (var i = 0; i < nodes.length; i++) {
+    for (let i = 0; i < nodes.length; i++) {
         callback.call(window, nodes[i], i, nodes);
     }
 }
@@ -233,17 +246,17 @@ FeedbackGraph.prototype.init = function() {
         return
     }
 
-    var that = this
-    var rowCount = 0
-    var legendlistHtml
-    var graphHtml = document.createElement("div")
+    let that = this
+    let rowCount = 0
+    let legendlistHtml
+    let graphHtml = document.createElement("div")
         graphHtml.className = "app-graph"
 
-    var graphList = document.createElement("ul")
+    let graphList = document.createElement("ul")
         graphList.className = "app-graph__list"
 
-    var caption = this.table.querySelector("caption")
-    var categoryHtml
+    let caption = this.table.querySelector("caption")
+    let categoryHtml
 
     nodeListForEach(this.rows, function (row) {
         if (rowCount === 0) {
@@ -269,10 +282,10 @@ FeedbackGraph.prototype.init = function() {
 }
 
 FeedbackGraph.prototype.legendHtml = function(row) {
-    var legendList = document.createElement('ul')
+    let legendList = document.createElement('ul')
         legendList.className = "app-graph-key"
-    var dataCells = row.querySelectorAll("td")
-    var cellCount = 0
+    let dataCells = row.querySelectorAll("td")
+    let cellCount = 0
 
     if (this.hideLegend) {
         return ''
@@ -281,7 +294,7 @@ FeedbackGraph.prototype.legendHtml = function(row) {
     nodeListForEach(dataCells, function (dataCell) {
         if (isNaN(dataCell.textContent)) {
 
-            var legendListItem = document.createElement("li")
+            let legendListItem = document.createElement("li")
                 legendListItem.className = "app-graph-key__list-item app-graph-key__list-item--colour-" + (cellCount + 1)
                 legendListItem.textContent = dataCell.dataset.label
 
@@ -293,20 +306,20 @@ FeedbackGraph.prototype.legendHtml = function(row) {
 }
 
 FeedbackGraph.prototype.graphRow = function(row) {
-    var that = this
-    var questionText = row.querySelector("th").textContent
-    var dataCells = row.querySelectorAll("td")
-    var graphRowHtml = document.createElement('li')
-    var barsHtml = document.createElement("div")
-    var totalAsked = 0
-    var barCount = 0
+    let that = this
+    let questionText = row.querySelector("th").textContent
+    let dataCells = row.querySelectorAll("td")
+    let graphRowHtml = document.createElement('li')
+    let barsHtml = document.createElement("div")
+    let totalAsked = 0
+    let barCount = 0
 
     graphRowHtml.className = "app-graph__list-item"
     barsHtml.className = "app-graph__chart-wrap"
 
     nodeListForEach(dataCells, function (dataCell) {
         if (isNaN(dataCell.textContent)) {
-            var barHtml = that.barHtml(dataCell, barCount+1)
+            let barHtml = that.barHtml(dataCell, barCount+1)
             if (barHtml !== undefined) {
                 barsHtml.appendChild(barHtml)
             }
@@ -316,10 +329,10 @@ FeedbackGraph.prototype.graphRow = function(row) {
         }
     });
 
-    var caption = document.createElement('span')
+    let caption = document.createElement('span')
         caption.className = "app-graph__caption"
         caption.textContent = "(selected by " + totalAsked + " " + this.label + ")"
-    var heading = document.createElement('h3')
+    let heading = document.createElement('h3')
         heading.className = "app-graph__label"
         heading.textContent = questionText
         if (totalAsked > 0) {
@@ -333,23 +346,23 @@ FeedbackGraph.prototype.graphRow = function(row) {
 }
 
 FeedbackGraph.prototype.barHtml = function(dataCell, barCount) {
-    var percentage = parseFloat(dataCell.textContent.slice(0, -1));
-    var span1 = document.createElement('span')
+    let percentage = parseFloat(dataCell.textContent.slice(0, -1));
+    let span1 = document.createElement('span')
         span1.textContent = percentage + "%"
         span1.className = "app-graph__figure"
 
-    var span2 = document.createElement('span')
+    let span2 = document.createElement('span')
         span2.className = "app-graph__bar-value app-graph__bar-value--colour-" + barCount
         span2.style.width = percentage + "%"
         span2.title = dataCell.dataset.title
         span2.tabIndex = 0
         span2.appendChild(span1)
 
-    var span3 = document.createElement('span')
+    let span3 = document.createElement('span')
         span3.className = "app-graph__bar"
         span3.appendChild(span2)
 
-    var span4 = document.createElement('span')
+    let span4 = document.createElement('span')
         span4.className = "app-graph__chart"
         span4.appendChild(span3)
 
@@ -368,10 +381,10 @@ function ShowHidePanels(container) {
 }
 
 ShowHidePanels.prototype.init = function() {
-    var panelData = []
-    var that = this
+    let panelData = []
+    let that = this
     nodeListForEach(this.panels, function (panel) {
-        var panelObj = {
+        let panelObj = {
             id: panel.id,
             label: panel.dataset.panelLabel
         }
@@ -385,10 +398,10 @@ ShowHidePanels.prototype.init = function() {
 }
 
 ShowHidePanels.prototype.panelNav = function(panelId, panelData) {
-    var that = this
-    var buttonWrap = document.createElement('div')
+    let that = this
+    let buttonWrap = document.createElement('div')
         buttonWrap.className = "govuk-button-group app-show-hide-panel__buttons"
-    var filteredData = panelData.filter(function(item) {
+    let filteredData = panelData.filter(function(item) {
         return item.id !== panelId
     })
     filteredData.forEach((item) => {
@@ -398,7 +411,7 @@ ShowHidePanels.prototype.panelNav = function(panelId, panelData) {
 }
 
 ShowHidePanels.prototype.showHideButton = function(item) {
-    var button = document.createElement('a')
+    let button = document.createElement('a')
         button.className = 'govuk-button govuk-button--secondary govuk-!-font-size-16'
         button.textContent = 'Change to ' + item.label + ' view'
         button.href = '#' + item.id
@@ -407,8 +420,8 @@ ShowHidePanels.prototype.showHideButton = function(item) {
 }
 
 ShowHidePanels.prototype.handleButtonClick = function(e) {
-    var that = this
-    var targetPanel = e.target.hash.substring(1)
+    let that = this
+    let targetPanel = e.target.hash.substring(1)
     nodeListForEach(this.panels, function (panel) {
         if (panel.id !== targetPanel) {
             that.hidePanel(panel)
@@ -428,21 +441,27 @@ ShowHidePanels.prototype.showPanel = function(panel) {
 }
 
 
-
-
-var showHidePanels = document.querySelectorAll('[data-show-hide-panels]');
+let showHidePanels = document.querySelectorAll('[data-show-hide-panels]');
 nodeListForEach(showHidePanels, function (showHidePanel) {
   new ShowHidePanels(showHidePanel).init();
 });
 
-var feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
+let feedbackGraphs = document.querySelectorAll('[data-feedback-graph]');
 nodeListForEach(feedbackGraphs, function (feedbackGraph) {
   new FeedbackGraph(feedbackGraph).init();
 });
 
-var buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
-var buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
-var buttonDeliveryModeBlockRelease = document.getElementById('filteritem-modes-filter-BlockRelease')
+
+let courseProvidersOrderBy = document.getElementById('course-providers-orderby');
+
+courseProvidersOrderBy.addEventListener('change', function() {
+   document.getElementById("course-providers-order-form").submit();
+});
+
+
+let buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
+let buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
+let buttonDeliveryModeBlockRelease = document.getElementById('filteritem-modes-filter-BlockRelease')
 
 buttonDeliveryModeProvider.addEventListener('click', e => {
     if (buttonDeliveryModeProvider.checked) {

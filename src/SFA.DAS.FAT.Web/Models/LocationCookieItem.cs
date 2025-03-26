@@ -1,5 +1,8 @@
-﻿namespace SFA.DAS.FAT.Web.Models
+﻿using System;
+
+namespace SFA.DAS.FAT.Web.Models
 {
+    [Obsolete("FAT25 delete this")]
     public class LocationCookieItem
     {
         public string Name { get; set; }

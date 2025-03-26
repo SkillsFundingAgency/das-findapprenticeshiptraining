@@ -110,10 +110,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test]
-        [InlineAutoData(EmployerProviderRating.VeryPoor, "Very poor")]
-        [InlineAutoData(EmployerProviderRating.Poor, "Poor")]
-        [InlineAutoData(EmployerProviderRating.Good, "Good")]
-        [InlineAutoData(EmployerProviderRating.Excellent, "Excellent")]
+        [InlineAutoData(ProviderRating.VeryPoor, "Very poor")]
+        [InlineAutoData(ProviderRating.Poor, "Poor")]
+        [InlineAutoData(ProviderRating.Good, "Good")]
+        [InlineAutoData(ProviderRating.Excellent, "Excellent")]
         public void Then_The_EmployerFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
         {
             source.EmployerFeedback.TotalFeedbackRating = feedbackRating;
@@ -518,10 +518,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models
         }
 
         [Test]
-        [InlineAutoData(ApprenticeProviderRating.VeryPoor, "Very poor")]
-        [InlineAutoData(ApprenticeProviderRating.Poor, "Poor")]
-        [InlineAutoData(ApprenticeProviderRating.Good, "Good")]
-        [InlineAutoData(ApprenticeProviderRating.Excellent, "Excellent")]
+        [InlineAutoData(ProviderRating.VeryPoor, "Very poor")]
+        [InlineAutoData(ProviderRating.Poor, "Poor")]
+        [InlineAutoData(ProviderRating.Good, "Good")]
+        [InlineAutoData(ProviderRating.Excellent, "Excellent")]
         public void Then_The_ApprenticeFeedback_Rating_Is_Mapped_To_The_Description(int feedbackRating, string expected, Provider source)
         {
             source.ApprenticeFeedback.TotalFeedbackRating = feedbackRating;

@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = "Apprenticeship training courses";
     ViewData["Description"] = "View all available apprenticeship training courses in England. Search using keywords, different qualification levels and categories.";
-    ViewData["ShortlistItemCount"] = Model.ShortListItemCount;
 }
 
 <main class="govuk-main-wrapper" id="main-content">
@@ -22,9 +21,9 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
 
         <div class="govuk-grid-column-one-third">
-
+            <form asp-route="@RouteNames.Courses" method="GET">
             @await Html.PartialAsync("_filters", Model.Filters)
-            
+            </form>
         </div>
 
         <div class="govuk-grid-column-two-thirds">

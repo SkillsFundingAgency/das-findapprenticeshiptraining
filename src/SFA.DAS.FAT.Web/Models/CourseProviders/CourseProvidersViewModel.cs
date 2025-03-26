@@ -13,12 +13,12 @@ using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
-namespace SFA.DAS.FAT.Web.Models;
+namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
 public class CourseProvidersViewModel : PageLinksViewModelBase
 {
-
-
+    public int Id { get; set; }
+    public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
 
     public string Distance { get; set; } = "All";
@@ -41,6 +41,46 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     public string ReviewPeriodStartYear { get => $"20{ReviewPeriod.AsSpan(0, 2)}"; }
     public string ReviewPeriodEndYear { get => $"20{ReviewPeriod.AsSpan(2, 2)}"; }
+
+
+    public string ProviderReviewsHeading { get => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"; }
+    public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
+
+
+    public List<CoursesProviderViewModel> Providers { get; set; }
+
+
+    public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
+
+    private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
+    {
+        var dropdown = new List<ProviderOrderByOptionViewModel>();
+
+        foreach (ProviderOrderBy orderByChoice in Enum.GetValues(typeof(ProviderOrderBy)))
+        {
+            dropdown.Add(new ProviderOrderByOptionViewModel
+            {
+                ProviderOrderBy = orderByChoice,
+                Description = orderByChoice.GetDescription(),
+                Selected = orderByChoice == OrderBy
+            });
+        }
+
+        return dropdown;
+    }
+
+    public int TotalCount { get; set; }
+
+    public string TotalMessage => GetTotalMessage();
+
+    private string GetTotalMessage()
+    {
+        var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
+
+        var totalMessage = $"{totalToUse} result{(totalToUse != "1" ? "s" : "")}";
+
+        return totalMessage;
+    }
 
     private static List<DeliveryModeOptionViewModel> BuildDeliveryModeOptionViewModel()
     {
@@ -78,7 +118,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<EmployerProviderRatingOptionViewModel>();
 
-        foreach (EmployerProviderRating rating in Enum.GetValues(typeof(EmployerProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
         {
             ratingViewModels.Add(new EmployerProviderRatingOptionViewModel()
             {
@@ -94,7 +134,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<ApprenticeProviderRatingOptionViewModel>();
 
-        foreach (ApprenticeProviderRating rating in Enum.GetValues(typeof(ApprenticeProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
         {
             ratingViewModels.Add(new ApprenticeProviderRatingOptionViewModel()
             {
@@ -188,7 +228,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return ratings?.Select(rating => new FilterItemViewModel
         {
             Value = rating.ProviderRatingType.ToString(),
-            DisplayText = rating.ProviderRatingType.GetDescription(),
+            DisplayText =
+                rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                ? "No employer reviews"
+                : rating.ProviderRatingType.GetDescription(),
             Selected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
@@ -201,7 +244,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return ratings?.Select(rating => new FilterItemViewModel
         {
             Value = rating.ProviderRatingType.ToString(),
-            DisplayText = rating.ProviderRatingType.GetDescription(),
+            DisplayText =
+                rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                    ? "No apprentice reviews"
+                    : rating.ProviderRatingType.GetDescription(),
             Selected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
@@ -212,6 +258,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var selectedFilters = new Dictionary<FilterType, List<string>>();
 
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {
             Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
@@ -279,11 +326,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             );
     }
 
-    // THIS WILL BE USED IN COMING STORY
     private readonly IUrlHelper _urlHelper;
 
-    // THIS WILL BE USED IN COMING STORY
     private readonly string _requestApprenticeshipTrainingUrl;
+    private readonly string _employerAccountsUrl;
 
     public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
     {
@@ -297,8 +343,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             { FilterType.ApprenticeProviderRatings, GetProviderRatingsValue }
         };
         _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+        _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
+    public string GetHelpFindingCourseUrl(int larsCode)
+    {
+        var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
+
+        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+
+        return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+    }
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 

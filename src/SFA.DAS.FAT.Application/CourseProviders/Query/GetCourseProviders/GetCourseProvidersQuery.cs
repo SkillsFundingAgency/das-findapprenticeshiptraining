@@ -14,9 +14,9 @@ public class GetCourseProvidersQuery : IRequest<GetCourseProvidersResult>
     public string Location { get; set; } = string.Empty;
     public List<ProviderDeliveryMode> DeliveryModes { get; set; }
 
-    public List<EmployerProviderRating> EmployerProviderRatings { get; set; }
+    public List<ProviderRating> EmployerProviderRatings { get; set; }
 
-    public List<ApprenticeProviderRating> ApprenticeProviderRatings { get; set; }
+    public List<ProviderRating> ApprenticeProviderRatings { get; set; }
     public List<QarRating> Qar { get; set; }
     public int Page { get; set; } = 1;
     public int PageSize { get; set; } = Constants.DefaultPageSize;

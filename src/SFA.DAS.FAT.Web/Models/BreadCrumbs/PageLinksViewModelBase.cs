@@ -9,6 +9,5 @@ public class PageLinksViewModelBase
     public string Location { get; set; }
     public string Distance { get; set; }
     public int CourseId { get; set; }
-    public int ShortListItemCount { get; set; }
     public bool ShowShortListLink { get; set; }
 }
