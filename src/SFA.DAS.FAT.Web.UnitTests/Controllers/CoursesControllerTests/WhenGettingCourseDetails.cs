@@ -5,8 +5,6 @@ using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -75,7 +73,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
                 actualModel!.TotalProvidersCount.Should().Be(response.ProvidersCount.TotalProviders);
                 actualModel.ProvidersAtLocationCount.Should().Be(response.ProvidersCount.ProvidersAtLocation);
                 actualModel.LocationName.Should().Be(locationCookieItem.Name);
-                actualModel.ShortListItemCount.Should().Be(response.ShortlistItemCount);
                 actualModel.ShowSearchCrumb.Should().BeTrue();
                 actualModel.ShowShortListLink.Should().BeTrue();
             }

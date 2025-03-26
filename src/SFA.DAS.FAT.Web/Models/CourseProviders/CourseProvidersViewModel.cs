@@ -50,7 +50,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<CoursesProviderViewModel> Providers { get; set; }
 
 
-    public List<ProviderOrderByOptionViewModel> ProviderOrderDropdown { get => GenerateProviderOrderDropdown(); }
+    public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
 
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
     {

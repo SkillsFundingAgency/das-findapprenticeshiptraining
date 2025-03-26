@@ -42,9 +42,7 @@
             </div>
         </div>
         <div asp-show="@Model.ShowShortListLink" class="govuk-grid-column-one-quarter">
-            <a id="header-view-shortlist" asp-route="@RouteNames.ShortList"
-                class="govuk-body govuk-link govuk-link--no-visited-state app-view-shortlist-link">View shortlist <span
-                    class="app-view-shortlist-link__number" aria-hidden="true">@pageLinks.ShortListItemCount</span></a>
+            @await Component.InvokeAsync("ShortlistsLink")
         </div>
     }
 </div>

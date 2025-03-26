@@ -5,9 +5,8 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class SelectTrainingProviderViewModel : SelectTrainingProviderSubmitViewModel
 {
-    public SelectTrainingProviderViewModel(int shortListItemCount)
+    public SelectTrainingProviderViewModel()
     {
-        ShortListItemCount = shortListItemCount;
         ShowSearchCrumb = true;
         ShowShortListLink = true;
     }

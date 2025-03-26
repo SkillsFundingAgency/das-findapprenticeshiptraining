@@ -8,6 +8,7 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProvidersRequest
 {
+    [FromRoute]
     public int Id { get; set; }
 
     [FromQuery]

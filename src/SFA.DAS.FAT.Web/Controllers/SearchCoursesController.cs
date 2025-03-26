@@ -1,36 +1,19 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
 [Route("search", Name = RouteNames.SearchCourses)]
-public class SearchCoursesController(ICookieStorageService<ShortlistCookieItem> shortlistCookieService, IShortlistService shortlistService) : Controller
+public class SearchCoursesController() : Controller
 {
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var shortListItemCount = 0;
-
-        var shortlistItem = shortlistCookieService.Get(Constants.ShortlistCookieName);
-        var shortlistUserId = shortlistItem?.ShortlistUserId;
-
-        if (shortlistUserId != null)
-        {
-            ShortlistForUser shortlist = await shortlistService.GetShortlistForUser((Guid)shortlistUserId);
-            shortListItemCount = shortlist.Shortlist.Count();
-        }
-
         SearchCoursesViewModel model = new SearchCoursesViewModel
         {
-            ShortListItemCount = shortListItemCount,
             ShowSearchCrumb = false,
             ShowShortListLink = true
         };
