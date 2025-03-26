@@ -30,7 +30,4 @@
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FAT.Domain\SFA.DAS.FAT.Domain.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Shortlist\Api\" />
-  </ItemGroup>
 </Project>

@@ -1,5 +1,4 @@
-﻿#nullable enable
-using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+﻿using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 
 namespace SFA.DAS.FAT.Web.Models;
 

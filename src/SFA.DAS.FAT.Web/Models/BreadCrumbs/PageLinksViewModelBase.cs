@@ -9,7 +9,6 @@ public class PageLinksViewModelBase
     public bool ShowApprenticeTrainingCourseCrumb { get; set; }
 
     public bool ShowApprenticeTrainingCourseProvidersCrumb { get; set; }
-    public int ShortListItemCount { get; set; }
 
     public bool ShowShortListLink { get; set; }
 }
