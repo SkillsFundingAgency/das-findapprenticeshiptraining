@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using MediatR;
@@ -10,7 +9,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
-using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistForUser;
+using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistsForUser;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
@@ -40,19 +39,17 @@ public class ShortlistController : Controller
     }
 
     [HttpGet]
-    [Route("", Name = RouteNames.ShortList)]
+    [Route("", Name = RouteNames.ShortLists)]
     public async Task<IActionResult> Index([FromQuery] string removed)
     {
         var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
         if (cookie == default)
         {
-            return View(new ShortlistViewModel());
+            return View(new ShortlistsViewModel());
         }
 
-        var result =
-            await _mediator.Send(
-                new GetShortlistForUserQuery { ShortlistUserId = cookie.ShortlistUserId });
+        var result = await _mediator.Send(new GetShortlistsForUserQuery(cookie.ShortlistUserId));
 
         var removedProviderName = string.Empty;
 
@@ -73,10 +70,10 @@ public class ShortlistController : Controller
             }
         }
 
-        var viewModel = new ShortlistViewModel
+        var viewModel = new ShortlistsViewModel
         {
-            Shortlist = result.Shortlist.Select(item => (ShortlistItemViewModel)item).ToList(),
-            Removed = removedProviderName
+            //Shortlist = result.Shortlist.Select(item => (ShortlistItemViewModel)item).ToList(),
+            //Removed = removedProviderName
         };
 
         return View(viewModel);

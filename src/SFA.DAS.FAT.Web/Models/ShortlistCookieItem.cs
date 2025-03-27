@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace SFA.DAS.FAT.Web.Models
+namespace SFA.DAS.FAT.Web.Models;
+
+public class ShortlistCookieItem
 {
-    public class ShortlistCookieItem
-    {
-        public Guid ShortlistUserId { get; set; }
-    }
+    public Guid ShortlistUserId { get; set; }
 }

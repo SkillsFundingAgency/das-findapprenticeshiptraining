@@ -1,10 +1,10 @@
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @using System.Web
-@model SFA.DAS.FAT.Web.Models.ShortlistViewModel
+@model SFA.DAS.FAT.Web.Models.ShortlistsViewModel
 
 @{
-    ViewData["Title"] = "Shortlist";
+    ViewData["Title"] = "Shortlists";
     ViewData["Description"] = "View the apprenticeship training providers that you’ve shortlisted.";
 }
 <partial name="_searchLink" />
@@ -28,18 +28,18 @@
             }
         </div>
     </div>
-    @if (Model.Shortlist.Count == 0)
+    @if (Model.ShortlistedItems.Count == 0)
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body">You have 0 training providers shortlisted.</p>
+                <p class="govuk-body">You have no training providers shortlisted.</p>
                 <p class="govuk-body"><a class="govuk-button" asp-route="@RouteNames.Courses">View apprenticeship training courses</a></p>
             </div>
         </div>
     }
     else
     {
-        foreach (var courseTitleGroup in Model.Shortlist.OrderBy(model => model.Course.TitleAndLevel).GroupBy(model => model.Course.Title))
+        foreach (var courseTitleGroup in Model.ShortlistedItems.OrderBy(model => model.Course.TitleAndLevel).GroupBy(model => model.Course.Title))
         {
             foreach (var courseLevelGroup in courseTitleGroup.GroupBy(model => model.Course.Level))
             {
