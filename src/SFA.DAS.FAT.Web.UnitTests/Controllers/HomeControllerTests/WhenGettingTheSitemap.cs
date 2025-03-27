@@ -51,7 +51,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
                 .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName.Equals(RouteNames.Courses))))
                 .Returns(coursesUrl);
             urlHelper
-                .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName.Equals(RouteNames.ShortList))))
+                .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName.Equals(RouteNames.ShortLists))))
                 .Returns(shortlistUrl);
             urlHelper
                 .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName.Equals(RouteNames.Privacy))))

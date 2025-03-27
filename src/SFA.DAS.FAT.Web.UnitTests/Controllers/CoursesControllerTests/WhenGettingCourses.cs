@@ -31,8 +31,7 @@ public class WhenGettingCourses
         request.Distance = "1000";
 
         controller.AddUrlHelperMock()
-            .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-            .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
+            .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
 
         mediator.Setup(x =>
             x.Send(
@@ -44,7 +43,7 @@ public class WhenGettingCourses
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber) &&
                     c.ShortlistUserId.Equals(cookieItem.ShortlistUserId)
-                ), 
+                ),
                 It.IsAny<CancellationToken>()
             )
         )
@@ -77,7 +76,7 @@ public class WhenGettingCourses
     {
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl.ToString());
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl.ToString());
 
         mediator.Setup(x =>
             x.Send(
@@ -94,7 +93,7 @@ public class WhenGettingCourses
         )
         .ReturnsAsync(response);
 
-        shortlistCookieService.Setup(x => 
+        shortlistCookieService.Setup(x =>
             x.Get(Constants.ShortlistCookieName)
         )
         .Returns((ShortlistCookieItem)null);
