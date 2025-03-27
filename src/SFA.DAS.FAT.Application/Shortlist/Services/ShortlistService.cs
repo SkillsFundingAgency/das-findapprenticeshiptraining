@@ -33,11 +33,11 @@ public class ShortlistService : IShortlistService
         return shortlistCount.Count;
     }
 
-    public async Task<ShortlistForUser> GetShortlistForUser(Guid shortlistUserId)
+    public async Task<GetShortlistsForUserResponse> GetShortlistsForUser(Guid shortlistUserId)
     {
-        var apiRequest = new GetShortlistForUserApiRequest(_configValue.BaseUrl, shortlistUserId);
+        var apiRequest = new GetShortlistsForUserRequest(_configValue.BaseUrl, shortlistUserId);
 
-        var apiResponse = await _apiClient.Get<ShortlistForUser>(apiRequest);
+        var apiResponse = await _apiClient.Get<GetShortlistsForUserResponse>(apiRequest);
 
         return apiResponse;
     }

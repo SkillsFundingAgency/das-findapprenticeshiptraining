@@ -37,7 +37,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -127,7 +127,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -176,7 +176,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -217,7 +217,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -257,7 +257,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = null;

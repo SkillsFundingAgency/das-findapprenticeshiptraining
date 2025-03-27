@@ -22,7 +22,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<RouteViewModel> Routes { get; set; } = [];
 
-    public PaginationViewModel Pagination { get; set; } 
+    public PaginationViewModel Pagination { get; set; }
 
     public string Keyword { get; set; } = string.Empty;
 
@@ -101,7 +101,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string GetLevelName(int levelCode)
     {
-        LevelViewModel level = Levels.FirstOrDefault(a => a.Code == levelCode);
+        LevelViewModel level = Levels.Find(a => a.Code == levelCode);
 
         if (level is null)
         {
@@ -283,7 +283,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         if (SelectedRoutes?.Count > 0 && Routes.Count > 0)
         {
             var validRoutes = SelectedRoutes
-                .Where(route => Routes.Any(r => r.Name == route))
+                .Where(route => Routes.Exists(r => r.Name == route))
                 .ToList();
 
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
@@ -303,7 +303,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private string GetLevelCodeValue(string filterValue)
     {
-        return Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
+        return Levels.Find(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
     }
 
     public List<ValueTuple<string, string>> ToQueryString()
