@@ -32,14 +32,14 @@ public class WhenGettingCourseDetails
 
         validator
             .Setup(v => v.ValidateAsync(
-                It.IsAny<GetCourseQuery>(), 
+                It.IsAny<GetCourseQuery>(),
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
 
         mediator
             .Setup(m => m.Send(
-                It.IsAny<GetCourseQuery>(), 
+                It.IsAny<GetCourseQuery>(),
                 It.IsAny<CancellationToken>()
             )
         )
@@ -74,7 +74,7 @@ public class WhenGettingCourseDetails
 
         validator
             .Setup(v => v.ValidateAsync(
-                It.IsAny<GetCourseQuery>(), 
+                It.IsAny<GetCourseQuery>(),
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
@@ -87,9 +87,9 @@ public class WhenGettingCourseDetails
         .ReturnsAsync(queryResult);
 
         await controller.CourseDetails(courseId, location, distance);
- 
+
         sut.Verify(x =>
-            x.Send(It.Is<GetCourseQuery>(a => 
+            x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                     a.Location.Equals(location) &&
                     a.LarsCode.Equals(courseId)

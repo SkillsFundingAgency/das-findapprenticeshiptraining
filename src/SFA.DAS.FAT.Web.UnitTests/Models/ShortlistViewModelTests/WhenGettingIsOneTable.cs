@@ -8,9 +8,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistViewModelTests
     public class WhenGettingIsOneTable
     {
         [Test, AutoData]
-        public void And_Greater_Than_One_CourseTitle_Then_False(ShortlistViewModel model)
+        public void And_Greater_Than_One_CourseTitle_Then_False(ShortlistsViewModel model)
         {
-            foreach (var item in model.Shortlist)
+            foreach (var item in model.ShortlistedItems)
             {
                 item.Course.Level = 1;
                 item.LocationDescription = "the same location";
@@ -20,9 +20,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistViewModelTests
         }
 
         [Test, AutoData]
-        public void And_Greater_Than_One_CourseLevel_Then_False(ShortlistViewModel model)
+        public void And_Greater_Than_One_CourseLevel_Then_False(ShortlistsViewModel model)
         {
-            foreach (var item in model.Shortlist)
+            foreach (var item in model.ShortlistedItems)
             {
                 item.Course.Title = "the same course title";
                 item.LocationDescription = "the same location";
@@ -32,9 +32,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistViewModelTests
         }
 
         [Test, AutoData]
-        public void And_Greater_Than_One_Location_Then_False(ShortlistViewModel model)
+        public void And_Greater_Than_One_Location_Then_False(ShortlistsViewModel model)
         {
-            foreach (var item in model.Shortlist)
+            foreach (var item in model.ShortlistedItems)
             {
                 item.Course.Title = "the same course title";
                 item.Course.Level = 1;
@@ -44,9 +44,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistViewModelTests
         }
 
         [Test, AutoData]
-        public void And_One_Title_And_One_Level_And_One_Location_Then_True(ShortlistViewModel model)
+        public void And_One_Title_And_One_Level_And_One_Location_Then_True(ShortlistsViewModel model)
         {
-            foreach (var item in model.Shortlist)
+            foreach (var item in model.ShortlistedItems)
             {
                 item.Course.Title = "the same course title";
                 item.Course.Level = 1;
