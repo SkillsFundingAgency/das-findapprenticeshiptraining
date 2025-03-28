@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
@@ -35,6 +36,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<CoursesProviderViewModel> Providers { get; set; }
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
 
+    public PaginationViewModel Pagination { get; set; }
 
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
     {
@@ -359,6 +361,58 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
 
         return filterValue;
+    }
+
+    public List<ValueTuple<string, string>> ToQueryString()
+    {
+        List<ValueTuple<string, string>> result = new();
+
+        if (OrderBy != ProviderOrderBy.AchievementRate)
+        {
+            result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
+        }
+
+        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
+        {
+            switch (clearFilterSection.FilterType)
+            {
+
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        if (!string.IsNullOrWhiteSpace(Distance))
+                        {
+                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
+                        }
+                    }
+                    break;
+
+
+                case FilterType.DeliveryModes:
+                    {
+                        result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));
+                    }
+                    break;
+                case FilterType.EmployerProviderRatings:
+                    {
+                        result.AddRange(SelectedEmployerApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.EmployerProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.ApprenticeProviderRatings:
+                    {
+                        result.AddRange(SelectedApprenticeApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.ApprenticeProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.QarRatings:
+                    {
+                        result.AddRange(SelectedQarRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.QarRatings), ratings)));
+                    }
+                    break;
+            }
+        }
+
+        return result;
     }
 
     private static string GetQarRatingsValue(string filterValue)

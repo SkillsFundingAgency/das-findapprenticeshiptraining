@@ -64,8 +64,7 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
                  && c.Qar.SequenceEqual(request.QarRatings)
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(shortlistUserId)
                 ),
                 It.IsAny<CancellationToken>()))
@@ -144,8 +143,7 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
                  && c.Qar.SequenceEqual(request.QarRatings)
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(null)
                 ),
                 It.IsAny<CancellationToken>()))

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 
@@ -34,7 +35,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
         _apprenticeProviderRatingTypes = courseProvidersParameters.ApprenticeProviderRatingTypes;
         _qarRatings = courseProvidersParameters.QarRatings;
         _page = courseProvidersParameters.Page;
-        _pageSize = courseProvidersParameters.PageSize;
+        _pageSize = Constants.DefaultPageSize;
         _shortlistUserId = courseProvidersParameters.ShortlistUserId;
     }
 
