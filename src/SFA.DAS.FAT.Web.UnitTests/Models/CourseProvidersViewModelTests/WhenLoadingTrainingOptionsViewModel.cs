@@ -8,9 +8,9 @@ public class WhenLoadingTrainingOptionsViewModel
 {
     [TestCase("", "", "", false)]
     [TestCase("10", "", "", false)]
-    [TestCase("", "Coventry", "", false)]
+    [TestCase("", "Coventry", "", true)]
     [TestCase("10", "Coventry", "within 10 miles", true)]
-    [TestCase(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Coventry", "", false)]
+    [TestCase(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Coventry", "", true)]
     public void Then_Filters_Must_Contain_Location_Filter_Section(string distance, string location, string expectedDistanceDetails, bool showDistanceDetails)
     {
         var sut = new TrainingOptionsViewModel

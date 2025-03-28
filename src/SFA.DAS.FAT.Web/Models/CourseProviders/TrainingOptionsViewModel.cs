@@ -37,5 +37,5 @@ public class TrainingOptionsViewModel
         }
     }
 
-    public bool ShowDistanceDetails => !string.IsNullOrEmpty(DistanceDetails);
+    public bool ShowDistanceDetails => !string.IsNullOrEmpty(Location);
 }
