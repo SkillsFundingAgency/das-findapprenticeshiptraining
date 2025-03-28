@@ -103,14 +103,14 @@ public class WhenGettingCourseProviders
         var actual = new CourseProvidersApiRequest(baseUrl, courseProvidersParams);
 
         var pageParam = string.Empty;
-        if (page > 1) pageParam = $"&page={page}&pageSize={Constants.DefaultDistance}";
+        if (page > 1) pageParam = $"&page={page}&pageSize={Constants.DefaultPageSize}";
 
         //Assert
         actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&location={location}&" +
-                                  $"deliveryModes={string.Join("&deliveryModes=", deliveryModeTypes)}&employerProviderRatings=" +
-                                  $"{string.Join("&employerProviderRatings=", employerProviderRatingTypes)}&" +
-                                  $"apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatingTypes)}&" +
-                                  $"qar={string.Join("&qar=", qarRatings)}{pageParam}&shortlistUserId={shortlistUserId}");
+              $"deliveryModes={string.Join("&deliveryModes=", deliveryModeTypes)}&employerProviderRatings=" +
+              $"{string.Join("&employerProviderRatings=", employerProviderRatingTypes)}&" +
+              $"apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatingTypes)}&" +
+              $"qar={string.Join("&qar=", qarRatings)}{pageParam}&shortlistUserId={shortlistUserId}");
     }
 
     [TestCase(null, null, null, null, null, null, 1, null, "&pageSize=10")]
