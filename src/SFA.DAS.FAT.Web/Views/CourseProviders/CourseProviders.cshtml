@@ -172,6 +172,7 @@
                 </ol>
             </div>
         }
+        @await Html.PartialAsync("_pagination", Model.Pagination)
         <div class="das-highlight-adjustment">
             <div class="das-highlight">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-2">If you cannot find a suitable training provider</h3>
@@ -188,7 +189,6 @@
                 </p>
             </div>
         </div>
-        @await Html.PartialAsync("_pagination", Model.Pagination)
-    </div>
+        </div>
     </div>
 </main>
