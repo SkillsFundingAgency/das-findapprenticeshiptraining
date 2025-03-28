@@ -20,36 +20,19 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public int Id { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
-
-    public string Distance { get; set; } = "All";
-
     public List<string> SelectedDeliveryModes { get; set; } = [];
-
     public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
-
     public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];
-
     public List<string> SelectedQarRatings { get; set; } = [];
-
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
-
-
     public string QarPeriodStartYear { get => $"20{QarPeriod.AsSpan(0, 2)}"; }
-
     public string QarPeriodEndYear { get => $"20{QarPeriod.AsSpan(2, 2)}"; }
-
     public string ReviewPeriodStartYear { get => $"20{ReviewPeriod.AsSpan(0, 2)}"; }
     public string ReviewPeriodEndYear { get => $"20{ReviewPeriod.AsSpan(2, 2)}"; }
-
-
     public string ProviderReviewsHeading { get => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"; }
     public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
-
-
     public List<CoursesProviderViewModel> Providers { get; set; }
-
-
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
 
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()

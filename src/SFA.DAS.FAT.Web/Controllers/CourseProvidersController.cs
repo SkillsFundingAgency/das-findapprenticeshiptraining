@@ -36,15 +36,19 @@ public class CourseProvidersController : Controller
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
 
-        if (!string.IsNullOrWhiteSpace(request.Location) && (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance)))
+        int? convertedDistance = null;
+        if (request.Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrWhiteSpace(request.Location))
         {
-            request.Distance = Constants.DefaultDistance.ToString();
+            convertedDistance = null;
         }
-
-        int? distanceToRequest = null;
-        if (request.Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE && int.TryParse(request.Distance, out var actualDistance))
+        else if (!string.IsNullOrWhiteSpace(request.Location) && !DistanceService.IsValidDistance(request.Distance))
         {
-            distanceToRequest = actualDistance;
+            convertedDistance = DistanceService.TEN_MILES;
+            request.Distance = DistanceService.TEN_MILES.ToString();
+        }
+        else
+        {
+            convertedDistance = DistanceService.GetValidDistanceNullable(request.Distance);
         }
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
@@ -52,7 +56,7 @@ public class CourseProvidersController : Controller
             Id = request.Id,
             Location = request.Location,
             OrderBy = request.OrderBy,
-            Distance = distanceToRequest,
+            Distance = convertedDistance,
             DeliveryModes = request.DeliveryModes.ToList(),
             EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatings = request.ApprenticeProviderRatings.ToList(),
@@ -62,7 +66,6 @@ public class CourseProvidersController : Controller
             ShortlistUserId = shortlistUserId
         });
 
-
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
             Id = request.Id,
@@ -70,7 +73,7 @@ public class CourseProvidersController : Controller
             CourseTitleAndLevel = result.StandardName,
             CourseId = request.Id,
             Location = request.Location,
-            Distance = distanceToRequest.ToString(),
+            Distance = convertedDistance.ToString(),
             SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList(),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()).ToList(),

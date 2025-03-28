@@ -46,6 +46,21 @@ public static class DistanceService
         return DEFAULT_DISTANCE;
     }
 
+    public static int? GetValidDistanceNullable(string distance)
+    {
+        if (string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
+        {
+            return validDistance;
+        }
+
+        return null;
+    }
+
     public static string GetDistanceQueryString(string distance, string location)
     {
         if (string.IsNullOrWhiteSpace(location) || string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
