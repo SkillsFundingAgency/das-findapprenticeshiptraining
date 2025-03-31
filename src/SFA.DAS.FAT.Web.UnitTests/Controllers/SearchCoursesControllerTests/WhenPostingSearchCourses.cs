@@ -6,6 +6,7 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
@@ -90,7 +91,7 @@ public class WhenPostingSearchCourses
             result.RouteValues.Should().ContainKey("Location");
             result.RouteValues!["Location"].Should().Be(location);
             result.RouteValues.Should().ContainKey("Distance");
-            result.RouteValues!["Distance"].Should().Be(Constants.DefaultDistance.ToString());
+            result.RouteValues!["Distance"].Should().Be(DistanceService.TEN_MILES.ToString());
         }
     }
 
@@ -119,7 +120,7 @@ public class WhenPostingSearchCourses
             result.RouteValues.Should().ContainKey("Location");
             result.RouteValues!["Location"].Should().Be(location);
             result.RouteValues.Should().ContainKey("Distance");
-            result.RouteValues!["Distance"].Should().Be(Constants.DefaultDistance.ToString());
+            result.RouteValues!["Distance"].Should().Be(DistanceService.TEN_MILES.ToString());
         }
     }
 }
