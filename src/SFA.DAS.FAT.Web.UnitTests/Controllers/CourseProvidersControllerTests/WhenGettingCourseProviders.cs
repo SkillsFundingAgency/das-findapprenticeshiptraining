@@ -14,6 +14,7 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -84,7 +85,7 @@ public class WhenGettingCourseProviders
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.CourseId.Should().Be(request.Id);
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
-            actualModel.Distance.Should().Be(Constants.DefaultDistance.ToString());
+            actualModel.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
             actualModel.SelectedEmployerApprovalRatings.Should()
@@ -193,7 +194,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(Constants.DefaultDistance.ToString());
+            actualModel!.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
         }
     }
 

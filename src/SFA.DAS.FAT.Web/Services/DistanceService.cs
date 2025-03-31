@@ -12,6 +12,10 @@ public static class DistanceService
 
     public const int DEFAULT_DISTANCE = 1000;
 
+    public const int TEN_MILES = 10;
+
+    public const string ACROSS_ENGLAND_DISPLAY_TEXT = "across England";
+
     public static int GetValidDistance(string distance)
     {
         if (string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
@@ -40,6 +44,21 @@ public static class DistanceService
         }
 
         return DEFAULT_DISTANCE;
+    }
+
+    public static int? GetValidDistanceNullable(string distance)
+    {
+        if (string.Equals(distance, ACROSS_ENGLAND_FILTER_VALUE, StringComparison.OrdinalIgnoreCase))
+        {
+            return null;
+        }
+
+        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
+        {
+            return validDistance;
+        }
+
+        return null;
     }
 
     public static string GetDistanceQueryString(string distance, string location)

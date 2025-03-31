@@ -26,7 +26,14 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string Keyword { get; set; } = string.Empty;
 
-    public string Distance { get; set; } = "All";
+    /// <summary>
+    /// The new keyword hides & overrides the inherited Distance value from PageLinksViewModelBase.
+    /// Distance on the inherited PageLinksViewModelBase is used to populate Distance on
+    /// the breadcrumbs when viewing course details and cannot have a pre-populated Distance value.
+    /// PageLinksViewModelBase Distance property is not required on this model as the Search breadcrumb does not
+    /// have the Distance query parameter.
+    /// </summary>
+    public new string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
 
@@ -343,4 +350,20 @@ public class CoursesViewModel : PageLinksViewModelBase
 
         return result;
     }
+
+    public Dictionary<string, string> GenerateStandardRouteValues(int larsCode)
+    {
+        var routeValues = new Dictionary<string, string>
+        {
+            { "id", larsCode.ToString() },
+        };
+
+        if (!string.IsNullOrWhiteSpace(Location))
+        {
+            routeValues.Add("location", Location);
+            routeValues.Add("distance", Distance.ToString());
+        }
+
+        return routeValues;
+    }     
 }

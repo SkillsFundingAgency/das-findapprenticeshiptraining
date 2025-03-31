@@ -114,18 +114,28 @@ namespace SFA.DAS.FAT.Web.Controllers
         }
 
         [Route("{id}", Name = RouteNames.CourseDetails)]
-        public async Task<IActionResult> CourseDetail(int id, [FromQuery(Name = "location")] string locationName)
+        public async Task<IActionResult> CourseDetails([FromRoute] int id, [FromQuery] string location, [FromQuery] string distance)
         {
-            var location = CheckLocation(locationName);
-            var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+            int? convertedDistance = null;
+            if(distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+            {
+                convertedDistance = DistanceService.DEFAULT_DISTANCE;
+            }
+            else if(!DistanceService.IsValidDistance(distance))
+            {
+                convertedDistance = DistanceService.TEN_MILES;
+                distance = DistanceService.TEN_MILES.ToString();
+            }
+            else
+            {
+                convertedDistance = DistanceService.GetValidDistance(distance);
+            }
 
             var query = new GetCourseQuery
             {
-                CourseId = id,
-                Lat = location?.Lat ?? 0,
-                Lon = location?.Lon ?? 0,
-                LocationName = location?.Name,
-                ShortlistUserId = shortlistItem?.ShortlistUserId
+                LarsCode = id,
+                Location = location,
+                Distance = convertedDistance
             };
 
             var validationResult = await _courseValidator.ValidateAsync(query);
@@ -135,21 +145,17 @@ namespace SFA.DAS.FAT.Web.Controllers
                 throw new ValidationException(validationResult.Errors[0].ErrorMessage);
             }
 
-            var result = await _mediator.Send(query);
+            GetCourseQueryResult result = await _mediator.Send(query);
 
-            if (result.Course == null)
+            if (result == null)
             {
                 return RedirectToRoute(RouteNames.Error404);
             }
 
-            var viewModel = (CourseViewModel)result.Course;
-            viewModel.LocationName = location?.Name;
-            viewModel.TotalProvidersCount = result.ProvidersCount?.TotalProviders;
-            viewModel.ProvidersAtLocationCount = result.ProvidersCount?.ProvidersAtLocation;
-            viewModel.ShowSearchCrumb = true;
-            viewModel.ShowShortListLink = true;
-            viewModel.ShowApprenticeTrainingCoursesCrumb = true;
-            viewModel.CourseId = id;
+            var viewModel = (CourseViewModelv2)result;
+            viewModel.Location = location;
+            viewModel.Distance = distance;
+
             return View(viewModel);
         }
 

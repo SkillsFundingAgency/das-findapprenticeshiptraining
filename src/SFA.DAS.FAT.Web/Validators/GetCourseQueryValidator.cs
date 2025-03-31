@@ -9,7 +9,7 @@ namespace SFA.DAS.FAT.Web.Validators
 
         public GetCourseQueryValidator()
         {
-            RuleFor(s => s.CourseId)
+            RuleFor(s => s.LarsCode)
                 .Cascade(CascadeMode.Stop)
                 .GreaterThan(0)
                 .WithMessage(CourseIdErrorMessage);
