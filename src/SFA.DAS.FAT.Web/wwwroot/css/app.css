@@ -419,15 +419,19 @@
   }
 }
 
+.govuk-select.govuk-select-expand {
+    width: 260px;
+}
+
 .navigation-flexbox {
     display: flex;
     justify-content: center;
 }
 
-.navigation-flexbox nav {
-    gap: 13px;
-    display: flex;
-}
+    .navigation-flexbox nav {
+        gap: 13px;
+        display: flex;
+    }
 
 .govuk-select.govuk-select-expand {
     width: 260px;
@@ -482,3 +486,11 @@
     padding-left: 15px;
     margin-right: -15px
 }
+.course-details-call-to-action {
+    display: flex;
+    gap: 25px;
+}
+
+    .course-details-call-to-action a {
+        align-self: center;
+    }

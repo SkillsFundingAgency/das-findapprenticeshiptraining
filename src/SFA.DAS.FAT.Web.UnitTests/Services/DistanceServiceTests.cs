@@ -70,6 +70,18 @@ public sealed class ValidDistancesTests
     }
 
     [Test]
+    public void GetValidDistanceNullable_ShouldReturnParsedDistance_WhenDistanceIsValid()
+    {
+        Assert.That(DistanceService.GetValidDistanceNullable("40"), Is.EqualTo(40));
+    }
+
+    [Test]
+    public void GetValidDistanceNullable_ShouldReturnDefault_WhenDistanceIsNotValid()
+    {
+        Assert.That(DistanceService.GetValidDistanceNullable("41"), Is.Null);
+    }
+
+    [Test]
     public void GetDistanceQueryString_ShouldReturnAcrossEnglandFilterValue_WhenLocationIsEmpty()
     {
         Assert.That(DistanceService.GetDistanceQueryString("40", string.Empty), Is.EqualTo(DistanceService.ACROSS_ENGLAND_FILTER_VALUE));

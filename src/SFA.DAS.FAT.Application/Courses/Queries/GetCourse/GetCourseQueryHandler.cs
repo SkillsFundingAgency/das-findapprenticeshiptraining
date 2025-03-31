@@ -1,29 +1,22 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourse
+namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+
+public class GetCourseQueryHandler(ICourseService courseService, ILevelsService levelsService) : IRequestHandler<GetCourseQuery, GetCourseQueryResult>
 {
-    public class GetCourseQueryHandler : IRequestHandler<GetCourseQuery, GetCourseResult>
+    public async Task<GetCourseQueryResult> Handle(GetCourseQuery query, CancellationToken cancellationToken)
     {
-        private readonly ICourseService _courseService;
+        var levelsResponse = await levelsService.GetLevelsAsync(cancellationToken);
 
-        public GetCourseQueryHandler(ICourseService courseService)
-        {
-            _courseService = courseService;
-        }
+        var courseResponse = await courseService.GetCourse(query.LarsCode, query.Location, query.Distance);
 
-        public async Task<GetCourseResult> Handle(GetCourseQuery query, CancellationToken cancellationToken)
-        {
-            var response = await _courseService.GetCourse(query.CourseId, query.Lat, query.Lon, query.LocationName, query.ShortlistUserId);
+        var result = (GetCourseQueryResult)courseResponse;
+        result.Levels = levelsResponse.ToList();
 
-            return new GetCourseResult
-            {
-                Course = response?.Course,
-                ProvidersCount = response?.ProvidersCount,
-                ShortlistItemCount = response?.ShortlistItemCount ?? 0
-            };
-        }
+        return result;
     }
 }

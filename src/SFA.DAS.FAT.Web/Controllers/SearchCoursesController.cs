@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
@@ -34,7 +35,7 @@ public class SearchCoursesController() : Controller
         if (!string.IsNullOrEmpty(submitModel.Location))
         {
             request.Location = submitModel.Location;
-            request.Distance = Constants.DefaultDistance.ToString();
+            request.Distance = DistanceService.TEN_MILES.ToString();
         }
 
         return RedirectToAction("Index", "Courses", request);
