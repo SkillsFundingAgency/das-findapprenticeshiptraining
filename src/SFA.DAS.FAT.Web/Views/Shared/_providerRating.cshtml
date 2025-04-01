@@ -1,7 +1,7 @@
 ﻿@using SFA.DAS.FAT.Domain.Extensions
 @model SFA.DAS.FAT.Web.Models.Shared.ProviderRatingViewModel
 
-<p class="govuk-!-margin-0 govuk-!-margin-top-2 govuk-!-font-size-16">
+<p class="govuk-!-margin-0 govuk-!-font-size-16 govuk-!-margin-bottom-2 ">
     @if (Model.StarsValue > 0)
     {
         <span class="das-rating das-rating--@Model.RatingGroup" role="img" aria-label="Rating: @Model.StarsValue out of 4 stars">
@@ -10,11 +10,11 @@
             <span aria-hidden="true" class="das-rating__icon-star@(Model.StarsValue < 3 ? "--empty" : "")"></span>
             <span aria-hidden="true" class="das-rating__icon-star@(Model.StarsValue < 4 ? "--empty" : "")"></span>
             <span class="das-rating__label--@(Model.ProviderRating)">@Model.ProviderRating.GetDescription()</span>
-            <span class="das-text--muted">(@Model.TotalMessage)</span>
+            <span class="das-text--muted das-no-wrap">(@Model.TotalMessage)</span>
         </span>
     }
     else
     {
-        <span class="govuk-body">No @Model.ProviderRatingType.GetDescription() reviews</span>
+        <span class="govuk-body govuk-!-font-size-16">No @Model.ProviderRatingType.GetDescription() reviews</span>
     }
 </p>
