@@ -75,7 +75,7 @@ public class WhenGettingCourseProviders
 
         foreach (var provider in expectedProviders)
         {
-            provider.Distance = Constants.DefaultDistance.ToString();
+            provider.Distance = DistanceService.TEN_MILES.ToString();
             provider.Location = request.Location;
         }
 
@@ -281,7 +281,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().BeNull();
+            actualModel!.Distance.Should().Be(string.Empty);
         }
     }
 
