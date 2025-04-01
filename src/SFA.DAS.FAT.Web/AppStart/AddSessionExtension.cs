@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -22,6 +23,7 @@ public static class AddSessionExtension
             options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
             options.Cookie.IsEssential = true;
         });
+        services.AddSingleton<ITempDataProvider, SessionStateTempDataProvider>();
         services.AddHttpContextAccessor();
         services.AddScoped<ISessionService, SessionService>();
         services.AddSingleton<IDistributedCacheService, DistributedCacheService>();

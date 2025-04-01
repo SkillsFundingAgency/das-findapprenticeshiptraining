@@ -136,21 +136,21 @@
                                         @Model.ProviderReviewsHeading
                                     </h3>
                                 </div>
-                                <div class="govuk-grid-column-two-thirds das-bottom-margin">
-                                    @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
-                                    {
-                                        Stars = provider.EmployerStars,
-                                        Reviews = provider.EmployerReviews,
-                                        ProviderRating = provider.EmployerRating,
-                                        ProviderRatingType = ProviderRatingType.Employer
-                                    })
-                                    @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
-                                    {
-                                        Stars = provider.ApprenticeStars,
-                                        Reviews = provider.ApprenticeReviews,
-                                        ProviderRating = provider.ApprenticeRating,
-                                        ProviderRatingType = ProviderRatingType.Apprentice
-                                    })
+                                    <div class="govuk-grid-column-two-thirds das-bottom-margin">
+                                        @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                        {
+                                            Stars = provider.EmployerStars,
+                                            Reviews = provider.EmployerReviews,
+                                            ProviderRating = provider.EmployerRating,
+                                            ProviderRatingType = ProviderRatingType.Employer
+                                        })
+                                        @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                        {
+                                            Stars = provider.ApprenticeStars,
+                                            Reviews = provider.ApprenticeReviews,
+                                            ProviderRating = provider.ApprenticeRating,
+                                            ProviderRatingType = ProviderRatingType.Apprentice
+                                        })
                                 </div>
                             </div>
 
