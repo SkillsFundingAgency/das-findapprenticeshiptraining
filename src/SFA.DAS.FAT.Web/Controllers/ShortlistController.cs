@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Logging;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistsForUser;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
@@ -21,26 +23,27 @@ namespace SFA.DAS.FAT.Web.Controllers;
 public class ShortlistController : Controller
 {
     public const int ShortlistExpiryInDays = 30;
-
+    public const string RemovedProviderNameTempDataKey = "RemovedProviderName";
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-    private readonly ILogger<ShortlistController> _logger;
     private readonly IDataProtector _protector;
+    private readonly IRequestApprenticeshipTrainingService _requestApprenticeshipTrainingService;
 
-    public ShortlistController(IMediator mediator,
+    public ShortlistController(
+        IMediator mediator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IDataProtectionProvider provider,
-        ILogger<ShortlistController> logger)
+        IRequestApprenticeshipTrainingService requestApprenticeshipTrainingService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
-        _logger = logger;
         _protector = provider.CreateProtector(Constants.ShortlistProtectorName);
+        _requestApprenticeshipTrainingService = requestApprenticeshipTrainingService;
     }
 
     [HttpGet]
     [Route("", Name = RouteNames.ShortLists)]
-    public async Task<IActionResult> Index([FromQuery] string removed)
+    public async Task<IActionResult> Index()
     {
         var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
@@ -49,34 +52,74 @@ public class ShortlistController : Controller
             return View(new ShortlistsViewModel());
         }
 
-        var result = await _mediator.Send(new GetShortlistsForUserQuery(cookie.ShortlistUserId));
+        GetShortlistsForUserResponse result = await _mediator.Send(new GetShortlistsForUserQuery(cookie.ShortlistUserId));
 
-        var removedProviderName = string.Empty;
+        ShortlistsViewModel viewModel = GetShortlistsViewModel(result);
 
-        if (!string.IsNullOrEmpty(removed))
-        {
-            try
-            {
-                var base64EncodedBytes = WebEncoders.Base64UrlDecode(removed);
-                removedProviderName = System.Text.Encoding.UTF8.GetString(_protector.Unprotect(base64EncodedBytes));
-            }
-            catch (FormatException e)
-            {
-                _logger.LogInformation(e, "Unable to decode provider name from request");
-            }
-            catch (CryptographicException e)
-            {
-                _logger.LogInformation(e, "Unable to decode provider name from request");
-            }
-        }
-
-        var viewModel = new ShortlistsViewModel
-        {
-            //Shortlist = result.Shortlist.Select(item => (ShortlistItemViewModel)item).ToList(),
-            //Removed = removedProviderName
-        };
+        viewModel.RemovedProviderName = TempData[RemovedProviderNameTempDataKey]?.ToString();
 
         return View(viewModel);
+    }
+
+    private ShortlistsViewModel GetShortlistsViewModel(GetShortlistsForUserResponse result)
+    {
+        ShortlistsViewModel model = new();
+
+        model.ExpiryDateText = result.ShortlistsExpiryDate.ToString("d MMMM yyyy");
+
+        foreach (var course in result.Courses)
+        {
+            ShortlistCourseViewModel courseModel = new()
+            {
+                LarsCode = course.LarsCode,
+                CourseTitle = course.StandardName
+            };
+            foreach (var location in course.Locations)
+            {
+                ShortlistLocationViewModel locationModel = new()
+                {
+                    Description = location.LocationDescription,
+                    QarPeriod = $"20{result.QarPeriod.AsSpan(0, 2)} to 20{result.QarPeriod.AsSpan(2, 2)}",
+                    ReviewPeriod = $"20{result.ReviewPeriod.AsSpan(0, 2)} to 20{result.ReviewPeriod.AsSpan(2, 2)}",
+                    RequestApprenticeshipTraining = new()
+                    {
+                        CourseTitle = course.StandardName,
+                        Url = _requestApprenticeshipTrainingService.GetRequestApprenticeshipTrainingUrl(course.LarsCode, EntryPoint.Shortlist, location.LocationDescription)
+                    }
+                };
+                foreach (var provider in location.Providers)
+                {
+                    ShortlistProviderViewModel providerModel = new()
+                    {
+                        LarsCode = course.LarsCode,
+                        LocationDescription = location.LocationDescription,
+                        ShortlistId = provider.ShortlistId,
+                        Ukprn = provider.Ukprn,
+                        ProviderName = provider.ProviderName,
+                        AtEmployer = provider.AtEmployer,
+                        HasBlockRelease = provider.HasBlockRelease,
+                        BlockReleaseDistance = provider.BlockReleaseDistance,
+                        BlockReleaseCount = provider.BlockReleaseCount,
+                        HasDayRelease = provider.HasDayRelease,
+                        DayReleaseDistance = provider.DayReleaseDistance,
+                        DayReleaseCount = provider.DayReleaseCount,
+                        Email = provider.Email,
+                        Phone = provider.Phone,
+                        Website = provider.Website,
+                        Leavers = provider.Leavers,
+                        AchievementRate = provider.AchievementRate,
+                        EmployerReviews = new() { ProviderRatingType = ProviderRatingType.Employer, Stars = provider.EmployerStars, Reviews = provider.EmployerReviews, ProviderRating = Enum.Parse<ProviderRating>(provider.EmployerRating) },
+                        ApprenticeReviews = new() { ProviderRatingType = ProviderRatingType.Apprentice, Stars = provider.ApprenticeStars, Reviews = provider.ApprenticeReviews, ProviderRating = Enum.Parse<ProviderRating>(provider.ApprenticeRating) }
+                    };
+
+                    locationModel.Providers.Add(providerModel);
+                }
+                courseModel.Locations.Add(locationModel);
+            }
+            model.Courses.Add(courseModel);
+        }
+
+        return model;
     }
 
     [HttpPost]
@@ -128,12 +171,11 @@ public class ShortlistController : Controller
 
         if (!string.IsNullOrEmpty(request.RouteName))
         {
+            TempData[RemovedProviderNameTempDataKey] = request.ProviderName;
             return RedirectToRoute(request.RouteName, new
             {
                 Id = request.TrainingCode,
-                ProviderId = request.Ukprn,
-                Removed = string.IsNullOrEmpty(request.ProviderName) ? "" : WebEncoders.Base64UrlEncode(_protector.Protect(
-                    System.Text.Encoding.UTF8.GetBytes($"{request.ProviderName}")))
+                ProviderId = request.Ukprn
             });
         }
 

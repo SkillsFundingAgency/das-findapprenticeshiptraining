@@ -25,6 +25,7 @@ public static class AddServiceRegistrationExtension
         services.AddTransient<IAcademicYearsService, AcademicYearService>();
         services.AddTransient<IRoutesService, RoutesService>();
         services.AddTransient<ILevelsService, LevelsService>();
+        services.AddTransient<IRequestApprenticeshipTrainingService, RequestApprenticeshipTrainingService>();
 
         services.AddTransient(typeof(ICookieStorageService<>), typeof(CookieStorageService<>));
     }

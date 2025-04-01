@@ -1,78 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Domain.Shortlist;
+using SFA.DAS.FAT.Web.Models.Shared;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class ShortlistsViewModel
 {
-    public List<ShortlistItemViewModel> ShortlistedItems { get; set; } = [];
-    public string Removed { get; set; }
     public string ExpiryDateText { get; set; }
 
+    public List<ShortlistCourseViewModel> Courses { get; set; } = [];
+    public bool HasShortlistItems => Courses.Count > 0;
 
-    public bool IsOneTable => OneTable();
-    private bool OneTable()
-    {
-        var distinctCourseTitles = ShortlistedItems
-            .GroupBy(model => model.Course.Title)
-            .Select(models => models.Key)
-            .ToList();
-
-        if (distinctCourseTitles.Count > 1)
-            return false;
-
-        var distinctCourseLevels = ShortlistedItems
-            .GroupBy(model => model.Course.Level)
-            .Select(models => models.Key)
-            .ToList();
-
-        if (distinctCourseLevels.Count > 1)
-            return false;
-
-        var distinctLocations = ShortlistedItems
-            .GroupBy(model => model.LocationDescription)
-            .Select(models => models.Key)
-            .ToList();
-
-        if (distinctLocations.Count > 1)
-            return false;
-
-        return true;
-    }
+    public string RemovedProviderName { get; set; }
+    public bool ShowRemovedShortlistBanner => !string.IsNullOrEmpty(RemovedProviderName);
 }
 
-public class ShortlistItemViewModel
+public class ShortlistCourseViewModel
 {
-    public Guid Id { get; set; }
-    public ProviderViewModel Provider { get; set; }
-    public CourseViewModel Course { get; set; }
+    public int LarsCode { get; set; }
+    public string CourseTitle { get; set; }
+    public List<ShortlistLocationViewModel> Locations { get; set; } = [];
+}
+
+public class ShortlistLocationViewModel
+{
+    public string Description { get; set; }
+    public string ReviewPeriod { get; set; }
+    public string QarPeriod { get; set; }
+    public RequestApprenticeshipTrainingViewModel RequestApprenticeshipTraining { get; set; }
+    public List<ShortlistProviderViewModel> Providers { get; set; } = [];
+}
+
+public class RequestApprenticeshipTrainingViewModel
+{
+    public string CourseTitle { get; set; }
+    public string Url { get; set; }
+}
+
+public class ShortlistProviderViewModel
+{
+    public int LarsCode { get; set; }
+    public string Title { get; set; }
+    public Guid ShortlistId { get; set; }
+    public int Ukprn { get; set; }
+    public string ProviderName { get; set; }
+    public bool AtEmployer { get; set; }
+    public bool HasBlockRelease { get; set; }
+    public decimal? BlockReleaseDistance { get; set; }
+    public int BlockReleaseCount { get; set; }
+    public bool HasDayRelease { get; set; }
+    public decimal? DayReleaseDistance { get; set; }
+    public int DayReleaseCount { get; set; }
+    public string Email { get; set; }
+    public string Phone { get; set; }
+    public string Website { get; set; }
+    public string Leavers { get; set; }
+    public string AchievementRate { get; set; }
+    public ProviderRatingViewModel EmployerReviews { get; set; }
+    public ProviderRatingViewModel ApprenticeReviews { get; set; }
     public string LocationDescription { get; set; }
-    public DateTime CreatedDate { get; set; }
 
-    public string TitleAndLevel { get => Course.TitleAndLevel; }
-
-    public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
-    {
-        return Course.CanGetHelpFindingCourse(config);
-    }
-
-    public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
-    {
-        return Course.GetHelpFindingCourseUrl(config, EntryPoint.Shortlist, LocationDescription);
-    }
-
-    public static implicit operator ShortlistItemViewModel(ShortlistItem source)
-    {
-        return new ShortlistItemViewModel
-        {
-            Id = source.Id,
-            LocationDescription = source.LocationDescription,
-            CreatedDate = source.CreatedDate,
-            Course = source.Course,
-            Provider = source.Provider,
-        };
-    }
+    public string BlockReleaseText => "Block release" + (BlockReleaseCount == 1 ? string.Empty : " at multiple locations");
+    public string DayReleaseText => "Day release" + (DayReleaseCount == 1 ? string.Empty : " at multiple locations");
+    public int NoOfDeliveryOptions => Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease);
+    public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions > 1;
+    public bool HasAchievementRate => decimal.TryParse(AchievementRate, out var _);
+    public bool HasLocation => !string.IsNullOrEmpty(LocationDescription);
 }
