@@ -95,53 +95,6 @@ if ($backLinkOrHome) {
 }
 
 
-// BACK TO TOP 
-// Shows a back-to-top link in a floating header
-// as soon as the breadcrumbs scroll out of view
-
-$(window).bind('scroll', function() {
-
-    let isCookieBannerVisible = $('.das-cookie-banner:visible').length,
-        showHeaderDistance = 150 + (isCookieBannerVisible * 240),
-        $breadcrumbs = $('.govuk-breadcrumbs');
-
-    if ($breadcrumbs.length > 0) {
-        let breadcrumbDistanceFromTop = $breadcrumbs.offset().top,
-            breadcrumbHeight = $breadcrumbs.outerHeight();
-
-        showHeaderDistance = breadcrumbDistanceFromTop + breadcrumbHeight;
-    }
-
-    if ($(window).scrollTop() > showHeaderDistance) {
-        $('.app-shortlist-banner').addClass('app-shortlist-banner__fixed');
-    } else {
-        $('.app-shortlist-banner').removeClass('app-shortlist-banner__fixed');
-    }
-
-}).trigger("scroll");
-
-
-// SCROLL TO TARGET 
-// On click of the link, checks to see if the target exists
-// If so, scrolls the page to that point, taking into account
-// the back-to-top header
-
-$("a[data-scroll-to-target]").on('click', function () {
-    let target = $(this).data('scroll-to-target'),
-        $target = $(target);
-        headerOffset = $('.app-shortlist-banner__fixed').outerHeight() || 50;
-
-    setTimeout(function() {
-        if ($target.length > 0) {
-            let scrollTo = $target.offset().top - headerOffset;
-            $('html, body').animate({scrollTop: scrollTo}, 0);
-        }
-    }, 10)
-
-});
-
-
-
 // SHORTLIST
 
 let shortlistAddForms = $('.app-provider-shortlist-add form');
@@ -169,11 +122,23 @@ let addFormDone = function(data, form) {
     let wrapper = form.closest('.app-provider-shortlist-control');
     let removeForm = wrapper.find('.app-provider-shortlist-remove form');
     removeForm.attr("action", "/shortlist/items/" + data);
-    wrapper.addClass(providerAddedClassName)
+    wrapper.addClass(providerAddedClassName);
     let courseProvider = form.closest('.app-course-provider')[0];
     let shortlistedTag = courseProvider.querySelector('.app-course-provider-shortlisted-tag')
     if (shortlistedTag) { shortlistedTag.style.display = 'block';  }
-    updateShortlistCount();
+    updateShortlistCount(() => {
+      let shortlistCountElement = document.querySelector('.app-view-shortlist-link__number');
+      if (shortlistCountElement && parseInt(shortlistCountElement.textContent) >= 50) {
+        // Find all elements with only class .app-provider-shortlist-control
+        let elements = document.querySelectorAll('.app-provider-shortlist-control');
+        elements.forEach(function (element) {
+          if (element.classList.length === 1 && element.classList.contains('app-provider-shortlist-control')) {
+            element.classList.add('app-provider-shortlist-full');
+          }
+        });
+      }
+    });
+
 }
 
 let removeFormDone = function(data, form) {
@@ -184,7 +149,16 @@ let removeFormDone = function(data, form) {
     let courseProvider = form.closest('.app-course-provider')[0];
     let shortlistedTag = courseProvider.querySelector('.app-course-provider-shortlisted-tag')
     if (shortlistedTag) { shortlistedTag.style.display = 'none'; }
-    updateShortlistCount();
+    updateShortlistCount(() => {
+      let shortlistCountElement = document.querySelector('.app-view-shortlist-link__number');
+      if (shortlistCountElement && parseInt(shortlistCountElement.textContent) < 50) {
+        // Find all elements with class .app-provider-shortlist-control and .app-provider-shortlist-full
+        let elements = document.querySelectorAll('.app-provider-shortlist-control.app-provider-shortlist-full');
+        elements.forEach(function (element) {
+          element.classList.remove('app-provider-shortlist-full');
+        });
+      }
+    });
 }
 
 let sendData = function(formData, action, doneCallBack, form){
@@ -199,21 +173,24 @@ let sendData = function(formData, action, doneCallBack, form){
     });
 }
 
-let updateShortlistCount = function () {
-    refreshComponent();
+let updateShortlistCount = function (updateAddRemoveLinks) {
+  refreshComponent(updateAddRemoveLinks);
     let shortlistCountsUi = $('.app-view-shortlist-link__number');
     shortlistCountsUi.addClass('app-view-shortlist-link__number-update')
 
     setTimeout(function() {
-        shortlistCountsUi.removeClass('app-view-shortlist-link__number-update')
+      shortlistCountsUi.removeClass('app-view-shortlist-link__number-update')
     }, 1000);
 }
 
-function refreshComponent() {
+function refreshComponent(updateAddRemoveLinks) {
     fetch('/shortlist/UpdateCount')
         .then(response => response.text())
         .then(html => {
             document.getElementById("ShortlistsCountContainer").innerHTML = html;
+            if (updateAddRemoveLinks) {
+              updateAddRemoveLinks();
+            }
         });
 }
 

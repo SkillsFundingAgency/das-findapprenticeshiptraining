@@ -120,6 +120,10 @@
   display: block;
 }
 
+.app-provider-shortlist-manage {
+  display: none;
+}
+
 .app-provider-shortlist-remove {
   display: none;
 }
@@ -134,6 +138,18 @@
 
 .app-provider-shortlist-added .app-provider-shortlist-remove {
   display: block;
+}
+
+.app-provider-shortlist-full .app-provider-shortlist-add {
+  display: none;
+}
+
+.app-provider-shortlist-full .app-provider-shortlist-manage {
+  display: block;
+}
+
+.app-provider-shortlist-full .app-provider-shortlist-remove {
+  display: none;
 }
 
 .app-provider-not-shortlisted {

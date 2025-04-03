@@ -117,6 +117,7 @@
                                 @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
                                 {
                                     CourseId = Model.Id.ToString(),
+                                    ShortlistCount = Model.ShortlistCount,
                                     ProviderName = provider.ProviderName,
                                     ShortlistId = provider.ShortlistId,
                                     Ukprn = provider.Ukprn,
