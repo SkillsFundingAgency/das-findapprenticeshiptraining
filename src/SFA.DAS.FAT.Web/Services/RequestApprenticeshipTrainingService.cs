@@ -14,7 +14,7 @@ public class RequestApprenticeshipTrainingService(FindApprenticeshipTrainingWeb 
     public string GetRequestApprenticeshipTrainingUrl(int LarsCode, EntryPoint entryPoint, string location)
     {
         string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={entryPoint}";
-        var locationQueryParam = !string.IsNullOrEmpty(location) ? $"&location={location}" : string.Empty;
+        var locationQueryParam = !string.IsNullOrEmpty(location) ? $"&location={Uri.EscapeDataString(location)}" : string.Empty;
 
         return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }

@@ -40,7 +40,6 @@ public class RequestApprenticeshipTrainingViewModel
 public class ShortlistProviderViewModel
 {
     public int LarsCode { get; set; }
-    public string Title { get; set; }
     public Guid ShortlistId { get; set; }
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
