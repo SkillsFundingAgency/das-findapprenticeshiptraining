@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -21,14 +22,18 @@ public class CourseProvidersController : Controller
 {
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly ISessionService _sessionService;
     private readonly FindApprenticeshipTrainingWeb _config;
 
     public CourseProvidersController(
         IMediator mediator,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService, IOptions<FindApprenticeshipTrainingWeb> config)
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
+        IOptions<FindApprenticeshipTrainingWeb> config,
+        ISessionService sessionService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
+        _sessionService = sessionService;
         _config = config.Value;
     }
 
@@ -37,6 +42,7 @@ public class CourseProvidersController : Controller
     {
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
+        var shortlistCount = _sessionService.Get<ShortlistsCount>();
 
         int? convertedDistance = null;
         if (request.Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrWhiteSpace(request.Location))
@@ -72,6 +78,7 @@ public class CourseProvidersController : Controller
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
             Id = request.Id,
+            ShortlistCount = shortlistCount?.Count ?? 0,
             OrderBy = request.OrderBy,
             CourseTitleAndLevel = result.StandardName,
             CourseId = request.Id,

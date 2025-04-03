@@ -18,7 +18,7 @@
     </div>
 
     <div class="govuk-grid-column-one-third govuk-body">
-        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? "" : "app-provider-shortlist-added")">
+        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? Model.ShortlistCount < 50 ? "" : "app-provider-shortlist-full" :  "app-provider-shortlist-added")">
             <div class="app-provider-shortlist-add">
                 <form method="post" asp-route="@RouteNames.CreateShortlistItem">
                     <input type="hidden" name="larsCode" value="@Model.CourseId" />
@@ -28,6 +28,14 @@
                     <input type="hidden" name="locationName" value="@Model.Location" />
                     <button id="add-to-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Add to shortlist</button>
                 </form>
+            </div>
+            <div class="app-provider-shortlist-manage">
+                <span class="das-text--warning">Shortlist full.</span>
+                <p>
+                    <a asp-route="@RouteNames.ShortLists" class="govuk-body govuk-link govuk-link--no-visited-state">
+                        Manage shortlist
+                    </a>
+                </p>
             </div>
             <div class="app-provider-shortlist-remove">
                 <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">

@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -498,6 +499,24 @@ public class WhenGettingCourseProviders
             actualModel.Should().NotBeNull();
             actualModel!.ProviderOrderOptions.Should().BeEquivalentTo(expectedProviderOrderDropdown);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Shortlist_Count_Is_Populated_From_Session(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CourseProvidersController sut,
+        int shortlistCount,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+        shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
+        sessionServiceMock.Setup(s => s.Get<ShortlistsCount>()).Returns(new ShortlistsCount { Count = shortlistCount });
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest()) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
 
 }
