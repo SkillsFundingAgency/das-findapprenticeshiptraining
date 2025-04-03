@@ -441,11 +441,11 @@
     margin-left: 30px;
     margin-top: -30px;
 }
-    
+
 .course-provider-results-top-panel {
-    border-left: 1px solid #505a5f;
-    border-right: 1px solid #505a5f;
-    border-top: 1px solid #505a5f;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-top: 1px solid #b1b4b6;
     background: #f3f2f1;
     padding: 15px;
     padding-bottom: 15px;
@@ -455,15 +455,15 @@
 
 .course-provider-results-middle-panels {
     padding-top: 15px;
-    border-left: 1px solid #505a5f;
-    border-right: 1px solid #505a5f;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
 }
 
 .course-provider-results-bottom-panel {
     padding-top: 15px;
-    border-left: 1px solid #505a5f;
-    border-right: 1px solid #505a5f;
-    border-bottom: 1px solid #505a5f;
+    border-left: 1px solid #b1b4b6;
+    border-right: 1px solid #b1b4b6;
+    border-bottom: 1px solid #b1b4b6;
 }
 
 .das-hint-colour {

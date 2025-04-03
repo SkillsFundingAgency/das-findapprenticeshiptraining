@@ -89,7 +89,6 @@ public class WhenGettingCourseProviders
             && c.ApprenticeProviderRatingTypes == query.ApprenticeProviderRatings
             && c.QarRatings == query.Qar
             && c.Page == query.Page
-            && c.PageSize == query.PageSize
             && c.ShortlistUserId == query.ShortlistUserId
             )), Times.Once);
     }
@@ -107,7 +106,6 @@ public class WhenGettingCourseProviders
             ApprenticeProviderRatingTypes = request.ApprenticeProviderRatings,
             QarRatings = request.Qar,
             Page = request.Page,
-            PageSize = request.PageSize,
             ShortlistUserId = request.ShortlistUserId
         };
     }
