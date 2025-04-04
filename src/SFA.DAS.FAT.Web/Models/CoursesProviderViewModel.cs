@@ -77,7 +77,7 @@ public class CoursesProviderViewModel
                 IsEmployerLocationAvailable = IsEmployerLocationAvailable,
                 NearestEmployerLocation = NearestEmployerLocation,
                 IsDayReleaseAvailable = IsDayReleaseAvailable,
-                IsDayReleaseMultiple = IsBlockReleaseMultiple,
+                IsDayReleaseMultiple = IsDayReleaseMultiple,
                 NearestDayRelease = NearestDayRelease,
                 IsBlockReleaseAvailable = IsBlockReleaseAvailable,
                 IsBlockReleaseMultiple = IsBlockReleaseMultiple,

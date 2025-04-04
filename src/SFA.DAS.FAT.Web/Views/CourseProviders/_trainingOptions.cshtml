@@ -31,7 +31,14 @@
             }
             else
             {
-                <span>Block release</span>
+                @if (Model.IsBlockReleaseMultiple)
+                {
+                    <div>Block release at multiple locations</div>
+                }
+                else
+                {
+                    <span>Block release</span>
+                }
             }
             <div class="govuk-body-s das-hint-colour">Blocks of a week or more at the provider’s location.</div>
         </div>
@@ -55,7 +62,14 @@
             }
             else
             {
-                <span>Day release</span>
+                @if (Model.IsDayReleaseMultiple)
+                {
+                    <div>Day release at multiple locations </div>
+                }
+                else
+                {
+                    <span>Day release </span>
+                }
             }
             <div class="govuk-body-s das-hint-colour">One day a week at the provider’s location. </div>
         </div>
