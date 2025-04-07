@@ -12,8 +12,7 @@
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-
+        <div class="govuk-grid-column-two-thirds">
             @* Banner to show removed item *@
             <div asp-show="Model.ShowRemovedShortlistBanner" class=" govuk-notification-banner govuk-!-margin-bottom-7">
                 <div class="govuk-notification-banner__content">
@@ -25,6 +24,10 @@
                 Shortlisted training providers
             </h1>
             <div asp-show="Model.HasShortlistItems" class="govuk-body govuk-!-width-two-thirds">We will save your shortlist until  @Model.ExpiryDateText.</div>
+            <div asp-show="Model.HasMaxedOutShortlists" class="govuk-inset-text">
+                <p class="govuk-!-font-weight-bold">Your shortlist is full.</p>
+                <p>You cannot have more than 50 training providers in your shortlist. If you want to shortlist more providers, you’ll need to remove some here first.</p>
+            </div>
         </div>
     </div>
 
@@ -52,7 +55,7 @@
                     <details class="govuk-details" data-module="govuk-details">
                         <summary class="govuk-details__summary">
                             <span class="govuk-details__summary-text">
-                                View @(location.Providers.Count == 1 ? "one" : location.Providers.Count.ToString()) training provider@(location.Providers.Count == 1 ? "" : "s")
+                                View @(location.Providers.Count == 1 ? "1" : location.Providers.Count.ToString()) training provider@(location.Providers.Count == 1 ? "" : "s")
                             </span>
                         </summary>
                         <div class="govuk-details__text">
@@ -63,7 +66,7 @@
                                 <a asp-route="@RouteNames.CourseProviders" 
                                     asp-route-id="@course.LarsCode" 
                                     asp-route-location="@location.Description" 
-                                    class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
+                                    class="govuk-link govuk-link--no-visited-state">View other training providers for this course</a>
                             </p>
 
                             <partial name="_ShortlistGetHelpFindingCourse" model="@location.RequestApprenticeshipTraining" />

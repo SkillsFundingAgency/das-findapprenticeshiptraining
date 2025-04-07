@@ -28,17 +28,20 @@ public class ShortlistController : Controller
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly IDataProtector _protector;
     private readonly IRequestApprenticeshipTrainingService _requestApprenticeshipTrainingService;
+    private readonly ISessionService _sessionService;
 
     public ShortlistController(
         IMediator mediator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IDataProtectionProvider provider,
-        IRequestApprenticeshipTrainingService requestApprenticeshipTrainingService)
+        IRequestApprenticeshipTrainingService requestApprenticeshipTrainingService,
+        ISessionService sessionService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _protector = provider.CreateProtector(Constants.ShortlistProtectorName);
         _requestApprenticeshipTrainingService = requestApprenticeshipTrainingService;
+        _sessionService = sessionService;
     }
 
     [HttpGet]
@@ -57,6 +60,9 @@ public class ShortlistController : Controller
         ShortlistsViewModel viewModel = GetShortlistsViewModel(result);
 
         viewModel.RemovedProviderName = TempData[RemovedProviderNameTempDataKey]?.ToString();
+
+        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        viewModel.HasMaxedOutShortlists = shortlistCount?.Count >= 50;
 
         return View(viewModel);
     }
