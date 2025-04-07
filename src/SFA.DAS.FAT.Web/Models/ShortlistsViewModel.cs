@@ -7,10 +7,9 @@ namespace SFA.DAS.FAT.Web.Models;
 public class ShortlistsViewModel
 {
     public string ExpiryDateText { get; set; }
-
+    public bool HasMaxedOutShortlists { get; set; }
     public List<ShortlistCourseViewModel> Courses { get; set; } = [];
     public bool HasShortlistItems => Courses.Count > 0;
-
     public string RemovedProviderName { get; set; }
     public bool ShowRemovedShortlistBanner => !string.IsNullOrEmpty(RemovedProviderName);
 }

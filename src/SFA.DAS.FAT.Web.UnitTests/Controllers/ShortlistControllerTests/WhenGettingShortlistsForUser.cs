@@ -27,6 +27,7 @@ public class WhenGettingShortlistsForUser
     private Mock<ITempDataDictionary> _tempDataMock;
     private Mock<IDataProtectionProvider> _dataProtectionProviderMock;
     private Mock<IRequestApprenticeshipTrainingService> _ratServiceMock;
+    private Mock<ISessionService> _sessionServiceMock;
     private ShortlistController _sut;
     private ShortlistCookieItem _shortlistCookieItem;
     private GetShortlistsForUserResponse _mediatorResponse;
@@ -40,8 +41,9 @@ public class WhenGettingShortlistsForUser
         _tempDataMock = new();
         _dataProtectionProviderMock = new();
         _ratServiceMock = new();
+        _sessionServiceMock = new();
 
-        _sut = new(_mediatorMock.Object, _shortlistCookieServiceMock.Object, _dataProtectionProviderMock.Object, _ratServiceMock.Object);
+        _sut = new(_mediatorMock.Object, _shortlistCookieServiceMock.Object, _dataProtectionProviderMock.Object, _ratServiceMock.Object, _sessionServiceMock.Object);
         _sut.TempData = _tempDataMock.Object;
 
         _ratServiceMock.Setup(x => x.GetRequestApprenticeshipTrainingUrl(It.IsAny<int>(), It.IsAny<EntryPoint>(), It.IsAny<string>())).Returns(RatUrl);
@@ -103,6 +105,19 @@ public class WhenGettingShortlistsForUser
                 }
             }
         };
+    }
+
+    [TestCase(null, false)]
+    [TestCase(49, false)]
+    [TestCase(50, true)]
+    public async Task ThenSetsHasMaxedOutShortlistsFlag(int? count, bool expected)
+    {
+        ShortlistsCount shortlistCount = count is null ? null : new() { Count = count.GetValueOrDefault() };
+        _sessionServiceMock.Setup(x => x.Get<ShortlistsCount>()).Returns(shortlistCount);
+        //Act
+        var result = await _sut.Index();
+        //Assert
+        result.As<ViewResult>().Model.As<ShortlistsViewModel>().HasMaxedOutShortlists.Should().Be(expected);
     }
 
     [Test]
