@@ -274,7 +274,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             var selectedLevelNames = Levels
                 .Where(level => SelectedLevels.Contains(level.Code))
-                .Select(level => level.Name)
+                .Select(level => $"Level {level.Code}")
                 .ToList();
 
             AddSelectedFilter(selectedFilters, FilterType.Levels, selectedLevelNames);
