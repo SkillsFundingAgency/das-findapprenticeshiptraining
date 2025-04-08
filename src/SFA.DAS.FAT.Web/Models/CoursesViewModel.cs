@@ -303,7 +303,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private string GetLevelCodeValue(string filterValue)
     {
-        return Levels.Find(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
+        return Levels.Find(l => $"Level {l.Code}" == filterValue)?.Code.ToString() ?? string.Empty;
     }
 
     public List<ValueTuple<string, string>> ToQueryString()
