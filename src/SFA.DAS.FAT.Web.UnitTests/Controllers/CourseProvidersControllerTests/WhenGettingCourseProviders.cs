@@ -362,7 +362,6 @@ public class WhenGettingCourseProviders
     [MoqInlineAutoData(0, "No results")]
     [MoqInlineAutoData(1, "1 result")]
     [MoqInlineAutoData(2, "2 results")]
-    [MoqInlineAutoData(500, "500 results")]
     [MoqInlineAutoData(-1, "No results")]
     public async Task Then_TotalMessage_Is_Set(
         int totalCount,

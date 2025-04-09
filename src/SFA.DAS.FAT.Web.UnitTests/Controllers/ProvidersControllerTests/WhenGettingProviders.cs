@@ -31,6 +31,8 @@ public class WhenGettingProviders
         [Greedy] ProvidersController controller)
     {
         response.Ukprn = ukprn;
+        response.AnnualEmployerFeedbackDetails = null;
+        response.AnnualApprenticeFeedbackDetails = null;
         mediator.Setup(x =>
                 x.Send(It.Is<GetProviderQuery>(c =>
                     c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>()))

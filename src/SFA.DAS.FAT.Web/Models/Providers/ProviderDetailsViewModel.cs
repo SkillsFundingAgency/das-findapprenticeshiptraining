@@ -9,6 +9,16 @@ namespace SFA.DAS.FAT.Web.Models.Providers;
 
 public class ProviderDetailsViewModel : PageLinksViewModelBase
 {
+
+    public const string AllCoursesDeliveredText = "These reviews are for all courses delivered by this provider.";
+    public const string EmployerReviewsOverallText = "These reviews are for all courses delivered by this provider in the last 5 academic years.";
+    public const string EmployerMostRecentReviewsText = "These are the most recent reviews for this training provider.  We update the main star rating on this page when we have reviews from a full academic year.";
+    public const string EmployersNoResultsPastTab = "No results. Not enough employers gave feedback about this training provider.";
+    public const string EmployersNoResultsRecentTab = "No results. Not enough employers have given feedback about this training provider.";
+
+    public const string ApprenticeNoResultsRecentTab = "No results. Not enough apprentices have given feedback about this training provider.";
+    public const string ApprenticeNoResultsPastTab = "No results. Not enough apprentices gave feedback about this training provider.";
+
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
 
@@ -16,7 +26,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
     public ContactDetailsModel Contact { get; set; }
     public ProviderCoursesModel ProviderCoursesDetails { get; set; }
 
-    public QarModel Qar { get; set; }
+    public ProviderQarModel Qar { get; set; }
 
     public EndpointAssessmentModel EndpointAssessments { get; set; }
 
@@ -27,9 +37,16 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
     public bool EmployerReviewed => Reviews.EmployerRating != ProviderRating.NotYetReviewed.ToString();
     public bool ApprenticeReviewed => Reviews.ApprenticeRating != ProviderRating.NotYetReviewed.ToString();
 
+    public bool ShowSurvey => FeedbackByYear is { Count: > 0 };
+
+
+    public List<FeedbackByYear> FeedbackByYear { get; set; }
+
 
     public static implicit operator ProviderDetailsViewModel(GetProviderQueryResponse source)
     {
+        List<FeedbackByYear> feedback = ProcessFeedbackDetails(source);
+
         var vm = new ProviderDetailsViewModel
         {
             Ukprn = source.Ukprn,
@@ -40,6 +57,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             Qar = source.Qar,
             Reviews = source.Reviews,
             EndpointAssessments = source.EndpointAssessments,
+            FeedbackByYear = feedback,
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };
@@ -61,287 +79,138 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
         return vm;
     }
 
-}
-
-public class ReviewsModel
-{
-    public string StartYear { get; set; } = string.Empty;
-
-    public string EndYear { get; set; } = string.Empty;
-
-    public string ApprenticeRating { get; set; } = string.Empty;
-    public string EmployerRating { get; set; } = string.Empty;
-
-    public int EmployerStarsValue { get; set; }
-
-    public int ApprenticeStarsValue { get; set; }
-
-    public int EmployerReviewCount { get; set; }
-
-    public int ApprenticeReviewCount { get; set; }
-
-    public string EmployerStarsMessage { get; set; } = string.Empty;
-    public string ApprenticeStarsMessage { get; set; } = string.Empty;
-
-    public static implicit operator ReviewsModel(GetProviderReviewsModel source)
+    private static void InjectApprenticeFeedbackDetails(List<ApprenticeFeedbackAnnualSummaries> apprenticeFeedback, List<FeedbackByYear> feedback)
     {
-        if (source == null) return new ReviewsModel();
+        if (apprenticeFeedback == null || feedback.Count == 0) return;
 
-
-        var reviewsStartYear = $"20{source.ReviewPeriod.AsSpan(0, 2)}";
-        var reviewsEndYear = $"20{source.ReviewPeriod.AsSpan(2, 2)}";
-        var reviewEmployerStarsValue = int.TryParse(source.EmployerStars, out var employerStars) ? employerStars : 0;
-        var reviewApprenticeStarsValue =
-            int.TryParse(source.ApprenticeStars, out var apprenticeStars) ? apprenticeStars : 0;
-        var employerReviewCount = int.TryParse(source.EmployerReviews, out var reviewCount) ? reviewCount : 0;
-        var apprenticeReviewCount = int.TryParse(source.ApprenticeReviews, out var appReviewCount) ? appReviewCount : 0;
-
-
-        var employerStarsMessage = employerReviewCount == 1
-            ? $"average review from {employerReviewCount} employer when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'."
-            : $"average review from {employerReviewCount} employers when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
-
-        var apprenticeStarsMessage = apprenticeReviewCount == 1
-            ? $"average review from {apprenticeReviewCount} apprentice when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'."
-            : $"average review from {apprenticeReviewCount} apprentices when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
-
-        return new ReviewsModel
+        foreach (var item in feedback)
         {
-            StartYear = reviewsStartYear,
-            EndYear = reviewsEndYear,
-            ApprenticeRating = source.ApprenticeRating,
-            EmployerRating = source.EmployerRating,
-            EmployerStarsValue = reviewEmployerStarsValue,
-            ApprenticeStarsValue = reviewApprenticeStarsValue,
-            EmployerStarsMessage = employerStarsMessage,
-            EmployerReviewCount = employerReviewCount,
-            ApprenticeStarsMessage = apprenticeStarsMessage,
-            ApprenticeReviewCount = apprenticeReviewCount
-        };
+            item.NoApprenticeReviewsText = item.IsMostRecentYear
+                ? ApprenticeNoResultsRecentTab
+                : ApprenticeNoResultsPastTab;
+
+            foreach (var matchingFeedback in apprenticeFeedback.Where(x => x.TimePeriod == item.TimePeriod))
+            {
+                item.ApprenticeFeedbackDetails = matchingFeedback;
+            }
+        }
     }
-}
-
-public class EndpointAssessmentModel
-{
-
-    public string CountFormatted { get; set; } = string.Empty;
-    public string DetailsMessage { get; set; } = string.Empty;
-
-    public static implicit operator EndpointAssessmentModel(GetProviderEndpointAssessmentsDetails source)
+    private static void InjectEmployerFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerFeedback, List<FeedbackByYear> feedback)
     {
-        if (source == null) return new EndpointAssessmentModel();
-
-        var endpointAssessmentCount = source.EndpointAssessmentCount;
-
-        var countFormatted = endpointAssessmentCount.ToString("N0");
-
-        string detailsMessage;
-
-        if (endpointAssessmentCount <= 0 || source.EarliestAssessment == null)
+        if (employerFeedback == null || feedback.Count == 0) return;
+        foreach (var item in feedback)
         {
-            detailsMessage =
-                "apprentices have completed a course and taken their end-point assessment with this provider.";
+            item.NoEmployerReviewsText = item.IsMostRecentYear
+                ? EmployersNoResultsRecentTab
+                : EmployersNoResultsPastTab;
+
+            foreach (var matchingFeedback in employerFeedback.Where(x => x.TimePeriod == item.TimePeriod))
+            {
+                item.EmployerFeedbackDetails = matchingFeedback;
+            }
         }
-        else
-        {
-            var earliestYear = source.EarliestAssessment.Value.Year.ToString();
-
-            detailsMessage = endpointAssessmentCount == 1
-                ? $"apprentice has completed a course and taken their end-point assessment with this provider since {earliestYear}."
-                : $"apprentices have completed a course and taken their end-point assessment with this provider since {earliestYear}.";
-        }
-
-        return new EndpointAssessmentModel
-        {
-            CountFormatted = countFormatted,
-            DetailsMessage = detailsMessage
-        };
-    }
-}
-
-public class QarModel
-{
-    public bool AchievementRatePresent { get; set; }
-
-    public string PeriodStartYear { get; set; }
-
-    public string PeriodEndYear { get; set; }
-
-    public int Achievers { get; set; }
-
-    public int TotalParticipantCount { get; set; }
-    public string DidNotPassPercentage { get; set; }
-
-    public string AchievementRate { get; set; }
-    public string NationalAchievementRate { get; set; }
-
-    public static implicit operator QarModel(GetProviderQarModel source)
-    {
-        var periodStartYear = string.Empty;
-        var periodEndYear = string.Empty;
-        var achievers = 0;
-        var totalParticipantCount = 0;
-        var didNotPassPercentage = string.Empty;
-
-        if (source == null) return new QarModel();
-        var isAchievementRateNumeric = double.TryParse(source.AchievementRate, out double achievementRateValue);
-        var isLeaversCountNumeric = int.TryParse(source.Leavers, out int leaversValue);
-
-        var achievementRatePresent = isAchievementRateNumeric && isLeaversCountNumeric && achievementRateValue != 0;
-
-        if (source.Period is { Length: >= 4 })
-        {
-            periodStartYear = $"20{source.Period.AsSpan(0, 2)}";
-            periodEndYear = $"20{source.Period.AsSpan(2, 2)}";
-        }
-
-        if (isAchievementRateNumeric && isLeaversCountNumeric && achievementRateValue != 0)
-        {
-            achievers = (int)Math.Round(leaversValue * (achievementRateValue / 100));
-        }
-
-        if (isLeaversCountNumeric)
-        {
-            totalParticipantCount = leaversValue;
-        }
-
-        if (isAchievementRateNumeric)
-        {
-            didNotPassPercentage = (100 - achievementRateValue).ToString("0.0");
-        }
-
-        return new QarModel
-        {
-            AchievementRatePresent = achievementRatePresent,
-            PeriodStartYear = periodStartYear,
-            PeriodEndYear = periodEndYear,
-            Achievers = achievers,
-            TotalParticipantCount = totalParticipantCount,
-            DidNotPassPercentage = didNotPassPercentage,
-            AchievementRate = source.AchievementRate,
-            NationalAchievementRate = source.NationalAchievementRate
-        };
-    }
-}
-
-public class GetProviderAddress
-{
-    public string AddressLine1 { get; init; }
-    public string AddressLine2 { get; set; }
-    public string AddressLine3 { get; set; }
-    public string AddressLine4 { get; set; }
-    public string Town { get; set; }
-    public string Postcode { get; set; }
-
-    public static implicit operator GetProviderAddress(GetProviderAddressModel source)
-    {
-        if (source == null) return new GetProviderAddress();
-
-        return new GetProviderAddress
-        {
-            AddressLine1 = source.AddressLine1,
-            AddressLine2 = source.AddressLine2,
-            AddressLine3 = source.AddressLine3,
-            AddressLine4 = source.AddressLine4,
-            Town = source.Town,
-            Postcode = source.Postcode
-        };
     }
 
-    public string GetComposedAddress(string providerName)
+    private static List<FeedbackByYear> ProcessFeedbackDetails(GetProviderQueryResponse source)
     {
+        var feedback = CreateFeedbackWithYearsAndHeadings(source);
 
-        var addressItems = new List<string>
+        InjectEmployerFeedbackDetails(source.AnnualEmployerFeedbackDetails, feedback);
+        InjectApprenticeFeedbackDetails(source.AnnualApprenticeFeedbackDetails, feedback);
+
+        return feedback;
+    }
+
+    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings(GetProviderQueryResponse source)
+    {
+        var employerTimePeriods = new List<string>();
+
+        if (source.AnnualEmployerFeedbackDetails is { Count: > 0 })
+        {
+            employerTimePeriods = source.AnnualEmployerFeedbackDetails.Select(x => x.TimePeriod).ToList();
+        }
+
+        var apprenticeTimePeriods = new List<string>();
+
+        if (source.AnnualApprenticeFeedbackDetails is { Count: > 0 })
+        {
+            apprenticeTimePeriods = source.AnnualApprenticeFeedbackDetails.Select(x => x.TimePeriod).ToList();
+        }
+
+        var allTimePeriods = employerTimePeriods.ToList();
+        List<FeedbackByYear> feedbackItems = BuildFeedbackByYearList(apprenticeTimePeriods, allTimePeriods);
+
+        if (feedbackItems.Count > 0)
+        {
+            var mostRecentDate =
+                feedbackItems.MaxBy(x => x.StartYear)!.StartYear;
+
+            var leastRecentDate =
+                feedbackItems.OrderBy(x => x.StartYear).First(x => x.StartYear != 0)!.StartYear;
+
+            PopulateFeedbackItems(feedbackItems, leastRecentDate, mostRecentDate);
+        }
+
+        return feedbackItems.OrderByDescending(f => f.StartYear).ToList();
+    }
+
+    private static void PopulateFeedbackItems(List<FeedbackByYear> feedbackItems, int leastRecentDate, int mostRecentDate)
+    {
+        foreach (var feedbackByYear in feedbackItems)
+        {
+            if (feedbackByYear.StartYear == 0)
+            {
+                feedbackByYear.Heading = "Overall reviews";
+                feedbackByYear.SubHeading = $"1 August {leastRecentDate} to 31 July {mostRecentDate}";
+                feedbackByYear.MainText = EmployerReviewsOverallText;
+            }
+            else
+            {
+                if (feedbackByYear.StartYear == mostRecentDate)
                 {
-                    providerName,
-                    AddressLine1,
-                    AddressLine2,
-                    AddressLine3,
-                    AddressLine4,
-                    Town,
-                    Postcode
-                };
-
-        return string.Join(", ", addressItems.Where(s => !string.IsNullOrEmpty(s)).ToArray());
-
+                    feedbackByYear.Heading = $"{feedbackByYear.StartYear} to today";
+                    feedbackByYear.SubHeading = $"1 August {feedbackByYear.StartYear} to today";
+                    feedbackByYear.MainText = EmployerMostRecentReviewsText;
+                    feedbackByYear.IsMostRecentYear = true;
+                }
+                else
+                {
+                    feedbackByYear.Heading = $"{feedbackByYear.StartYear} to {feedbackByYear.EndYear}";
+                    feedbackByYear.SubHeading = $"1 August {feedbackByYear.StartYear} to 31 July {feedbackByYear.EndYear}";
+                    feedbackByYear.MainText = AllCoursesDeliveredText;
+                }
+            }
+        }
     }
-}
 
-public class ContactDetailsModel
-{
-    public string MarketingInfo { get; set; } = string.Empty;
-    public string Email { get; set; } = string.Empty;
-    public string PhoneNumber { get; set; } = string.Empty;
-    public string Website { get; set; } = string.Empty;
-
-    public static implicit operator ContactDetailsModel(GetProviderContactDetails source)
+    private static List<FeedbackByYear> BuildFeedbackByYearList(List<string> apprenticeTimePeriods, List<string> allTimePeriods)
     {
-        if (source == null) return new ContactDetailsModel();
+        List<FeedbackByYear> feedback = new List<FeedbackByYear>();
 
-        var website = source.Website;
-
-        if (website != null && !website.StartsWith("http") && website.Trim() != string.Empty)
+        foreach (var timePeriods in apprenticeTimePeriods)
         {
-            website = $"http://{website}";
+            if (!allTimePeriods.Contains(timePeriods)) allTimePeriods.Add(timePeriods);
         }
 
-        return new ContactDetailsModel
+        foreach (var timePeriod in allTimePeriods)
         {
-            MarketingInfo = source.MarketingInfo,
-            Email = source.Email,
-            PhoneNumber = source.PhoneNumber,
-            Website = website ?? string.Empty
-        };
-    }
-}
+            var startYear = 0;
+            var endYear = 0;
 
-public class ProviderCoursesModel
-{
-    public List<ProviderCourseDetails> Courses { get; set; }
-    public int CourseCount { get; set; }
+            if (!timePeriod.Contains("All") && timePeriod.StartsWith("AY") && timePeriod.Length == 6)
+            {
+                startYear = int.TryParse(timePeriod.AsSpan(2, 2), out var starterYear) ? starterYear + 2000 : 0;
+                endYear = int.TryParse(timePeriod.AsSpan(4, 2), out var enderYear) ? enderYear + 2000 : 0;
+            }
 
-    public string CoursesDropdownText { get; set; } = string.Empty;
-
-    public static implicit operator ProviderCoursesModel(List<GetProviderCourseDetails> source)
-    {
-        if (source == null) return new ProviderCoursesModel();
-
-        var details = new ProviderCoursesModel();
-        var courses = new List<ProviderCourseDetails>();
-        foreach (var course in source)
-        {
-            courses.Add(course);
+            feedback.Add(new FeedbackByYear
+            {
+                StartYear = startYear,
+                EndYear = endYear,
+                TimePeriod = timePeriod
+            });
         }
 
-        details.Courses = courses;
-        var coursesCount = courses.Count;
-        details.CourseCount = coursesCount;
-
-        details.CoursesDropdownText = coursesCount == 1
-        ? $"View 1 course delivered by this training provider"
-        : $"View {coursesCount} courses delivered by this training provider";
-
-        return details;
-    }
-}
-
-
-public class ProviderCourseDetails
-{
-    public string CourseName { get; init; }
-    public int Level { get; init; }
-
-    public int LarsCode { get; init; }
-
-    public Dictionary<string, string> RouteData { get; set; } = new();
-
-    public static implicit operator ProviderCourseDetails(GetProviderCourseDetails source)
-    {
-        return new ProviderCourseDetails
-        {
-            CourseName = source.CourseName,
-            Level = source.Level,
-            LarsCode = source.LarsCode
-        };
+        return feedback;
     }
 }
