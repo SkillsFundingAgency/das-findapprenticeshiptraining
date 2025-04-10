@@ -312,11 +312,9 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.AchievementRateInformation;
 
-        var expected = "of apprentices (90 of 100) completed this course and passed their end-point assessment with this " +
-                       "provider in academic year 2021 to 2022. 10% did not pass or left the course before taking the " +
-                       "assessment.";
+        var expected = "of apprentices (90 of 100) completed this course and passed their end-point assessment with this provider in academic year 2021 to 2022. 10% did not pass or left the course before taking the assessment.";
 
-        Assert.That(result.Replace(Environment.NewLine, "").Replace(" ", ""), Is.EqualTo(expected.Replace(" ", "")));
+        Assert.That(result, Is.EqualTo(expected));
     }
 
     [Test]

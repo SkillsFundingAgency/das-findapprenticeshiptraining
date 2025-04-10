@@ -182,9 +182,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
         if(this.Qar.AchievementRate is not null)
         {
-            return @$"of apprentices ({Qar.ConvertedLeavers} of {Qar.TotalParticipants}) completed this course and passed their end-point assessment with this
-                    provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the
-                    assessment.";
+            return $"of apprentices ({Qar.ConvertedLeavers} of {Qar.TotalParticipants}) completed this course and passed their end-point assessment with this " +
+                   $"provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the " +
+                    "assessment.";
         }
 
         return string.Empty;
