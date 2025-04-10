@@ -2,9 +2,7 @@
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
@@ -23,74 +21,30 @@ namespace SFA.DAS.FAT.Web.Controllers;
 public class CoursesController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly FindApprenticeshipTrainingWeb _config;
     private readonly IValidator<GetCourseQuery> _courseValidator;
     private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
-namespace SFA.DAS.FAT.Web.Controllers;
-
-[Route("[controller]")]
-public class CoursesController : Controller
-{
-    private readonly ILogger<CoursesController> _logger;
-    private readonly IMediator _mediator;
-    private readonly ICookieStorageService<LocationCookieItem> _locationCookieStorageService;
-    private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-    private readonly FindApprenticeshipTrainingWeb _config;
-    private readonly IDataProtector _shortlistDataProtector;
-    private readonly IValidator<GetCourseQuery> _courseValidator;
-    private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
     public CoursesController(
-        ILogger<CoursesController> logger,
         IMediator mediator,
-        ICookieStorageService<LocationCookieItem> locationCookieStorageService,
-        ICookieStorageService<GetCourseProvidersRequest> courseProvidersCookieStorageService,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        IDataProtectionProvider provider,
         IOptions<FindApprenticeshipTrainingWeb> config,
         IValidator<GetCourseQuery> courseValidator,
-        IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator
+        IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService
     )
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _courseValidator = courseValidator;
+        _config = config.Value;
         _courseProviderDetailsValidator = courseProviderDetailsValidator;
-        _config = config.Value;
-    }
-    public CoursesController(
-        ILogger<CoursesController> logger,
-        IMediator mediator,
-        ICookieStorageService<LocationCookieItem> locationCookieStorageService,
-        ICookieStorageService<GetCourseProvidersRequest> courseProvidersCookieStorageService,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        IDataProtectionProvider provider,
-        IOptions<FindApprenticeshipTrainingWeb> config,
-        IValidator<GetCourseQuery> courseValidator,
-        IValidator<GetCourseProviderQuery> courseProviderValidator
-    )
-    {
-        _logger = logger;
-        _mediator = mediator;
-        _locationCookieStorageService = locationCookieStorageService;
-        _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
-        _shortlistCookieService = shortlistCookieService;
-        _courseValidator = courseValidator;
-        _courseProviderValidator = courseProviderValidator;
-        _config = config.Value;
-        _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
     }
 
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-    [Route("", Name = RouteNames.Courses)]
-    public async Task<IActionResult> Courses(GetCoursesViewModel model)
-    {
-        var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
         int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
 
@@ -104,17 +58,6 @@ public class CoursesController : Controller
             Page = model.PageNumber,
             OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
-        });
-        var result = await _mediator.Send(new GetCoursesQuery
-        {
-            Keyword = model.Keyword,
-            Location = model.Location,
-            Distance = validatedDistance,
-            Routes = model.Categories,
-            Levels = model.Levels,
-            Page = model.PageNumber,
-            OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
-            ShortlistUserId = shortlistItem?.ShortlistUserId
         });
 
         var viewModel = new CoursesViewModel(_config, Url)

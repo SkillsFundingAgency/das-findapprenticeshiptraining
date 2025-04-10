@@ -110,22 +110,6 @@ public class CoursesViewModel : PageLinksViewModelBase
         _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
-    private OrderBy SetOrderBy()
-    {
-        return string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
-    }
-
-    public const string BEST_MATCH_TO_COURSE = "Best match to course";
-
-    public const string NAME_OF_COURSE = "Name of course";
-
-    private string GetSortedDisplayMessage()
-    {
-        return OrderBy == OrderBy.Score ?
-            BEST_MATCH_TO_COURSE :
-            NAME_OF_COURSE;
-    }
-
     public string GetLevelName(int levelCode)
     {
         LevelViewModel level = Levels.Find(a => a.Code == levelCode);
