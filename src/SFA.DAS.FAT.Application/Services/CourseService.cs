@@ -38,11 +38,17 @@ public class CourseService : ICourseService
         return response;
     }
 
-    public async Task<TrainingCourseProviderDetails> GetCourseProviderDetails(int providerId, int standardId,
-        string location, double lat, double lon, Guid shortlistUserId)
+    public async Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, int larsCode, string location, int? distance, Guid shortlistUserId)
     {
-        var request = new GetCourseProviderDetailsApiRequest(_config.BaseUrl, standardId, providerId, location, shortlistUserId, lat, lon);
-        var response = await _apiClient.Get<TrainingCourseProviderDetails>(request);
-        return response;
+        return await _apiClient.Get<CourseProviderDetailsModel>(
+            new GetCourseProviderDetailsApiRequest(
+                _config.BaseUrl, 
+                larsCode, 
+                ukprn, 
+                location,
+                distance,
+                shortlistUserId
+            )
+        );
     }
 }

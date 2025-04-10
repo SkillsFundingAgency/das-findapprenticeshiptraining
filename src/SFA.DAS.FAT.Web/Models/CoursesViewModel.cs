@@ -43,7 +43,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public int TotalFiltered { get; set; }
 
-    public string SortedDisplayMessage => GetSortedDisplayMessage();
+    public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BEST_MATCH_TO_COURSE : NAME_OF_COURSE;
 
     private OrderBy? _orderBy;
 
@@ -53,16 +53,43 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             if (_orderBy == null)
             {
-                _orderBy = SetOrderBy();
+                _orderBy = string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
             }
 
             return _orderBy.Value;
         }
     }
 
+    private FiltersViewModel _filters;
+
+    public FiltersViewModel Filters
+    {
+        get
+        {
+            if (_filters == null)
+            {
+                _filters = CreateFilterSections();
+            }
+
+            return _filters;
+        }
+    }
+
     public string TotalMessage => GetTotalMessage();
 
     public string CoursesSubHeader => PopulateCoursesSubHeader();
+
+    public const string BEST_MATCH_TO_COURSE = "Best match to course";
+
+    public const string NAME_OF_COURSE = "Name of course";
+
+    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+
+    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location.";
+
+    public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
+
+    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
@@ -75,28 +102,12 @@ public class CoursesViewModel : PageLinksViewModelBase
     public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
     {
         _urlHelper = urlHelper;
-        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
-        {
-            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
-        };
         _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
         _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
-    }
-
-    private OrderBy SetOrderBy()
-    {
-        return string.IsNullOrWhiteSpace(Keyword) ? OrderBy.Title : OrderBy.Score;
-    }
-
-    public const string BEST_MATCH_TO_COURSE = "Best match to course";
-
-    public const string NAME_OF_COURSE = "Name of course";
-
-    private string GetSortedDisplayMessage()
-    {
-        return OrderBy == OrderBy.Score ?
-            BEST_MATCH_TO_COURSE :
-            NAME_OF_COURSE;
+        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.Levels, filterValue => Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty }
+        };
     }
 
     public string GetLevelName(int levelCode)
@@ -110,10 +121,6 @@ public class CoursesViewModel : PageLinksViewModelBase
 
         return $"{levelCode} (equal to {level.Name})";
     }
-
-    public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
-
-    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
 
     public string GetProvidersLinkDisplayMessage(StandardViewModel standard)
     {
@@ -155,10 +162,6 @@ public class CoursesViewModel : PageLinksViewModelBase
         return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
-
-    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location.";
-
     private string PopulateCoursesSubHeader()
     {
         if (Total == 0)
@@ -189,21 +192,6 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
 
         return resultDisplayMessage;
-    }
-
-    private FiltersViewModel _filters;
-
-    public FiltersViewModel Filters
-    {
-        get
-        {
-            if (_filters == null)
-            {
-                _filters = CreateFilterSections();
-            }
-
-            return _filters;
-        }
     }
 
     public FiltersViewModel CreateFilterSections()
@@ -299,11 +287,6 @@ public class CoursesViewModel : PageLinksViewModelBase
             _valueFunctions,
             [FilterType.Distance]
         );
-    }
-
-    private string GetLevelCodeValue(string filterValue)
-    {
-        return Levels.FirstOrDefault(l => l.Name == filterValue)?.Code.ToString() ?? string.Empty;
     }
 
     public List<ValueTuple<string, string>> ToQueryString()

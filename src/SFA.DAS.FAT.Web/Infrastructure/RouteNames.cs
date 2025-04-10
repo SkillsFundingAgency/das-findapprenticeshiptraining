@@ -14,6 +14,7 @@ namespace SFA.DAS.FAT.Web.Infrastructure
         public const string CourseDetails = "course-details";
         public const string CourseProviders = "course-providers";
         public const string CourseProviderDetails = "course-provider-details";
+        public const string Provider = nameof(Provider);
 
         public const string ShortList = "shortlist";
         public const string CreateShortlistItem = "create-shortlist";

@@ -1,752 +1,368 @@
-﻿using System.Security.Cryptography;
-using System.Text;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
-using FluentAssertions.Execution;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
-using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests
+namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests;
+
+public class WhenGettingCourseProviderDetails
 {
-    public class WhenGettingCourseProviderDetails
+    [Test, MoqAutoData]
+    public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(
+        int courseId, 
+        int providerId, 
+        string location,
+        GetCourseProviderQueryResult response,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
     {
+        var distance = 10;
 
-        [Test, MoqAutoData]
-        public async Task Then_The_Query_Is_Sent_And_Provider_Detail_Retrieved_And_Shown_With_Shortlist(
-            int providerId,
-            int courseId,
-            string location,
-            string serviceStartUrl,
-            string shortlistUrl,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller
+        shortlistCookieServiceMock.Setup(x => 
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
+
+        mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
+                c.Ukprn.Equals(providerId) &&
+                c.LarsCode.Equals(courseId) &&
+                c.Location.Equals(location) &&
+                c.Distance.Equals(distance) &&
+                c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+            ), 
+            It.IsAny<CancellationToken>()
+        )).ReturnsAsync(response);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
             )
+        ).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviderDetails(courseId, providerId, location, distance.ToString());
+
+        Assert.That(result, Is.Not.Null);
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == courseId &&
+                     q.Ukprn == providerId &&
+                     q.Location == location &&
+                     q.Distance == distance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Once
+         );
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Provider_Details_Are_Found_Then_Values_Are_Mapped_To_Model_Correctly(
+        int courseId,
+        int providerId,
+        string location,
+        GetCourseProviderQueryResult response,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
+    {
+        var distance = 10;
+
+        shortlistCookieServiceMock.Setup(x =>
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
+
+        mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
+                c.Ukprn.Equals(providerId) &&
+                c.LarsCode.Equals(courseId) &&
+                c.Location.Equals(location) &&
+                c.Distance.Equals(distance) &&
+                c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+            ),
+            It.IsAny<CancellationToken>()
+        )).ReturnsAsync(response);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviderDetails(courseId, providerId, location, distance.ToString());
+
+        Assert.That(result, Is.Not.Null);
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == courseId &&
+                     q.Ukprn == providerId &&
+                     q.Location == location &&
+                     q.Distance == distance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Once
+        );
+
+        var viewResult = result.Should().BeOfType<ViewResult>().Subject;
+
+        var model = viewResult.Model.Should().BeOfType<CourseProviderViewModel>().Subject;
+
+        Assert.Multiple(() =>
         {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-                .AddUrlForRoute(RouteNames.ShortList, shortlistUrl);
+            Assert.That(model.Ukprn, Is.EqualTo(response.Ukprn));
+            Assert.That(model.ProviderName, Is.EqualTo(response.ProviderName));
+            Assert.That(model.ProviderAddress, Is.EqualTo(response.ProviderAddress));
+            Assert.That(model.Contact, Is.EqualTo(response.Contact));
+            Assert.That(model.CourseName, Is.EqualTo(response.CourseName));
+            Assert.That(model.Level, Is.EqualTo(response.Level));
+            Assert.That(model.LarsCode, Is.EqualTo(response.LarsCode));
+            Assert.That(model.IFateReferenceNumber, Is.EqualTo(response.IFateReferenceNumber));
+            Assert.That(model.Qar, Is.EqualTo(response.Qar));
+            Assert.That(model.Reviews, Is.EqualTo(response.Reviews));
+            Assert.That(model.EndpointAssessments, Is.EqualTo(response.EndpointAssessments));
+            Assert.That(model.TotalProvidersCount, Is.EqualTo(response.TotalProvidersCount));
+            Assert.That(model.ShortlistId, Is.EqualTo(response.ShortlistId));
+            Assert.That(model.Locations, Is.EqualTo(response.Locations));
+            Assert.That(model.Courses, Is.EqualTo(response.Courses));
+            Assert.That(model.AnnualEmployerFeedbackDetails, Is.EqualTo(response.AnnualEmployerFeedbackDetails));
+            Assert.That(model.AnnualApprenticeFeedbackDetails, Is.EqualTo(response.AnnualApprenticeFeedbackDetails));
+            Assert.That(model.CourseId, Is.EqualTo(courseId));
+            Assert.That(model.Location, Is.EqualTo(location));
+            Assert.That(model.Distance, Is.EqualTo(distance.ToString()));
+            Assert.That(model.ShowApprenticeTrainingCourseProvidersCrumb, Is.True);
+            Assert.That(model.ShowApprenticeTrainingCourseCrumb, Is.True);
+            Assert.That(model.ShowApprenticeTrainingCoursesCrumb, Is.True);
+            Assert.That(model.ShowShortListLink, Is.True);
+            Assert.That(model.ShowSearchCrumb, Is.True);
+        });
+    }
 
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId)
-                && c.CourseId.Equals(courseId)
-                && c.Location.Equals(location)
-                && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
+    [Test, MoqAutoData]
+    public async Task When_Distance_Is_Not_Set_Then_Distance_Defaults_To_Ten_Miles(
+        int courseId,
+        int providerId,
+        string location,
+        GetCourseProviderQueryResult response,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
+    {
+        string distance = null;
+        int expectedDistance = 10;
 
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+        shortlistCookieServiceMock.Setup(x =>
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
 
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
+        mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
+                c.Ukprn.Equals(providerId) &&
+                c.LarsCode.Equals(courseId) &&
+                c.Location.Equals(location) &&
+                c.Distance.Equals(distance) &&
+                c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+            ),
+            It.IsAny<CancellationToken>()
+        )).ReturnsAsync(response);
 
-            //Assert
-            using (new AssertionScope())
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviderDetails(courseId, providerId, location, distance);
+
+        Assert.That(result, Is.Not.Null);
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == courseId &&
+                     q.Ukprn == providerId &&
+                     q.Location == location &&
+                     q.Distance == expectedDistance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Once
+         );
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_Null(
+        int courseId,
+        int providerId,
+        string location,
+        GetCourseProviderQueryResult response,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
+    {
+        string distance = "All";
+        int? expectedDistance = null;
+
+        shortlistCookieServiceMock.Setup(x =>
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
+
+        mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
+                c.Ukprn.Equals(providerId) &&
+                c.LarsCode.Equals(courseId) &&
+                c.Location.Equals(location) &&
+                c.Distance.Equals(distance) &&
+                c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+            ),
+            It.IsAny<CancellationToken>()
+        )).ReturnsAsync(response);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviderDetails(courseId, providerId, location, distance);
+
+        Assert.That(result, Is.Not.Null);
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == courseId &&
+                     q.Ukprn == providerId &&
+                     q.Location == location &&
+                     q.Distance == expectedDistance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Once
+         );
+    }
+
+    [Test, MoqAutoData]
+    public void When_Provider_Id_Validation_Fails_Then_Validation_Exception_Is_Thrown(
+        GetCourseProviderDetailsQuery query,
+        GetCourseProviderQueryResult response,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
+    {
+        int distance = 10;
+        int Ukprn = -1;
+
+        shortlistCookieServiceMock.Setup(x =>
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult
+        {
+            Errors = new List<ValidationFailure>
             {
-                actual.Should().NotBeNull();
-                var actualResult = actual as ViewResult;
-                actualResult.Should().NotBeNull();
-                var actualModel = actualResult!.Model as CourseProviderViewModel;
-                actualModel.Should().NotBeNull();
-                actualModel.AdditionalCourses.Should().NotBeNull();
-                actualModel.AdditionalCourses.Courses.Should().NotBeNull();
-                actualModel.Location.Should().BeNullOrEmpty();
-                cookieStorageService.Verify(
-                    x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>(), It.IsAny<int>()),
-                    Times.Never);
-                actualModel.ShowShortListLink.Should().BeTrue();
-                actualModel.ShowSearchCrumb.Should().BeTrue();
+                new ValidationFailure(nameof(Ukprn), "Ukprn is invalid")
             }
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_AchievementRateDates_Are_Set_Correctly(
-            int providerId,
-            int courseId,
-            string location,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                    c.ProviderId.Equals(providerId)
-                    && c.CourseId.Equals(courseId)
-                    && c.Location.Equals(location)
-                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "");
-
-            //Assert
-            using (new AssertionScope())
-            {
-                actual.Should().NotBeNull();
-                var actualResult = actual as ViewResult;
-                actualResult.Should().NotBeNull();
-                var actualModel = actualResult!.Model as CourseProviderViewModel;
-                actualModel.Should().NotBeNull();
-                actualModel!.AchievementRateFrom.Should().Be(2022);
-                actualModel.AchievementRateTo.Should().Be(2023);
-            }
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Location_Is_Added_To_The_Cookie_If_Set(
-            int providerId,
-            int courseId,
-            string location,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName)).Returns((LocationCookieItem)null);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                    c.ProviderId.Equals(providerId) && c.CourseId.Equals(courseId) && c.Location.Equals(location)), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns((ShortlistCookieItem)null);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var result = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
-
-            //Assert
-            var model = result!.Model as CourseProviderViewModel;
-            model!.GetCourseProvidersRequest[nameof(GetCourseProvidersRequest.Location)].Should().Be(response.Location);
-            cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(c =>
-                c.Name.Equals(response.Location)
-                && c.Lat.Equals(response.LocationGeoPoint.FirstOrDefault())
-                && c.Lon.Equals(response.LocationGeoPoint.LastOrDefault())
-                ), 2));
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Location_Is_Removed_From_The_Cookie_If_Set_To_Minus_One(
-            int providerId,
-            int courseId,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            mediator.Setup(x => x.Send(
-                    It.Is<GetCourseProviderQuery>(c =>
-                        c.ProviderId.Equals(providerId) &&
-                        c.CourseId.Equals(courseId) &&
-                        c.Location.Equals("")),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "-1", "", "") as ViewResult;
-
-            //Assert
-            cookieStorageService.Verify(x => x.Delete(Constants.LocationCookieName));
-            var model = actual!.Model as CourseProviderViewModel;
-            model!.GetCourseProvidersRequest[nameof(GetCourseProvidersRequest.Location)].Should().Be(response.Location);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Is_Location_Stored_In_Cookie_And_No_Location_In_Query_It_Is_Used_For_Results_And_Cookie_Updated(
-            int providerId,
-            int courseId,
-            LocationCookieItem location,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(location);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                    c.ProviderId.Equals(providerId)
-                    && c.CourseId.Equals(courseId)
-                    && c.Location.Equals(location.Name)
-                    && c.Lat.Equals(location.Lat)
-                    && c.Lon.Equals(location.Lon)
-                    ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "");
-
-            //Assert
-
-            using (new AssertionScope())
-            {
-                actual.Should().NotBeNull();
-                var actualResult = actual as ViewResult;
-                actualResult.Should().NotBeNull();
-                var actualModel = actualResult!.Model as CourseProviderViewModel;
-                actualModel.Should().NotBeNull();
-            }
-            cookieStorageService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(c => c.Name.Equals(response.Location)), 2));
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_ProviderFilters_Populated_From_Cookie_And_Id_From_Request_If_Matches_CookieValue(
-            int providerId,
-            int courseId,
-            GetCourseProvidersRequest providersRequest,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            providersRequest.Id = courseId;
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            cookieStorageService
-                .Setup(x => x.Get(Constants.ProvidersCookieName))
-                .Returns(providersRequest);
-            mediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetCourseProviderQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as ViewResult;
-
-            //Assert
-            var model = actual!.Model as CourseProviderViewModel;
-            model!.GetCourseProvidersRequest.Where(key => key.Key != "Id").Should().BeEquivalentTo(providersRequest.ToDictionary().Where(key => key.Key != "Id"));
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_The_Course_Differs_From_The_Cookie_Request_The_Filter_And_Id_Are_Updated_And_Filters_Cleared(
-            int providerId,
-            int courseId,
-            GetCourseProvidersRequest providersRequest,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            cookieStorageService
-                .Setup(x => x.Get(Constants.ProvidersCookieName))
-                .Returns(providersRequest);
-            mediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetCourseProviderQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as ViewResult;
-
-            //Assert
-            var model = actual!.Model as CourseProviderViewModel;
-            model!.GetCourseProvidersRequest["Id"].Should().Be(courseId.ToString());
-            model!.GetCourseProvidersRequest.ContainsKey("DeliveryModes[0]").Should().BeFalse();
-            model!.GetCourseProvidersRequest.ContainsKey("ProviderRatings[0]").Should().BeFalse();
-        }
-
-        [Test, MoqAutoData]
-        public async Task And_Error_Then_Redirect_To_Error_Route(
-            int providerId,
-            int courseId,
-            string location,
-            Exception exception,
-            [Frozen] Mock<IMediator> mediator,
-            [Greedy] CoursesController controller
-            )
-        {
-            // Arrange
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId) && c.CourseId.Equals(courseId)),
-                It.IsAny<CancellationToken>()))
-                .ThrowsAsync(exception);
-
-            // Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as RedirectToRouteResult;
-
-            // Assert
-            actual!.RouteName.Should().Be(RouteNames.Error500);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_No_Course_Returns_Page_Not_Found(
-            int providerId,
-            int courseId,
-            GetCourseProvidersRequest providersRequest,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            response.Course = null;
-            cookieStorageService
-                .Setup(x => x.Get(Constants.ProvidersCookieName))
-                .Returns(providersRequest);
-            mediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetCourseProviderQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            actual!.RouteName.Should().Be(RouteNames.Error404);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Course_Is_After_Last_Start_Then_Redirected_To_Course_Page(
-            int providerId,
-            int courseId,
-            GetCourseProvidersRequest providersRequest,
-            GetCourseProviderResult response,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<GetCourseProvidersRequest>> cookieStorageService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(-1);
-            cookieStorageService
-                .Setup(x => x.Get(Constants.ProvidersCookieName))
-                .Returns(providersRequest);
-            mediator
-                .Setup(x => x.Send(
-                    It.IsAny<GetCourseProviderQuery>(),
-                    It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, "", "", "") as RedirectToRouteResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            actual!.RouteName.Should().Be(RouteNames.CourseDetails);
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Removed_Is_In_The_Request_It_Is_Decoded_And_Added_To_ViewModel(
-            int providerId,
-            int courseId,
-            string location,
-            string removed,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller
-            )
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            var encodedData = Encoding.UTF8.GetBytes($"{removed}");
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
-            provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId)
-                && c.CourseId.Equals(courseId)
-                && c.Location.Equals(location)
-                && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), "") as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.BannerUpdateMessage.Should().Be($"{removed} removed from shortlist.");
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Added_Is_In_The_Request_It_Is_Decoded_And_Added_To_ViewModel(
-            int providerId,
-            int courseId,
-            string location,
-            string added,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller
-            )
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            var encodedData = Encoding.UTF8.GetBytes($"{added}");
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
-            provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId)
-                && c.CourseId.Equals(courseId)
-                && c.Location.Equals(location)
-                && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.BannerUpdateMessage.Should().Be($"{added} added to shortlist.");
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Removed_And_Added_Is_In_The_Request_And_Throws_Cryptographic_Exception_Then_Empty_String_Is_Added_To_ViewModel(
-            int providerId,
-            int courseId,
-            string location,
-            string removed,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller
-            )
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            var encodedData = Encoding.UTF8.GetBytes($"{removed}");
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Throws(new CryptographicException());
-            provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId)
-                && c.CourseId.Equals(courseId)
-                && c.Location.Equals(location)
-                && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, WebEncoders.Base64UrlEncode(encodedData), WebEncoders.Base64UrlEncode(encodedData)) as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.BannerUpdateMessage.Should().BeEmpty();
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_If_Removed_And_Added_Is_In_The_Request_And_Is_Invalid_Then_Empty_String_Is_Added_To_ViewModel(
-            int providerId,
-            int courseId,
-            string location,
-            string removed,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller
-            )
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            var encodedData = Encoding.UTF8.GetBytes($"{removed}");
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
-            provider.Setup(x => x.CreateProtector(Constants.ShortlistProtectorName)).Returns(protector.Object);
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                c.ProviderId.Equals(providerId)
-                && c.CourseId.Equals(courseId)
-                && c.Location.Equals(location)
-                && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, encodedData.ToString(), encodedData.ToString()) as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.BannerUpdateMessage.Should().BeEmpty();
-        }
-
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Is_Built_From_Config_If_Feature_Enabled(
-            int providerId,
-            int courseId,
-            string location,
-            string removed,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            config.Object.Value.EmployerDemandFeatureToggle = true;
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                    c.ProviderId.Equals(providerId)
-                    && c.CourseId.Equals(courseId)
-                    && c.Location.Equals(location)
-                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.HelpFindingCourseUrl.Should().Be($"{config.Object.Value.EmployerDemandUrl}/registerdemand/course/{actualModel.Course.Id}/share-interest?entrypoint=3");
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_Help_Url_Set_If_Feature_Disabled(
-            int providerId,
-            int courseId,
-            string location,
-            string removed,
-            GetCourseProviderResult response,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<IMediator> mediator,
-            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IDataProtector> protector,
-            [Frozen] Mock<IDataProtectionProvider> provider,
-            [Frozen] Mock<IOptions<FindApprenticeshipTrainingWeb>> config,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            //Arrange
-            controller.AddUrlHelperMock()
-                .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
-                .AddUrlForRoute(RouteNames.ShortList, Guid.NewGuid().ToString());
-
-            config.Object.Value.EmployerDemandFeatureToggle = false;
-            response.Course.StandardDates.LastDateStarts = DateTime.UtcNow.AddDays(5);
-            response.Location = string.Empty;
-            response.LocationGeoPoint = null;
-            mediator.Setup(x => x.Send(It.Is<GetCourseProviderQuery>(c =>
-                    c.ProviderId.Equals(providerId)
-                    && c.CourseId.Equals(courseId)
-                    && c.Location.Equals(location)
-                    && c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-                ), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(response);
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            validator.Setup(v =>
-                v.ValidateAsync(It.IsAny<GetCourseProviderQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
-
-            //Act
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as ViewResult;
-
-            //Assert
-            actual.Should().NotBeNull();
-            var actualModel = actual!.Model as CourseProviderViewModel;
-            actualModel.Should().NotBeNull();
-            actualModel!.HelpFindingCourseUrl.Should().Be("https://help.apprenticeships.education.gov.uk/hc/en-gb#contact-us");
-        }
-
-        [Test, MoqAutoData]
-        public async Task Then_The_ProviderId_Is_Invalid_And_PageRedirectedToError500Page(
-            int courseId,
-            string location,
-            ShortlistCookieItem shortlistCookieItem,
-            [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-            [Frozen] Mock<IValidator<GetCourseProviderQuery>> validator,
-            [Greedy] CoursesController controller)
-        {
-            const int providerId = 0;
-            shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
-                .Returns(shortlistCookieItem);
-
-            var actual = await controller.CourseProviderDetail(courseId, providerId, location, "", "") as RedirectToRouteResult;
-
-            // Assert
-            actual!.RouteName.Should().Be(RouteNames.Error500);
-        }
+        });
+
+        var exception = Assert.ThrowsAsync<ValidationException>(() =>
+            sut.CourseProviderDetails(query.LarsCode, query.Ukprn, query.Location, distance.ToString())
+        );
+
+        Assert.That(exception.Message, Is.EqualTo("Ukprn is invalid"));
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == query.LarsCode &&
+                     q.Ukprn == query.Ukprn &&
+                     q.Location == query.Location &&
+                     q.Distance == distance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Never
+         );
+    }
+
+    [Test, MoqAutoData]
+    public async Task When_Response_Is_Null_Then_Result_Is_Redirect_To_Error_Page(
+        GetCourseProviderDetailsQuery query,
+        ShortlistCookieItem shortlistCookieItem,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CoursesController sut
+    )
+    {
+        int? distance = 10;
+
+        shortlistCookieServiceMock
+            .Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns(shortlistCookieItem);
+
+        validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseProviderDetailsQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        mediator
+            .Setup(x => x.Send(It.IsAny<GetCourseProviderDetailsQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetCourseProviderQueryResult)null);
+
+        var result = await sut.CourseProviderDetails(query.LarsCode, query.Ukprn, query.Location, distance.Value.ToString());
+
+        result.Should().BeOfType<RedirectToRouteResult>();
+
+        mediator.Verify(m => m.Send(
+            It.Is<GetCourseProviderDetailsQuery>(q =>
+                q.LarsCode == query.LarsCode &&
+                q.Ukprn == query.Ukprn &&
+                q.Location == query.Location &&
+                q.Distance == DistanceService.TEN_MILES &&
+                q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+            ),
+            It.IsAny<CancellationToken>()),
+            Times.Once
+        );
     }
 }
