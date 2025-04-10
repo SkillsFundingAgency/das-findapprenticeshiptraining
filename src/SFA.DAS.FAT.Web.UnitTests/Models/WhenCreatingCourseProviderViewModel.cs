@@ -407,4 +407,197 @@ public class WhenCreatingCourseProviderViewModel
 
         Assert.That(sut.ApprenticeReviewsDisplayMessage, Is.EqualTo(string.Empty));
     }
+
+    [Test]
+    public void Then_Endpoint_Assessments_Count_Display_Returns_No_Data_When_Endpoint_Assessments_Is_Null()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            EndpointAssessments = null
+        };
+
+        Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo("No data"));
+    }
+
+    [Test]
+    public void Then_Endpoint_Assessments_Count_Display_Returns_NoData_When_Earliest_Assessment_Is_Null()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            EndpointAssessments = new EndpointAssessmentModel(null, 5)
+        };
+
+        Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo("No data"));
+    }
+
+    [Test]
+    public void Then_Endpoint_Assessments_Count_Display_Returns_Count_As_String_When_Valid()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            EndpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 9, 1, 0, 0, 0, DateTimeKind.Utc), 8)
+        };
+
+        Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo("8"));
+    }
+
+    [Test]
+    public void Then_Has_Multiple_Block_Release_Locations_Returns_True_When_More_Than_One()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = true },
+                new LocationModel { BlockRelease = true },
+                new LocationModel { BlockRelease = false }
+            }
+        };
+
+        Assert.That(sut.HasMultipleBlockReleaseLocations, Is.True);
+    }
+
+    [Test]
+    public void Then_Has_Multiple_Block_Release_Locations_Returns_False_When_One_Or_Less()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = true },
+                new LocationModel { BlockRelease = false }
+            }
+        };
+
+        Assert.That(sut.HasMultipleBlockReleaseLocations, Is.False);
+    }
+
+    [Test]
+    public void Then_Has_Multiple_Day_Release_Locations_Returns_True_When_More_Than_One()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true },
+                new LocationModel { DayRelease = true },
+                new LocationModel { DayRelease = false }
+            }
+        };
+
+        Assert.That(sut.HasMultipleDayReleaseLocations, Is.True);
+    }
+
+    [Test]
+    public void Then_Has_Multiple_Day_Release_Locations_Returns_False_When_One_Or_Less()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true },
+                new LocationModel { DayRelease = false }
+            }
+        };
+
+        Assert.That(sut.HasMultipleDayReleaseLocations, Is.False);
+    }
+
+    [Test]
+    public void Then_Course_Name_And_Level_Should_Combine_Course_Name_And_Level()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseName = "Software Developer",
+            Level = 4
+        };
+
+        Assert.That(sut.CourseNameAndLevel, Is.EqualTo("Software Developer (level 4)"));
+    }
+
+    [Test]
+    public void Then_Is_National_Returns_True_If_Any_At_Employer_And_Location_Type_National_Is_True()
+    {
+        var viewModel = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { AtEmployer = false, LocationType = LocationType.Provider },
+                new LocationModel { AtEmployer = true, LocationType = LocationType.National }
+            }
+        };
+
+        Assert.That(viewModel.IsNational, Is.True);
+    }
+
+    [Test]
+    public void Then_Is_National_Returns_False_If_None_At_Employer()
+    {
+        var viewModel = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { AtEmployer = false, LocationType = LocationType.National }
+            }
+        };
+
+        Assert.That(viewModel.IsNational, Is.False);
+    }
+
+    [Test]
+    public void Is_Block_Release_Returns_True_If_Any_Block_Release_Is_True()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = false },
+                new LocationModel { BlockRelease = true }
+            }
+        };
+
+        Assert.That(sut.IsBlockRelease, Is.True);
+    }
+
+    [Test]
+    public void Then_Is_Block_Release_Returns_False_If_None_Block_Release()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = false }
+            }
+        };
+
+        Assert.That(sut.IsBlockRelease, Is.False);
+    }
+
+    [Test]
+    public void Then_Is_Day_Release_Returns_True_If_Any_Day_Release_Is_True()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true }
+            }
+        };
+
+        Assert.That(sut.IsDayRelease, Is.True);
+    }
+
+    [Test]
+    public void Then_Is_Day_Release_Returns_False_If_No_Day_Release()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = false }
+            }
+        };
+
+        Assert.That(sut.IsDayRelease, Is.False);
+    }
 }

@@ -39,7 +39,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public List<string> DayReleaseLocations => FormatLocations(Locations.Where(a => a.DayRelease));
     public string ApprenticeWorkplaceDisplayMessage => GetApprenticeWorkplaceDisplayMessage();
     public bool HasMultipleBlockReleaseLocations => Locations.Count(a => a.BlockRelease) > 1;
-    public bool HasMultipleDayReleaseLocations => Locations.Count(a => a.BlockRelease) > 1;
+    public bool HasMultipleDayReleaseLocations => Locations.Count(a => a.DayRelease) > 1;
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
     public string ApprenticeReviewsDisplayMessage => GetApprenticeReviewsDisplayMessage();
     public string EndpointAssessmentDisplayMessage => GetEndpointAssessmentDisplayMessage();
@@ -202,7 +202,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         if (int.TryParse(Reviews.EmployerReviews, out int employerReviewsCount))
         {
             string plural = employerReviewsCount > 1 ? "s" : string.Empty;
-            return @$"average review from {Reviews.EmployerReviews} employer{plural} when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
+            return $"average review from {Reviews.EmployerReviews} employer{plural} when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
         }
         else
         {
@@ -215,7 +215,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         if (int.TryParse(Reviews.ApprenticeReviews, out int apprenticeReviewsCount))
         {
             string plural = apprenticeReviewsCount > 1 ? "s" : string.Empty;
-            return @$"average review from {Reviews.ApprenticeReviews} apprentice{plural} when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
+            return $"average review from {Reviews.ApprenticeReviews} apprentice{plural} when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.";
         }
         else
         {
