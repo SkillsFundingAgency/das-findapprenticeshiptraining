@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FAT.Domain.Courses;
+﻿using System;
+
+namespace SFA.DAS.FAT.Domain.Courses;
 
 public sealed class ReviewsModel
 {
@@ -43,9 +45,17 @@ public sealed class ReviewsModel
             return ReviewPeriod;
         }
 
-        var startYear = int.Parse("20" + ReviewPeriod.Substring(0, 2));
-        var endYear = int.Parse("20" + ReviewPeriod.Substring(2, 2));
+        ReadOnlySpan<char> periodSpan = ReviewPeriod.AsSpan();
 
-        return $"{startYear} to {endYear}";
+        if (int.TryParse(periodSpan.Slice(0, 2), out int startYearPart) &&
+            int.TryParse(periodSpan.Slice(2, 2), out int endYearPart))
+        {
+            int startYear = 2000 + startYearPart;
+            int endYear = 2000 + endYearPart;
+
+            return $"{startYear} to {endYear}";
+        }
+
+        return ReviewPeriod;
     }
 }

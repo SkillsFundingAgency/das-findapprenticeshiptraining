@@ -139,7 +139,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         return locationAddresses;
     }
 
-    private string BuildLocationAddress(LocationModel location)
+    private static string BuildLocationAddress(LocationModel location)
     {
         var builder = new StringBuilder();
 

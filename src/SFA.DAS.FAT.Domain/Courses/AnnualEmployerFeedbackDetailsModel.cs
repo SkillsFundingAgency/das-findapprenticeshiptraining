@@ -29,11 +29,11 @@ public sealed class AnnualEmployerFeedbackDetailsModel
             return "Overall reviews";
         }
 
-        string yearTimePeriod = TimePeriod.Substring(2);
+        ReadOnlySpan<char> timePeriodSpan = TimePeriod.AsSpan(2);
 
-        if (yearTimePeriod.Length == 4 &&
-            int.TryParse(yearTimePeriod.Substring(0, 2), out int startYearPart) &&
-            int.TryParse(yearTimePeriod.Substring(2, 2), out int endYearPart))
+        if (timePeriodSpan.Length == 4 &&
+            int.TryParse(timePeriodSpan.Slice(0, 2), out int startYearPart) &&
+            int.TryParse(timePeriodSpan.Slice(2, 2), out int endYearPart))
         {
             int startYear = 2000 + startYearPart;
             int endYear = 2000 + endYearPart;
