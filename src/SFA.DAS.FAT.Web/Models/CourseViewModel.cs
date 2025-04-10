@@ -31,16 +31,19 @@ namespace SFA.DAS.FAT.Web.Models
         public bool AfterLastStartDate { get; set; }
         public string LocationName { get; set; }
 
+        [Obsolete("FAT25")]
         public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
         {
             return !string.IsNullOrEmpty(config.EmployerAccountsUrl) && !string.IsNullOrEmpty(config.RequestApprenticeshipTrainingUrl);
         }
 
+        [Obsolete("FAT25")]
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
         {
             return GetHelpFindingCourseUrl(config, EntryPoint.CourseDetail, LocationName);
         }
 
+        [Obsolete("FAT25 Use RequestApprenticeshipTrainingService instead")]
         public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config, EntryPoint entryPoint, string location)
         {
             if (config.EmployerDemandFeatureToggle)

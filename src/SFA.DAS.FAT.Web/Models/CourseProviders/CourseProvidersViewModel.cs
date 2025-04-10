@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
@@ -18,6 +19,7 @@ namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 public class CourseProvidersViewModel : PageLinksViewModelBase
 {
     public int Id { get; set; }
+    public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
     public List<string> SelectedDeliveryModes { get; set; } = [];
@@ -34,6 +36,8 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
     public List<CoursesProviderViewModel> Providers { get; set; }
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
+
+    public PaginationViewModel Pagination { get; set; }
 
     private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
     {
@@ -61,6 +65,12 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
 
         var totalMessage = $"{totalToUse} result{(totalToUse != "1" ? "s" : "")}";
+
+        if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
+            Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        {
+            totalMessage = $"{totalMessage} within {Distance} miles";
+        }
 
         return totalMessage;
     }
@@ -352,6 +362,58 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
 
         return filterValue;
+    }
+
+    public List<ValueTuple<string, string>> ToQueryString()
+    {
+        List<ValueTuple<string, string>> result = new();
+
+        if (OrderBy != ProviderOrderBy.AchievementRate)
+        {
+            result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
+        }
+
+        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
+        {
+            switch (clearFilterSection.FilterType)
+            {
+
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        if (!string.IsNullOrWhiteSpace(Distance))
+                        {
+                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
+                        }
+                    }
+                    break;
+
+
+                case FilterType.DeliveryModes:
+                    {
+                        result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));
+                    }
+                    break;
+                case FilterType.EmployerProviderRatings:
+                    {
+                        result.AddRange(SelectedEmployerApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.EmployerProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.ApprenticeProviderRatings:
+                    {
+                        result.AddRange(SelectedApprenticeApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.ApprenticeProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.QarRatings:
+                    {
+                        result.AddRange(SelectedQarRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.QarRatings), ratings)));
+                    }
+                    break;
+            }
+        }
+
+        return result;
     }
 
     private static string GetQarRatingsValue(string filterValue)

@@ -11,7 +11,7 @@ public class ShowTagHelper : TagHelper
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
-        if (!AspShow.HasValue || !AspShow.Value)
+        if (!AspShow.GetValueOrDefault())
         {
             output.SuppressOutput();
         }

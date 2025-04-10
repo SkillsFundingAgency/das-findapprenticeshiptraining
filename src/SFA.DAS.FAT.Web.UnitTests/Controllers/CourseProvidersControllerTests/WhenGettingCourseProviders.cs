@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -37,7 +38,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -64,14 +65,19 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
                  && c.Qar.SequenceEqual(request.QarRatings)
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(shortlistUserId)
                 ),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
         var expectedProviders = response.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
+
+        foreach (var provider in expectedProviders)
+        {
+            provider.Distance = DistanceService.TEN_MILES.ToString();
+            provider.Location = request.Location;
+        }
 
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
@@ -122,7 +128,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -138,8 +144,7 @@ public class WhenGettingCourseProviders
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
                  && c.ApprenticeProviderRatings.SequenceEqual(request.ApprenticeProviderRatings)
                  && c.Qar.SequenceEqual(request.QarRatings)
-                 && c.Page.Equals(request.Page)
-                 && c.PageSize.Equals(request.PageSize)
+                 && c.Page.Equals(request.PageNumber)
                  && c.ShortlistUserId.Equals(null)
                 ),
                 It.IsAny<CancellationToken>()))
@@ -172,7 +177,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -213,7 +218,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = location;
@@ -253,7 +258,7 @@ public class WhenGettingCourseProviders
         //Arrange
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
-            .AddUrlForRoute(RouteNames.ShortList, shortlistUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
         request.Location = null;
@@ -275,7 +280,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(string.Empty);
+            actualModel!.Distance.Should().Be("All");
         }
     }
 
@@ -365,6 +370,47 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController controller)
     {
         response.TotalCount = totalCount;
+        request.Location = null;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        //Act
+        var sut = await controller.CourseProviders(request) as ViewResult;
+
+        //Assert
+        using (new AssertionScope())
+        {
+            sut.Should().NotBeNull();
+            var actualModel = sut!.Model as CourseProvidersViewModel;
+            actualModel.Should().NotBeNull();
+            actualModel!.TotalMessage.Should().Be(expectedMessage);
+        }
+    }
+
+    [Test]
+    [MoqInlineAutoData(1, "Coventry", "10", "1 result within 10 miles")]
+    [MoqInlineAutoData(2, "Coventry", "20", "2 results within 20 miles")]
+    [MoqInlineAutoData(2, "Coventry", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "2 results")]
+    [MoqInlineAutoData(2, "Coventry", "", "2 results within 10 miles")]
+    public async Task Then_TotalMessage_With_Distance_And_Location_Is_Set(
+        int totalCount,
+        string location,
+        string distance,
+        string expectedMessage,
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        response.TotalCount = totalCount;
+        request.Location = location;
+        request.Distance = distance;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -453,6 +499,24 @@ public class WhenGettingCourseProviders
             actualModel.Should().NotBeNull();
             actualModel!.ProviderOrderOptions.Should().BeEquivalentTo(expectedProviderOrderDropdown);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Shortlist_Count_Is_Populated_From_Session(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Greedy] CourseProvidersController sut,
+        int shortlistCount,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+        shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
+        sessionServiceMock.Setup(s => s.Get<ShortlistsCount>()).Returns(new ShortlistsCount { Count = shortlistCount });
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest()) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
 
 }

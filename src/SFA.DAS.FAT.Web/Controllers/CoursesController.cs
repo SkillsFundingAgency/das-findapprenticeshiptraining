@@ -27,6 +27,20 @@ public class CoursesController : Controller
     private readonly FindApprenticeshipTrainingWeb _config;
     private readonly IValidator<GetCourseQuery> _courseValidator;
     private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
+namespace SFA.DAS.FAT.Web.Controllers;
+
+[Route("[controller]")]
+public class CoursesController : Controller
+{
+    private readonly ILogger<CoursesController> _logger;
+    private readonly IMediator _mediator;
+    private readonly ICookieStorageService<LocationCookieItem> _locationCookieStorageService;
+    private readonly ICookieStorageService<GetCourseProvidersRequest> _courseProvidersCookieStorageService;
+    private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly FindApprenticeshipTrainingWeb _config;
+    private readonly IDataProtector _shortlistDataProtector;
+    private readonly IValidator<GetCourseQuery> _courseValidator;
+    private readonly IValidator<GetCourseProviderQuery> _courseProviderValidator;
 
     public CoursesController(
         ILogger<CoursesController> logger,
@@ -46,7 +60,33 @@ public class CoursesController : Controller
         _courseProviderDetailsValidator = courseProviderDetailsValidator;
         _config = config.Value;
     }
+    public CoursesController(
+        ILogger<CoursesController> logger,
+        IMediator mediator,
+        ICookieStorageService<LocationCookieItem> locationCookieStorageService,
+        ICookieStorageService<GetCourseProvidersRequest> courseProvidersCookieStorageService,
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
+        IDataProtectionProvider provider,
+        IOptions<FindApprenticeshipTrainingWeb> config,
+        IValidator<GetCourseQuery> courseValidator,
+        IValidator<GetCourseProviderQuery> courseProviderValidator
+    )
+    {
+        _logger = logger;
+        _mediator = mediator;
+        _locationCookieStorageService = locationCookieStorageService;
+        _courseProvidersCookieStorageService = courseProvidersCookieStorageService;
+        _shortlistCookieService = shortlistCookieService;
+        _courseValidator = courseValidator;
+        _courseProviderValidator = courseProviderValidator;
+        _config = config.Value;
+        _shortlistDataProtector = provider.CreateProtector(Constants.ShortlistProtectorName);
+    }
 
+    [Route("", Name = RouteNames.Courses)]
+    public async Task<IActionResult> Courses(GetCoursesViewModel model)
+    {
+        var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
@@ -54,6 +94,17 @@ public class CoursesController : Controller
 
         int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
 
+        var result = await _mediator.Send(new GetCoursesQuery
+        {
+            Keyword = model.Keyword,
+            Location = model.Location,
+            Distance = validatedDistance,
+            Routes = model.Categories,
+            Levels = model.Levels,
+            Page = model.PageNumber,
+            OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
+            ShortlistUserId = shortlistCookieItem?.ShortlistUserId
+        });
         var result = await _mediator.Send(new GetCoursesQuery
         {
             Keyword = model.Keyword,
@@ -101,11 +152,11 @@ public class CoursesController : Controller
     public async Task<IActionResult> CourseDetails([FromRoute] int id, [FromQuery] string location, [FromQuery] string distance)
     {
         int? convertedDistance = null;
-        if(distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
         {
             convertedDistance = DistanceService.DEFAULT_DISTANCE;
         }
-        else if(!DistanceService.IsValidDistance(distance))
+        else if (!DistanceService.IsValidDistance(distance))
         {
             convertedDistance = DistanceService.TEN_MILES;
             distance = DistanceService.TEN_MILES.ToString();

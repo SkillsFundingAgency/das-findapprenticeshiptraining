@@ -1,106 +1,86 @@
-﻿@using SFA.DAS.FAT.Domain.Extensions
-@using SFA.DAS.FAT.Web.Infrastructure
+﻿@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
-@model List<SFA.DAS.FAT.Web.Models.ShortlistItemViewModel>
-
+@model SFA.DAS.FAT.Web.Models.ShortlistLocationViewModel
 
 
 <table class="govuk-table app-shortlist-table">
     <thead class="govuk-table__head app-shortlist-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Training provider</th>
-            <th scope="col" class="govuk-table__header">Training options</th>
-            <th scope="col" class="govuk-table__header">Reviews</th>
-            <th scope="col" class="govuk-table__header"><span class="das-no-wrap">Achievement rate</span></th>
+            <th scope="col" class="govuk-table__header das-no-wrap">Training options</th>
+            <th scope="col" class="govuk-table__header">
+                <span>Provider Reviews</span>
+                <span class="das-no-wrap">@Model.ReviewPeriod</span></th>
+            <th scope="col" class="govuk-table__header">
+                <span class="das-no-wrap">Achievement rate</span>
+                <span class="das-no-wrap"> @Model.QarPeriod</span>
+            </th>
             <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">Action</span></th>
         </tr>
     </thead>
     <tbody class="govuk-table__body">
-    @foreach (var shortlistItem in Model.OrderByDescending(model => model.CreatedDate))
-    {
-        var routeData = new Dictionary<string, string>
+        @foreach (var shortlistItem in Model.Providers)
         {
-            {"location", shortlistItem.LocationDescription ?? "-1"},
-            {"id",shortlistItem.Course.Id.ToString()},
-            {"providerId",shortlistItem.Provider.ProviderId.ToString()}
-        };
+            var routeData = new Dictionary<string, string>
+            {
+                {"location", shortlistItem.LocationDescription ?? ""},
+                {"id",shortlistItem.LarsCode.ToString()},
+                {"providerId",shortlistItem.Ukprn.ToString()}
+            };
 
-        <tr class="govuk-table__row app-shortlist-table__row">
-            <th scope="row" class="govuk-table__header app-shortlist-table__header-cell">
-                <div class="das-highlight app-shortlist-table__highlight">
-                    <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold govuk-!-margin-bottom-2">
-                        <a id="@shortlistItem.Id" asp-route="@RouteNames.CourseProviderDetails" asp-all-route-data="@routeData" class="govuk-link govuk-link--no-visited-state">@shortlistItem.Provider.Name</a>
-                    </p>
-                    <ul class="govuk-list govuk-!-margin-top-4 govuk-!-margin-bottom-0 govuk-!-font-size-16">
-                        <li class="govuk-!-margin-bottom-2"><a class="govuk-link govuk-link--no-visited-state das-breakable" href="#">@shortlistItem.Provider.Email</a></li>
-                        <li>@shortlistItem.Provider.Phone</li>
-                        <li class="govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state das-breakable" href="#">@shortlistItem.Provider.Website</a></li>
-                    </ul>
-                </div>
-            </th>
-            <td class="govuk-table__cell app-shortlist-table__cell">
-                <ul class="govuk-list das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @foreach (var mode in shortlistItem.Provider.DeliveryModes.Where(c=>c.DeliveryModeType!=DeliveryModeType.NotFound))
-                    {
-                        <li class="das-icon-list__list-item" id="@shortlistItem.Provider.ProviderId-@mode.DeliveryModeType">
-                            @if (mode.IsAvailable)
-                            {
-                                <span class="das-icon-list__icon das-icon-list__icon--tick">available</span>
-                            }
-                            else
-                            {
-                                <span class="das-icon-list__icon das-icon-list__icon--cross">not available</span>
-                            }
-                            @mode.DeliveryModeType.GetDescription()@(!string.IsNullOrEmpty(shortlistItem.LocationDescription) ? mode.FormattedDistanceInMiles : "") @mode.NationalText
+            <tr class="govuk-table__row app-shortlist-table__row">
+                <th scope="row" class="govuk-table__header app-shortlist-table__header-cell">
+                    <div class="das-highlight app-shortlist-table__highlight">
+                        <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold govuk-!-margin-bottom-2">
+                            <a id="@shortlistItem.ShortlistId" asp-route="@RouteNames.CourseProviderDetails" asp-all-route-data="@routeData" class="govuk-link govuk-link--no-visited-state">@shortlistItem.ProviderName</a>
+                        </p>
+                        <ul class="govuk-list govuk-!-margin-top-4 govuk-!-margin-bottom-0 govuk-!-font-size-16">
+                            <li class="govuk-!-margin-bottom-2">
+                                <a class="govuk-link govuk-link--no-visited-state das-breakable" href="mailto:@shortlistItem.Email" target="_blank">@shortlistItem.Email</a>
+                            </li>
+                            <li>@shortlistItem.Phone</li>
+                            <li class="govuk-!-margin-bottom-0">
+                                <a class="govuk-link govuk-link--no-visited-state das-breakable" href="@shortlistItem.Website" target="_blank">@shortlistItem.Website</a>
+                            </li>
+                        </ul>
+                    </div>
+                </th>
+                <td class="govuk-table__cell app-shortlist-table__cell">
+                    <ul class="govuk-list @(shortlistItem.HasMultipleDeliveryOptions ? "govuk-list--bullet" : "") das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                        <li asp-show="@shortlistItem.AtEmployer">
+                            At apprentice's workplace
                         </li>
-                    }
-                </ul>
-            </td>
-            <td class="govuk-table__cell app-shortlist-table__cell">
-                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @if (shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating != 0)
-                    {
-                        <span class="das-rating das-rating--@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating out of 4 stars">
-                            <span aria-hidden="true" class="das-rating__icon-star"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
-                        </span>    
-                        <span class="das-rating__label--@(shortlistItem.Provider.EmployerFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@shortlistItem.Provider.EmployerFeedback.TotalFeedbackText.GetDescription()</span>
-                    }
-                    <span class="das-text--muted">@shortlistItem.Provider.EmployerFeedback.TotalFeedbackRatingText</span>         
-                </p>
-                <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                    @if (shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating != 0)
-                    {
-                        <span class="das-rating das-rating--@(shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")" role="img" aria-label="Rating: @shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating out of 4 stars">
-                            <span aria-hidden="true" class="das-rating__icon-star"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating < 2 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating < 3 ? "--empty" : "")"></span>
-                            <span aria-hidden="true" class="das-rating__icon-star@(shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating < 4 ? "--empty" : "")"></span>
-                        </span>    
-                        <span class="das-rating__label--@(shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRating > 2 ? "good" : "poor")">@shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackText.GetDescription()</span>
-                    }
-                    <span class="das-text--muted">@shortlistItem.Provider.ApprenticeFeedback.TotalFeedbackRatingText</span>         
-                </p>
-            </td>
-            <td class="govuk-table__cell app-shortlist-table__cell">
-                @if (shortlistItem.Provider.OverallCohort != null)
-                {
-                    <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        @shortlistItem.Provider.OverallAchievementRatePercentage <span class="app-!-hide--tablet">pass rate</span>
-                        <span class="das-text--muted">(out of @shortlistItem.Provider.OverallCohort apprentices)</span>
+                        <li asp-show="@shortlistItem.HasBlockRelease">
+                            <div class="das-no-wrap">@shortlistItem.BlockReleaseText<span asp-show="@shortlistItem.HasLocation">:</span></div>
+                            <div asp-show="@shortlistItem.HasLocation" class="das-no-wrap"><div class="govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</div></div>
+                        </li>
+                        <li asp-show="@shortlistItem.HasDayRelease">
+                            @shortlistItem.DayReleaseText<span asp-show="@shortlistItem.HasLocation">:</span>
+                            <div asp-show="@shortlistItem.HasLocation" class="das-no-wrap"><div class="govuk-!-font-weight-bold">closest @shortlistItem.DayReleaseDistance miles</div></div>
+                        </li>
+                    </ul>
+                </td>
+                <td class="govuk-table__cell app-shortlist-table__cell">
+                    @await Html.PartialAsync("_providerRating", shortlistItem.EmployerReviews)
+                    @await Html.PartialAsync("_providerRating", shortlistItem.ApprenticeReviews)
+                </td>
+                <td class="govuk-table__cell app-shortlist-table__cell">
+                    <p asp-show="shortlistItem.HasAchievementRate" class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                        @($"{shortlistItem.AchievementRate}%") <span class="app-!-hide--tablet">pass rate</span>
+                        <span class="das-text--muted">(out of @shortlistItem.Leavers apprentices)</span>
                     </p>
-                }
-            </td>
-            <td class="govuk-table__cell app-shortlist-table__cell app-shortlist-table__cell">
-                <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@shortlistItem.Id">
-                    <input type="hidden" name="routeName" value="@RouteNames.ShortList"/>
-                    <input type="hidden" name="providerName" value="@shortlistItem.Provider.Name"/>
-                    <button id="remove-shortlistitem-@shortlistItem.Id" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="govuk-visually-hidden">@shortlistItem.Provider.Name</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
-                </form>
-            </td>
-        </tr>
-    }
+                    <p asp-show="!shortlistItem.HasAchievementRate" class="govuk-body  govuk-!-font-size-16">
+                        No achievement rate - not enough data
+                    </p>
+                </td>
+                <td class="govuk-table__cell app-shortlist-table__cell app-shortlist-table__cell">
+                    <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@shortlistItem.ShortlistId">
+                        <input type="hidden" name="routeName" value="@RouteNames.ShortLists" />
+                        <input type="hidden" name="providerName" value="@shortlistItem.ProviderName" />
+                        <button id="remove-shortlistitem-@shortlistItem.ShortlistId" class="das-button--inline-link govuk-link govuk-link--no-visited-state govuk-!-font-size-16" type="submit">Remove <span class="govuk-visually-hidden">@shortlistItem.ProviderName</span> <span class="app-!-hide--tablet"> from shortlist</span></button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

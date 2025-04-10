@@ -1,100 +1,79 @@
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @using System.Web
-@model SFA.DAS.FAT.Web.Models.ShortlistViewModel
+@model SFA.DAS.FAT.Web.Models.ShortlistsViewModel
 
 @{
-    ViewData["Title"] = "Shortlist";
+    ViewData["Title"] = "Shortlists";
     ViewData["Description"] = "View the apprenticeship training providers that you’ve shortlisted.";
 }
+
 <partial name="_searchLink" />
+
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            @if (!string.IsNullOrEmpty(Model.Removed))
-            {
-                <div class="govuk-notification-banner govuk-!-margin-bottom-7">
-                    <div class="govuk-notification-banner__content">
-                        <p class="govuk-body">@HttpUtility.HtmlDecode(Model.Removed) removed from shortlist.</p>
-                    </div>
+            @* Banner to show removed item *@
+            <div asp-show="Model.ShowRemovedShortlistBanner" class=" govuk-notification-banner govuk-!-margin-bottom-7">
+                <div class="govuk-notification-banner__content">
+                    <p class="govuk-body">@HttpUtility.HtmlDecode(Model.RemovedProviderName) removed from shortlist.</p>
                 </div>
-            }
-            <h1 class="govuk-heading-xl">
+            </div>
+
+            <h1 class="govuk-heading-l">
                 Shortlisted training providers
             </h1>
-            @if (!string.IsNullOrEmpty(Model.ExpiryDateText))
-            {
-                <p class="govuk-body govuk-!-margin-bottom-8 govuk-!-width-two-thirds">@Model.ExpiryDateText</p>    
-            }
+            <div asp-show="Model.HasShortlistItems" class="govuk-body govuk-!-width-two-thirds">We'll save your shortlist until  @Model.ExpiryDateText.</div>
+            <div asp-show="Model.HasMaxedOutShortlists" class="govuk-inset-text">
+                <p class="govuk-!-font-weight-bold">Your shortlist is full.</p>
+                <p>You cannot have more than 50 training providers in your shortlist. If you want to shortlist more providers, you’ll need to remove some here first.</p>
+            </div>
         </div>
     </div>
-    @if (Model.Shortlist.Count == 0)
+
+    @* If there are no shortlist items *@
+    <div asp-show="!Model.HasShortlistItems" class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <p class="govuk-body">You have no training providers shortlisted.</p>
+            <p class="govuk-body"><a class="govuk-button" asp-route="@RouteNames.Courses">View apprenticeship training courses</a></p>
+        </div>
+    </div>
+
+    @foreach (var course in Model.Courses)
     {
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
-                <p class="govuk-body">You have 0 training providers shortlisted.</p>
-                <p class="govuk-body"><a class="govuk-button" asp-route="@RouteNames.Courses">View apprenticeship training courses</a></p>
+            <div class="govuk-grid-column-full">
+                <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@course.CourseTitle</h2>
+
+                @foreach (var location in course.Locations)
+                {
+                    if (!string.IsNullOrEmpty(location.Description))
+                    {
+                        <h3 class="govuk-heading-m govuk-!-font-weight-regular">@location.Description</h3>
+                    }
+
+                    <details class="govuk-details" data-module="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                View @(location.Providers.Count == 1 ? "1" : location.Providers.Count.ToString()) training provider@(location.Providers.Count == 1 ? "" : "s")
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+
+                            <partial name="_ShortlistTable" model="@location"/>
+
+                            <p class="govuk-body govuk-!-margin-bottom-6">
+                                <a asp-route="@RouteNames.CourseProviders" 
+                                    asp-route-id="@course.LarsCode" 
+                                    asp-route-location="@location.Description" 
+                                    class="govuk-link govuk-link--no-visited-state">View other training providers for this course</a>
+                            </p>
+
+                            <partial name="_ShortlistGetHelpFindingCourse" model="@location.RequestApprenticeshipTraining" />
+                        </div>
+                    </details>
+                }
             </div>
         </div>
     }
-    else
-    {
-        foreach (var courseTitleGroup in Model.Shortlist.OrderBy(model => model.Course.TitleAndLevel).GroupBy(model => model.Course.Title))
-        {
-            foreach (var courseLevelGroup in courseTitleGroup.GroupBy(model => model.Course.Level))
-            {
-                <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-full">
-                        <h2 class="govuk-heading-l govuk-!-margin-bottom-4">@courseTitleGroup.Key <span class="das-no-wrap">(level @courseLevelGroup.Key)</span></h2>
-
-                        @foreach (var locationGroup in courseLevelGroup.OrderBy(model => model.LocationDescription).GroupBy(model => model.LocationDescription))
-                        {
-                            var shortlistItem = locationGroup.FirstOrDefault();
-
-                            if (!string.IsNullOrEmpty(locationGroup.Key))
-                            {
-                                <h3 class="govuk-heading-m govuk-!-font-weight-regular">@locationGroup.Key</h3>
-                            }
-                            
-                            if (Model.IsOneTable)
-                            {
-                                <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                
-                                <p class="govuk-body govuk-!-margin-bottom-6">
-                                    <a asp-route="@RouteNames.CourseProviders"
-                                       asp-route-id="@shortlistItem?.Course?.Id"
-                                       asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
-                                       class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
-                                </p>
-
-                                <partial name="_ShortlistGetHelpFindingCourse" model="@shortlistItem" />
-                            }
-                            else
-                            {
-                                <details class="govuk-details" data-module="govuk-details">
-                                    <summary class="govuk-details__summary">
-                                        <span class="govuk-details__summary-text">
-                                            View @(locationGroup.Count() == 1 ? "one" : locationGroup.Count().ToString()) training provider@(locationGroup.Count() == 1 ? "" : "s")
-                                        </span>
-                                    </summary>
-                                    <div class="govuk-details__text">
-                                        <partial name="_ShortlistTable" model="@locationGroup.ToList()"/>
-                                        <p class="govuk-body govuk-!-margin-bottom-6">
-                                            <a asp-route="@RouteNames.CourseProviders" 
-                                               asp-route-id="@shortlistItem?.Course?.Id" 
-                                               asp-route-location="@(string.IsNullOrEmpty(locationGroup.Key) ? "-1" : locationGroup.Key)" 
-                                               class="govuk-link govuk-link--no-visited-state">Add more training providers</a>
-                                        </p>
-
-                                        <partial name="_ShortlistGetHelpFindingCourse" model="@shortlistItem" />
-                                    </div>
-                                </details>
-                            }
-                        }
-                    </div>
-                </div>
-            }
-        }
-    }
-
 </main>

@@ -29,7 +29,6 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
             ApprenticeProviderRatingTypes = request.ApprenticeProviderRatings,
             QarRatings = request.Qar,
             Page = request.Page,
-            PageSize = request.PageSize,
             ShortlistUserId = request.ShortlistUserId
         };
 
