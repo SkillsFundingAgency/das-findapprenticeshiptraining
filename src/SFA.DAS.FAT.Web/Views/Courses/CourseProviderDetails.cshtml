@@ -1,5 +1,6 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
 
 @{
@@ -465,7 +466,7 @@
             <div class="app-course-provider">
                 
                 <div class="das-highlight govuk-!-margin-bottom-5">
-                    <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @(Model.ShortlistId == null ? "" : "app-provider-shortlist-added")">
+                    <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
                         <div class="app-provider-shortlist-add">
                             <form method="post" asp-route="@RouteNames.CreateShortlistItem">
                                 <input type="hidden" name="larsCode" value="@Model.CourseId" />
@@ -475,6 +476,12 @@
                                 <input type="hidden" name="LocationName" value="@Model.Location" />
                                 <button id="add-to-shortlist-@(Model.Ukprn)" class="govuk-button govuk-!-margin-bottom-0" type="submit">Add to shortlist</button>
                             </form>
+                        </div>
+                        <div class="app-provider-shortlist-manage">
+                            <span class="govuk-body das-text--warning">Shortlist full.</span>
+                            <a asp-route="@RouteNames.ShortLists" class="govuk-body govuk-link govuk-link--no-visited-state">
+                                Manage shortlist
+                            </a>
                         </div>
                         <div class="app-provider-shortlist-remove govuk-body govuk-!-margin-bottom-0">
                             <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 app-course-provider-shortlisted-tag @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>

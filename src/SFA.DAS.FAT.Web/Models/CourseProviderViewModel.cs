@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -11,8 +12,7 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProviderViewModel : PageLinksViewModelBase
 {
-    public decimal? Latitude { get; set; }
-    public decimal? Longitude { get; set; }
+    public int ShortlistCount { get; set; }
     public long Ukprn { get; set; }
     public string ProviderName { get; set; }
     public ShortProviderAddressModel ProviderAddress { get; set; }
@@ -50,6 +50,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
+    public string ShortlistClass => ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "app-provider-shortlist-added" : "app-provider-shortlist-full";
     private string GetEndpointAssessmentDisplayMessage()
     {
         if(EndpointAssessments is not null && EndpointAssessments.EarliestAssessment.HasValue)
@@ -122,7 +123,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         return builder.ToString();
     }
 
-    private List<string> FormatLocations(IEnumerable<LocationModel> locations)
+    private static List<string> FormatLocations(IEnumerable<LocationModel> locations)
     {
         if (!locations.Any())
         {

@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
@@ -25,13 +26,15 @@ public class CoursesController : Controller
     private readonly IValidator<GetCourseQuery> _courseValidator;
     private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly ISessionService _sessionService;
 
     public CoursesController(
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
         IValidator<GetCourseQuery> courseValidator,
         IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
+        ISessionService sessionService
     )
     {
         _mediator = mediator;
@@ -39,6 +42,7 @@ public class CoursesController : Controller
         _courseValidator = courseValidator;
         _config = config.Value;
         _courseProviderDetailsValidator = courseProviderDetailsValidator;
+        _sessionService = sessionService;
     }
 
     [Route("", Name = RouteNames.Courses)]
@@ -142,6 +146,7 @@ public class CoursesController : Controller
     {
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
+        var shortlistCount = _sessionService.Get<ShortlistsCount>();
 
         int? convertedDistance = null;
 
@@ -196,7 +201,7 @@ public class CoursesController : Controller
         viewModel.ShowApprenticeTrainingCoursesCrumb = true;
         viewModel.ShowShortListLink = true;
         viewModel.ShowSearchCrumb = true;
-        
+        viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
         return View(viewModel);
     }
 }
