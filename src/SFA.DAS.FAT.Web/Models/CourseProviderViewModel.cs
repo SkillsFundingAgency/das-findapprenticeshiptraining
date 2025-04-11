@@ -43,8 +43,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
     public string ApprenticeReviewsDisplayMessage => GetApprenticeReviewsDisplayMessage();
     public string EndpointAssessmentDisplayMessage => GetEndpointAssessmentDisplayMessage();
-    public string EndpointAssessmentsCountDisplay => EndpointAssessments is null || 
-                                                     !EndpointAssessments.EarliestAssessment.HasValue ? 
+    public string EndpointAssessmentsCountDisplay => EndpointAssessments is null || !EndpointAssessments.EarliestAssessment.HasValue ? 
                                                         "No data" : 
                                                         EndpointAssessments.EndpointAssessmentCount.ToString();
 
@@ -90,10 +89,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             Reviews = source.Reviews,
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
-            Locations = source.Locations.ToList(),
-            Courses = source.Courses.ToList(),
-            AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails.ToList(),
-            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails.ToList()
+            Locations = source.Locations?.ToList() ?? [],
+            Courses = source.Courses?.ToList() ?? [],
+            AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails?.ToList() ?? [],
+            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails?.ToList() ?? []
         };
     }
 
@@ -183,7 +182,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
         if(this.Qar.AchievementRate is not null)
         {
-            return $"of apprentices ({Qar.ConvertedLeavers} of {Qar.TotalParticipants}) completed this course and passed their end-point assessment with this " +
+            return $"of apprentices ({Qar.TotalNumberOfCompletedParticipants} of {Qar.Leavers}) completed this course and passed their end-point assessment with this " +
                    $"provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the " +
                     "assessment.";
         }
@@ -193,9 +192,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     private string CoursesDeliveredDisplayText()
     {
-        int courseCount = Courses.Count();
-
-        return $"View {courseCount} course" + (courseCount == 1 ? string.Empty : "s") + " delivered by this training provider";
+        return $"View {Courses.Count} course" + (Courses.Count == 1 ? string.Empty : "s") + " delivered by this training provider";
     }
 
     private string GetEmployerReviewsDisplayMessage()

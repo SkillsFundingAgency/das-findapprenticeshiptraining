@@ -9,7 +9,7 @@ public sealed class QarModel
     public string AchievementRate { get; set; }
     public string NationalLeavers { get; set; }
     public string NationalAchievementRate { get; set; }
-    public int TotalParticipants => TotalParticipantCount();
+    public int TotalNumberOfCompletedParticipants => GetTotalNumberOfCompletedParticipants();
     public decimal FailureRate => GetFailureRate();
     public string QarPeriodStartYear { get => $"20{Period.AsSpan(0, 2)}"; }
     public string QarPeriodEndYear { get => $"20{Period.AsSpan(2, 2)}"; }
@@ -19,12 +19,7 @@ public sealed class QarModel
     {
         get
         {
-            if (int.TryParse(Leavers, out int value))
-            {
-                return value;
-            }
-
-            return 0;
+            return int.TryParse(Leavers, out int value) ? value : 0;
         }
     }
 
@@ -32,35 +27,34 @@ public sealed class QarModel
     {
         get
         {
-            if (decimal.TryParse(AchievementRate, out decimal value))
-            {
-                return value;
-            }
-
-            return null;
+            return decimal.TryParse(AchievementRate, out decimal value) ? value : null;
         }
     }
 
-    private int TotalParticipantCount()
+    private int GetTotalNumberOfCompletedParticipants()
     {
-        if (ConvertedLeavers == 0 || ConvertedAchievementRate is null)
+        int totalParticipants = ConvertedLeavers;
+
+        decimal? percentageThatAchieved = ConvertedAchievementRate;
+
+        if (totalParticipants == 0 || percentageThatAchieved is null)
         {
             return 0;
         }
 
-        decimal rate = ConvertedAchievementRate.Value;
+        decimal rate = percentageThatAchieved.Value;
 
         if (rate <= 0)
         {
-            return ConvertedLeavers;
+            return 0;
         }
 
         if (rate >= 100)
         {
-            return this.ConvertedLeavers;
+            return totalParticipants;
         }
 
-        return (int)Math.Round(ConvertedLeavers / (rate / 100m));
+        return (int)Math.Round(totalParticipants * (rate / 100m));
     }
 
     private decimal GetFailureRate()

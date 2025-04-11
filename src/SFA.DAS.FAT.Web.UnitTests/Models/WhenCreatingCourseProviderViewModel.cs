@@ -304,7 +304,7 @@ public class WhenCreatingCourseProviderViewModel
             Qar = new QarModel
             {
                 AchievementRate = "90",
-                Leavers = "90",
+                Leavers = "100",
                 Period = "2122",
                 NationalLeavers = "120",
                 NationalAchievementRate = "20"

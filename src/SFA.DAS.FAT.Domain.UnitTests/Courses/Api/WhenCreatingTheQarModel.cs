@@ -27,13 +27,13 @@ public sealed class WhenCreatingTheQarModel
         Assert.That(sut.ConvertedAchievementRate, Is.EqualTo(expected));
     }
 
-    [TestCase("25", "50", 50)]
+    [TestCase("25", "50", 12)]
     [TestCase("20", "100", 20)]
-    [TestCase("20", "0", 20)]
+    [TestCase("20", "0", 0)]
     [TestCase("0", "80", 0)]
     [TestCase("abc", "90", 0)]
     [TestCase("25", "abc", 0)]
-    public void Then_Total_Participants_Should_Calculate_Correctly(string leavers, string rate, int expected)
+    public void Then_Total_Number_Of_Completed_Participants_Should_Calculate_Correctly(string leavers, string rate, int expected)
     {
         var sut = new QarModel
         {
@@ -41,7 +41,7 @@ public sealed class WhenCreatingTheQarModel
             AchievementRate = rate
         };
 
-        Assert.That(sut.TotalParticipants, Is.EqualTo(expected));
+        Assert.That(sut.TotalNumberOfCompletedParticipants, Is.EqualTo(expected));
     }
 
     [TestCase("90", 10)]

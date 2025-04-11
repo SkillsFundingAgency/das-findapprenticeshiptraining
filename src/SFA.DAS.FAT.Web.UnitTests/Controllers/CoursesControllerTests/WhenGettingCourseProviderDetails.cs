@@ -171,6 +171,7 @@ public class WhenGettingCourseProviderDetails
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Frozen] Mock<ISessionService> sessionService,
         [Greedy] CoursesController sut
     )
     {
@@ -227,6 +228,7 @@ public class WhenGettingCourseProviderDetails
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Frozen] Mock<ISessionService> sessionService,
         [Greedy] CoursesController sut
     )
     {
