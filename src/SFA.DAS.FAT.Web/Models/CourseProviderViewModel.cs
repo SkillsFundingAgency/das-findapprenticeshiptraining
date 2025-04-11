@@ -26,10 +26,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public EndpointAssessmentModel EndpointAssessments { get; set; }
     public int TotalProvidersCount { get; set; }
     public Guid? ShortlistId { get; set; }
-    public IEnumerable<LocationModel> Locations { get; set; }
-    public IEnumerable<ProviderCourseModel> Courses { get; set; } = [];
-    public IEnumerable<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
-    public IEnumerable<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
+    public IReadOnlyCollection<LocationModel> Locations { get; set; }
+    public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
+    public IReadOnlyCollection<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
+    public IReadOnlyCollection<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
     public bool IsNational => Locations.Any(a => a.AtEmployer);
@@ -90,10 +90,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             Reviews = source.Reviews,
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
-            Locations = source.Locations,
-            Courses = source.Courses,
-            AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails,
-            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails
+            Locations = source.Locations.ToList(),
+            Courses = source.Courses.ToList(),
+            AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails.ToList(),
+            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails.ToList()
         };
     }
 
