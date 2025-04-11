@@ -1,6 +1,7 @@
 ﻿using System.Net;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -599,5 +600,38 @@ public class WhenCreatingCourseProviderViewModel
         };
 
         Assert.That(sut.IsDayRelease, Is.False);
+    }
+
+    [Test]
+    public void Shortlist_Class_Returns_Added_When_Under_Maximum_Shortlist_Count()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount - 1
+        };
+
+        Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-added"));
+    }
+
+    [Test]
+    public void Shortlist_Class_Returns_Full_When_Equal_To_Maximum_Shortlist_Count()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount
+        };
+
+        Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-full"));
+    }
+
+    [Test]
+    public void Shortlist_Class_Returns_Full_When_Above_Maximum_Shortlist_Count()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount + 1
+        };
+
+        Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-full"));
     }
 }
