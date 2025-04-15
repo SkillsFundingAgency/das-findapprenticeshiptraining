@@ -28,6 +28,10 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
             return View(model);
         }
 
-        return RedirectToAction("Index", "SelectTrainingProvider");
+        return RedirectToRoute(RouteNames.Provider, new
+        {
+            submitModel.Ukprn,
+            submitModel.Location
+        });
     }
 }
