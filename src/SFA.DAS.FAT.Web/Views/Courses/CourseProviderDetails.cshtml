@@ -1,4 +1,5 @@
 @using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Web.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
@@ -444,7 +445,7 @@
                 </details>
 
                 <p class="govuk-body">
-                    @Model.Contact.MarketingInfo
+                    @Html.MarkdownToHtml(@Model.Contact?.MarketingInfo)
                 </p>
 
                 <p class="govuk-body">
