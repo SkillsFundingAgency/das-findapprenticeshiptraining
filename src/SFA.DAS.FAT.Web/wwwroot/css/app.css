@@ -535,3 +535,7 @@
         background: #f3f2f1;
         padding:20px;
     }
+
+.das-margin-left-minus-10 {
+    margin-left: -10px !important;
+}

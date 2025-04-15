@@ -6,14 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Controllers;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
+using RedirectToRouteResult = Microsoft.AspNetCore.Mvc.RedirectToRouteResult;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SelectTrainingProviderControllerTests;
 public class WhenPostingSelectTrainingProviderSubmitViewModel
 {
     [Test, MoqAutoData]
-    public void And_SubmitViewModel_Is_Valid_Redirects_To_Expected_Action(
+    public void And_SubmitViewModel_Is_Valid_Reroutes_To_Expected_Action(
         SelectTrainingProviderSubmitViewModel viewModel,
         [Frozen] Mock<IValidator<SelectTrainingProviderSubmitViewModel>> validator,
         [Greedy] SelectTrainingProviderController controller,
@@ -27,10 +29,10 @@ public class WhenPostingSelectTrainingProviderSubmitViewModel
 
         //Assert
         actual.Should().NotBeNull();
-        var result = actual! as RedirectToActionResult;
+        var result = actual! as RedirectToRouteResult;
         result.Should().NotBeNull();
-        result!.ActionName.Should().Be("Index");
-        result.ControllerName.Should().Be("SelectTrainingProvider");
+        result!.RouteName.Should().Be(RouteNames.Provider);
+
     }
 
     [Test, MoqAutoData]
