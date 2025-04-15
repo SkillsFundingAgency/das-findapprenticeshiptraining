@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
 using NUnit.Framework;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Services;

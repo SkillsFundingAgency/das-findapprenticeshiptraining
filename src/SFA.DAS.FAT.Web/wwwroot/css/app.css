@@ -507,6 +507,20 @@
     gap: 25px;
 }
 
-    .course-details-call-to-action a {
-        align-self: center;
-    }
+.course-details-call-to-action a {
+    align-self: center;
+}
+
+.das-margin-left-minus-10 {
+    margin-left: -10px ! important;
+}
+
+.das-reviews {
+    display: flex;
+    gap: 25px;
+}
+
+.das-reviews .das-reviews-container {
+    background: #F3F2F1;
+    padding: 20px;
+}
