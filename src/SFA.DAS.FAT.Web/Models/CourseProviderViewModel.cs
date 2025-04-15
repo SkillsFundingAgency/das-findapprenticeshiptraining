@@ -35,42 +35,24 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public bool IsNational => Locations.Any(a => a.AtEmployer);
     public bool IsBlockRelease => Locations.Any(a => a.BlockRelease);
     public bool IsDayRelease => Locations.Any(a => a.DayRelease);
-    public List<string> BlockReleaseLocations => FormatLocations(Locations.Where(a => a.BlockRelease));
-    public List<string> DayReleaseLocations => FormatLocations(Locations.Where(a => a.DayRelease));
+    public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();
+    public List<LocationModel> DayReleaseLocations => GetDayReleaseLocations();
     public string ApprenticeWorkplaceDisplayMessage => GetApprenticeWorkplaceDisplayMessage();
-    public bool HasMultipleBlockReleaseLocations => Locations.Count(a => a.BlockRelease) > 1;
-    public bool HasMultipleDayReleaseLocations => Locations.Count(a => a.DayRelease) > 1;
+    public bool HasMultipleBlockReleaseLocations => BlockReleaseLocations.Count(a => a.BlockRelease) > 1;
+    public bool HasMultipleDayReleaseLocations => DayReleaseLocations.Count(a => a.DayRelease) > 1;
+    public LocationModel ClosestBlockReleaseLocation => GetClosestBlockReleaseLocation();
+    public LocationModel ClosestDayReleaseLocation => GetClosestDayReleaseLocation();
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
     public string ApprenticeReviewsDisplayMessage => GetApprenticeReviewsDisplayMessage();
     public string EndpointAssessmentDisplayMessage => GetEndpointAssessmentDisplayMessage();
     public string EndpointAssessmentsCountDisplay => EndpointAssessments is null || !EndpointAssessments.EarliestAssessment.HasValue ? 
                                                         "No data" : 
                                                         EndpointAssessments.EndpointAssessmentCount.ToString();
-
+    public LocationModel NationalLocation => Locations.FirstOrDefault(a => a.AtEmployer && a.LocationType == LocationType.National);
+    public string NationalWorkLocationDistanceDisplayText => GetNationalWorkLocationDistanceDisplayText();
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "app-provider-shortlist-added" : "app-provider-shortlist-full";
-    private string GetEndpointAssessmentDisplayMessage()
-    {
-        if(EndpointAssessments is not null && EndpointAssessments.EarliestAssessment.HasValue)
-        {
-            int assessmentYear = EndpointAssessments.EarliestAssessment.Value.Year;
-
-            if(EndpointAssessments.EndpointAssessmentCount == 0)
-            {
-                return "apprentices have completed a course and taken their end-point assessment with this provider.";
-            }
-            else
-            {
-                var plural = EndpointAssessments.EndpointAssessmentCount == 1 ? string.Empty : "s";
-                return $"apprentice{plural} have completed this course and taken their end-point assessment with this provider since {assessmentYear}";
-            }
-        }
-        else
-        {
-            return "Not enough apprentices have completed a course with this provider to show participation";
-        }
-    }
 
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
@@ -94,6 +76,55 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails?.ToList() ?? [],
             AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails?.ToList() ?? []
         };
+    }
+
+    private List<LocationModel> GetBlockReleaseLocations()
+    {
+        return Locations.Where(a => a.BlockRelease).ToList();
+    }
+
+    private List<LocationModel> GetDayReleaseLocations()
+    {
+        return Locations.Where(a => a.DayRelease).ToList();
+    }
+
+    private string GetEndpointAssessmentDisplayMessage()
+    {
+        if(EndpointAssessments is not null && EndpointAssessments.EarliestAssessment.HasValue)
+        {
+            int assessmentYear = EndpointAssessments.EarliestAssessment.Value.Year;
+
+            if(EndpointAssessments.EndpointAssessmentCount == 0)
+            {
+                return "apprentices have completed a course and taken their end-point assessment with this provider.";
+            }
+            else
+            {
+                var plural = EndpointAssessments.EndpointAssessmentCount == 1 ? string.Empty : "s";
+                return $"apprentice{plural} have completed this course and taken their end-point assessment with this provider since {assessmentYear}";
+            }
+        }
+        else
+        {
+            return "Not enough apprentices have completed a course with this provider to show participation";
+        }
+    }
+
+    private string GetNationalWorkLocationDistanceDisplayText()
+    {
+        return NationalLocation is null ? 
+            "0.0 miles" : 
+            $"{NationalLocation.CourseDistance.ToString("0.0")} miles";
+    }
+
+    private LocationModel GetClosestBlockReleaseLocation()
+    {
+        return Locations.Where(a => a.BlockRelease).OrderBy(a => a.CourseDistance).FirstOrDefault();
+    }
+
+    private LocationModel GetClosestDayReleaseLocation()
+    {
+        return Locations.Where(a => a.DayRelease).OrderBy(a => a.CourseDistance).FirstOrDefault();
     }
 
     private string FormatContactAddress()
@@ -122,53 +153,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         return builder.ToString();
     }
 
-    private static List<string> FormatLocations(IEnumerable<LocationModel> locations)
-    {
-        if (!locations.Any())
-        {
-            return [];
-        }
-
-        List<string> locationAddresses = [];
-
-        foreach(LocationModel location in locations.OrderBy(a => a.Postcode))
-        {
-            locationAddresses.Add(BuildLocationAddress(location));
-        }
-
-        return locationAddresses;
-    }
-
-    private static string BuildLocationAddress(LocationModel location)
-    {
-        var builder = new StringBuilder();
-
-        void AppendIfNotEmpty(string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                if (builder.Length > 0)
-                {
-                    builder.Append(", ");
-                }
-                builder.Append(value.Trim());
-            }
-        }
-
-        AppendIfNotEmpty(location.AddressLine1);
-        AppendIfNotEmpty(location.AddressLine2);
-        AppendIfNotEmpty(location.Town);
-        AppendIfNotEmpty(location.County);
-        AppendIfNotEmpty(location.Postcode);
-
-        return builder.ToString();
-    }
-
     private string GetApprenticeWorkplaceDisplayMessage()
     {
-        LocationModel trainingLocation = Locations.FirstOrDefault(a => a.AtEmployer);
-
-        if(trainingLocation is not null && trainingLocation.LocationType == LocationType.National)
+        if(NationalLocation is not null)
         {
             return "Training is provided at apprentice’s workplaces across England.";
         }

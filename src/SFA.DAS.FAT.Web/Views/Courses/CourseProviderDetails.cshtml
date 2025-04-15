@@ -28,15 +28,43 @@
                 Training options for this course
             </h3>
 
-            <p class="govuk-body">
-                This provider offers these training options for this course. 
+            @if(string.IsNullOrWhiteSpace(Model.Location))
+            {
+                <p class="govuk-body">
+                    This provider offers these training options for this course. 
                 
-                <span class="govuk-!-font-weight-bold">
-                    Search for a city or postcode
-                </span>
+                    <span class="govuk-!-font-weight-bold">
+                        Search for a city or postcode
+                    </span>
                 
-                to view what options are available in your location and distances from your location to the training options.
-            </p>
+                    to view what options are available in your location and distances from your location to the training options.
+                </p>
+            }
+            else
+            {
+                <p class="govuk-body">
+                    This provider offers these training options for this course in <strong>@Model.Location</strong>. 
+                    
+                    You can
+
+                    <a 
+                        class="govuk-link govuk-link--no-visited-state" 
+                        asp-route="@RouteNames.CourseProviderDetails" 
+                        asp-route-id="@Model.LarsCode" 
+                        asp-route-providerId="@Model.Ukprn"
+                    >
+                        remove or change your location
+                    </a>.
+                    
+                    This may change what options are available.
+                </p>
+
+                <p class="govuk-body">
+                    If there are multiple training options, the apprentice may do a combination of these. 
+                    
+                    You'll need to contact the provider to confirm what training they offer.
+                </p>
+            }
 
             @* Search courses by location *@
 
@@ -86,9 +114,18 @@
                                 <p class="govuk-body-m das-hint-colour">Training at the employer's location.</p>
                             </th>
                             <td class="govuk-table__cell">
-                                <p class="govuk-body govuk-!-margin-top-2">
-                                    @Model.ApprenticeWorkplaceDisplayMessage
-                                </p>
+                                @if(string.IsNullOrWhiteSpace(Model.Location))
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        @Model.ApprenticeWorkplaceDisplayMessage
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        <strong>@Model.NationalWorkLocationDistanceDisplayText</strong> to apprentice's work location
+                                    </p>
+                                }
                             </td>
                         </tr>
                     }
@@ -108,7 +145,17 @@
                             <td class="govuk-table__cell">
                                 @if (Model.HasMultipleBlockReleaseLocations)
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
+                                    if(string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
+
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -117,9 +164,20 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (string locationName in Model.BlockReleaseLocations)
+                                                @foreach (LocationModel location in Model.BlockReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
                                                 {
-                                                    <li>@locationName</li>
+                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
+                                                    {
+                                                        <li>
+                                                            @location.FormatAddress()
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                        </li>
+                                                    }
                                                 }
                                             </ul>
                                         </div>
@@ -127,7 +185,16 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0]</p>
+                                    if(string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0].FormatAddress()</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
                                 }
                             </td>
                         </tr>
@@ -148,7 +215,16 @@
                             <td class="govuk-table__cell">
                                 @if (Model.HasMultipleDayReleaseLocations)
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
+                                    if(string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -157,9 +233,20 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (string locationName in Model.DayReleaseLocations)
+                                                @foreach (LocationModel location in Model.DayReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
                                                 {
-                                                    <li>@locationName</li>
+                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
+                                                    {
+                                                        <li>
+                                                            @location.FormatAddress()
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                        </li>
+                                                    }
                                                 }
                                             </ul>
                                         </div>
@@ -167,7 +254,7 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0]</p>
+                                    <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
                                 }
                             </td>
                         </tr>
