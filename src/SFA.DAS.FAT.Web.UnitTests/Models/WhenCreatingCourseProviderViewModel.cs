@@ -634,4 +634,161 @@ public class WhenCreatingCourseProviderViewModel
 
         Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-full"));
     }
+
+    [Test]
+    public void Then_National_Location_Returns_First_Matching_Employer_With_National_LocationType()
+    {
+        var national = new LocationModel { AtEmployer = true, LocationType = LocationType.National };
+
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { AtEmployer = true, LocationType = LocationType.Regional },
+                national,
+                new LocationModel { AtEmployer = false, LocationType = LocationType.National }
+            }
+        };
+
+        Assert.That(sut.NationalLocation, Is.EqualTo(national));
+    }
+
+    [Test]
+    public void Then_National_Location_Returns_Null_If_No_Matching_Location()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { AtEmployer = true, LocationType = LocationType.Regional },
+                new LocationModel { AtEmployer = false, LocationType = LocationType.National }
+            }
+        };
+
+        Assert.That(sut.NationalLocation, Is.Null);
+    }
+
+    [Test]
+    public void Then_National_Location_Returns_Null_If_Locations_Is_Empty()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>()
+        };
+
+        Assert.That(sut.NationalLocation, Is.Null);
+    }
+
+    [Test]
+    public void Then_National_Work_Location_Distance_Display_Text_Returns_Formatted_Distance_When_National_Location_Is_Not_Null()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel
+                {
+                    AtEmployer = true,
+                    LocationType = LocationType.National,
+                    CourseDistance = 12.456
+                }
+            }
+        };
+
+        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("12.5 miles"));
+    }
+
+    [Test]
+    public void Then_National_Work_Location_Distance_Display_Text_Returns_Zero_Miles_When_National_Location_Is_Null()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel
+                {
+                    AtEmployer = false,
+                    LocationType = LocationType.Regional,
+                    CourseDistance = 99.99
+                }
+            }
+        };
+
+        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("0.0 miles"));
+    }
+
+    [Test]
+    public void Then_National_Work_Location_Distance_Display_Text_Returns_Zero_Miles_When_Locations_Is_Empty()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>()
+        };
+
+        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("0.0 miles"));
+    }
+
+    [Test]
+    public void Then_Closest_Block_Release_Location_Returns_Location_With_Smallest_Course_Distance()
+    {
+        var closest = new LocationModel { BlockRelease = true, CourseDistance = 5.0 };
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = true, CourseDistance = 15.0 },
+                closest,
+                new LocationModel { BlockRelease = true, CourseDistance = 10.0 }
+            }
+        };
+
+        Assert.That(sut.ClosestBlockReleaseLocation, Is.EqualTo(closest));
+    }
+
+    [Test]
+    public void Then_Closest_Block_Release_Location_Returns_Null_If_None_Are_Block_Release()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = false, CourseDistance = 5.0 },
+                new LocationModel { BlockRelease = false, CourseDistance = 10.0 }
+            }
+        };
+
+        Assert.That(sut.ClosestBlockReleaseLocation, Is.Null);
+    }
+
+    [Test]
+    public void Then_Closest_Day_Release_Location_Returns_Location_With_Smallest_Course_Distance()
+    {
+        var closest = new LocationModel { DayRelease = true, CourseDistance = 3.4 };
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true, CourseDistance = 8.1 },
+                closest,
+                new LocationModel { DayRelease = true, CourseDistance = 6.6 }
+            }
+        };
+
+        Assert.That(sut.ClosestDayReleaseLocation, Is.EqualTo(closest));
+    }
+
+    [Test]
+    public void Then_Closest_Day_Release_Location_Returns_Null_If_None_Are_DayRelease()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = false, CourseDistance = 1.2 },
+                new LocationModel { DayRelease = false, CourseDistance = 2.5 }
+            }
+        };
+
+        Assert.That(sut.ClosestDayReleaseLocation, Is.Null);
+    }
 }

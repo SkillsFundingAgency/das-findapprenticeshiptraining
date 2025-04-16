@@ -225,6 +225,7 @@
                                             <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
                                         </p>
                                     }
+
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -254,7 +255,16 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
+                                    if (string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
                                 }
                             </td>
                         </tr>
@@ -293,7 +303,6 @@
                     }
                     else
                     {
-
                         <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
                             No data
                         </h2>
@@ -520,7 +529,7 @@
                             {
                                 <li class="govuk-task-list__item govuk-task-list__item--with-link">
                                     <div class="govuk-task-list__name-and-hint">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-task-list__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@Model.LarsCode" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
+                                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-id="@course.LarsCode" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
                                             @course.NameAndLevel
                                         </a>
                                     </div>
