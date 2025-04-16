@@ -6,6 +6,7 @@ using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models
 {
+    [Obsolete("FAT25 - Development - Replaced with course provider view model")]
     public class ProviderViewModel
     {
         public decimal? OverallAchievementRate { get; set; }

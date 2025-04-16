@@ -43,7 +43,9 @@
                         <a id="providers-breadcrumb"
                            class="govuk-breadcrumbs__link"
                            asp-route="@RouteNames.CourseProviders"
-                           asp-all-route-data="@Model.GetCourseProvidersRequest"
+                           asp-route-id="@pageLinks.CourseId"
+                           asp-route-location="@pageLinks.Location"
+                           asp-route-distance="@pageLinks.Distance"
                         >
                             Training provider details
                         </a>

@@ -1,75 +1,98 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentValidation.Results;
+﻿using AutoFixture.NUnit3;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
-namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourseProviderDetails
+namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetProviderDetails;
+
+public class WhenGettingCourseProviderDetails
 {
-    public class WhenGettingCourseProviderDetails
+    [Test, MoqAutoData]
+    public async Task Then_If_The_Query_Is_Valid_The_Service_Is_Called_And_The_Response_Is_Mapped_Correctly(
+        GetCourseProviderDetailsQuery query,
+        CourseProviderDetailsModel CourseProviderDetailsResponse,
+        [Frozen] Mock<ICourseService> courseServiceMock,
+        [Greedy] GetCourseProviderQueryHandler sut
+    )
     {
-        [Test, MoqAutoData]
-        public async Task Then_If_The_Query_Is_Valid_The_Service_Is_Called_And_The_Data_Returned(
-            GetCourseProviderQuery request,
-            TrainingCourseProviderDetails courseProviderResponse,
-            [Frozen] ValidationResult validationResult,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCourseProviderQueryHandler handler)
+        courseServiceMock.Setup(x => 
+            x.GetCourseProvider(
+                query.Ukprn, 
+                query.LarsCode, 
+                query.Location,
+                query.Distance,
+                query.ShortlistUserId.Value
+            )
+        ).ReturnsAsync(CourseProviderDetailsResponse);
+
+        GetCourseProviderQueryResult result = await sut.Handle(query, CancellationToken.None);
+
+        courseServiceMock.Verify(x => 
+            x.GetCourseProvider(
+                query.Ukprn, 
+                query.LarsCode, 
+                query.Location, 
+                query.Distance,
+                query.ShortlistUserId.Value
+            ), 
+            Times.Once
+        );
+
+        Assert.Multiple(() =>
         {
-            //Arrange
-            mockService.Setup(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value)).ReturnsAsync(courseProviderResponse);
+            Assert.That(result.Ukprn, Is.EqualTo(CourseProviderDetailsResponse.Ukprn));
+            Assert.That(result.ProviderName, Is.EqualTo(CourseProviderDetailsResponse.ProviderName));
+            Assert.That(result.ProviderAddress, Is.EqualTo(CourseProviderDetailsResponse.ProviderAddress));
+            Assert.That(result.Contact, Is.EqualTo(CourseProviderDetailsResponse.Contact));
+            Assert.That(result.CourseName, Is.EqualTo(CourseProviderDetailsResponse.CourseName));
+            Assert.That(result.Level, Is.EqualTo(CourseProviderDetailsResponse.Level));
+            Assert.That(result.LarsCode, Is.EqualTo(CourseProviderDetailsResponse.LarsCode));
+            Assert.That(result.IFateReferenceNumber, Is.EqualTo(CourseProviderDetailsResponse.IFateReferenceNumber));
+            Assert.That(result.Qar, Is.EqualTo(CourseProviderDetailsResponse.Qar));
+            Assert.That(result.Reviews, Is.EqualTo(CourseProviderDetailsResponse.Reviews));
+            Assert.That(result.EndpointAssessments, Is.EqualTo(CourseProviderDetailsResponse.EndpointAssessments));
+            Assert.That(result.TotalProvidersCount, Is.EqualTo(CourseProviderDetailsResponse.TotalProvidersCount));
+            Assert.That(result.ShortlistId, Is.EqualTo(CourseProviderDetailsResponse.ShortlistId));
+            Assert.That(result.Locations, Is.EqualTo(CourseProviderDetailsResponse.Locations));
+            Assert.That(result.Courses, Is.EqualTo(CourseProviderDetailsResponse.Courses));
+            Assert.That(result.AnnualEmployerFeedbackDetails, Is.EqualTo(CourseProviderDetailsResponse.AnnualEmployerFeedbackDetails));
+            Assert.That(result.AnnualApprenticeFeedbackDetails, Is.EqualTo(CourseProviderDetailsResponse.AnnualApprenticeFeedbackDetails));
+        });
+    }
 
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
+    [Test, MoqAutoData]
+    public async Task Then_If_There_Is_No_Course_Provider_Then_Service_Returns_Null(
+        GetCourseProviderDetailsQuery query,
+        [Frozen] Mock<ICourseService> courseServiceMock,
+        [Greedy] GetCourseProviderQueryHandler sut
+)
+    {
+        courseServiceMock.Setup(x =>
+            x.GetCourseProvider(
+                query.Ukprn,
+                query.LarsCode,
+                query.Location,
+                query.Distance,
+                query.ShortlistUserId.Value
+            )
+        ).ReturnsAsync((CourseProviderDetailsModel)null);
 
-            //Assert
-            mockService.Verify(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value), Times.Once);
-            actual.Should().NotBeNull();
-            actual.Provider.Should().BeEquivalentTo(courseProviderResponse.CourseProviderDetails);
-            actual.Course.Should().BeEquivalentTo(courseProviderResponse.TrainingCourse);
-            actual.AdditionalCourses.Should().BeEquivalentTo(courseProviderResponse.AdditionalCourses);
-            actual.Location.Should().Be(courseProviderResponse.Location.Name);
-            actual.LocationGeoPoint.Should().BeEquivalentTo(courseProviderResponse.Location.LocationPoint.GeoPoint);
-            actual.ProvidersAtLocation.Should().Be(courseProviderResponse.ProvidersCount.ProvidersAtLocation);
-            actual.TotalProviders.Should().Be(courseProviderResponse.ProvidersCount.TotalProviders);
-            actual.ShortlistItemCount.Should().Be(courseProviderResponse.ShortlistItemCount);
-        }
+        GetCourseProviderQueryResult result = await sut.Handle(query, CancellationToken.None);
 
-        [Test, MoqAutoData]
-        public async Task Then_If_There_Is_No_Course_Provider_Returns_Null(
-            GetCourseProviderQuery request,
-            Provider courseProviderResponse,
-            [Frozen] ValidationResult validationResult,
-            [Frozen] Mock<ICourseService> mockService,
-            GetCourseProviderQueryHandler handler)
-        {
-            //Arrange
-            mockService.Setup(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value)).ReturnsAsync((TrainingCourseProviderDetails)null);
+        courseServiceMock.Verify(x =>
+            x.GetCourseProvider(
+                query.Ukprn,
+                query.LarsCode,
+                query.Location,
+                query.Distance,
+                query.ShortlistUserId.Value
+            ),
+            Times.Once
+        );
 
-            //Act
-            var actual = await handler.Handle(request, CancellationToken.None);
-
-            //Assert
-            mockService.Verify(x => x.GetCourseProviderDetails(request.ProviderId, request.CourseId, request.Location, request.Lat, request.Lon, request.ShortlistUserId.Value), Times.Once);
-
-            using (new AssertionScope())
-            {
-                actual.Provider.Should().BeNull();
-                actual.Course.Should().BeNull();
-                actual.AdditionalCourses.Should().BeNull();
-                actual.Location.Should().BeNull();
-                actual.LocationGeoPoint.Should().BeNull();
-                actual.ShortlistItemCount.Should().Be(0);
-                actual.TotalProviders.Should().Be(0);
-                actual.ProvidersAtLocation.Should().Be(0);
-            }
-        }
+        Assert.That(result, Is.Null);
     }
 }

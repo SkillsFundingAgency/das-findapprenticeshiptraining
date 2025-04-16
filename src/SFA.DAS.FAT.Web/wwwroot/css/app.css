@@ -507,20 +507,35 @@
     gap: 25px;
 }
 
-.course-details-call-to-action a {
-    align-self: center;
+    .course-details-call-to-action a {
+        align-self: center;
+    }
+
+.govuk-summary-list.govuk-summary-list-align-right .govuk-summary-list__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.das-margin-left-minus-10 {
-    margin-left: -10px ! important;
-}
+    .govuk-summary-list.govuk-summary-list-align-right .govuk-summary-list__key {
+        margin-right: auto;
+    }
+
+    .govuk-summary-list.govuk-summary-list-align-right .govuk-summary-list__value {
+        text-align: right;
+        display: block;
+    }
 
 .das-reviews {
     display: flex;
     gap: 25px;
 }
 
-.das-reviews .das-reviews-container {
-    background: #F3F2F1;
-    padding: 20px;
+    .das-reviews .das-reviews-container {
+        background: #f3f2f1;
+        padding:20px;
+    }
+
+.das-margin-left-minus-10 {
+    margin-left: -10px !important;
 }

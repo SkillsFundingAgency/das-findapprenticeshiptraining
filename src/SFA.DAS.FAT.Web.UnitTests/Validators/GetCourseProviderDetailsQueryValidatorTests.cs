@@ -1,37 +1,36 @@
 ﻿using FluentAssertions;
 using FluentValidation.TestHelper;
 using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetProvider;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Web.Validators;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Validators
+namespace SFA.DAS.FAT.Web.UnitTests.Validators;
+
+public class GetCourseProviderDetailsQueryValidatorTests
 {
-    public class GetCourseProviderDetailsQueryValidatorTests
+    private GetCourseProviderDetailsQueryValidator _validator;
+
+    [SetUp]
+    public void Setup()
     {
-        private GetCourseProviderDetailsQueryValidator _validator;
+        _validator = new GetCourseProviderDetailsQueryValidator();
+    }
 
-        [SetUp]
-        public void Setup()
-        {
-            _validator = new GetCourseProviderDetailsQueryValidator();
-        }
+    [Test]
+    public void TestValidator_ProviderIdInvalid_ReturnsExpectedErrorMessage()
+    {
+        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery());
 
-        [Test]
-        public void TestValidator_ProviderIdInvalid_ReturnsExpectedErrorMessage()
-        {
-            var result = _validator.TestValidate(new GetCourseProviderQuery());
+        result.IsValid.Should().BeFalse();
+        result.ShouldHaveValidationErrorFor(c => c.Ukprn)
+            .WithErrorMessage(GetCourseProviderDetailsQueryValidator.ProviderIdErrorMessage);
+    }
 
-            result.IsValid.Should().BeFalse();
-            result.ShouldHaveValidationErrorFor(c => c.ProviderId)
-                .WithErrorMessage(GetCourseProviderDetailsQueryValidator.ProviderIdErrorMessage);
-        }
+    [Test]
+    public void TestValidator_ProviderIdValid_ReturnsValid()
+    {
+        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = 1 });
 
-        [Test]
-        public void TestValidator_ProviderIdValid_ReturnsValid()
-        {
-            var result = _validator.TestValidate(new GetCourseProviderQuery { ProviderId = 1 });
-
-            result.IsValid.Should().BeTrue();
-        }
+        result.IsValid.Should().BeTrue();
     }
 }
