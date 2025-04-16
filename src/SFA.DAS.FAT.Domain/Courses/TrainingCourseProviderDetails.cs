@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace SFA.DAS.FAT.Domain.Courses
 {
+    [Obsolete("FAT-25 Development - Replaced by GetCourseProviderQueryResult")]
     public class TrainingCourseProviderDetails
     {
         [JsonProperty("trainingCourseProvider")]

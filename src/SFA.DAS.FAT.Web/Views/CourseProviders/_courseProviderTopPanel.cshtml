@@ -1,4 +1,5 @@
-﻿@using SFA.DAS.FAT.Web.Infrastructure
+﻿@using SFA.DAS.FAT.Domain
+@using SFA.DAS.FAT.Web.Infrastructure
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProviderTopPanelViewModel
 
@@ -18,7 +19,7 @@
     </div>
 
     <div class="govuk-grid-column-one-third govuk-body">
-        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? Model.ShortlistCount < 50 ? "" : "app-provider-shortlist-full" :  "app-provider-shortlist-added")">
+        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? Model.ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "" : "app-provider-shortlist-full" :  "app-provider-shortlist-added")">
             <div class="app-provider-shortlist-add">
                 <form method="post" asp-route="@RouteNames.CreateShortlistItem">
                     <input type="hidden" name="larsCode" value="@Model.CourseId" />

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
 using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistsForUser;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -62,7 +63,7 @@ public class ShortlistController : Controller
         viewModel.RemovedProviderName = TempData[RemovedProviderNameTempDataKey]?.ToString();
 
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
-        viewModel.HasMaxedOutShortlists = shortlistCount?.Count >= 50;
+        viewModel.HasMaxedOutShortlists = shortlistCount?.Count >= ShortlistConstants.MaximumShortlistCount;
 
         return View(viewModel);
     }
