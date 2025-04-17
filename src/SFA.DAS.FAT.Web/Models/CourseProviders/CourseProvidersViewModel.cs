@@ -35,26 +35,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public string ProviderReviewsHeading { get => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"; }
     public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
     public List<CoursesProviderViewModel> Providers { get; set; }
-    public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get => GenerateProviderOrderDropdown(); }
-
+    public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get; set; } = [];
     public PaginationViewModel Pagination { get; set; }
 
-    private List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown()
-    {
-        var dropdown = new List<ProviderOrderByOptionViewModel>();
 
-        foreach (ProviderOrderBy orderByChoice in Enum.GetValues(typeof(ProviderOrderBy)))
-        {
-            dropdown.Add(new ProviderOrderByOptionViewModel
-            {
-                ProviderOrderBy = orderByChoice,
-                Description = orderByChoice.GetDescription(),
-                Selected = orderByChoice == OrderBy
-            });
-        }
-
-        return dropdown;
-    }
 
     public int TotalCount { get; set; }
 
@@ -307,15 +291,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.QarRatings, selectedQars);
         }
 
+        AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
+
         if (selectedFilters.Count == 0)
         {
             return [];
         }
 
         return CreateClearFilterSections(
-                    selectedFilters,
-                    _valueFunctions,
-                [FilterType.Distance]
+                selectedFilters,
+                _valueFunctions,
+                [FilterType.Distance, FilterType.OrderBy]
             );
     }
 
