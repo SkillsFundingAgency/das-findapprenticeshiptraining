@@ -603,25 +603,39 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Added_When_Under_Maximum_Shortlist_Count()
+    public void Shortlist_Class_Returns_Added_When_Under_Maximum_Shortlist_Count_And_Shortlist_Id_Is_Populated()
     {
         var sut = new CourseProviderViewModel
         {
-            ShortlistCount = ShortlistConstants.MaximumShortlistCount - 1
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount - 1,
+            ShortlistId = Guid.NewGuid()
         };
 
         Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-added"));
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Full_When_Equal_To_Maximum_Shortlist_Count()
+    public void Shortlist_Class_Returns_Full_When_Equal_To_Maximum_Shortlist_Count_And_Shortlist_Id_Is_Null()
     {
         var sut = new CourseProviderViewModel
         {
-            ShortlistCount = ShortlistConstants.MaximumShortlistCount
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount,
+            ShortlistId = null
         };
 
         Assert.That(sut.ShortlistClass, Is.EqualTo("app-provider-shortlist-full"));
+    }
+
+    [Test]
+    public void Shortlist_Class_Returns_Default_When_Shortlist_Id_Is_Null_And_Under_Maximum()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ShortlistCount = ShortlistConstants.MaximumShortlistCount - 1,
+            ShortlistId = null
+        };
+
+        Assert.That(sut.ShortlistClass, Is.EqualTo(string.Empty));
     }
 
     [Test]
