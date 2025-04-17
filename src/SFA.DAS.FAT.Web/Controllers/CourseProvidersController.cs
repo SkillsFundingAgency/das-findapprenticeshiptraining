@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
@@ -43,6 +45,7 @@ public class CourseProvidersController : Controller
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var orderBy = string.IsNullOrEmpty(request.Location) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
 
         int? convertedDistance = null;
         if (request.Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrWhiteSpace(request.Location))
@@ -65,7 +68,7 @@ public class CourseProvidersController : Controller
         {
             Id = request.Id,
             Location = request.Location,
-            OrderBy = request.OrderBy,
+            OrderBy = orderBy,
             Distance = convertedDistance,
             DeliveryModes = deliveryModes,
             EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
@@ -79,7 +82,7 @@ public class CourseProvidersController : Controller
         {
             Id = request.Id,
             ShortlistCount = shortlistCount?.Count ?? 0,
-            OrderBy = request.OrderBy,
+            OrderBy = orderBy,
             CourseTitleAndLevel = result.StandardName,
             CourseId = request.Id,
             Location = request.Location,
@@ -105,6 +108,8 @@ public class CourseProvidersController : Controller
             provider.Location = request.Location;
         }
 
+        courseProvidersViewModel.ProviderOrderOptions = GenerateProviderOrderDropdown(orderBy, string.IsNullOrEmpty(request.Location));
+
         courseProvidersViewModel.Providers = providers;
 
         courseProvidersViewModel.Pagination = new PaginationViewModel(1, 0, Constants.DefaultPageSize,
@@ -123,5 +128,23 @@ public class CourseProvidersController : Controller
         }
 
         return View(courseProvidersViewModel);
+    }
+
+    private static List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown(ProviderOrderBy orderBy, bool hideDistance)
+    {
+        var dropdown = new List<ProviderOrderByOptionViewModel>();
+
+        foreach (ProviderOrderBy orderByChoice in Enum.GetValues(typeof(ProviderOrderBy)))
+        {
+            if (orderByChoice == ProviderOrderBy.Distance && hideDistance) continue;
+            dropdown.Add(new ProviderOrderByOptionViewModel
+            {
+                ProviderOrderBy = orderByChoice,
+                Description = orderByChoice.GetDescription(),
+                Selected = orderByChoice == orderBy
+            });
+        }
+
+        return dropdown;
     }
 }

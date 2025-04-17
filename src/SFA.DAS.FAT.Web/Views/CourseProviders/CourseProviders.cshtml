@@ -39,9 +39,9 @@
                     <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET">
                         @foreach (var q in Context.Request.Query)
                         {
-                            switch (q.Key)
+                            switch (q.Key.ToLower())
                             {
-                                case "OrderBy":
+                                case "orderby":
                                     continue;
                                 case "location":
                                     <input type="hidden" name="@q.Key" value="@q.Value"/>
