@@ -519,4 +519,59 @@ public class WhenGettingCourseProviders
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
 
+    [Test, MoqAutoData]
+    public async Task Then_OrderBy_Options_Includes_Distance(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseProvidersController sut,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry" }) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().Contain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_OrderBy_Options_Excludes_Distance(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseProvidersController sut,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty }) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().NotContain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Selected_OrderBy_Is_Defaulted_If_OrderBy_Is_Distance_And_Location_Is_Missing(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseProvidersController sut,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
+    }
+
+    [MoqInlineAutoData(ProviderOrderBy.Distance)]
+    [MoqInlineAutoData(ProviderOrderBy.AchievementRate)]
+    [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating)]
+    [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
+    public async Task Then_Selected_OrderBy_Is_Unchanged(
+        ProviderOrderBy expectedOrderBy,
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] CourseProvidersController sut,
+        GetCourseProvidersResult mediatorResult)
+    {
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
+
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
+    }
 }

@@ -45,7 +45,7 @@ public sealed class WhenFilteringCourseProviders
             ReviewPeriod = "2324"
         };
 
-        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=Provider&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor";
+        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=Provider&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
     }
 
     [Test]
