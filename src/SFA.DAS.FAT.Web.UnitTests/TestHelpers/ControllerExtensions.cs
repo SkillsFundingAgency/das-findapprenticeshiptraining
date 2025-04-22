@@ -19,4 +19,13 @@ public static class ControllerExtensions
             .Returns(url);
         return urlHelperMock;
     }
+
+    static TController AddUrlForRoute<TController>(this TController controller, string routeName, string returnValue)
+        where TController : Controller
+    {
+        var urlHelper = Mock.Get(controller.Url);
+        urlHelper.Setup(x => x.RouteUrl(It.Is<UrlRouteContext>(ctx => ctx.RouteName == routeName)))
+            .Returns(returnValue);
+        return controller;
+    }
 }

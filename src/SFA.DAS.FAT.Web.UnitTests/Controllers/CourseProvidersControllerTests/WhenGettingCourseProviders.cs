@@ -292,6 +292,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
+        controller.AddUrlHelperMock();
+
         var startReviewPeriod = "22";
         var endReviewPeriod = "23";
         response.ReviewPeriod = $"{startReviewPeriod}{endReviewPeriod}";
@@ -327,6 +329,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
+        controller.AddUrlHelperMock();
+
         var startQarPeriod = "22";
         var endQarPeriod = "23";
         response.QarPeriod = $"{startQarPeriod}{endQarPeriod}";
@@ -369,6 +373,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
+        controller.AddUrlHelperMock();
+
         response.TotalCount = totalCount;
         request.Location = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
@@ -408,6 +414,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
+        controller.AddUrlHelperMock();
+
         response.TotalCount = totalCount;
         request.Location = location;
         request.Distance = distance;
@@ -449,6 +457,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
+        controller.AddUrlHelperMock();
+
         request.OrderBy = orderBy;
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
@@ -488,8 +498,8 @@ public class WhenGettingCourseProviders
         };
 
         //Act
-        var sut = await controller.CourseProviders(request) as ViewResult;
 
+        var sut = await controller.CourseProviders(request) as ViewResult;
 
         //Assert
         using (new AssertionScope())
@@ -510,6 +520,8 @@ public class WhenGettingCourseProviders
         int shortlistCount,
         GetCourseProvidersResult mediatorResult)
     {
+        sut.AddUrlHelperMock();
+
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
         shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
         sessionServiceMock.Setup(s => s.Get<ShortlistsCount>()).Returns(new ShortlistsCount { Count = shortlistCount });
@@ -525,6 +537,8 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
+        sut.AddUrlHelperMock();
+
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry" }) as ViewResult;
@@ -538,6 +552,8 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
+        sut.AddUrlHelperMock();
+
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty }) as ViewResult;
@@ -551,6 +567,8 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
+        sut.AddUrlHelperMock();
+
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
@@ -568,6 +586,8 @@ public class WhenGettingCourseProviders
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
+        sut.AddUrlHelperMock();
+
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
