@@ -135,6 +135,8 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
+        controller.AddUrlHelperMock();
+
         mediator.Setup(x =>
             x.Send(
                 It.Is<GetCoursesQuery>(c =>
@@ -172,6 +174,8 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
+        controller.AddUrlHelperMock();
+
         response.Standards = [];
 
         mediator.Setup(x =>
