@@ -1,26 +1,25 @@
 ﻿@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsViewModel
-<div class="govuk-grid-column-one-third">
-    <h3 class="govuk-heading-s">Training options @Model.DistanceDetails</h3>
-</div>
-<div class="govuk-grid-column-two-thirds govuk-!-margin-bottom-1">
+<dt class="govuk-summary-list__key">Training options @Model.DistanceDetails</dt>
+<dd class="govuk-summary-list__value">
 
     @if (Model.IsEmployerLocationAvailable)
     {
-        <div class="govuk-body">
+        <p class="govuk-body">
             <span asp-show="!@Model.ShowDistanceDetails">At apprentice's workplace</span>
             <span asp-show="@Model.ShowDistanceDetails">At apprentice's workplace: </span>
             <span asp-show="@Model.ShowDistanceDetails" class="govuk-!-font-weight-bold">0.0 miles</span>
-            <div class="govuk-body-s das-hint-colour">Training at the employer’s location.</div>
-        </div>
+            <br />
+            <span class="govuk-body-s das-hint-colour">Training at the employer’s location.</span>
+        </p>
     }
     @if (Model.IsBlockReleaseAvailable)
     {
-        <div class="govuk-body">
+        <p class="govuk-body">
             @if (Model.ShowDistanceDetails)
             {
                 @if (Model.IsBlockReleaseMultiple)
                 {
-                    <div>Block release at multiple locations: </div>
+                    <span>Block release at multiple locations: </span>
                     <span class="govuk-!-font-weight-bold">closest @Model.NearestBlockRelease miles</span>
                 }
                 else
@@ -33,25 +32,26 @@
             {
                 @if (Model.IsBlockReleaseMultiple)
                 {
-                    <div>Block release at multiple locations</div>
+                    <span>Block release at multiple locations</span>
                 }
                 else
                 {
                     <span>Block release</span>
                 }
             }
-            <div class="govuk-body-s das-hint-colour">Blocks of a week or more at the provider’s location.</div>
-        </div>
+            <br />
+            <span class="govuk-body-s das-hint-colour">Blocks of a week or more at the provider’s location.</span>
+        </p>
     }
     @if (Model.IsDayReleaseAvailable)
     {
-        <div class="govuk-body">
+        <p class="govuk-body">
             
             @if (Model.ShowDistanceDetails)
             {
                 @if (Model.IsDayReleaseMultiple)
                 {
-                    <div>Day release at multiple locations: </div>
+                    <span>Day release at multiple locations: </span>
                     <span class="govuk-!-font-weight-bold">closest @Model.NearestDayRelease miles</span>
                 }
                 else
@@ -64,14 +64,15 @@
             {
                 @if (Model.IsDayReleaseMultiple)
                 {
-                    <div>Day release at multiple locations </div>
+                    <span>Day release at multiple locations </span>
                 }
                 else
                 {
                     <span>Day release </span>
                 }
             }
-            <div class="govuk-body-s das-hint-colour">One day a week at the provider’s location. </div>
-        </div>
+            <br />
+            <span class="govuk-body-s das-hint-colour">One day a week at the provider’s location. </span>
+        </p>
     }
-</div>
+</dd>

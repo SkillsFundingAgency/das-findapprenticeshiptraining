@@ -14,158 +14,149 @@
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-6">
                 <span>Training providers for</span>
-                <span class="das-no-wrap">@Model.CourseTitleAndLevel</span>
+                <span>@Model.CourseTitleAndLevel</span>
             </h1>
             @if (Model.Providers.Count > 0)
             {
-                <h2 class="govuk-body  govuk-!-margin-bottom-5">Select the training provider name to view more details.</h2>
+                <p class="govuk-body-l  govuk-!-margin-bottom-8">Select the training provider name to view more details.</p>
             }
         </div>
     </div>
 
-    <div class="govuk-grid-row govuk-!-margin-top-4">
+    <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
             <form id="course-providers-form" method="GET">
                 <input type="hidden" name="OrderBy" value="@Context.Request.Query["OrderBy"]"/>
                 @await Html.PartialAsync("_filters", Model.Filters)
             </form>
         </div>
-
-        <div class="govuk-grid-column-two-thirds  govuk-!-padding-0">
-            <div class="govuk-grid-row das-bottom-margin">
-                <div class="govuk-grid-column-full govuk-!-padding-right-0">
-                    <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET">
-                        @foreach (var q in Context.Request.Query)
-                        {
-                            switch (q.Key.ToLower())
-                            {
-                                case "orderby":
-                                    continue;
-                                case "location":
-                                    <input type="hidden" name="@q.Key" value="@q.Value"/>
-                                    break;
-                                default:
-                                {
-                                    var itemValues = q.Value.ToString().Split(",").ToList();
-
-                                    foreach (var itemValue in itemValues)
-                                    {
-                                        <input type="hidden" name="@q.Key" value="@itemValue"/>
-                                    }
-                                    break;
-                                }
-                            }
-                        }
-                        <div class="govuk-grid-column-one-third govuk-!-padding-10">
-                            <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-top-2 das-no-wrap">@Model.TotalMessage</p>
-                    </div>
-                    @if (Model.Providers.Count > 0)
+        <div class="govuk-grid-column-two-thirds">
+            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET" class="app-search-results-header">
+                @foreach (var q in Context.Request.Query)
+                {
+                    switch (q.Key.ToLower())
                     {
-                        <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
-                            <p class="govuk-body govuk-!-text-align-right">
-                                <label class="govuk-label" for="sort">
-                                    Sort results &nbsp;&nbsp;
-                                    <select class="govuk-select" id="course-providers-orderby" name="OrderBy">
-                                        @foreach (var orderByOption in Model.ProviderOrderOptions)
-                                        {
-                                            <option value="@orderByOption.ProviderOrderBy" selected=@(orderByOption.Selected ? "selected" : null)>@orderByOption.Description</option>
-                                        }
-                                    </select>
-                                </label>
-                            </p>
-                        </div>
-                    }
-                    </form>
-                </div>
-            </div>
-        </div>
+                        case "orderby":
+                            continue;
+                        case "location":
+                            <input type="hidden" name="@q.Key" value="@q.Value"/>
+                            break;
+                        default:
+                        {
+                            var itemValues = q.Value.ToString().Split(",").ToList();
 
-        <div class="govuk-grid-column-two-thirds  govuk-!-padding-0">
+                            foreach (var itemValue in itemValues)
+                            {
+                                <input type="hidden" name="@q.Key" value="@itemValue"/>
+                            }
+                            break;
+                        }
+                    }
+                }
+                <div class="app-search-results-header__total">
+                    <p class="govuk-body govuk-!-font-weight-bold govuk-!-margin-0">@Model.TotalMessage</p>
+                </div>
+                @if (Model.Providers.Count > 0)
+                {
+                    <div class="app-search-results-header__sort">
+                        <div class="app-search-results-sort">
+                            <label class="govuk-label app-search-results-sort__label" for="course-providers-orderby">
+                                Sort results &nbsp;&nbsp;
+                            </label>
+                            <select class="govuk-select app-search-results-sort__select" id="course-providers-orderby" name="OrderBy">
+                                @foreach (var orderByOption in Model.ProviderOrderOptions)
+                                {
+                                    <option value="@orderByOption.ProviderOrderBy" selected=@(orderByOption.Selected ? "selected" : null)>@orderByOption.Description</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                }
+            </form>
+            
+            
 
         @if (Model.Providers.Count == 0)
         {
-            <div class="das-left-margin">
+           
                 <p class="govuk-body">
                     There are no training providers to match your search.
                 </p>
                 <p class="govuk-body">
                         You may need to:
                 </p>
-                <p class="govuk-body">
+          
                     <ul class="govuk-list govuk-list--bullet">
                         <li>clear the filters you've selected</li>
                         <li>increase the distance that the apprentice can travel</li>
                     </ul>
-                </p>
+             
                 <p class="govuk-body">
                     Change your search using the filters on this page or <a asp-route="@RouteNames.SearchCourses" class="govuk-link govuk-link--no-visited-state">start a new search</a>.
                 </p>
-                <hr />
-            </div>
+             
+         
         }
         else
         {
-            <div class="das-search-results course-provider-results-main">
+            <div class="das-search-results">
                 <ol class="das-search-results__list">
 
                     @foreach (var provider in Model.Providers)
                     {
                         <li>
-                            <div class="govuk-grid-row course-provider-results-top-panel">
-                                @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
-                                {
-                                    CourseId = Model.Id.ToString(),
-                                    ShortlistCount = Model.ShortlistCount,
-                                    ProviderName = provider.ProviderName,
-                                    ShortlistId = provider.ShortlistId,
-                                    Ukprn = provider.Ukprn,
-                                    Location = Model.Location,
-                                    Distance = Model.Distance
-                                })
-                            </div>
-                            <div class="govuk-grid-row course-provider-results-middle-panels">
-                                @await Html.PartialAsync("_trainingOptions", provider.TrainingOptionsViewModel)
-                            </div>
-
-                            <hr class="das-hr-no-margin" />
-
-                            <div class="govuk-grid-row course-provider-results-middle-panels">
-                                <div class="govuk-grid-column-one-third">
-                                    <h3 class="govuk-heading-s">
-                                        @Model.ProviderReviewsHeading
-                                    </h3>
+                            
+                            <div class="govuk-summary-card">
+                                
+                                <div>
+                                    @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
+                                    {
+                                        CourseId = Model.Id.ToString(),
+                                        ShortlistCount = Model.ShortlistCount,
+                                        ProviderName = provider.ProviderName,
+                                        ShortlistId = provider.ShortlistId,
+                                        Ukprn = provider.Ukprn,
+                                        Location = Model.Location,
+                                        Distance = Model.Distance
+                                    })
                                 </div>
-                                    <div class="govuk-grid-column-two-thirds das-bottom-margin">
-                                        @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
-                                        {
-                                            Stars = provider.EmployerStars,
-                                            Reviews = provider.EmployerReviews,
-                                            ProviderRating = provider.EmployerRating,
-                                            ProviderRatingType = ProviderRatingType.Employer
-                                        })
-                                        @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
-                                        {
-                                            Stars = provider.ApprenticeStars,
-                                            Reviews = provider.ApprenticeReviews,
-                                            ProviderRating = provider.ApprenticeRating,
-                                            ProviderRatingType = ProviderRatingType.Apprentice
-                                        })
-                                </div>
-                            </div>
 
-                            <hr class="das-hr-no-margin" />
+                                <div class="govuk-summary-card__content">
+                                    <dl class="govuk-summary-list">
 
-                            <div class="govuk-grid-row course-provider-results-bottom-panel">
-
-                                <div class="govuk-grid-column-one-third">
-                                    <h3 class="govuk-heading-s">@Model.CourseAchievementRateHeading</h3>
-                                </div>
-                                <div class="govuk-grid-column-two-thirds">
-                                    <div class="govuk-body">
-                                        @provider.AchievementRateMessage
-                                    </div>
+                                        <div class="govuk-summary-list__row">
+                                            @await Html.PartialAsync("_trainingOptions", provider.TrainingOptionsViewModel)
+                                        </div>
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key">
+                                                @Model.ProviderReviewsHeading
+                                            </dt>
+                                            <dd class="govuk-summary-list__value">
+                                                @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                                {
+                                                    Stars = provider.EmployerStars,
+                                                    Reviews = provider.EmployerReviews,
+                                                    ProviderRating = provider.EmployerRating,
+                                                    ProviderRatingType = ProviderRatingType.Employer
+                                                })
+                                                @await Html.PartialAsync("_providerRating", new ProviderRatingViewModel
+                                                {
+                                                    Stars = provider.ApprenticeStars,
+                                                    Reviews = provider.ApprenticeReviews,
+                                                    ProviderRating = provider.ApprenticeRating,
+                                                    ProviderRatingType = ProviderRatingType.Apprentice
+                                                })
+                                            </dd>
+                                        </div>
+                                        <div class="govuk-summary-list__row">
+                                            <dt class="govuk-summary-list__key">@Model.CourseAchievementRateHeading</dt>
+                                            <dd class="govuk-summary-list__value">
+                                                @provider.AchievementRateMessage
+                                            </dd>
+                                        </div>
+                                    </dl>
                                 </div>
                             </div>
                         </li>
@@ -173,10 +164,10 @@
                 </ol>
             </div>
         }
-        <div class="govuk-!-margin-top-4">
-        @await Html.PartialAsync("_pagination", Model.Pagination)
-        </div>
-        <div class="das-highlight-adjustment">
+            <div class="govuk-!-margin-top-4">
+            @await Html.PartialAsync("_pagination", Model.Pagination)
+            </div>
+       
             <div class="das-highlight">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-2">If you cannot find a suitable training provider</h3>
                 <p class="govuk-body">
@@ -191,7 +182,7 @@
                     <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.CourseId)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
                 </p>
             </div>
-        </div>
+   
         </div>
     </div>
 </main>
