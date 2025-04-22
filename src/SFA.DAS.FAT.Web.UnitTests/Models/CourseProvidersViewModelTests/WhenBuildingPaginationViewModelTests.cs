@@ -252,4 +252,79 @@ public class WhenBuildingPaginationViewModelTests
             sut.Pages[7].Url.Should().Contain("PageNumber=6");
         }
     }
+
+    [Test]
+    [MoqInlineAutoData("Location 1", "5", true)]
+    [MoqInlineAutoData("location 1", "100", true)]
+    [MoqInlineAutoData("location 3", "All", true)]
+    [MoqInlineAutoData(null, "5", false)]
+    [MoqInlineAutoData(null, "100", false)]
+    [MoqInlineAutoData(null, "All", false)]
+    public void Then_Pagination_2_Pages_Page_1_Distance_Is_Set(
+        string location,
+        string distance,
+        bool isDistanceInPaginationUrl,
+        CourseProvidersRequest request,
+        [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
+    {
+        var numberOfResults = 11;
+        request.Distance = distance;
+        request.Location = location;
+
+        //Act
+        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        {
+            Location = request.Location,
+            Distance = request.Distance,
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        vm.Pagination = new PaginationViewModel(
+            1,
+        numberOfResults,
+           Constants.DefaultPageSize,
+            _urlHelperMock.Object,
+            RouteNames.CourseProviders,
+            vm.ToQueryString()
+            );
+
+
+        var sut = vm!.Pagination;
+
+        //Assert
+        using (new AssertionScope())
+        {
+
+            sut.Should().NotBeNull();
+            sut.Pages.Should().HaveCount(3);
+            sut.Pages[0].Title.Should().Be("1");
+            sut.Pages[0].HasLink.Should().BeFalse();
+            sut.Pages[0].Url.Should().BeNull();
+            sut.Pages[1].Title.Should().Be("2");
+            sut.Pages[1].HasLink.Should().BeTrue();
+            sut.Pages[1].Url.Should().Contain("PageNumber=2");
+            sut.Pages[2].Title.Should().Be(PaginationViewModel.NextPageTitle);
+            sut.Pages[2].HasLink.Should().BeTrue();
+            sut.Pages[2].Url.Should().Contain("PageNumber=2");
+
+            var urlCheck = sut.Pages[2].Url;
+
+            urlCheck.Should().Contain(TestConstants.DefaultUrl);
+            switch (isDistanceInPaginationUrl)
+            {
+                case true:
+                    urlCheck.Should().Contain($"Distance={distance}");
+                    break;
+                default:
+                    urlCheck.Should().NotContain($"Distance={distance}");
+                    break;
+            }
+
+        }
+    }
 }
