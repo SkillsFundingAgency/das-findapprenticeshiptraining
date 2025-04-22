@@ -3,50 +3,48 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProviderTopPanelViewModel
 
-<div class="app-course-provider">
-    <div class="govuk-grid-column-two-thirds das-bottom-margin govuk-!-padding-0 app-course-provider-shortlisted-tag @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">
-        <strong class="govuk-tag app-provider-shortlist-tag">Shortlisted</strong>
-    </div>
+<div class="govuk-summary-card__title-wrapper app-course-provider-shortlisted-tag @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">
+    <strong class="govuk-tag app-provider-shortlist-tag">Shortlisted</strong>
+</div>
 
-    <div class="govuk-grid-column-two-thirds govuk-!-padding-left-0">
-        <h2 class="govuk-heading-m das-search-results__heading">
-            <a class="das-search-results__link das-button--inline-link" id="provider-@Model.Ukprn"
-                asp-all-route-data="@Model.ProviderRouteData"
-                asp-route="@RouteNames.CourseProviderDetails">
-                @Model.ProviderName
-            </a>
-        </h2>
-    </div>
 
-    <div class="govuk-grid-column-one-third govuk-body">
-        <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? Model.ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "" : "app-provider-shortlist-full" :  "app-provider-shortlist-added")">
-            <div class="app-provider-shortlist-add">
-                <form method="post" asp-route="@RouteNames.CreateShortlistItem">
-                    <input type="hidden" name="larsCode" value="@Model.CourseId" />
-                    <input type="hidden" name="ukprn" value="@Model.Ukprn" />
-                    <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                    <input type="hidden" name="routeName" value="@RouteNames.CourseProviders" />
-                    <input type="hidden" name="locationName" value="@Model.Location" />
-                    <button id="add-to-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Add to shortlist</button>
-                </form>
-            </div>
-            <div class="app-provider-shortlist-manage">
-                <span class="das-text--warning">Shortlist full.</span>
-                <p>
+<div class="govuk-summary-card__title-wrapper">
+    <h2 class="govuk-summary-card__title govuk-!-font-size-24">
+        <a class="govuk-link" id="provider-@Model.Ukprn"
+           asp-all-route-data="@Model.ProviderRouteData"
+           asp-route="@RouteNames.CourseProviderDetails">
+            @Model.ProviderName
+        </a>
+    </h2>
+    <ul class="govuk-summary-card__actions">
+        <li class="govuk-summary-card__action">
+            <div class="@(Model.ShortlistId == null ? Model.ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "" : "app-provider-shortlist-full" : "app-provider-shortlist-added")">
+                <div class="app-provider-shortlist-add">
+                    <form method="post" asp-route="@RouteNames.CreateShortlistItem">
+                        <input type="hidden" name="larsCode" value="@Model.CourseId"/>
+                        <input type="hidden" name="ukprn" value="@Model.Ukprn"/>
+                        <input type="hidden" name="providerName" value="@Model.ProviderName"/>
+                        <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
+                        <input type="hidden" name="locationName" value="@Model.Location"/>
+                        <button id="add-to-shortlist-@(Model.Ukprn)" class="das-button--inline-link govuk-!-font-weight-regular das-no-wrap" type="submit">Add to shortlist</button>
+                    </form>
+                </div>
+                <div class="app-provider-shortlist-manage">
+                    <span class="das-text--warning">Shortlist full.</span>
                     <a asp-route="@RouteNames.ShortLists" class="govuk-body govuk-link govuk-link--no-visited-state">
                         Manage shortlist
                     </a>
-                </p>
+                </div>
+                <div class="app-provider-shortlist-remove">
+                    <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
+                        <input type="hidden" name="ukprn" value="@Model.Ukprn"/>
+                        <input type="hidden" name="providerName" value="@Model.ProviderName"/>
+                        <input type="hidden" name="trainingCode" value="@Model.CourseId"/>
+                        <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
+                        <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link govuk-!-font-weight-regular das-no-wrap" type="submit">Remove from shortlist</button>
+                    </form>
+                </div>
             </div>
-            <div class="app-provider-shortlist-remove">
-                <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
-                    <input type="hidden" name="ukprn" value="@Model.Ukprn" />
-                    <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                    <input type="hidden" name="trainingCode" value="@Model.CourseId" />
-                    <input type="hidden" name="routeName" value="@RouteNames.CourseProviders" />
-                    <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link das-no-wrap" type="submit">Remove from shortlist</button>
-                </form>
-            </div>
-        </div>
-    </div>
+        </li>
+    </ul>
 </div>
