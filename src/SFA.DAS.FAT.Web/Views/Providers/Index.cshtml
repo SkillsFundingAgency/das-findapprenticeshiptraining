@@ -49,7 +49,8 @@
             </div>
         </details>
     </div>
-    <hr/>
+
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
     <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
         Training provider achievements and participation
@@ -97,7 +98,7 @@
         </div>
     </div>
     <div class="govuk-inset-text">Data for all courses delivered by this provider, collected by the Department for Education.</div>
-    <hr/>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
         Employer and apprentice reviews for this training provider
     </h3>
@@ -115,7 +116,7 @@
                         <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 3 ? "--empty" : "")"></span>
                         <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 4 ? "--empty" : "")"></span>
                     </span>
-                    <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating</span>
+                    <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating</span>
                 </p>
                 <p class="govuk-body-s govuk-!-margin-bottom-2">
                     @Model.Reviews.EmployerStarsMessage
@@ -144,7 +145,7 @@
                         <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 3 ? "--empty" : "")"></span>
                         <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 4 ? "--empty" : "")"></span>
                     </span>
-                    <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating</span>
+                    <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating</span>
                 </p>
                 <p class="govuk-body-s govuk-!-margin-bottom-2">
                     @Model.Reviews.ApprenticeStarsMessage
@@ -436,7 +437,7 @@
     <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
         Contact this training provider
     </h3>
-    <hr/>
+    <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
     <dl class="govuk-summary-list">
         <div class="govuk-summary-list__row">
             <dt class="govuk-summary-list__key">
@@ -460,7 +461,7 @@
             <dd class="govuk-summary-list__value">
                 @if (!string.IsNullOrEmpty(Model.Contact?.Email))
                 {
-                    <a href="mailto:@Model.Contact.Email">@Model.Contact.Email</a>
+                    <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
                 }
                 else
                 {
@@ -490,7 +491,7 @@
             <dd class="govuk-summary-list__value">
                 @if (!string.IsNullOrEmpty(Model.Contact?.Website))
                 {
-                    <a href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a>
+                    <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
                 }
                 else
                 {

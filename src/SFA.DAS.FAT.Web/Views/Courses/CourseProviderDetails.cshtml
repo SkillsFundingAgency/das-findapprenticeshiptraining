@@ -77,6 +77,7 @@
                             <div class="govuk-grid-row">
                                 <div class="govuk-grid-column-two-thirds">
                                     <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                                <div class="govuk-!-margin-bottom-2"></div>
                                 </div>
                                 <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
                                     <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
@@ -373,7 +374,7 @@
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 3 ? "--empty" : "")"></span>
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 4 ? "--empty" : "")"></span>
                             </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
+                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
                         </p>
 
                         <p class="govuk-body-s govuk-!-margin-bottom-2">
@@ -411,7 +412,7 @@
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 3 ? "--empty" : "")"></span>
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 4 ? "--empty" : "")"></span>
                             </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
+                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
                         </p>
 
                         <p class="govuk-body-s govuk-!-margin-bottom-2">
@@ -441,7 +442,7 @@
 
             @*  View results of our survey with employers and apprentices for this provider *@
 
-            <details class="govuk-details govuk-!-margin-bottom-1">
+            <details class="govuk-details govuk-!-margin-bottom-8">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
                         View results of our survey with employers and apprentices for this provider
@@ -539,8 +540,8 @@
                     <a class="govuk-link govuk-link--no-visited-state"
                        asp-route="@RouteNames.Provider"
                        asp-route-ukprn="@Model.Ukprn">
-                        provider details page for @Model.ProviderName.
-                    </a>
+                        provider details page for @Model.ProviderName
+                    </a>.
                 </p>
             </div>
         }
