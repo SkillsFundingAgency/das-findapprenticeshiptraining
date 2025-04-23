@@ -210,7 +210,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 1;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo("View 1 training provider for this course."));
+        Assert.That(_sut, Is.EqualTo("View 1 training provider for this course"));
     }
 
     [Test, MoqAutoData]
@@ -223,7 +223,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 2;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course."));
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course"));
     }
 
     [Test, MoqAutoData]
@@ -236,7 +236,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 0;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo("Ask if training providers can run this course."));
+        Assert.That(_sut, Is.EqualTo("Ask if training providers can run this course"));
     }
 
     [Test, MoqAutoData]
@@ -250,7 +250,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 1;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo("View 1 training provider for this course."));
+        Assert.That(_sut, Is.EqualTo("View 1 training provider for this course"));
     }
 
     [Test, MoqAutoData]
@@ -264,7 +264,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 2;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course."));
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers for this course"));
     }
 
     [Test, MoqAutoData]
@@ -278,7 +278,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 1;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training provider within {model.Distance} miles."));
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training provider within {model.Distance} miles"));
     }
 
     [Test, MoqAutoData]
@@ -292,7 +292,7 @@ public class WhenCreatingCoursesViewModel
 
         standardViewModel.ProvidersCount = 2;
         var _sut = model.GetProvidersLinkDisplayMessage(standardViewModel);
-        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers within {model.Distance} miles."));
+        Assert.That(_sut, Is.EqualTo($"View {standardViewModel.ProvidersCount} training providers within {model.Distance} miles"));
     }
 
     [Test, MoqAutoData]
