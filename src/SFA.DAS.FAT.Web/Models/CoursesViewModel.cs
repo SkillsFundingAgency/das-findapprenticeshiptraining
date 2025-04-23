@@ -139,8 +139,8 @@ public class CoursesViewModel : PageLinksViewModelBase
                 $"{standard.ProvidersCount} training providers";
 
         return isNationalSearch
-            ? $"View {providerText} for this course."
-            : $"View {providerText} within {Distance} miles.";
+            ? $"View {providerText} for this course"
+            : $"View {providerText} within {Distance} miles";
     }
 
     public string GetProvidersLink(StandardViewModel standard)
