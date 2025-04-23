@@ -66,25 +66,26 @@
 
             @* Search courses by location *@
 
-            <form method="GET"
-                  class="govuk-!-width-two-thirds"
-                  asp-route="@RouteNames.CourseProviderDetails">
-                <input type="hidden" name="Distance" value="@Model.Distance" />
+            @if(string.IsNullOrWhiteSpace(Model.Location))
+            {
+                <form method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
+                    <input type="hidden" name="Distance" value="@Model.Distance" />
 
-                <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
-                    <div class="govuk-form-group">
-                        <p for="search-location" class="govuk-hint">Enter a city or postcode</p>
-                        <div class="govuk-grid-row">
-                            <div class="govuk-grid-column-two-thirds">
-                                <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
-                            </div>
-                            <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
-                                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+                    <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
+                        <div class="govuk-form-group">
+                            <p for="search-location" class="govuk-hint">Enter a city or postcode</p>
+                            <div class="govuk-grid-row">
+                                <div class="govuk-grid-column-two-thirds">
+                                    <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                                </div>
+                                <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
+                                    <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            }
 
             @* Search courses by location *@
 
@@ -563,8 +564,8 @@
                                 <input type="hidden" name="larsCode" value="@Model.CourseId" />
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                                <input type="hidden" name="RouteName" value="@RouteNames.CourseProviderDetails" />
-                                <input type="hidden" name="LocationName" value="@Model.Location" />
+                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
+                                <input type="hidden" name="locationName" value="@Model.Location" />
                                 <button id="add-to-shortlist-@(Model.Ukprn)" class="govuk-button govuk-!-margin-bottom-0" type="submit">Add to shortlist</button>
                             </form>
                         </div>
@@ -575,13 +576,13 @@
                             </a>
                         </div>
                         <div class="app-provider-shortlist-remove govuk-body govuk-!-margin-bottom-0">
-                            <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 app-course-provider-shortlisted-tag @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>
+                            <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>
                             <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
                                 <input type="hidden" name="trainingCode" value="@Model.CourseId" />
-                                <input type="hidden" name="RouteName" value="@RouteNames.CourseProviderDetails" />
-                                <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Remove from shortlist</button>
+                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
+                                <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link das-no-wrap" type="submit">Remove from shortlist</button>
                             </form>
                         </div>
                     </div>
