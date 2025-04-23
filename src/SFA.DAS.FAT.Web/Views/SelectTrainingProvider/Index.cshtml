@@ -27,7 +27,7 @@
                         <p class="govuk-hint">Start typing the provider's name or UKPRN</p>
                         <span asp-validation-for="SearchTerm" class="govuk-error-message"></span>
                         <div data-module="govuk-input">
-                            <input id="SearchTerm" type="text"
+                            <input id="SearchTerm" type="text" title="Type name or UKPRN here"
                                    asp-for="SearchTerm" class="govuk-input" sfa-validationerror-class="form-control-error" data-module="autoComplete" />
 
                             <label for="SearchTerm" class="govuk-visually-hidden">Search Result: @Model.Name, @Model.Ukprn</label>
