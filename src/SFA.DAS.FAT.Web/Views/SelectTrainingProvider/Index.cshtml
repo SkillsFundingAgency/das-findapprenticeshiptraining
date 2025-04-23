@@ -6,36 +6,35 @@
     ViewData["Title"] = "Search for a training provider";
     ViewData["Description"] = $"Search for a training provider";
 }
-
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <partial name="_validationSummary" />
-        <form asp-route="@RouteNames.SelectProvider" method="POST">
-            <div class="govuk-form-group">
-                <fieldset class="govuk-fieldset">
-                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                        <h1 class="govuk-fieldset__heading">
-                            Search for a training provider
-                        </h1>
-                    </legend>
-                    <input asp-for="Name" id="Name" type="hidden" />
-                    <input asp-for="Ukprn" id="Ukprn" type="hidden" />
-                    <p class="govuk-body">
-                        Search for a training provider by name or UK provider reference number (UKPRN).
-                    </p>
-                    <p class="govuk-hint">Start typing the provider's name or UKPRN</p>
-                    <span asp-validation-for="SearchTerm" class="govuk-error-message"></span>
-                    <div data-module="govuk-input">
-                        <input id="SearchTerm" type="text"
-                               asp-for="SearchTerm" class="govuk-input" sfa-validationerror-class="form-control-error" data-module="autoComplete" />
-
-                        <label for="SearchTerm" class="govuk-visually-hidden">Search Result: @Model.Name, @Model.Ukprn</label>
-                    </div>
-                </fieldset>
-            </div>
-            <div class="govuk-button-group">
-                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Continue</button>
-            </div>
-        </form>
+<main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <partial name="_validationSummary" />
+            <form asp-route="@RouteNames.SelectProvider" method="POST">
+                <div class="govuk-form-group">
+                    <fieldset class="govuk-fieldset">
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 class="govuk-fieldset__heading">
+                                Search for a training provider
+                            </h1>
+                        </legend>
+                        <input asp-for="Name" id="Name" type="hidden" />
+                        <input asp-for="Ukprn" id="Ukprn" type="hidden" />
+                        <div class="govuk-form-group">
+                        <label class="govuk-label" for="SearchTerm">
+                                Search for a training provider by name or UK provider reference number (UKPRN).
+                            </label>
+                            <p class="govuk-hint">Start typing the provider's name or UKPRN</p>
+                            <span asp-validation-for="SearchTerm" class="govuk-error-message"></span>
+                                <input id="SearchTerm" type="text"
+                                       asp-for="SearchTerm" class="govuk-input" sfa-validationerror-class="form-control-error" data-module="autoComplete" />
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="govuk-button-group">
+                    <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Continue</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+</main>
