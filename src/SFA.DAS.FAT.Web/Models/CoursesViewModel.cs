@@ -89,7 +89,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
 
-    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course.";
+    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
