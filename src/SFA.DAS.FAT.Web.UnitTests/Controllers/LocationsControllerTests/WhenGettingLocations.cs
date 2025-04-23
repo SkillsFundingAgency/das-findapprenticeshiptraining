@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +35,37 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.LocationsControllerTests
             actualResult.Should().NotBeNull();
             var model = (LocationsViewModel)actualResult!.Value;
             model.Should().NotBeNull();
+        }
+
+
+        [Test]
+        [MoqInlineAutoData(null)]
+        [MoqInlineAutoData("       ")]
+        [MoqInlineAutoData("1")]
+        public async Task Then_The_SearchTerm_Is_Null_Or_Short(
+            string searchTerm,
+            GetLocationsQueryResponse response,
+            [Frozen] Mock<IMediator> mediator,
+            [Greedy] LocationsController controller)
+        {
+            //Arrange
+            mediator.Setup(x =>
+                    x.Send(It.Is<GetLocationsQuery>(c =>
+                        c.SearchTerm.Equals(searchTerm)), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(response);
+
+            //Act
+            var actual = await controller.Locations(searchTerm);
+
+            //Assert
+            actual.Should().NotBeNull();
+            var actualResult = actual as JsonResult;
+            actualResult.Should().NotBeNull();
+            var model = (LocationsViewModel)actualResult!.Value;
+            model.Should().NotBeNull();
+            model.Locations.Count.Should().Be(0);
+            mediator.Verify(x => x.Send(It.IsAny<GetLocationsQuery>(), It.IsAny<CancellationToken>()), Times.Never);
+
         }
     }
 }
