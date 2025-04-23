@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         private readonly ILogger<CoursesController> _logger;
         private readonly IMediator _mediator;
 
-        public LocationsController (
+        public LocationsController(
             ILogger<CoursesController> logger,
             IMediator mediator)
         {
@@ -25,8 +26,12 @@ namespace SFA.DAS.FAT.Web.Controllers
 
         [HttpGet]
         [Route("")]
-        public async Task<IActionResult> Locations([FromQuery]string searchTerm)
+        public async Task<IActionResult> Locations([FromQuery] string searchTerm)
         {
+            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Trim().Length < 2)
+            {
+                return new JsonResult(new LocationsViewModel { Locations = new List<LocationViewModel>() });
+            }
             var result = await _mediator.Send(new GetLocationsQuery
             {
                 SearchTerm = searchTerm
@@ -34,9 +39,9 @@ namespace SFA.DAS.FAT.Web.Controllers
 
             var model = new LocationsViewModel
             {
-                Locations = result.LocationItems.Select(c=>(LocationViewModel)c).ToList()
+                Locations = result.LocationItems.Select(c => (LocationViewModel)c).ToList()
             };
-            
+
             return new JsonResult(model);
         }
     }
