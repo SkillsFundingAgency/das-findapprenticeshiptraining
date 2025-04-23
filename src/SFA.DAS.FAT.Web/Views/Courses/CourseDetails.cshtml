@@ -59,19 +59,16 @@
                                     <span class="govuk-!-font-weight-regular">@Model.GetApprenticeCanTravelDisplayMessage()</span>
                                 </h3>
 
-                                <div class="govuk-grid-row">
-                                    <div class="govuk-grid-column-full course-details-call-to-action">
-                                        <a class="govuk-button govuk-!-margin-bottom-0"
-                                           asp-route="@RouteNames.CourseProviders"
-                                           asp-route-id="@Model.LarsCode"
-                                           asp-route-location="@Model.Location"
-                                           asp-route-distance="@Model.Distance"
-                                        >
-                                            View providers for this course
-                                        </a>
-
-                                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-distance="@Model.Distance">Remove location</a>
-                                    </div>
+                                <div class="govuk-button-group govuk-!-margin-bottom-0">
+                                    <a class="govuk-button govuk-!-margin-bottom-0"
+                                       asp-route="@RouteNames.CourseProviders"
+                                       asp-route-id="@Model.LarsCode"
+                                       asp-route-location="@Model.Location"
+                                       asp-route-distance="@Model.Distance"
+                                    >
+                                        View providers for this course
+                                    </a>
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-distance="@Model.Distance">Remove location</a>
                                 </div>
                             </form>
                         </div>

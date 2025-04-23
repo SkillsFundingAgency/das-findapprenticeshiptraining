@@ -148,7 +148,11 @@
 }
 
 .app-provider-shortlisted{
-  display: block;
+  display: inline-block;
+}
+
+.app-course-provider-shortlisted-tag.app-provider-shortlisted {
+    display: block;
 }
 
 .das-button--inline-link {
@@ -455,15 +459,6 @@
 
 .das-left-margin {
     padding-left: 15px;
-}
-
-.course-details-call-to-action {
-    display: flex;
-    gap: 25px;
-}
-
-.course-details-call-to-action a {
-    align-self: center;
 }
 
 .govuk-summary-list.govuk-summary-list-align-right .govuk-summary-list__row {
