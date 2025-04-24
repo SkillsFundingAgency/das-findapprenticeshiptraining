@@ -42,6 +42,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.LocationsControllerTests
         [MoqInlineAutoData(null)]
         [MoqInlineAutoData("       ")]
         [MoqInlineAutoData("1")]
+        [MoqInlineAutoData("12")]
+        [MoqInlineAutoData("12     ")]
+        [MoqInlineAutoData("      12     ")]
         public async Task Then_The_SearchTerm_Is_Null_Or_Short(
             string searchTerm,
             GetLocationsQueryResponse response,
