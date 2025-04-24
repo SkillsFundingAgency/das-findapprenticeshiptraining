@@ -280,7 +280,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be("All");
+            actualModel!.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
         }
     }
 

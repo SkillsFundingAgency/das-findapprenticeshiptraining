@@ -238,7 +238,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
+            Distance = DistanceService.TEN_MILES.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))

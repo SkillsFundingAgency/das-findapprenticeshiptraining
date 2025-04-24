@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -28,7 +29,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        request.Distance = "1000";
+        request.Distance = "10";
 
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
@@ -38,7 +39,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(1000) &&
+                    c.Distance.Equals(DistanceService.TEN_MILES) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber) &&
@@ -83,7 +84,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(1000) &&
+                    c.Distance.Equals(DistanceService.TEN_MILES) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber)
@@ -142,7 +143,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(1000) &&
+                    c.Distance.Equals(DistanceService.TEN_MILES) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories)
                 ),
@@ -183,7 +184,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(1000) &&
+                    c.Distance.Equals(DistanceService.TEN_MILES) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories)
                 ),
