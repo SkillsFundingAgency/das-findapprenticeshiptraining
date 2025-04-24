@@ -148,24 +148,9 @@ public class CoursesController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
 
-        int? convertedDistance = null;
-
-        if(!string.IsNullOrWhiteSpace(location))
+        if(!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
         {
-            if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
-            {
-                convertedDistance = null;
-            }
-            else if (!DistanceService.IsValidDistance(distance))
-            {
-                convertedDistance = DistanceService.TEN_MILES;
-                distance = DistanceService.TEN_MILES.ToString();
-            }
-            else
-            {
-                convertedDistance = DistanceService.GetValidDistance(distance);
-                distance = convertedDistance.ToString();
-            }
+            distance = DistanceService.TEN_MILES.ToString();
         }
         
         var query = new GetCourseProviderDetailsQuery
@@ -173,7 +158,7 @@ public class CoursesController : Controller
             Ukprn = ProviderId,
             LarsCode = id,
             Location = location,
-            Distance = convertedDistance,
+            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
             ShortlistUserId = shortlistUserId
         };
 

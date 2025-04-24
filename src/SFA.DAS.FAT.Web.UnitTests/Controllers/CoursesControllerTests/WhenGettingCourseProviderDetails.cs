@@ -41,7 +41,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(distance) &&
+                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ), 
             It.IsAny<CancellationToken>()
@@ -64,7 +64,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == distance &&
+                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -96,7 +96,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(distance) &&
+                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -119,7 +119,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == distance &&
+                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -162,7 +162,7 @@ public class WhenGettingCourseProviderDetails
     }
 
     [Test, MoqAutoData]
-    public async Task When_Distance_Is_Not_Set_Then_Distance_Defaults_To_Ten_Miles(
+    public async Task When_Location_Is_Set_Then_Distance_Defaults_To_One_Thousand_Miles(
         int courseId,
         int providerId,
         string location,
@@ -176,7 +176,6 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = null;
-        int expectedDistance = 10;
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -186,7 +185,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(distance) &&
+                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -209,7 +208,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == expectedDistance &&
+                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -233,7 +232,6 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = "All";
-        int? expectedDistance = null;
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -243,7 +241,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(distance) &&
+                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -258,7 +256,11 @@ public class WhenGettingCourseProviderDetails
 
         var result = await sut.CourseProviderDetails(courseId, providerId, location, distance);
 
-        Assert.That(result, Is.Not.Null);
+        var viewResult = result as ViewResult;
+        Assert.That(viewResult, Is.Not.Null);
+
+        var model = viewResult.Model as CourseProviderViewModel;
+        Assert.That(model, Is.Not.Null);
 
         mediator.Verify(a =>
              a.Send(
@@ -266,13 +268,15 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == expectedDistance &&
+                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
              ),
              Times.Once
          );
+
+        Assert.That(model.Distance, Is.EqualTo(distance));
     }
 
     [Test, MoqAutoData]
@@ -360,7 +364,7 @@ public class WhenGettingCourseProviderDetails
                 q.LarsCode == query.LarsCode &&
                 q.Ukprn == query.Ukprn &&
                 q.Location == query.Location &&
-                q.Distance == DistanceService.TEN_MILES &&
+                q.Distance == DistanceService.DEFAULT_DISTANCE &&
                 q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
             ),
             It.IsAny<CancellationToken>()),

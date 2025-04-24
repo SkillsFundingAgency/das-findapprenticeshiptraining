@@ -1,5 +1,4 @@
 @using SFA.DAS.FAT.Domain.Courses
-@using SFA.DAS.FAT.Web.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
@@ -29,39 +28,64 @@
                 Training options for this course
             </h3>
 
-            <p class="govuk-body">
-                This provider offers these training options for this course. 
-                
-                <span class="govuk-!-font-weight-bold">
-                    Search for a city or postcode
-                </span>
-                
-                to view what options are available in your location and distances from your location to the training options.
-            </p>
+            @if (string.IsNullOrWhiteSpace(Model.Location))
+            {
+                <p class="govuk-body">
+                    This provider offers these training options for this course.
+
+                    <span class="govuk-!-font-weight-bold">
+                        Search for a city or postcode
+                    </span>
+
+                    to view what options are available in your location and distances from your location to the training options.
+                </p>
+            }
+            else
+            {
+                <p class="govuk-body">
+                    This provider offers these training options for this course in <strong>@Model.Location</strong>.
+
+                    You can
+
+                    <a class="govuk-link govuk-link--no-visited-state"
+                       asp-route="@RouteNames.CourseProviderDetails"
+                       asp-route-id="@Model.LarsCode"
+                       asp-route-providerId="@Model.Ukprn">
+                        remove or change your location
+                    </a>.
+
+                    This may change what options are available.
+                </p>
+
+                <p class="govuk-body">
+                    If there are multiple training options, the apprentice may do a combination of these.
+
+                    You'll need to contact the provider to confirm what training they offer.
+                </p>
+            }
 
             @* Search courses by location *@
 
-            <form 
-                method="GET" 
-                class="govuk-!-width-two-thirds" 
-                asp-route="@RouteNames.CourseProviderDetails"
-            >
-                <input type="hidden" name="Distance" value="@Model.Distance" />
+            @if(string.IsNullOrWhiteSpace(Model.Location))
+            {
+                <form method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
+                    <input type="hidden" name="Distance" value="@Model.Distance" />
 
-                <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
-                    <div class="govuk-form-group">
-                        <p for="search-location" class="govuk-hint">Enter a city or postcode</p>
-                        <div class="govuk-grid-row">
-                            <div class="govuk-grid-column-two-thirds">
-                                <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
-                            </div>
-                            <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
-                                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+                    <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
+                        <div class="govuk-form-group">
+                            <p for="search-location" class="govuk-hint">Enter a city or postcode</p>
+                            <div class="govuk-grid-row">
+                                <div class="govuk-grid-column-two-thirds">
+                                    <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                                </div>
+                                <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
+                                    <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </form>
+                </form>
+            }
 
             @* Search courses by location *@
 
@@ -87,9 +111,18 @@
                                 <p class="govuk-body-m das-hint-colour">Training at the employer's location.</p>
                             </th>
                             <td class="govuk-table__cell">
-                                <p class="govuk-body govuk-!-margin-top-2">
-                                    @Model.ApprenticeWorkplaceDisplayMessage
-                                </p>
+                                @if (string.IsNullOrWhiteSpace(Model.Location))
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        @Model.ApprenticeWorkplaceDisplayMessage
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        <strong>@Model.NationalWorkLocationDistanceDisplayText</strong> to apprentice's work location
+                                    </p>
+                                }
                             </td>
                         </tr>
                     }
@@ -109,7 +142,17 @@
                             <td class="govuk-table__cell">
                                 @if (Model.HasMultipleBlockReleaseLocations)
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
+                                    if (string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
+
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -118,9 +161,20 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (string locationName in Model.BlockReleaseLocations)
+                                                @foreach (LocationModel location in Model.BlockReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
                                                 {
-                                                    <li>@locationName</li>
+                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
+                                                    {
+                                                        <li>
+                                                            @location.FormatAddress()
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                        </li>
+                                                    }
                                                 }
                                             </ul>
                                         </div>
@@ -128,7 +182,16 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0]</p>
+                                    if (string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0].FormatAddress()</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
                                 }
                             </td>
                         </tr>
@@ -149,7 +212,17 @@
                             <td class="govuk-table__cell">
                                 @if (Model.HasMultipleDayReleaseLocations)
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
+                                    if (string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
+
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
@@ -158,9 +231,20 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (string locationName in Model.DayReleaseLocations)
+                                                @foreach (LocationModel location in Model.DayReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
                                                 {
-                                                    <li>@locationName</li>
+                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
+                                                    {
+                                                        <li>
+                                                            @location.FormatAddress()
+                                                        </li>
+                                                    }
+                                                    else
+                                                    {
+                                                        <li>
+                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                        </li>
+                                                    }
                                                 }
                                             </ul>
                                         </div>
@@ -168,7 +252,16 @@
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0]</p>
+                                    if (string.IsNullOrWhiteSpace(Model.Location))
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0")</strong> miles to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                        </p>
+                                    }
                                 }
                             </td>
                         </tr>
@@ -207,14 +300,13 @@
                     }
                     else
                     {
-
                         <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
                             No data
                         </h2>
 
                         <p class="govuk-body-s">
-                            There is not enough data to show the achievement rate for this course. 
-                            This may be because a small number of apprentices completed this course, 
+                            There is not enough data to show the achievement rate for this course.
+                            This may be because a small number of apprentices completed this course,
                             or this is a new course for this provider.
                         </p>
                     }
@@ -267,7 +359,7 @@
 
             <div class="das-reviews">
 
-            @* Employers Container *@
+                @* Employers Container *@
 
                 <div class="govuk-grid-column-one-half das-reviews-container">
 
@@ -341,7 +433,7 @@
                     }
                 </div>
 
-            @* Apprentices Container *@
+                @* Apprentices Container *@
 
             </div>
 
@@ -413,7 +505,7 @@
 
         @* Training provider overview and courses delivered *@
 
-        @if(Model.Courses.Any())
+        @if (Model.Courses.Any())
         {
             <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
@@ -434,7 +526,7 @@
                             {
                                 <li class="govuk-task-list__item govuk-task-list__item--with-link">
                                     <div class="govuk-task-list__name-and-hint">
-                                        <a class="govuk-link govuk-link--no-visited-state govuk-task-list__link" asp-route="@RouteNames.CourseDetails" asp-route-id="@Model.LarsCode" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
+                                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
                                             @course.NameAndLevel
                                         </a>
                                     </div>
@@ -445,27 +537,26 @@
                 </details>
 
                 <p class="govuk-body">
-                    @Html.MarkdownToHtml(@Model.Contact?.MarketingInfo)
+                    @Model.Contact.MarketingInfo
                 </p>
 
                 <p class="govuk-body">
                     For general information about this provider, such as the total participation
                     and achievement rate for all courses they deliver, view our
-                    <a class="govuk-link govuk-link--no-visited-state" 
-                        asp-route="@RouteNames.Provider" 
-                        asp-route-ukprn="@Model.Ukprn"
-                    >
+                    <a class="govuk-link govuk-link--no-visited-state"
+                       asp-route="@RouteNames.Provider"
+                       asp-route-ukprn="@Model.Ukprn">
                         provider details page for @Model.ProviderName.
                     </a>
                 </p>
             </div>
         }
-        
+
         @* Training provider overview and courses delivered *@
 
         <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
             <div class="app-course-provider">
-                
+
                 <div class="das-highlight govuk-!-margin-bottom-5">
                     <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
                         <div class="app-provider-shortlist-add">
@@ -474,7 +565,7 @@
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
                                 <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
-                                <input type="hidden" name="LocationName" value="@Model.Location" />
+                                <input type="hidden" name="locationName" value="@Model.Location" />
                                 <button id="add-to-shortlist-@(Model.Ukprn)" class="govuk-button govuk-!-margin-bottom-0" type="submit">Add to shortlist</button>
                             </form>
                         </div>
@@ -485,13 +576,13 @@
                             </a>
                         </div>
                         <div class="app-provider-shortlist-remove govuk-body govuk-!-margin-bottom-0">
-                            <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 app-course-provider-shortlisted-tag @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>
+                            <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>
                             <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
                                 <input type="hidden" name="trainingCode" value="@Model.CourseId" />
                                 <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
-                                <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link" type="submit">Remove from shortlist</button>
+                                <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link das-no-wrap" type="submit">Remove from shortlist</button>
                             </form>
                         </div>
                     </div>
@@ -501,12 +592,12 @@
                         <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is 1 of @Model.TotalProvidersCount training providers for @Model.CourseNameAndLevel.</p>
                         <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.CourseId">View training providers for this course</a></p>
                     }
-                    
+
                     @if (Model.TotalProvidersCount == 1)
                     {
                         <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is the only training provider for @Model.CourseNameAndLevel.</p>
                     }
-                    
+
                 </div>
             </div>
         </div>
