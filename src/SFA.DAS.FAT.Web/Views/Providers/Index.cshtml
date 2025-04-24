@@ -213,7 +213,7 @@
                                     <div class="govuk-heading-s">Areas of strength and improvement</div>
                                     <p class="govuk-body">Employers can select:</p>
                                     <ul>
-                                        <li>up to 3 things they think are your strength</li>
+                                        <li>up to 3 things they think are your strengths</li>
                                         <li>up to 3 things they think need improvement</li>
                                     </ul>
                                 </span>
@@ -241,8 +241,9 @@
                                                     <ul class="app-graph__list">
                                                         @foreach (var feedbackItem in year.EmployerFeedbackDetails.ProviderAttribute)
                                                         {
+                                                            var itemLabel = feedbackItem.TotalCount == 1 ? "employer" : "employers";
                                                             <li class="app-graph__list-item">
-                                                                <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount employers)</span></h3>
+                                                                <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
                                                                 @if (feedbackItem.TotalCount > 0)
                                                                 {
                                                                     <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of employers that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount employers selected this as a 'strength'" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount employers selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
@@ -347,12 +348,13 @@
                                             <!-- Your graph content -->
                                             <div id="apprentice-feedback-graphs-@@year.StartYear">
                                                 <div class="app-graph">
-                                                    <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentice that agreed with this statement</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices that disagreed with this statement</li></ul>
+                                                    <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentices that agreed with this statement</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices that disagreed with this statement</li></ul>
                                                     <ul class="app-graph__list">
                                                         @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ProviderAttribute)
                                                         {
+                                                            var itemLabel = feedbackItem.TotalCount == 1 ? "apprentice" : "apprentices";
                                                             <li class="app-graph__list-item">
-                                                                <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount apprentices)</span></h3>
+                                                                <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
                                                                 @if (feedbackItem.TotalCount > 0)
                                                                 {
                                                                     <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices selected this as a 'strength'" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
