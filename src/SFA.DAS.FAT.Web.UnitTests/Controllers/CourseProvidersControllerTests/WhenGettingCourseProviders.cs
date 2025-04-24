@@ -163,7 +163,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Distance_Defaults_to_10(
+    public async Task Then_Distance_Defaults_To_Ten_Miles(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,

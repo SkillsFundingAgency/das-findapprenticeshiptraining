@@ -69,6 +69,42 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
+    public void When_Location_Filter_Is_Not_Present_Then_Distance_Should_Default_To_Ten_Miles()
+    {
+        Mock<IUrlHelper> urlHelperMock = new Mock<IUrlHelper>();
+
+        FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration = new FindApprenticeshipTrainingWeb()
+        {
+            RequestApprenticeshipTrainingUrl = "https://localhost"
+        };
+
+        CourseProvidersViewModel viewModel = new CourseProvidersViewModel(findApprenticeshipTrainingWebConfiguration, urlHelperMock.Object)
+        {
+            Location = null,
+            Distance = null,
+            SelectedDeliveryModes = new List<string> { ProviderDeliveryMode.Provider.ToString(), ProviderDeliveryMode.DayRelease.ToString(), ProviderDeliveryMode.BlockRelease.ToString() },
+            SelectedEmployerApprovalRatings = new List<string>() { ProviderRating.Good.ToString(), ProviderRating.Excellent.ToString() },
+            SelectedApprenticeApprovalRatings = new List<string>() { ProviderRating.Poor.ToString(), ProviderRating.VeryPoor.ToString() },
+            SelectedQarRatings = new List<string> { QarRating.VeryPoor.ToString(), QarRating.Excellent.ToString() },
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var sut = viewModel.Filters.FilterSections;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(viewModel.Distance, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
+            Assert.That(sut.Any(a => a.For == nameof(_viewModel.Distance)), Is.True);
+
+            var distanceFilterSection = sut.First(a => a.For == nameof(_viewModel.Distance));
+            var dropdownFilter = ((DropdownFilterSectionViewModel)distanceFilterSection);
+            var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
+            Assert.That(selectedDistanceValue.Value, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
+        });
+    }
+
+    [Test]
     public void Then_Filters_Must_Contain_Distance_Filter_Section()
     {
         var sut = _viewModel.Filters.FilterSections;
