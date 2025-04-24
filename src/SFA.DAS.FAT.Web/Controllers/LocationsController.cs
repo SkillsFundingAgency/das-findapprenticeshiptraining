@@ -28,7 +28,7 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Locations([FromQuery] string searchTerm)
         {
-            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Trim().Length < 2)
+            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Trim().Length < 3)
             {
                 return new JsonResult(new LocationsViewModel { Locations = new List<LocationViewModel>() });
             }
