@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -54,6 +55,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
 
+    public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
+
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
         return new CourseProviderViewModel
@@ -74,7 +77,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             Locations = source.Locations?.ToList() ?? [],
             Courses = source.Courses?.ToList() ?? [],
             AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails?.ToList() ?? [],
-            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails?.ToList() ?? []
+            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails?.ToList() ?? [],
+            FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(source),
         };
     }
 

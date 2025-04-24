@@ -8,6 +8,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
@@ -20,8 +21,8 @@ public class WhenGettingCourseProviderDetails
 {
     [Test, MoqAutoData]
     public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(
-        int courseId, 
-        int providerId, 
+        int courseId,
+        int providerId,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
@@ -32,8 +33,10 @@ public class WhenGettingCourseProviderDetails
     )
     {
         var distance = 10;
+        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
+        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
 
-        shortlistCookieServiceMock.Setup(x => 
+        shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
         .Returns(shortlistCookieItem);
 
@@ -43,7 +46,7 @@ public class WhenGettingCourseProviderDetails
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
-            ), 
+            ),
             It.IsAny<CancellationToken>()
         )).ReturnsAsync(response);
 
@@ -87,6 +90,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         var distance = 10;
+        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
+        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -176,6 +181,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = null;
+        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
+        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -232,6 +239,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = "All";
+        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
+        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))

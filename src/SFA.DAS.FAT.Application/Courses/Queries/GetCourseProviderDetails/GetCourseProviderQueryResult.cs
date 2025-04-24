@@ -23,10 +23,10 @@ public class GetCourseProviderQueryResult
     public IEnumerable<ProviderCourseModel> Courses { get; set; } = [];
     public IEnumerable<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
     public IEnumerable<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
-    
+
     public static implicit operator GetCourseProviderQueryResult(CourseProviderDetailsModel source)
     {
-        if(source is null)
+        if (source is null)
         {
             return null;
         }

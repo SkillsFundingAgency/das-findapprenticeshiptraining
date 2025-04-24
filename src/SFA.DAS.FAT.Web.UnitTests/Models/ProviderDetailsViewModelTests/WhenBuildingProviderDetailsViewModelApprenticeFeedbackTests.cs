@@ -2,6 +2,7 @@
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -25,12 +26,12 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         var totalCount = strength + weakness;
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)strength * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
-        var firstItem = sut.FeedbackByYear[0];
+        var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
         var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ProviderAttribute[0];
         using (new AssertionScope())
         {
-            sut.ShowSurvey.Should().Be(true);
-            sut.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
+            sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
+            sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
 
             firstItem.IsMostRecentYear.Should().Be(true);
             firstItem.EndYear.Should().Be(2025);
@@ -38,10 +39,9 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
             firstItem.Heading.Should().Be("2024 to today");
             firstItem.SubHeading.Should().Be("1 August 2024 to today");
             firstItem.MainText.Should()
-                .Be(
-                   ProviderDetailsViewModel.EmployerMostRecentReviewsText);
+                .Be(FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
             firstItem.NoApprenticeReviewsText.Should()
-                .Be(ProviderDetailsViewModel.ApprenticeNoResultsRecentTab);
+                .Be(FeedbackSurveyViewModel.ApprenticeNoResultsRecentTab);
             firstItem.ShowEmployerFeedbackStars.Should().Be(false);
             firstItem.ShowApprenticeFeedbackStars.Should().Be(true);
             firstItem.TimePeriod.Should().Be(TimePeriod1);
@@ -67,16 +67,16 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 1) * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
 
-        sut.ShowSurvey.Should().Be(true);
-        sut.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
-        var feedbackTab = sut.FeedbackByYear[1];
+        sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
+        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
+        var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[1];
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(2024);
         feedbackTab.StartYear.Should().Be(2023);
         feedbackTab.Heading.Should().Be("2023 to 2024");
         feedbackTab.SubHeading.Should().Be("1 August 2023 to 31 July 2024");
-        feedbackTab.MainText.Should().Be(ProviderDetailsViewModel.AllCoursesDeliveredText);
-        feedbackTab.NoApprenticeReviewsText.Should().Be(ProviderDetailsViewModel.ApprenticeNoResultsPastTab);
+        feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredText);
+        feedbackTab.NoApprenticeReviewsText.Should().Be(FeedbackSurveyViewModel.ApprenticeNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriod2);
@@ -101,16 +101,16 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 2) * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
 
-        sut.ShowSurvey.Should().Be(true);
-        sut.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
-        var feedbackTab = sut.FeedbackByYear[2];
+        sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
+        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
+        var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[2];
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
         feedbackTab.SubHeading.Should().Be("1 August 2023 to 31 July 2024");
-        feedbackTab.MainText.Should().Be(ProviderDetailsViewModel.EmployerReviewsOverallText);
-        feedbackTab.NoApprenticeReviewsText.Should().Be(ProviderDetailsViewModel.ApprenticeNoResultsPastTab);
+        feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
+        feedbackTab.NoApprenticeReviewsText.Should().Be(FeedbackSurveyViewModel.ApprenticeNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriodAll);

@@ -2,7 +2,7 @@
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
-using SFA.DAS.FAT.Web.Models.Providers;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
 public class WhenGettingRatingFromFeedbackDetails

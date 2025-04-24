@@ -1,0 +1,249 @@
+﻿@using SFA.DAS.FAT.Web.TagHelpers
+@model SFA.DAS.FAT.Web.Models.FeedbackSurvey.FeedbackSurveyViewModel
+<div class="govuk-tabs" data-module="govuk-tabs">
+    <ul class="govuk-tabs__list">
+        @{
+            var starterClass = " govuk-tabs__list-item--selected";
+        }
+        @foreach (var year in Model.FeedbackByYear)
+        {
+            <li class="govuk-tabs__list-item @starterClass">
+                <a class="govuk-tabs__tab govuk-!-font-size-16" href="#feedback-year-@year.StartYear">
+                    @year.Heading
+                </a>
+            </li>
+
+            starterClass = " govuk-tabs__list-item";
+        }
+    </ul>
+
+    @foreach (var year in Model.FeedbackByYear)
+    {
+        <div class="govuk-tabs__panel" id="feedback-year-@year.StartYear">
+            <h2 class="govuk-heading-m">@year.SubHeading</h2>
+            <p class="govuk-body">@year.MainText</p>
+            <h2 class="govuk-heading-m">Employer reviews</h2>
+            <p class="govuk-body">We regularly ask employers to review providers they're working with. They give a rating of 'Excellent', 'Good', 'Poor' or 'Very poor'. They also give feedback about areas of strength and improvement.</p>
+
+            <span asp-show="@year.ShowEmployerFeedbackStars">
+                <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                    <span class="das-rating das-rating--@(year.EmployerFeedbackDetails.Stars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @year.EmployerFeedbackDetails.Stars out of 4 stars">
+                        <span aria-hidden="true" class="das-rating__icon-star"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.EmployerFeedbackDetails.Stars < 2 ? "--empty" : "")"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.EmployerFeedbackDetails.Stars < 3 ? "--empty" : "")"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.EmployerFeedbackDetails.Stars < 4 ? "--empty" : "")"></span>
+                    </span>
+                    <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(year.EmployerFeedbackDetails.Stars > 2 ? "good" : "poor")">@year.EmployerFeedbackDetails.Rating</span>
+                    <span class="govuk-body">(@year.EmployerFeedbackDetails.ReviewMessage)</span>
+                </p>
+
+            </span>
+            <span asp-show="@year.ShowEmployerFeedbackStars">
+                <div class="govuk-heading-s">Areas of strength and improvement</div>
+                <p class="govuk-body">Employers can select:</p>
+                <ul>
+                    <li>up to 3 things they think are your strengths</li>
+                    <li>up to 3 things they think need improvement</li>
+                </ul>
+            </span>
+            <span asp-show="@year.ShowEmployerFeedbackStars">
+
+                <!-- EMPLOYER GRAPH AND TABLES CODE STARTS -->
+
+                <div data-show-hide-panels="true">
+                    <div class="app-show-hide-panel" data-panel-label="graph" id="emp-feedback-graph-@year.StartYear">
+                        <div class="govuk-button-group app-show-hide-panel__buttons">
+                            <!-- Button to switch to the table view -->
+                            @if (year.ShowApprenticeFeedbackStars)
+                            {
+                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTablesBoth();">Change to table and accessible view</button>
+                            }
+                            else
+                            {
+                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('employer');">Change to table and accessible view</button>
+                            }
+                        </div>
+                        <!-- Your graph content -->
+                        <div id="employer-feedback-graphs-@@year.StartYear">
+                            <div class="app-graph">
+                                <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of employers that selected this as a strength</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of employers that selected this as needs improvement</li></ul>
+                                <ul class="app-graph__list">
+                                    @foreach (var feedbackItem in year.EmployerFeedbackDetails.ProviderAttribute)
+                                    {
+                                        var itemLabel = feedbackItem.TotalCount == 1 ? "employer" : "employers";
+                                        <li class="app-graph__list-item">
+                                            <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
+                                            @if (feedbackItem.TotalCount > 0)
+                                            {
+                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of employers that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount employers selected this as a 'strength'" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount employers selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="app-graph__chart-wrap">No Responses</div>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- EMPLOYER TABLE CONTAINER -->
+                <div class="app-show-hide-panel app-show-hide-panel__hidden" data-panel-label="table and accessible" id="emp-feedback-table-@year.StartYear">
+                    <div class="govuk-button-group app-show-hide-panel__buttons">
+                        <!-- Button to switch back to the graph view -->
+                        @if (year.ShowApprenticeFeedbackStars)
+                        {
+                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTablesBoth();">Change to graph view</button>
+                        }
+                        else
+                        {
+                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTables('employer');">Change to graph view</button>
+                        }
+                    </div>
+                    <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="employer-feedback-graph-@year.StartYear" data-label="employers" data-feedback-graph="true">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Statement</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of employers that selected this as a "strength"</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of employers that selected this as "needs improvement"</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of employers that selected this statement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var feedbackItem in year.EmployerFeedbackDetails.ProviderAttribute)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric"
+                                        data-label="Percentage of employers that selected this as a strength"
+                                        data-title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount employers selected this as a 'strength'">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.StrengthPerc}%" : "-")
+                                    </td>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric"
+                                        data-label="Percentage of employers that selected this as needs improvement"
+                                        data-title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount employers selected this as a 'needs improvement'">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.WeaknessPerc}%" : "-")
+                                    </td>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of employers that selected this statement">@feedbackItem.TotalCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </span>
+
+            <span asp-show="!@year.ShowEmployerFeedbackStars">
+                <p class="govuk-body govuk-!-font-weight-bold">
+                    @year.NoEmployerReviewsText
+                </p>
+            </span>
+            <h2 class="govuk-heading-m govuk-!-margin-top-9">Apprentice reviews</h2>
+            <p class="govuk-body">We regularly ask apprentices to review providers they're training with. They give a rating of 'Excellent', 'Good', 'Poor' or 'Very poor'. They also give feedback about how they found the training.</p>
+
+
+            <span asp-show="@year.ShowApprenticeFeedbackStars">
+                <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                    <span class="das-rating das-rating--@(year.ApprenticeFeedbackDetails.Stars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @year.ApprenticeFeedbackDetails.Stars out of 4 stars">
+                        <span aria-hidden="true" class="das-rating__icon-star"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.ApprenticeFeedbackDetails.Stars < 2 ? "--empty" : "")"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.ApprenticeFeedbackDetails.Stars < 3 ? "--empty" : "")"></span>
+                        <span aria-hidden="true" class="das-rating__icon-star@(year.ApprenticeFeedbackDetails.Stars < 4 ? "--empty" : "")"></span>
+                    </span>
+                    <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(year.ApprenticeFeedbackDetails.Stars > 2 ? "good" : "poor")">@year.ApprenticeFeedbackDetails.Rating</span>
+                    <span class="govuk-body">(@year.ApprenticeFeedbackDetails.ReviewMessage)</span>
+                </p>
+
+            </span>
+            <span asp-show="@year.ShowApprenticeFeedbackStars">
+                <div class="govuk-heading-s">How apprentices found the training</div>
+                <p class="govuk-body">We asked apprentices what was to a reasonable standard.</p>
+            </span>
+
+            <span asp-show="@year.ShowApprenticeFeedbackStars">
+
+                <!-- APPRENTICE GRAPH AND TABLES CODE STARTS -->
+
+                <div data-show-hide-panels="true">
+                    <div class="app-show-hide-panel" data-panel-label="graph" id="app-feedback-graph-@year.StartYear">
+                        <div class="govuk-button-group app-show-hide-panel__buttons">
+                            <!-- Button to switch to the table view -->
+                            @if (!year.ShowEmployerFeedbackStars)
+                            {
+                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to table and accessible view</button>
+                            }
+                        </div>
+                        <!-- Your graph content -->
+                        <div id="apprentice-feedback-graphs-@@year.StartYear">
+                            <div class="app-graph">
+                                <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentices that agreed with this statement</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices that disagreed with this statement</li></ul>
+                                <ul class="app-graph__list">
+                                    @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ProviderAttribute)
+                                    {
+                                        var itemLabel = feedbackItem.TotalCount == 1 ? "apprentice" : "apprentices";
+                                        <li class="app-graph__list-item">
+                                            <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
+                                            @if (feedbackItem.TotalCount > 0)
+                                            {
+                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices selected this as a 'strength'" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
+                                            }
+                                            else
+                                            {
+                                                <div class="app-graph__chart-wrap">No Responses</div>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- APPRENTICE TABLE CONTAINER -->
+                <div class="app-show-hide-panel app-show-hide-panel__hidden" data-panel-label="table and accessible" id="app-feedback-table-@year.StartYear">
+                    <div class="govuk-button-group app-show-hide-panel__buttons">
+                        <!-- Button to switch back to the graph view -->
+                        <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to graph view</button>
+                    </div>
+                    <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="apprentice-feedback-graph-@year.StartYear" data-label="apprentices" data-feedback-graph="true">
+                        <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">Statement</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as a "strength"</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as "needs improvement"</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of apprentices that selected this statement</th>
+                            </tr>
+                        </thead>
+                        <tbody class="govuk-table__body">
+                            @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ProviderAttribute)
+                            {
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric"
+                                        data-label="Percentage of apprentices that selected this as a strength"
+                                        data-title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices selected this as a 'strength'">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.StrengthPerc}%" : "-")
+                                    </td>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric"
+                                        data-label="Percentage of apprentices that selected this as needs improvement"
+                                        data-title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.WeaknessPerc}%" : "-")
+                                    </td>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of apprentices that selected this statement">@feedbackItem.TotalCount</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </span>
+
+
+            <span asp-show="!@year.ShowApprenticeFeedbackStars">
+                <p class="govuk-body govuk-!-font-weight-bold">
+                    @year.NoApprenticeReviewsText
+                </p>
+            </span>
+        </div>
+    }
+</div>

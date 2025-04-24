@@ -1,4 +1,4 @@
-﻿namespace SFA.DAS.FAT.Web.Models.Providers;
+﻿namespace SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 public class FeedbackByYear
 {

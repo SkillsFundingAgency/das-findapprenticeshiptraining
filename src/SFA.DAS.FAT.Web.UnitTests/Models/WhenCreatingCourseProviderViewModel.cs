@@ -1,5 +1,4 @@
-﻿using System.Net;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -14,6 +13,8 @@ public class WhenCreatingCourseProviderViewModel
     [Test, MoqAutoData]
     public void Then_Properties_Are_Correctly_Mapped(GetCourseProviderQueryResult source)
     {
+        source.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
+        source.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
         var sut = (CourseProviderViewModel)source;
 
         Assert.Multiple(() =>
