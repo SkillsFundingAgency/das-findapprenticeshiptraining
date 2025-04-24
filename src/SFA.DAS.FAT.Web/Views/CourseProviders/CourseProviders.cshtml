@@ -6,7 +6,6 @@
 @using SFA.DAS.FAT.Web.Models.Shared
 @model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProvidersViewModel
 @inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
-
 @{
     ViewData["Title"] = $"Training providers for {Model.CourseTitleAndLevel}";
     ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.CourseTitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
@@ -65,7 +64,7 @@
                     {
                         <div class="govuk-grid-column-two-thirds govuk-!-padding-0">
                             <p class="govuk-body govuk-!-text-align-right">
-                                <label class="govuk-label" for="sort">
+                                    <label class="govuk-label" for="course-providers-order-form">
                                     Sort results &nbsp;&nbsp;
                                     <select class="govuk-select" id="course-providers-orderby" name="OrderBy">
                                         @foreach (var orderByOption in Model.ProviderOrderOptions)
