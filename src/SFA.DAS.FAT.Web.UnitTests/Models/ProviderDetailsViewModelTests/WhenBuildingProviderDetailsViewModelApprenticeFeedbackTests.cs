@@ -30,8 +30,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ProviderAttribute[0];
         using (new AssertionScope())
         {
-            sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
-            sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
+            sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
 
             firstItem.IsMostRecentYear.Should().Be(true);
             firstItem.EndYear.Should().Be(2025);
@@ -67,8 +66,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 1) * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
 
-        sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
-        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
+        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
         var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[1];
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(2024);
@@ -101,14 +99,13 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 2) * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
 
-        sut.FeedbackSurvey.ShowSurvey.Should().Be(true);
-        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(response.AnnualApprenticeFeedbackDetails.Count);
-        var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[2];
+        sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
+        var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[5];
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
-        feedbackTab.SubHeading.Should().Be("1 August 2023 to 31 July 2024");
+        feedbackTab.SubHeading.Should().Be("1 August 2020 to 31 July 2024");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
         feedbackTab.NoApprenticeReviewsText.Should().Be(FeedbackSurveyViewModel.ApprenticeNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);

@@ -16,14 +16,13 @@ public class FeedbackSurveyViewModel
     public const string ApprenticeNoResultsRecentTab = "No results. Not enough apprentices have given feedback about this training provider.";
     public const string ApprenticeNoResultsPastTab = "No results. Not enough apprentices gave feedback about this training provider.";
 
-    public bool ShowSurvey => FeedbackByYear is { Count: > 0 };
 
     public List<FeedbackByYear> FeedbackByYear { get; set; }
 
 
     public static FeedbackSurveyViewModel ProcessFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries)
     {
-        var feedback = CreateFeedbackWithYearsAndHeadings(employerSummaries, apprenticeSummaries);
+        var feedback = CreateFeedbackWithYearsAndHeadings();
 
         InjectEmployerFeedbackDetails(employerSummaries, feedback);
         InjectApprenticeFeedbackDetails(apprenticeSummaries, feedback);
@@ -63,40 +62,23 @@ public class FeedbackSurveyViewModel
             }
         }
     }
-    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries)
+
+    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings()
     {
-        var employerTimePeriods = new List<string>();
+        var feedbackItems = BuildFeedbackByYearList();
 
-        if (employerSummaries is { Count: > 0 })
-        {
-            employerTimePeriods = employerSummaries.Select(x => x.TimePeriod).ToList();
-        }
+        var mostRecentDate =
+            feedbackItems.MaxBy(x => x.StartYear)!.StartYear;
 
-        var apprenticeTimePeriods = new List<string>();
+        var leastRecentDate =
+            feedbackItems.Where(x => x.StartYear != 0).MinBy(x => x.StartYear)!.StartYear;
 
-        if (apprenticeSummaries is { Count: > 0 })
-        {
-            apprenticeTimePeriods = apprenticeSummaries.Select(x => x.TimePeriod).ToList();
-        }
+        PopulateHeadingsAndMainText(feedbackItems, leastRecentDate, mostRecentDate);
 
-        var allTimePeriods = employerTimePeriods.ToList();
-        var feedbackItems = BuildFeedbackByYearList(apprenticeTimePeriods, allTimePeriods);
-
-        if (feedbackItems.Count > 0)
-        {
-            var mostRecentDate =
-                feedbackItems.MaxBy(x => x.StartYear)!.StartYear;
-
-            var leastRecentDate =
-                feedbackItems.OrderBy(x => x.StartYear).First(x => x.StartYear != 0)!.StartYear;
-
-            PopulateFeedbackItems(feedbackItems, leastRecentDate, mostRecentDate);
-        }
-
-        return feedbackItems.OrderByDescending(f => f.StartYear).ToList();
+        return feedbackItems;
     }
 
-    private static void PopulateFeedbackItems(List<FeedbackByYear> feedbackItems, int leastRecentDate, int mostRecentDate)
+    private static void PopulateHeadingsAndMainText(List<FeedbackByYear> feedbackItems, int leastRecentDate, int mostRecentDate)
     {
         foreach (var feedbackByYear in feedbackItems)
         {
@@ -108,12 +90,11 @@ public class FeedbackSurveyViewModel
             }
             else
             {
-                if (feedbackByYear.StartYear == mostRecentDate)
+                if (feedbackByYear.IsMostRecentYear)
                 {
                     feedbackByYear.Heading = $"{feedbackByYear.StartYear} to today";
                     feedbackByYear.SubHeading = $"1 August {feedbackByYear.StartYear} to today";
                     feedbackByYear.MainText = EmployerMostRecentReviewsText;
-                    feedbackByYear.IsMostRecentYear = true;
                 }
                 else
                 {
@@ -125,33 +106,26 @@ public class FeedbackSurveyViewModel
         }
     }
 
-    private static List<FeedbackByYear> BuildFeedbackByYearList(List<string> apprenticeTimePeriods, List<string> allTimePeriods)
+    private static List<FeedbackByYear> BuildFeedbackByYearList()
     {
         var feedback = new List<FeedbackByYear>();
 
-        foreach (var timePeriods in apprenticeTimePeriods)
+        int academicYearEnd = DateTime.UtcNow.Month > 7
+            ? DateTime.UtcNow.Year + 1
+            : DateTime.UtcNow.Year;
+
+        for (int yearEnd = academicYearEnd; yearEnd > academicYearEnd - 5; yearEnd--)
         {
-            if (!allTimePeriods.Contains(timePeriods)) allTimePeriods.Add(timePeriods);
-        }
-
-        foreach (var timePeriod in allTimePeriods)
-        {
-            var startYear = 0;
-            var endYear = 0;
-
-            if (!timePeriod.Contains("All") && timePeriod.StartsWith("AY") && timePeriod.Length == 6)
-            {
-                startYear = int.TryParse(timePeriod.AsSpan(2, 2), out var starterYear) ? starterYear + 2000 : 0;
-                endYear = int.TryParse(timePeriod.AsSpan(4, 2), out var enderYear) ? enderYear + 2000 : 0;
-            }
-
             feedback.Add(new FeedbackByYear
             {
-                StartYear = startYear,
-                EndYear = endYear,
-                TimePeriod = timePeriod
+                StartYear = yearEnd - 1,
+                EndYear = yearEnd,
+                TimePeriod = $"AY{yearEnd - 2001}{yearEnd - 2000}",
+                IsMostRecentYear = yearEnd == academicYearEnd
             });
         }
+
+        feedback.Add(new FeedbackByYear { StartYear = 0, EndYear = 0, TimePeriod = "All" });
 
         return feedback;
     }

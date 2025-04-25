@@ -160,7 +160,7 @@
     </div>
     </div>
 
-    <div asp-show="@feedbackSurvey.ShowSurvey" class="govuk-!-margin-bottom-8 govuk-!-padding-top-9">
+    <div class="govuk-!-margin-bottom-8 govuk-!-padding-top-9">
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">
@@ -168,10 +168,7 @@
                 </span>
             </summary>
             <div class="govuk-details__text">
-                @if (feedbackSurvey.ShowSurvey)
-                {
-                    @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey);
-                }
+                @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey);
             </div>
         </details>
     </div>

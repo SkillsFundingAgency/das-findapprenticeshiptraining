@@ -203,8 +203,11 @@
                 <div class="app-show-hide-panel app-show-hide-panel__hidden" data-panel-label="table and accessible" id="app-feedback-table-@year.StartYear">
                     <div class="govuk-button-group app-show-hide-panel__buttons">
                         <!-- Button to switch back to the graph view -->
-                        <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to graph view</button>
-                    </div>
+                        @if (!year.ShowEmployerFeedbackStars)
+                        {
+                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to graph view</button>
+                        }
+                        </div>
                     <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="apprentice-feedback-graph-@year.StartYear" data-label="apprentices" data-feedback-graph="true">
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
