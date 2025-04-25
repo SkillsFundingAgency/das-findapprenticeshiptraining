@@ -11,7 +11,7 @@ public class CourseProvidersRequest
     public int Id { get; set; }
 
     [FromQuery]
-    public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.AchievementRate;
+    public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.Distance;
 
     [FromQuery]
     public string Location { get; set; } = string.Empty;
