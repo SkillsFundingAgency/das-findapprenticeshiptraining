@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Providers.Api.Responses;
 public class GetProviderQueryResponse
@@ -82,7 +83,8 @@ public class ApprenticeFeedbackAnnualSummaries
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
-    public List<AnnualSummaryItem> ProviderAttribute { get; set; }
+
+    public List<AttributeResultModel> ProviderAttribute { get; set; }
 }
 
 public class EmployerFeedbackAnnualSummaries
@@ -91,6 +93,8 @@ public class EmployerFeedbackAnnualSummaries
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
+
+
     public List<AnnualSummaryItem> ProviderAttribute { get; set; }
 }
 

@@ -61,17 +61,10 @@
                     <div class="app-show-hide-panel" data-panel-label="graph" id="emp-feedback-graph-@year.StartYear">
                         <div class="govuk-button-group app-show-hide-panel__buttons">
                             <!-- Button to switch to the table view -->
-                            @if (year.ShowApprenticeFeedbackStars)
-                            {
-                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTablesBoth();">Change to table and accessible view</button>
-                            }
-                            else
-                            {
-                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('employer');">Change to table and accessible view</button>
-                            }
+                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables();">Change to table and accessible view</button>
                         </div>
                         <!-- Your graph content -->
-                        <div id="employer-feedback-graphs-@@year.StartYear">
+                        <div id="employer-feedback-graphs-@year.StartYear">
                             <div class="app-graph">
                                 <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of employers that selected this as a strength</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of employers that selected this as needs improvement</li></ul>
                                 <ul class="app-graph__list">
@@ -99,14 +92,7 @@
                 <div class="app-show-hide-panel app-show-hide-panel__hidden" data-panel-label="table and accessible" id="emp-feedback-table-@year.StartYear">
                     <div class="govuk-button-group app-show-hide-panel__buttons">
                         <!-- Button to switch back to the graph view -->
-                        @if (year.ShowApprenticeFeedbackStars)
-                        {
-                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTablesBoth();">Change to graph view</button>
-                        }
-                        else
-                        {
-                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTables('employer');">Change to graph view</button>
-                        }
+                        <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTables();">Change to graph view</button>
                     </div>
                     <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="employer-feedback-graph-@year.StartYear" data-label="employers" data-feedback-graph="true">
                         <thead class="govuk-table__head">
@@ -178,7 +164,7 @@
                             <!-- Button to switch to the table view -->
                             @if (!year.ShowEmployerFeedbackStars)
                             {
-                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to table and accessible view</button>
+                                <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick=" toggleTables();">Change to table and accessible view</button>
                             }
                         </div>
                         <!-- Your graph content -->
@@ -186,14 +172,14 @@
                             <div class="app-graph">
                                 <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentices that agreed with this statement</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices that disagreed with this statement</li></ul>
                                 <ul class="app-graph__list">
-                                    @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ProviderAttribute)
+                                    @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ApprenticeProviderAttribute)
                                     {
                                         var itemLabel = feedbackItem.TotalCount == 1 ? "apprentice" : "apprentices";
                                         <li class="app-graph__list-item">
                                             <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
                                             @if (feedbackItem.TotalCount > 0)
                                             {
-                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices agreed with this statement" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
+                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.AgreePerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.AgreePerc% of @feedbackItem.TotalCount apprentices agreed with this statement" tabindex="0"><span class="app-graph__figure">@feedbackItem.AgreePerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.DisagreePerc%;" title="@feedbackItem.DisagreePerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.DisagreePerc%</span></span></span></span></div>
                                             }
                                             else
                                             {
@@ -212,7 +198,7 @@
                         <!-- Button to switch back to the graph view -->
                         @if (!year.ShowEmployerFeedbackStars)
                         {
-                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables('apprentice')">Change to graph view</button>
+                            <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables()">Change to graph view</button>
                         }
                         </div>
                     <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="apprentice-feedback-graph-@year.StartYear" data-label="apprentices" data-feedback-graph="true">
@@ -225,19 +211,19 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ProviderAttribute)
+                            @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ApprenticeProviderAttribute)
                             {
                                 <tr class="govuk-table__row">
                                     <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
                                     <td class="govuk-table__cell govuk-table__cell--numeric"
-                                        data-label="Percentage of apprentices that selected this as a strength"
-                                        data-title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices selected this as a 'strength'">
-                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.StrengthPerc}%" : "-")
+                                        data-label="Percentage of apprentices that agreed with this statement"
+                                        data-title="@feedbackItem.AgreePerc% of @feedbackItem.TotalCount apprentices that agreed with this statement">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.AgreePerc}%" : "-")
                                     </td>
                                     <td class="govuk-table__cell govuk-table__cell--numeric"
                                         data-label="Percentage of apprentices that selected this as needs improvement"
-                                        data-title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'">
-                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.WeaknessPerc}%" : "-")
+                                        data-title="@feedbackItem.DisagreePerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'">
+                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.DisagreePerc}%" : "-")
                                     </td>
                                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of apprentices that selected this statement">@feedbackItem.TotalCount</td>
                                 </tr>

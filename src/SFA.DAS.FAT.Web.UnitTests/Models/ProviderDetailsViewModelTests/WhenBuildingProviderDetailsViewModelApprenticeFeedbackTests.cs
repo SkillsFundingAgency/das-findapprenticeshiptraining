@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
@@ -16,18 +17,18 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 
 
     [Test, MoqInlineAutoData]
-    public void Then_Apprentice_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int strength, int weakness, int reviewCount, int stars)
+    public void Then_Apprentice_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
         response.AnnualEmployerFeedbackDetails = null;
-        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, strength, weakness, reviewCount, stars);
+        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
 
-        var totalCount = strength + weakness;
-        int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)strength * 100) / totalCount));
-        int expectedWeaknessPerc = 100 - expectedStrengthPerc;
+        var totalCount = agree + disagree;
+        int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)agree * 100) / totalCount));
+        int expectedDisagreePerc = 100 - expectedAgreePerc;
         var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
-        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ProviderAttribute[0];
+        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
         using (new AssertionScope())
         {
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
@@ -45,26 +46,26 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
             firstItem.ShowApprenticeFeedbackStars.Should().Be(true);
             firstItem.TimePeriod.Should().Be(TimePeriod1);
 
-            firstFeedbackDetail.TotalCount.Should().Be(strength + weakness);
-            firstFeedbackDetail.Strength.Should().Be(strength);
-            firstFeedbackDetail.Weakness.Should().Be(weakness);
-            firstFeedbackDetail.StrengthPerc.Should().Be(expectedStrengthPerc);
-            firstFeedbackDetail.WeaknessPerc.Should().Be(expectedWeaknessPerc);
+            firstFeedbackDetail.TotalCount.Should().Be(agree + disagree);
+            firstFeedbackDetail.Agree.Should().Be(agree);
+            firstFeedbackDetail.Disagree.Should().Be(disagree);
+            firstFeedbackDetail.AgreePerc.Should().Be(expectedAgreePerc);
+            firstFeedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
         }
     }
 
     [Test, MoqInlineAutoData]
-    public void Then_Apprentice_Feedback_Details_As_Expected_Second_Tag(GetProviderQueryResponse response, string feedbackName, int strength, int weakness, int reviewCount, int stars)
+    public void Then_Apprentice_Feedback_Details_As_Expected_Second_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
         response.AnnualEmployerFeedbackDetails = null;
-        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, strength, weakness, reviewCount, stars);
+        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
 
 
-        var totalCount = strength + weakness;
-        int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 1) * 100) / totalCount));
-        int expectedWeaknessPerc = 100 - expectedStrengthPerc;
+        var totalCount = agree + disagree;
+        int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 1) * 100) / totalCount));
+        int expectedDisagreePerc = 100 - expectedAgreePerc;
 
         sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
         var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[1];
@@ -78,26 +79,26 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriod2);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ProviderAttribute[0];
-        feedbackDetail.TotalCount.Should().Be(strength + weakness);
-        feedbackDetail.Strength.Should().Be(strength + 1);
-        feedbackDetail.Weakness.Should().Be(weakness - 1);
-        feedbackDetail.StrengthPerc.Should().Be(expectedStrengthPerc);
-        feedbackDetail.WeaknessPerc.Should().Be(expectedWeaknessPerc);
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
+        feedbackDetail.TotalCount.Should().Be(agree + disagree);
+        feedbackDetail.Agree.Should().Be(agree + 1);
+        feedbackDetail.Disagree.Should().Be(disagree - 1);
+        feedbackDetail.AgreePerc.Should().Be(expectedAgreePerc);
+        feedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
     }
 
     [Test, MoqInlineAutoData]
-    public void Then_Apprentice_Feedback_Details_As_Expected_Overall_Tag(GetProviderQueryResponse response, string feedbackName, int strength, int weakness, int reviewCount, int stars)
+    public void Then_Apprentice_Feedback_Details_As_Expected_Overall_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
         response.AnnualEmployerFeedbackDetails = null;
-        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, strength, weakness, reviewCount, stars);
+        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
 
 
-        var totalCount = strength + weakness;
-        int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 2) * 100) / totalCount));
-        int expectedWeaknessPerc = 100 - expectedStrengthPerc;
+        var totalCount = agree + disagree;
+        int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 2) * 100) / totalCount));
+        int expectedDisagreePerc = 100 - expectedAgreePerc;
 
         sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
         var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[5];
@@ -111,21 +112,21 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriodAll);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ProviderAttribute[0];
-        feedbackDetail.TotalCount.Should().Be(strength + weakness);
-        feedbackDetail.Strength.Should().Be(strength + 2);
-        feedbackDetail.Weakness.Should().Be(weakness - 2);
-        feedbackDetail.StrengthPerc.Should().Be(expectedStrengthPerc);
-        feedbackDetail.WeaknessPerc.Should().Be(expectedWeaknessPerc);
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
+        feedbackDetail.TotalCount.Should().Be(agree + disagree);
+        feedbackDetail.Agree.Should().Be(agree + 2);
+        feedbackDetail.Disagree.Should().Be(disagree - 2);
+        feedbackDetail.AgreePerc.Should().Be(expectedAgreePerc);
+        feedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
     }
 
 
 
-    private static List<ApprenticeFeedbackAnnualSummaries> GetApprenticeAnnualSummaries(string feedbackName, int strength, int weakness, int reviewCount, int stars)
+    private static List<ApprenticeFeedbackAnnualSummaries> GetApprenticeAnnualSummaries(string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
-        var annualSummaryItem = new AnnualSummaryItem { Name = feedbackName, Strength = strength, Weakness = weakness };
-        var annualSummaryItem2 = new AnnualSummaryItem { Name = feedbackName + "2", Strength = strength + 1, Weakness = weakness - 1 };
-        var annualSummaryItem3 = new AnnualSummaryItem { Name = feedbackName + "3", Strength = strength + 2, Weakness = weakness - 2 };
+        var annualSummaryItem = new AttributeResultModel { Name = feedbackName, Agree = agree, Disagree = disagree };
+        var annualSummaryItem2 = new AttributeResultModel { Name = feedbackName + "2", Agree = agree + 1, Disagree = disagree - 1 };
+        var annualSummaryItem3 = new AttributeResultModel { Name = feedbackName + "3", Agree = agree + 2, Disagree = disagree - 2 };
 
         var summaries = new List<ApprenticeFeedbackAnnualSummaries>
         {

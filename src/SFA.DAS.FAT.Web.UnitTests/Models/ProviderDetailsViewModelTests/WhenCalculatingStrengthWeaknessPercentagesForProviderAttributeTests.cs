@@ -15,7 +15,7 @@ public class WhenCalculatingStrengthWeaknessPercentagesForProviderAttributeTests
     public void Then_Percentage_Values_Should_Be_Expected(int strength, int weakness, int expectedStrengthPercentage, int expectedWeaknessPercentage)
     {
         var expectedTotalCount = strength + weakness;
-        var attribute = new ProviderAttribute { Name = "x", Strength = strength, Weakness = weakness };
+        var attribute = new EmployerProviderAttribute { Name = "x", Strength = strength, Weakness = weakness };
         attribute.TotalCount.Should().Be(expectedTotalCount);
         attribute.StrengthPerc.Should().Be(expectedStrengthPercentage);
         attribute.WeaknessPerc.Should().Be(expectedWeaknessPercentage);
