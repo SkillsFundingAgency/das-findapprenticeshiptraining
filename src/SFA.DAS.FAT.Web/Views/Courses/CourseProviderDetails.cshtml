@@ -472,7 +472,14 @@
                         Registered address
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.ContactAddress
+                        @if (!string.IsNullOrEmpty(@Model.ContactAddress))
+                        {
+                            @Model.ContactAddress
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -480,7 +487,14 @@
                         Email
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Contact.Email" target="_blank">@Model.Contact.Email</a>
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Email))
+                        {
+                            <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -488,7 +502,14 @@
                         Telephone
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.Contact.PhoneNumber
+                        @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
+                        {
+                            @Model.Contact.PhoneNumber
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -496,10 +517,52 @@
                         Website
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a>
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Website))
+                        {
+                            <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
             </dl>
+
+            @* <dl class="govuk-summary-list"> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Registered address *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             @Model.ContactAddress *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Email *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             <a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Contact.Email" target="_blank">@Model.Contact.Email</a> *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Telephone *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             @Model.Contact.PhoneNumber *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Website *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             <a class="govuk-link govuk-link--no-visited-state" href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a> *@
+            @*         </dd> *@
+            @*     </div> *@
+            @* </dl> *@
         </div>
     </div>
 

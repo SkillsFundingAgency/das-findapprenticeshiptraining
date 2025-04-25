@@ -157,7 +157,11 @@
             </div>
             @* Apprentices Container *@
         </div>
-    </div>
+        
+        <div class="govuk-inset-text govuk-!-margin-top-3">
+                Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.StartYear to @Model.Reviews.EndYear. Data collected by the Department for Education.
+        </div>
+        </div>
     </div>
 
     <div class="govuk-!-margin-bottom-8 govuk-!-padding-top-9">
@@ -175,11 +179,9 @@
     
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <div class="govuk-inset-text">Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.StartYear to @Model.Reviews.EndYear. Data collected by the Department for Education.</div>
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+             <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
                 Contact this training provider
             </h3>
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
             <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
