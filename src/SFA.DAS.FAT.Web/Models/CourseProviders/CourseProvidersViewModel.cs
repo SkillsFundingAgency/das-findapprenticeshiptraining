@@ -37,11 +37,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<CoursesProviderViewModel> Providers { get; set; }
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get; set; } = [];
     public PaginationViewModel Pagination { get; set; }
-
-
-
     public int TotalCount { get; set; }
-
     public string TotalMessage => GetTotalMessage();
 
     private string GetTotalMessage()
@@ -138,7 +134,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
     }
 
-
     public FiltersViewModel CreateFilterSections()
     {
         var selectedFilterSections = CreateSelectedFilterSections();
@@ -148,25 +143,31 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             Route = RouteNames.CourseProviders,
             FilterSections =
             [
-            CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
-            CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
-            CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DELIVERYMODES_SECTION_HEADING, DELIVERYMODES_SECTION_SUB_HEADING, GenerateDeliveryModesFilterItems()),
-            CreateAccordionGroupFilterSection(
+                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
+                CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DELIVERYMODES_SECTION_HEADING, DELIVERYMODES_SECTION_SUB_HEADING, GenerateDeliveryModesFilterItems()),
+                CreateAccordionGroupFilterSection(
                     "ratings-select",
                     nameof(FilterType.Reviews),
-                [
-                    CreateCheckboxListFilterSection("employer-ratings-filter", nameof(FilterType.EmployerProviderRatings), EMPLOYER_REVIEWS_SECTION_HEADING,null, GenerateEmployerReviewsFilterItems()),
-                    CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(FilterType.ApprenticeProviderRatings), APPRENTICE_REVIEWS_SECTION_HEADING,null, GenerateApprenticeReviewsFilterItems())
-                ],
-            REVIEW_SECTION_HEADING,
-            $"From {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"
+                    [
+                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(FilterType.EmployerProviderRatings), EMPLOYER_REVIEWS_SECTION_HEADING,null, GenerateEmployerReviewsFilterItems()),
+                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(FilterType.ApprenticeProviderRatings), APPRENTICE_REVIEWS_SECTION_HEADING,null, GenerateApprenticeReviewsFilterItems())
+                    ],
+                    REVIEW_SECTION_HEADING,
+                    $"From {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"
                 ),
-             CreateAccordionFilterSection(
+                CreateAccordionFilterSection(
                     "qar-select",
                     string.Empty,
-                [
-            CreateCheckboxListFilterSection("qar-filter", nameof(FilterType.QarRatings), QAR_SECTION_HEADING, $"From {QarPeriodStartYear} to {QarPeriodEndYear}", GenerateQarFilterItems())
-                ])
+                    [
+                        CreateCheckboxListFilterSection(
+                            "qar-filter", 
+                            nameof(FilterType.QarRatings), 
+                            QAR_SECTION_HEADING, 
+                            $"From {QarPeriodStartYear} to {QarPeriodEndYear}", 
+                            GenerateQarFilterItems()
+                        )
+                    ])
                 ],
             ClearFilterSections = selectedFilterSections
         };
@@ -238,14 +239,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
+            Distance = DistanceService.TEN_MILES.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))
         {
             AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
-
 
         if (SelectedDeliveryModes?.Count > 0 && SelectedDeliveryModes.Count > 0)
         {

@@ -52,6 +52,11 @@ public class CoursesController : Controller
 
         int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
 
+        if(string.IsNullOrWhiteSpace(model.Distance) || !DistanceService.IsValidDistance(model.Distance))
+        {
+            model.Distance = DistanceService.TEN_MILES.ToString();
+        }
+
         var result = await _mediator.Send(new GetCoursesQuery
         {
             Keyword = model.Keyword,
