@@ -344,7 +344,6 @@
 
             <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
-
             <h2 class="govuk-heading-l govuk-!-margin-bottom-5">
 
                 Training provider information
@@ -441,9 +440,12 @@
                 Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.AcademicPeriod.
                 Data collected by the Department for Education.
             </div>
+        </div>
+    </div>
 
-            @*  View results of our survey with employers and apprentices for this provider *@
-
+    @*  View results of our survey with employers and apprentices for this provider *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
             <details class="govuk-details govuk-!-margin-bottom-8">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
@@ -454,14 +456,17 @@
                     @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
                 </div>
             </details>
+        </div>
+    </div>
 
-        @*  View results of our survey with employers and apprentices for this provider *@
-        @*  Contact this training provider *@
+    @*  Contact this training provider *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         
             <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
                 Contact this training provider
             </h3>
-            <dl class="govuk-summary-list govuk-summary-list-align-right">
+            <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Registered address
@@ -496,63 +501,59 @@
                 </div>
             </dl>
         </div>
+    </div>
 
-        @*  Contact this training provider *@
+    @* Training provider overview and courses delivered *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
+                Training provider overview and courses delivered
+            </h3>
 
-        @* Training provider overview and courses delivered *@
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        @Model.CoursesDeliveredCountDisplay
+                    </span>
+                </summary>
 
-        @if (Model.Courses.Any())
-        {
-            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
-                <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
-                    Training provider overview and courses delivered
-                </h3>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">Select a course to view location, training options and contact details</p>
+                    <ul class="govuk-task-list">
+                        @foreach (ProviderCourseModel course in Model.Courses)
+                        {
+                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                <div class="govuk-task-list__name-and-hint">
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
+                                        @course.NameAndLevel
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </details>
 
-                <details class="govuk-details">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            @Model.CoursesDeliveredCountDisplay
-                        </span>
-                    </summary>
+            <p class="govuk-body">
+                @Html.MarkdownToHtml(@Model.Contact.MarketingInfo)
+            </p>
 
-                    <div class="govuk-details__text">
-                        <p class="govuk-body">Select a course to view location, training options and contact details</p>
-                        <ul class="govuk-task-list">
-                            @foreach (ProviderCourseModel course in Model.Courses)
-                            {
-                                <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                                    <div class="govuk-task-list__name-and-hint">
-                                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
-                                            @course.NameAndLevel
-                                        </a>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </details>
+            <p class="govuk-body">
+                For general information about this provider, such as the total participation
+                and achievement rate for all courses they deliver, view our
+                <a class="govuk-link govuk-link--no-visited-state"
+                    asp-route="@RouteNames.Provider"
+                    asp-route-ukprn="@Model.Ukprn">
+                    provider details page for @Model.ProviderName
+                </a>.
+            </p>
+        </div>
+    </div>
 
-                <p class="govuk-body">
-                    @Html.MarkdownToHtml(@Model.Contact.MarketingInfo)
-                </p>
-
-                <p class="govuk-body">
-                    For general information about this provider, such as the total participation
-                    and achievement rate for all courses they deliver, view our
-                    <a class="govuk-link govuk-link--no-visited-state"
-                       asp-route="@RouteNames.Provider"
-                       asp-route-ukprn="@Model.Ukprn">
-                        provider details page for @Model.ProviderName
-                    </a>.
-                </p>
-            </div>
-        }
-
-        @* Training provider overview and courses delivered *@
-
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6">
+    @* Shortlist *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <div class="app-course-provider">
-
                 <div class="das-highlight govuk-!-margin-bottom-5">
                     <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
                         <div class="app-provider-shortlist-add">
@@ -598,4 +599,5 @@
             </div>
         </div>
     </div>
+
 </main>
