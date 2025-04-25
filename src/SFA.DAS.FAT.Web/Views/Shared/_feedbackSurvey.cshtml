@@ -3,23 +3,30 @@
 <div class="govuk-tabs" data-module="govuk-tabs">
     <ul class="govuk-tabs__list">
         @{
-            var starterClass = " govuk-tabs__list-item--selected";
+            var starterClass = " govuk-tabs__list-item";
+           
+            var tabId = 0;
         }
         @foreach (var year in Model.FeedbackByYear)
         {
+            tabId++;
+            starterClass = tabId == 2 ? " govuk-tabs__list-item--selected" : "";
+
             <li class="govuk-tabs__list-item @starterClass">
-                <a class="govuk-tabs__tab govuk-!-font-size-16" href="#feedback-year-@year.StartYear">
-                    @year.Heading
+                <a class="govuk-tabs__tab govuk-!-font-size-16" href="#feedback-@tabId">
+                    @year.Heading 
                 </a>
             </li>
-
-            starterClass = " govuk-tabs__list-item";
         }
     </ul>
+@{
+        tabId = 0;
+}
 
-    @foreach (var year in Model.FeedbackByYear)
-    {
-        <div class="govuk-tabs__panel" id="feedback-year-@year.StartYear">
+@foreach (var year in Model.FeedbackByYear)
+{
+        tabId++;
+        <div class="govuk-tabs__panel" id="feedback-@tabId">
             <h2 class="govuk-heading-m">@year.SubHeading</h2>
             <p class="govuk-body">@year.MainText</p>
             <h2 class="govuk-heading-m">Employer reviews</h2>
