@@ -193,7 +193,7 @@
                                             <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
                                             @if (feedbackItem.TotalCount > 0)
                                             {
-                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices selected this as a 'strength'" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
+                                                <div class="app-graph__chart-wrap"><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-1" style="width: @feedbackItem.StrengthPerc%;" data-label="Percentage of apprentices that selected this as a strength" title="@feedbackItem.StrengthPerc% of @feedbackItem.TotalCount apprentices agreed with this statement" tabindex="0"><span class="app-graph__figure">@feedbackItem.StrengthPerc%</span></span></span></span><span class="app-graph__chart"><span class="app-graph__bar"><span class="app-graph__bar-value app-graph__bar-value--colour-2" style="width: @feedbackItem.WeaknessPerc%;" title="@feedbackItem.WeaknessPerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'" tabindex="0"><span class="app-graph__figure">@feedbackItem.WeaknessPerc%</span></span></span></span></div>
                                             }
                                             else
                                             {
@@ -219,7 +219,7 @@
                         <thead class="govuk-table__head">
                             <tr class="govuk-table__row">
                                 <th scope="col" class="govuk-table__header">Statement</th>
-                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as a "strength"</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th>
                                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as "needs improvement"</th>
                                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of apprentices that selected this statement</th>
                             </tr>
