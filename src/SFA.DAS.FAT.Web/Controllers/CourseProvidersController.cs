@@ -115,6 +115,7 @@ public class CourseProvidersController : Controller
         courseProvidersViewModel.Pagination = new PaginationViewModel(1, 0, Constants.DefaultPageSize,
             Url, RouteNames.CourseProviders, new List<ValueTuple<string, string>>());
 
+
         if (result.Providers.Count > 0)
         {
             courseProvidersViewModel.Pagination = new PaginationViewModel(

@@ -368,10 +368,9 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                     {
                         result.Add(ValueTuple.Create(nameof(Location), Location));
 
-                        if (!string.IsNullOrWhiteSpace(Distance))
-                        {
-                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
-                        }
+                        result.Add(!string.IsNullOrWhiteSpace(Distance)
+                            ? ValueTuple.Create(nameof(Distance), Distance)
+                            : ValueTuple.Create(nameof(Distance), DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
                     }
                     break;
 
