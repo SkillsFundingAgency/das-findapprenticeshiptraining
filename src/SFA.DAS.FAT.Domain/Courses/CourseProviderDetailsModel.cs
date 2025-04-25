@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
 namespace SFA.DAS.FAT.Domain.Courses;
 
@@ -20,7 +21,6 @@ public sealed class CourseProviderDetailsModel
     public Guid? ShortlistId { get; set; }
     public IEnumerable<LocationModel> Locations { get; set; }
     public IEnumerable<ProviderCourseModel> Courses { get; set; } = [];
-    public IEnumerable<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
-    public IEnumerable<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
-    public Dictionary<string, string> GetCourseProvidersRequest { get; set; } = new Dictionary<string, string>();
+    public List<EmployerFeedbackAnnualSummaries> AnnualEmployerFeedbackDetails { get; set; } = [];
+    public List<ApprenticeFeedbackAnnualSummaries> AnnualApprenticeFeedbackDetails { get; set; } = [];
 }

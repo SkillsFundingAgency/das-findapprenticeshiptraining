@@ -1,14 +1,13 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
+@using SFA.DAS.FAT.Web.Extensions
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
 
 @{
     ViewData["Title"] = $"{Model.ProviderName} - training provider";
     ViewData["Description"] = $"View {Model.ProviderName}'s available training options, pass rate and contact details for {Model.CourseNameAndLevel}. You can also check their employer reviews and any other apprenticeship training courses that they offer.";
-   //MFCMFC
     var feedbackSurvey = Model.FeedbackSurvey;
-
 }
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
@@ -448,16 +447,14 @@
             <details class="govuk-details govuk-!-margin-bottom-8">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        View results of our survey with employers and apprentices for this provider
+                        View reviews with feedback from the last 5 years
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-@*                     MFCMFC *@
                     @if (feedbackSurvey.ShowSurvey)
                     {
                         @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey);
                     }
-                    @* @await Html.PartialAsync("_providerReviewsAndFeedback", @Model) *@
                 </div>
             </details>
 
@@ -539,7 +536,7 @@
                 </details>
 
                 <p class="govuk-body">
-                    @Model.Contact.MarketingInfo
+                    @Html.MarkdownToHtml(@Model.Contact.MarketingInfo)
                 </p>
 
                 <p class="govuk-body">

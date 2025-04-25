@@ -43,7 +43,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             Qar = source.Qar,
             Reviews = source.Reviews,
             EndpointAssessments = source.EndpointAssessments,
-            FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(source),
+            FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(source.AnnualEmployerFeedbackDetails, source.AnnualApprenticeFeedbackDetails),
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };

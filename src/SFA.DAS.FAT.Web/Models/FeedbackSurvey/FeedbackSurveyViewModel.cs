@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
 namespace SFA.DAS.FAT.Web.Models.FeedbackSurvey;
@@ -23,26 +21,15 @@ public class FeedbackSurveyViewModel
     public List<FeedbackByYear> FeedbackByYear { get; set; }
 
 
-    public static FeedbackSurveyViewModel ProcessFeedbackDetails(GetProviderQueryResponse source)
+    public static FeedbackSurveyViewModel ProcessFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries)
     {
-        var feedback = CreateFeedbackWithYearsAndHeadings(source);
+        var feedback = CreateFeedbackWithYearsAndHeadings(employerSummaries, apprenticeSummaries);
 
-        InjectEmployerFeedbackDetails(source.AnnualEmployerFeedbackDetails, feedback);
-        InjectApprenticeFeedbackDetails(source.AnnualApprenticeFeedbackDetails, feedback);
+        InjectEmployerFeedbackDetails(employerSummaries, feedback);
+        InjectApprenticeFeedbackDetails(apprenticeSummaries, feedback);
 
         return new FeedbackSurveyViewModel { FeedbackByYear = feedback };
     }
-
-    public static FeedbackSurveyViewModel ProcessFeedbackDetails(GetCourseProviderQueryResult source)
-    {
-        var feedback = CreateFeedbackWithYearsAndHeadings(source);
-        InjectEmployerFeedbackDetails(source.AnnualEmployerFeedbackDetails.ToList(), feedback);
-        InjectApprenticeFeedbackDetails(source.AnnualApprenticeFeedbackDetails.ToList(), feedback);
-
-
-        return new FeedbackSurveyViewModel { FeedbackByYear = feedback };
-    }
-
 
     private static void InjectApprenticeFeedbackDetails(List<ApprenticeFeedbackAnnualSummaries> apprenticeFeedback, List<FeedbackByYear> feedback)
     {
@@ -61,24 +48,6 @@ public class FeedbackSurveyViewModel
         }
     }
 
-    private static void InjectApprenticeFeedbackDetails(List<AnnualApprenticeFeedbackDetailsModel> apprenticeFeedback, List<FeedbackByYear> feedback)
-    {
-        if (apprenticeFeedback == null || feedback.Count == 0) return;
-
-        foreach (var item in feedback)
-        {
-            item.NoApprenticeReviewsText = item.IsMostRecentYear
-                ? ApprenticeNoResultsRecentTab
-                : ApprenticeNoResultsPastTab;
-
-            foreach (var matchingFeedback in apprenticeFeedback.Where(x => x.TimePeriod == item.TimePeriod))
-            {
-                item.ApprenticeFeedbackDetails = matchingFeedback;
-            }
-        }
-    }
-
-
     private static void InjectEmployerFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerFeedback, List<FeedbackByYear> feedback)
     {
         if (employerFeedback == null || feedback.Count == 0) return;
@@ -94,70 +63,20 @@ public class FeedbackSurveyViewModel
             }
         }
     }
-
-    private static void InjectEmployerFeedbackDetails(List<AnnualEmployerFeedbackDetailsModel> employerFeedback, List<FeedbackByYear> feedback)
-    {
-        if (employerFeedback == null || feedback.Count == 0) return;
-        foreach (var item in feedback)
-        {
-            item.NoEmployerReviewsText = item.IsMostRecentYear
-                ? EmployersNoResultsRecentTab
-                : EmployersNoResultsPastTab;
-
-            foreach (var matchingFeedback in employerFeedback.Where(x => x.TimePeriod == item.TimePeriod))
-            {
-                item.EmployerFeedbackDetails = matchingFeedback;
-            }
-        }
-    }
-
-    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings(GetProviderQueryResponse source)
+    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries)
     {
         var employerTimePeriods = new List<string>();
 
-        if (source.AnnualEmployerFeedbackDetails is { Count: > 0 })
+        if (employerSummaries is { Count: > 0 })
         {
-            employerTimePeriods = source.AnnualEmployerFeedbackDetails.Select(x => x.TimePeriod).ToList();
+            employerTimePeriods = employerSummaries.Select(x => x.TimePeriod).ToList();
         }
 
         var apprenticeTimePeriods = new List<string>();
 
-        if (source.AnnualApprenticeFeedbackDetails is { Count: > 0 })
+        if (apprenticeSummaries is { Count: > 0 })
         {
-            apprenticeTimePeriods = source.AnnualApprenticeFeedbackDetails.Select(x => x.TimePeriod).ToList();
-        }
-
-        var allTimePeriods = employerTimePeriods.ToList();
-        var feedbackItems = BuildFeedbackByYearList(apprenticeTimePeriods, allTimePeriods);
-
-        if (feedbackItems.Count > 0)
-        {
-            var mostRecentDate =
-                feedbackItems.MaxBy(x => x.StartYear)!.StartYear;
-
-            var leastRecentDate =
-                feedbackItems.OrderBy(x => x.StartYear).First(x => x.StartYear != 0)!.StartYear;
-
-            PopulateFeedbackItems(feedbackItems, leastRecentDate, mostRecentDate);
-        }
-
-        return feedbackItems.OrderByDescending(f => f.StartYear).ToList();
-    }
-
-    private static List<FeedbackByYear> CreateFeedbackWithYearsAndHeadings(GetCourseProviderQueryResult source)
-    {
-        var employerTimePeriods = new List<string>();
-
-        if (source.AnnualEmployerFeedbackDetails.ToList() is { Count: > 0 })
-        {
-            employerTimePeriods = source.AnnualEmployerFeedbackDetails.Select(x => x.TimePeriod).ToList();
-        }
-
-        var apprenticeTimePeriods = new List<string>();
-
-        if (source.AnnualApprenticeFeedbackDetails.ToList() is { Count: > 0 })
-        {
-            apprenticeTimePeriods = source.AnnualApprenticeFeedbackDetails.Select(x => x.TimePeriod).ToList();
+            apprenticeTimePeriods = apprenticeSummaries.Select(x => x.TimePeriod).ToList();
         }
 
         var allTimePeriods = employerTimePeriods.ToList();

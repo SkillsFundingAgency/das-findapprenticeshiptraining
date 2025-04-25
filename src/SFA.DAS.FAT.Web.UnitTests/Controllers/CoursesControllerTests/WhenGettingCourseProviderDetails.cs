@@ -8,8 +8,8 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Services;
@@ -33,8 +33,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         var distance = 10;
-        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
-        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
+        response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
+        response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -90,8 +90,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         var distance = 10;
-        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
-        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
+        response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
+        response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -153,8 +153,6 @@ public class WhenGettingCourseProviderDetails
             Assert.That(model.ShortlistId, Is.EqualTo(response.ShortlistId));
             Assert.That(model.Locations, Is.EqualTo(response.Locations));
             Assert.That(model.Courses, Is.EqualTo(response.Courses));
-            Assert.That(model.AnnualEmployerFeedbackDetails, Is.EqualTo(response.AnnualEmployerFeedbackDetails));
-            Assert.That(model.AnnualApprenticeFeedbackDetails, Is.EqualTo(response.AnnualApprenticeFeedbackDetails));
             Assert.That(model.CourseId, Is.EqualTo(courseId));
             Assert.That(model.Location, Is.EqualTo(location));
             Assert.That(model.Distance, Is.EqualTo(distance.ToString()));
@@ -181,8 +179,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = null;
-        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
-        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
+        response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
+        response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
@@ -239,8 +237,8 @@ public class WhenGettingCourseProviderDetails
     )
     {
         string distance = "All";
-        response.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
-        response.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
+        response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
+        response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
 
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))

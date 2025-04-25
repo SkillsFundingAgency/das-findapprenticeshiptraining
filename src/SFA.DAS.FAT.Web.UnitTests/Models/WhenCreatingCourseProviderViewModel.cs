@@ -3,6 +3,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -13,8 +14,8 @@ public class WhenCreatingCourseProviderViewModel
     [Test, MoqAutoData]
     public void Then_Properties_Are_Correctly_Mapped(GetCourseProviderQueryResult source)
     {
-        source.AnnualEmployerFeedbackDetails = new List<AnnualEmployerFeedbackDetailsModel>();
-        source.AnnualApprenticeFeedbackDetails = new List<AnnualApprenticeFeedbackDetailsModel>();
+        source.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
+        source.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
         var sut = (CourseProviderViewModel)source;
 
         Assert.Multiple(() =>
@@ -34,8 +35,6 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(sut.ShortlistId, Is.EqualTo(source.ShortlistId));
             Assert.That(sut.Locations, Is.EqualTo(source.Locations));
             Assert.That(sut.Courses, Is.EqualTo(source.Courses));
-            Assert.That(sut.AnnualEmployerFeedbackDetails, Is.EqualTo(source.AnnualEmployerFeedbackDetails));
-            Assert.That(sut.AnnualApprenticeFeedbackDetails, Is.EqualTo(source.AnnualApprenticeFeedbackDetails));
         });
     }
 
