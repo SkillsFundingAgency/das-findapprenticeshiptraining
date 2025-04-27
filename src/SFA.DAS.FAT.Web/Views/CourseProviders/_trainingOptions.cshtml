@@ -20,6 +20,7 @@
                 @if (Model.IsBlockReleaseMultiple)
                 {
                     <span>Block release at multiple locations: </span>
+                    <br />
                     <span class="govuk-!-font-weight-bold">closest @Model.NearestBlockRelease miles</span>
                 }
                 else
@@ -52,6 +53,7 @@
                 @if (Model.IsDayReleaseMultiple)
                 {
                     <span>Day release at multiple locations: </span>
+                    <br />
                     <span class="govuk-!-font-weight-bold">closest @Model.NearestDayRelease miles</span>
                 }
                 else
