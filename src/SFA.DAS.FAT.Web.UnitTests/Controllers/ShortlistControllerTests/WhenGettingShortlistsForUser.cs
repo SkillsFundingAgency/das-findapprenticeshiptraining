@@ -215,10 +215,10 @@ public class WhenGettingShortlistsForUser
             actualProvider.AtEmployer.Should().Be(expectedProvider.AtEmployer);
             actualProvider.HasBlockRelease.Should().Be(expectedProvider.HasBlockRelease);
             actualProvider.BlockReleaseDistance.Should().Be(expectedProvider.BlockReleaseDistance);
-            actualProvider.BlockReleaseCount.Should().Be(expectedProvider.BlockReleaseCount);
+            actualProvider.HasMultipleBlockRelease.Should().BeTrue();
             actualProvider.HasDayRelease.Should().Be(expectedProvider.HasDayRelease);
             actualProvider.DayReleaseDistance.Should().Be(expectedProvider.DayReleaseDistance);
-            actualProvider.DayReleaseCount.Should().Be(expectedProvider.DayReleaseCount);
+            actualProvider.HasMultipleDayRelease.Should().BeFalse();
             actualProvider.Email.Should().Be(expectedProvider.Email);
             actualProvider.Phone.Should().Be(expectedProvider.Phone);
             actualProvider.Website.Should().Be(expectedProvider.Website);
