@@ -17,11 +17,13 @@ public class FeedbackSurveyViewModel
     public const string ApprenticeNoResultsPastTab = "No results. Not enough apprentices gave feedback about this training provider.";
 
 
+    public static DateTime CurrentDate { get; set; }
     public List<FeedbackByYear> FeedbackByYear { get; set; }
 
 
-    public static FeedbackSurveyViewModel ProcessFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries)
+    public static FeedbackSurveyViewModel ProcessFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries, DateTime currentDate)
     {
+        CurrentDate = currentDate;
         var feedback = CreateFeedbackWithYearsAndHeadings();
 
         InjectEmployerFeedbackDetails(employerSummaries, feedback);
@@ -110,7 +112,7 @@ public class FeedbackSurveyViewModel
     {
         var feedback = new List<FeedbackByYear>();
 
-        int academicYearEnd = DateTime.UtcNow.Month > 7
+        int academicYearEnd = CurrentDate.Month > 7
             ? DateTime.UtcNow.Year + 1
             : DateTime.UtcNow.Year;
 

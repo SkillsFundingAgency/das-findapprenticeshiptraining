@@ -5,6 +5,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
@@ -23,12 +24,14 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
+        sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
+            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)agree * 100) / totalCount));
         int expectedDisagreePerc = 100 - expectedAgreePerc;
         var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
-        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
+        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
         using (new AssertionScope())
         {
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
@@ -61,7 +64,8 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
-
+        sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
+            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 1) * 100) / totalCount));
@@ -79,7 +83,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriod2);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(agree + disagree);
         feedbackDetail.Agree.Should().Be(agree + 1);
         feedbackDetail.Disagree.Should().Be(disagree - 1);
@@ -94,7 +98,8 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries(feedbackName, agree, disagree, reviewCount, stars);
 
         var sut = (ProviderDetailsViewModel)response;
-
+        sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
+            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 2) * 100) / totalCount));
@@ -112,7 +117,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriodAll);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttribute[0];
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(agree + disagree);
         feedbackDetail.Agree.Should().Be(agree + 2);
         feedbackDetail.Disagree.Should().Be(disagree - 2);

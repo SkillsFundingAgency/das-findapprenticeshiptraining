@@ -13,6 +13,8 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProviderViewModel : PageLinksViewModelBase
 {
+
+
     public int ShortlistCount { get; set; }
     public long Ukprn { get; set; }
     public string ProviderName { get; set; }
@@ -55,6 +57,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
+    public DateTime CurrentDate { get; set; }
+
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
         return new CourseProviderViewModel
@@ -73,8 +77,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
-            Courses = source.Courses?.ToList() ?? [],
-            FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(source.AnnualEmployerFeedbackDetails, source.AnnualApprenticeFeedbackDetails),
+            Courses = source.Courses?.ToList() ?? []
         };
     }
 

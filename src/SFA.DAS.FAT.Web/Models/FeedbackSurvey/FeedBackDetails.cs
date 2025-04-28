@@ -28,9 +28,9 @@ public class FeedBackDetails
             };
     }
 
-    public List<EmployerProviderAttribute> ProviderAttribute { get; set; }
+    public List<EmployerProviderAttribute> EmployerProviderAttributes { get; set; }
 
-    public List<ApprenticeProviderAttribute> ApprenticeProviderAttribute { get; set; }
+    public List<ApprenticeProviderAttribute> ApprenticeProviderAttributes { get; set; }
 
     public static implicit operator FeedBackDetails(EmployerFeedbackAnnualSummaries source)
     {
@@ -38,7 +38,7 @@ public class FeedBackDetails
         {
             Stars = source.Stars,
             ReviewCount = source.ReviewCount,
-            ProviderAttribute = source.ProviderAttribute.Select(x => new EmployerProviderAttribute { Name = x.Name, Strength = x.Strength, Weakness = x.Weakness }).ToList()
+            EmployerProviderAttributes = source.ProviderAttribute.Select(x => new EmployerProviderAttribute { Name = x.Name, Strength = x.Strength, Weakness = x.Weakness }).ToList()
         };
     }
 
@@ -49,7 +49,7 @@ public class FeedBackDetails
         {
             Stars = source.Stars,
             ReviewCount = source.ReviewCount,
-            ApprenticeProviderAttribute = source.ProviderAttribute.Select(x => new ApprenticeProviderAttribute { Name = x.Name, Category = x.Category, Agree = x.Agree, Disagree = x.Disagree }).ToList()
+            ApprenticeProviderAttributes = source.ProviderAttribute.Select(x => new ApprenticeProviderAttribute { Name = x.Name, Category = x.Category, Agree = x.Agree, Disagree = x.Disagree }).ToList()
         };
     }
 }

@@ -13,6 +13,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 
@@ -27,6 +28,7 @@ public class CoursesController : Controller
     private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ISessionService _sessionService;
+    private readonly IDateTimeService _dateTimeService;
 
     public CoursesController(
         IMediator mediator,
@@ -34,8 +36,7 @@ public class CoursesController : Controller
         IValidator<GetCourseQuery> courseValidator,
         IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        ISessionService sessionService
-    )
+        ISessionService sessionService, IDateTimeService dateTimeService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
@@ -43,6 +44,7 @@ public class CoursesController : Controller
         _config = config.Value;
         _courseProviderDetailsValidator = courseProviderDetailsValidator;
         _sessionService = sessionService;
+        _dateTimeService = dateTimeService;
     }
 
     [Route("", Name = RouteNames.Courses)]
@@ -148,11 +150,11 @@ public class CoursesController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
 
-        if(!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
+        if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
         {
             distance = DistanceService.TEN_MILES.ToString();
         }
-        
+
         var query = new GetCourseProviderDetailsQuery
         {
             Ukprn = ProviderId,
@@ -177,6 +179,8 @@ public class CoursesController : Controller
         }
 
         var viewModel = (CourseProviderViewModel)result;
+        viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
+            result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.CourseId = id;
         viewModel.Location = location;
         viewModel.Distance = distance ?? DistanceService.TEN_MILES.ToString();
