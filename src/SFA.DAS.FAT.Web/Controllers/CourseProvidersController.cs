@@ -47,20 +47,12 @@ public class CourseProvidersController : Controller
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
         var orderBy = string.IsNullOrEmpty(request.Location) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
 
-        int? convertedDistance = null;
-        if (request.Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrWhiteSpace(request.Location))
+        if (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance))
         {
-            convertedDistance = null;
-        }
-        else if (!string.IsNullOrWhiteSpace(request.Location) && !DistanceService.IsValidDistance(request.Distance))
-        {
-            convertedDistance = DistanceService.TEN_MILES;
             request.Distance = DistanceService.TEN_MILES.ToString();
         }
-        else
-        {
-            convertedDistance = DistanceService.GetValidDistanceNullable(request.Distance);
-        }
+
+        int? convertedDistance = DistanceService.GetValidDistanceNullable(request.Distance);
 
         var deliveryModes = request.DeliveryModes.ToList();
 

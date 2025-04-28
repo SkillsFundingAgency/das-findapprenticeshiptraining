@@ -163,7 +163,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Distance_Defaults_to_10(
+    public async Task Then_Distance_Defaults_To_Ten_Miles(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -280,7 +280,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be("All");
+            actualModel!.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
         }
     }
 

@@ -250,7 +250,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
+            Distance = DistanceService.TEN_MILES.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))

@@ -43,7 +43,7 @@ public static class DistanceService
             return string.IsNullOrWhiteSpace(location) ? DEFAULT_DISTANCE : validDistance;
         }
 
-        return DEFAULT_DISTANCE;
+        return TEN_MILES;
     }
 
     public static int? GetValidDistanceNullable(string distance)

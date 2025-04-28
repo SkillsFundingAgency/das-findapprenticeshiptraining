@@ -243,7 +243,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_All()
+    public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_Te_Miles()
     {
         CoursesViewModel _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -257,7 +257,7 @@ public sealed class WhenFilteringCourses
             Assert.That(distanceFilterSection, Is.Not.Null);
 
             var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.Selected);
-            Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
+            Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
         });
     }
 }

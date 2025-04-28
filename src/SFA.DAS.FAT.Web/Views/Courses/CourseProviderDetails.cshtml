@@ -161,7 +161,7 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (LocationModel location in Model.BlockReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
+                                                @foreach (LocationModel location in Model.BlockReleaseLocations)
                                                 {
                                                     @if (string.IsNullOrWhiteSpace(Model.Location))
                                                     {
@@ -231,7 +231,7 @@
                                         </summary>
                                         <div class="govuk-details__text">
                                             <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (LocationModel location in Model.DayReleaseLocations.Skip(string.IsNullOrWhiteSpace(Model.Location) ? 0 : 1))
+                                                @foreach (LocationModel location in Model.DayReleaseLocations)
                                                 {
                                                     @if (string.IsNullOrWhiteSpace(Model.Location))
                                                     {
