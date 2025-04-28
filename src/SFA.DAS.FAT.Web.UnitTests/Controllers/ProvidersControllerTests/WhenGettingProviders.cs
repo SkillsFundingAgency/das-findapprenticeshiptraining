@@ -14,14 +14,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ProvidersControllerTests;
 
 public class WhenGettingProviders
 {
-    public const string ProviderName = "Joe Cools Emporium";
-    public const string Address1 = "10 Smith Street";
-    public const string Address2 = "Lower Dakin";
-    public const string Address3 = "Near Burnalt";
-    public const string Address4 = "Smith";
-    public const string Town = "Coventry";
-    public const string Postcode = "CV1 1VC";
-
     [Test, MoqAutoData]
     public async Task Then_The_Query_Is_Sent_And_Data_Retrieved(
         int ukprn,

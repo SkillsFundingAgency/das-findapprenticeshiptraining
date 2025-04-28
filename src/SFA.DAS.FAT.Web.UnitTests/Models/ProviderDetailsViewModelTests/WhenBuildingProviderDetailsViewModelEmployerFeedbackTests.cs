@@ -125,8 +125,6 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackDetail.WeaknessPerc.Should().Be(expectedWeaknessPerc);
     }
 
-
-
     private static List<EmployerFeedbackAnnualSummaries> GetEmployerAnnualSummaries(string feedbackName, int strength, int weakness, int reviewCount, int stars)
     {
         var annualSummaryItem = new AnnualSummaryItem { Name = feedbackName, Strength = strength, Weakness = weakness };

@@ -58,6 +58,45 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
     }
 
     [Test, MoqInlineAutoData]
+    public void Then_Apprentice_Feedback_Details_When_No_Data(GetProviderQueryResponse response)
+    {
+        response.AnnualEmployerFeedbackDetails = null;
+        response.AnnualApprenticeFeedbackDetails = GetApprenticeAnnualSummaries("test", 0, 0, 0, 1);
+
+        var sut = (ProviderDetailsViewModel)response;
+        sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
+            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+
+        int expectedAgreePerc = 0;
+        int expectedDisagreePerc = 0;
+        var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
+        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
+        using (new AssertionScope())
+        {
+            sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
+
+            firstItem.IsMostRecentYear.Should().Be(true);
+            firstItem.EndYear.Should().Be(2025);
+            firstItem.StartYear.Should().Be(2024);
+            firstItem.Heading.Should().Be("2024 to today");
+            firstItem.SubHeading.Should().Be("1 August 2024 to today");
+            firstItem.MainText.Should()
+                .Be(FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
+            firstItem.NoApprenticeReviewsText.Should()
+                .Be(FeedbackSurveyViewModel.ApprenticeNoResultsRecentTab);
+            firstItem.ShowEmployerFeedbackStars.Should().Be(false);
+            firstItem.ShowApprenticeFeedbackStars.Should().Be(true);
+            firstItem.TimePeriod.Should().Be(TimePeriod1);
+
+            firstFeedbackDetail.TotalCount.Should().Be(0);
+            firstFeedbackDetail.Agree.Should().Be(0);
+            firstFeedbackDetail.Disagree.Should().Be(0);
+            firstFeedbackDetail.AgreePerc.Should().Be(expectedAgreePerc);
+            firstFeedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
+        }
+    }
+
+    [Test, MoqInlineAutoData]
     public void Then_Apprentice_Feedback_Details_As_Expected_Second_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
         response.AnnualEmployerFeedbackDetails = null;
@@ -124,8 +163,6 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackDetail.AgreePerc.Should().Be(expectedAgreePerc);
         feedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
     }
-
-
 
     private static List<ApprenticeFeedbackAnnualSummaries> GetApprenticeAnnualSummaries(string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {

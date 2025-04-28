@@ -57,8 +57,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
-    public DateTime CurrentDate { get; set; }
-
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
         return new CourseProviderViewModel
