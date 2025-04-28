@@ -16,7 +16,6 @@ public class FeedbackSurveyViewModel
     public const string ApprenticeNoResultsRecentTab = "No results. Not enough apprentices have given feedback about this training provider.";
     public const string ApprenticeNoResultsPastTab = "No results. Not enough apprentices gave feedback about this training provider.";
 
-
     public static DateTime CurrentDate { get; set; }
     public List<FeedbackByYear> FeedbackByYear { get; set; }
 

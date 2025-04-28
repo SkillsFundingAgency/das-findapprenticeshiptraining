@@ -4,7 +4,6 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
-using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
@@ -14,7 +13,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
     public const string TimePeriod1 = "AY2425";
     public const string TimePeriod2 = "AY2324";
     public const string TimePeriodAll = "All";
-
+    public DateTime DateToCheck = new(2025, 4, 28);
 
     [Test, MoqInlineAutoData]
     public void Then_Employer_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int strength, int weakness, int reviewCount, int stars)
@@ -24,7 +23,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = strength + weakness;
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)strength * 100) / totalCount));
@@ -65,7 +64,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = strength + weakness;
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 1) * 100) / totalCount));
@@ -99,7 +98,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = strength + weakness;
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(strength + 2) * 100) / totalCount));

@@ -5,7 +5,6 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
-using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
@@ -15,7 +14,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
     public const string TimePeriod1 = "AY2425";
     public const string TimePeriod2 = "AY2324";
     public const string TimePeriodAll = "All";
-
+    public DateTime DateToCheck = new(2025, 4, 28);
 
     [Test, MoqInlineAutoData]
     public void Then_Apprentice_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
@@ -25,7 +24,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)agree * 100) / totalCount));
@@ -65,7 +64,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         int expectedAgreePerc = 0;
         int expectedDisagreePerc = 0;
@@ -104,7 +103,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 1) * 100) / totalCount));
@@ -138,7 +137,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 
         var sut = (ProviderDetailsViewModel)response;
         sut.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
-            response.AnnualApprenticeFeedbackDetails, new DateTimeService().GetDateTime());
+            response.AnnualApprenticeFeedbackDetails, DateToCheck);
 
         var totalCount = agree + disagree;
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)(agree + 2) * 100) / totalCount));

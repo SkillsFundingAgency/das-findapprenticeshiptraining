@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Providers.Query.GetProvider;
+using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models.Providers;
@@ -20,6 +21,7 @@ public class WhenGettingProviders
         GetProviderQueryResponse response,
         string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IDateTimeService> dateTimeServiceMock,
         [Greedy] ProvidersController controller)
     {
         response.Ukprn = ukprn;

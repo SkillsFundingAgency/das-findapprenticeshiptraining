@@ -473,47 +473,37 @@ function toggleDeliveryModeParent() {
 
 function toggleTables() {
 
-
-    var prefix =  'app';
-
     // Select all graph panels and table panels based on the prefix
-    var graphPanels = document.querySelectorAll(`.app-show-hide-panel[data-panel-label="graph"][id^="${prefix}-feedback-graph-"]`);
-    var tablePanels = document.querySelectorAll(`.app-show-hide-panel[data-panel-label="table and accessible"][id^="${prefix}-feedback-table-"]`);
+    var graphPanelsApp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="graph"][id^="$app-feedback-graph-"]');
+    var tablePanelsApp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="table and accessible"][id^="${app-feedback-table-"]');
+    var graphPanelsEmp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="graph"][id^="$emp-feedback-graph-"]');
+    var tablePanelsEmp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="table and accessible"][id^="$emp-feedback-table-"]');
 
 
     // Toggle visibility for all graph panels
-    var graphVisible = false;
-    for (var i = 0; i < graphPanels.length; i++) {
-        graphPanels[i].classList.toggle("app-show-hide-panel__hidden");
-        if (!graphPanels[i].classList.contains("app-show-hide-panel__hidden")) {
-            graphVisible = true;
+    var graphVisibleApp = false;
+    for (var i = 0; i < graphPanelsApp.length; i++) {
+        graphPanelsApp[i].classList.toggle("app-show-hide-panel__hidden");
+        if (!graphPanelsApp[i].classList.contains("app-show-hide-panel__hidden")) {
+            graphVisibleApp = true;
         }
     }
 
-    // Toggle visibility for all table panels
-    for (var i = 0; i < tablePanels.length; i++) {
-        tablePanels[i].classList.toggle("app-show-hide-panel__hidden");
-    }
-
-    var prefixEmp = 'emp';
-
-    // Select all graph panels and table panels based on the prefix
-    var graphPanelsEmp = document.querySelectorAll(`.app-show-hide-panel[data-panel-label="graph"][id^="${prefixEmp}-feedback-graph-"]`);
-    var tablePanelsEmp = document.querySelectorAll(`.app-show-hide-panel[data-panel-label="table and accessible"][id^="${prefixEmp}-feedback-table-"]`);
-
-
-    // Toggle visibility for all graph panels
     var graphVisibleEmp = false;
-    for (var i = 0; i < graphPanelsEmp.length; i++) {
-        graphPanelsEmp[i].classList.toggle("app-show-hide-panel__hidden");
-        if (!graphPanelsEmp[i].classList.contains("app-show-hide-panel__hidden")) {
+    for (var j = 0; j < graphPanelsEmp.length; j++) {
+        graphPanelsEmp[j].classList.toggle("app-show-hide-panel__hidden");
+        if (!graphPanelsEmp[j].classList.contains("app-show-hide-panel__hidden")) {
             graphVisibleEmp = true;
         }
     }
 
     // Toggle visibility for all table panels
-    for (var i = 0; i < tablePanelsEmp.length; i++) {
-        tablePanelsEmp[i].classList.toggle("app-show-hide-panel__hidden");
+    for (var a = 0; a < tablePanelsApp.length; a++) {
+        tablePanelsApp[a].classList.toggle("app-show-hide-panel__hidden");
+    }
+
+    for (var b = 0; b < tablePanelsEmp.length; b++) {
+        tablePanelsEmp[b].classList.toggle("app-show-hide-panel__hidden");
     }
 
 
@@ -522,7 +512,7 @@ function toggleTables() {
 
     // Save user preference in a cookie conditional to the analytics consent
     if (analyticsConsentChoice === "true") {
-        setCookie('viewPreference-apprentice', graphVisible ? 'graph' : 'table', 1);
+        setCookie('viewPreference-apprentice', graphVisibleApp ? 'graph' : 'table', 1);
         setCookie('viewPreference-employer', graphVisibleEmp ? 'graph' : 'table', 1);
     }
 }
