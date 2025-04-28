@@ -15,7 +15,7 @@ public class WhenGettingRatingFromFeedbackDetails
     [TestCase(5, ProviderRating.NotYetReviewed)]
     public void When_Setting_Stars_Then_Getting_Rating(int stars, ProviderRating expectedRating)
     {
-        var feedbackDetails = new FeedBackDetails { Stars = stars };
+        var feedbackDetails = new EmployerFeedBackDetails { Stars = stars };
         feedbackDetails.Rating.Should().Be(expectedRating.GetDescription());
     }
 
@@ -25,7 +25,7 @@ public class WhenGettingRatingFromFeedbackDetails
     [TestCase(101, "101 reviews")]
     public void When_Setting_Reviews_Then_Getting_Review_Message(int reviewCount, string expectedMessage)
     {
-        var feedbackDetails = new FeedBackDetails { ReviewCount = reviewCount };
+        var feedbackDetails = new EmployerFeedBackDetails { ReviewCount = reviewCount };
         feedbackDetails.ReviewMessage.Should().Be(expectedMessage);
     }
 }

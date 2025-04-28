@@ -31,7 +31,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedAgreePerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)agree * 100) / totalCount));
         int expectedDisagreePerc = 100 - expectedAgreePerc;
         var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
-        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
+        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ProviderAttributes[0];
         using (new AssertionScope())
         {
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
@@ -70,7 +70,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         int expectedAgreePerc = 0;
         int expectedDisagreePerc = 0;
         var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
-        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
+        var firstFeedbackDetail = firstItem.ApprenticeFeedbackDetails.ProviderAttributes[0];
         using (new AssertionScope())
         {
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
@@ -122,7 +122,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriod2);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(agree + disagree);
         feedbackDetail.Agree.Should().Be(agree + 1);
         feedbackDetail.Disagree.Should().Be(disagree - 1);
@@ -156,7 +156,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(true);
         feedbackTab.TimePeriod.Should().Be(TimePeriodAll);
-        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ApprenticeProviderAttributes[0];
+        var feedbackDetail = feedbackTab.ApprenticeFeedbackDetails.ProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(agree + disagree);
         feedbackDetail.Agree.Should().Be(agree + 2);
         feedbackDetail.Disagree.Should().Be(disagree - 2);

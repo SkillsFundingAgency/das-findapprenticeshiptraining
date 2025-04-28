@@ -66,7 +66,7 @@
                             <div class="app-graph">
                                 <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of employers that selected this as a strength</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of employers that selected this as needs improvement</li></ul>
                                 <ul class="app-graph__list">
-                                    @foreach (var feedbackItem in year.EmployerFeedbackDetails.EmployerProviderAttributes)
+                                    @foreach (var feedbackItem in year.EmployerFeedbackDetails.ProviderAttributes)
                                     {
                                         var itemLabel = feedbackItem.TotalCount == 1 ? "employer" : "employers";
                                         <li class="app-graph__list-item">
@@ -102,7 +102,7 @@
                             </tr>
                         </thead>
                         <tbody class="govuk-table__body">
-                            @foreach (var feedbackItem in year.EmployerFeedbackDetails.EmployerProviderAttributes)
+                            @foreach (var feedbackItem in year.EmployerFeedbackDetails.ProviderAttributes)
                             {
                                 <tr class="govuk-table__row">
                                     <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
@@ -168,7 +168,7 @@
                         @{
                             int categoryGraphCount = 0;
                         }
-                        @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ApprenticeProviderAttributes.GroupBy(s => s.Category).OrderBy(s => s.Key))
+                        @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ProviderAttributes.GroupBy(s => s.Category).OrderBy(s => s.Key))
                         {
                             <!-- Your graph content -->
                             <div id="apprentice-feedback-graphs-@@year.StartYear">
@@ -212,7 +212,7 @@
                     @{
                         int categoryCount = 0;
                     }
-                    @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ApprenticeProviderAttributes.GroupBy(s => s.Category).OrderBy(s => s.Key))
+                    @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ProviderAttributes.GroupBy(s => s.Category).OrderBy(s => s.Key))
                     {
                         <table class="govuk-table das-table--responsive govuk-!-font-size-16 govuk-!-margin-bottom-8" data-target="apprentice-feedback-graph" data-label="apprentices" data-feedback-graph="true" @(categoryCount > 0 ? "data-hide-legend=true" : "")>
                             <caption class="govuk-table__caption govuk-caption-l govuk-!-font-weight-regular">@feedbackCategory.Key</caption>

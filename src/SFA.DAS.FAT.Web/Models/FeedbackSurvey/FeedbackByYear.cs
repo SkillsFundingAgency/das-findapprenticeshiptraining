@@ -11,8 +11,8 @@ public class FeedbackByYear
     public string MainText { get; set; }
     public string TimePeriod { get; set; }
 
-    public FeedBackDetails EmployerFeedbackDetails { get; set; }
-    public FeedBackDetails ApprenticeFeedbackDetails { get; set; }
+    public EmployerFeedBackDetails EmployerFeedbackDetails { get; set; }
+    public ApprenticeFeedBackDetails ApprenticeFeedbackDetails { get; set; }
 
     public bool ShowEmployerFeedbackStars => EmployerFeedbackDetails is { Stars: > 0 };
     public bool ShowApprenticeFeedbackStars => ApprenticeFeedbackDetails is { Stars: > 0 };

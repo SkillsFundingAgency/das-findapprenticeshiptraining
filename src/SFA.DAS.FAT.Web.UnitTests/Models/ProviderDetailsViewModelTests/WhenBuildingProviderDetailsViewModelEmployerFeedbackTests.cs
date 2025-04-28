@@ -30,7 +30,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         int expectedStrengthPerc = (int)((totalCount == 0) ? 0 : Math.Round(((double)strength * 100) / totalCount));
         int expectedWeaknessPerc = 100 - expectedStrengthPerc;
         var firstItem = sut.FeedbackSurvey.FeedbackByYear[0];
-        var firstFeedbackDetail = firstItem.EmployerFeedbackDetails.EmployerProviderAttributes[0];
+        var firstFeedbackDetail = firstItem.EmployerFeedbackDetails.ProviderAttributes[0];
         using (new AssertionScope())
         {
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
@@ -83,7 +83,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(false);
         feedbackTab.TimePeriod.Should().Be(TimePeriod2);
-        var feedbackDetail = feedbackTab.EmployerFeedbackDetails.EmployerProviderAttributes[0];
+        var feedbackDetail = feedbackTab.EmployerFeedbackDetails.ProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(strength + weakness);
         feedbackDetail.Strength.Should().Be(strength + 1);
         feedbackDetail.Weakness.Should().Be(weakness - 1);
@@ -117,7 +117,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(false);
         feedbackTab.TimePeriod.Should().Be(TimePeriodAll);
-        var feedbackDetail = feedbackTab.EmployerFeedbackDetails.EmployerProviderAttributes[0];
+        var feedbackDetail = feedbackTab.EmployerFeedbackDetails.ProviderAttributes[0];
         feedbackDetail.TotalCount.Should().Be(strength + weakness);
         feedbackDetail.Strength.Should().Be(strength + 2);
         feedbackDetail.Weakness.Should().Be(weakness - 2);
