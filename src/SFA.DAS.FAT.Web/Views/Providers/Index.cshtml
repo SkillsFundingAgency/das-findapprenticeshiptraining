@@ -159,22 +159,24 @@
         </div>
         
         <div class="govuk-inset-text govuk-!-margin-top-3">
-                Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.StartYear to @Model.Reviews.EndYear. Data collected by the Department for Education.
+                Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.StartYear to @Model.Reviews.EndYear). Data collected by Department for Education.
         </div>
         </div>
     </div>
 
-    <div class="govuk-!-margin-bottom-8 govuk-!-padding-top-9">
-        <details class="govuk-details" data-module="govuk-details">
-            <summary class="govuk-details__summary">
-                <span class="govuk-details__summary-text">
-                    View reviews with feedback from the last 5 years
-                </span>
-            </summary>
-            <div class="govuk-details__text">
-                @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
-            </div>
-        </details>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View reviews with feedback from the last 5 years
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
+                </div>
+            </details>
+        </div>
     </div>
     
     <div class="govuk-grid-row">

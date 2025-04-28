@@ -9,7 +9,7 @@
             <th scope="col" class="govuk-table__header">Training provider</th>
             <th scope="col" class="govuk-table__header das-no-wrap">Training options</th>
             <th scope="col" class="govuk-table__header">
-                <span>Provider Reviews</span>
+                <span>Provider reviews</span>
                 <span class="das-no-wrap">@Model.ReviewPeriod</span></th>
             <th scope="col" class="govuk-table__header">
                 <span class="das-no-wrap">Achievement rate</span>
@@ -51,12 +51,30 @@
                             At apprentice's workplace
                         </li>
                         <li asp-show="@shortlistItem.HasBlockRelease">
-                            <div class="das-no-wrap">@shortlistItem.BlockReleaseText<span asp-show="@shortlistItem.HasLocation">:</span></div>
-                            <div asp-show="@shortlistItem.HasLocation" class="das-no-wrap"><div class="govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</div></div>
+                            @if (!shortlistItem.HasLocation)
+                            {
+                                <span asp-show="!@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release</span>
+                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations</span>
+                            }
+                            else
+                            {
+                                <div asp-show="!@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release: <span class="govuk-!-font-weight-bold">@shortlistItem.BlockReleaseDistance miles</span></div>
+                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations:</span>
+                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</span>
+                            }
                         </li>
                         <li asp-show="@shortlistItem.HasDayRelease">
-                            @shortlistItem.DayReleaseText<span asp-show="@shortlistItem.HasLocation">:</span>
-                            <div asp-show="@shortlistItem.HasLocation" class="das-no-wrap"><div class="govuk-!-font-weight-bold">closest @shortlistItem.DayReleaseDistance miles</div></div>
+                            @if (!shortlistItem.HasLocation)
+                            {
+                                <span asp-show="!@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release</span>
+                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations</span>
+                            }
+                            else
+                            {
+                                <div asp-show="!@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release: <span class="govuk-!-font-weight-bold">@shortlistItem.DayReleaseDistance miles</span></div>
+                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations:</span>
+                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.DayReleaseDistance miles</span>
+                            }
                         </li>
                     </ul>
                 </td>
