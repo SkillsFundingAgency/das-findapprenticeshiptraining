@@ -201,36 +201,70 @@
                             <button class="govuk-button govuk-button--secondary govuk-!-font-size-16" onclick="toggleTables()">Change to graph view</button>
                         }
                         </div>
-                    <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="apprentice-feedback-graph-@year.StartYear" data-label="apprentices" data-feedback-graph="true">
-                        <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">Statement</th>
-                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th>
-                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as "needs improvement"</th>
-                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of apprentices that selected this statement</th>
-                            </tr>
-                        </thead>
-                        <tbody class="govuk-table__body">
-                            @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ApprenticeProviderAttribute)
-                            {
+                    @* <table class="govuk-table das-table--responsive govuk-!-font-size-16" data-target="apprentice-feedback-graph-@year.StartYear" data-label="apprentices" data-feedback-graph="true"> *@
+                    @*     <thead class="govuk-table__head"> *@
+                    @*         <tr class="govuk-table__row"> *@
+                    @*             <th scope="col" class="govuk-table__header">Statement</th> *@
+                    @*             <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th> *@
+                    @*             <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that selected this as "needs improvement"</th> *@
+                    @*             <th scope="col" class="govuk-table__header govuk-table__header--numeric">Total number of apprentices that selected this statement</th> *@
+                    @*         </tr> *@
+                    @*     </thead> *@
+                    @*     <tbody class="govuk-table__body"> *@
+                    @*         @foreach (var feedbackItem in year.ApprenticeFeedbackDetails.ApprenticeProviderAttribute) *@
+                    @*         { *@
+                    @*             <tr class="govuk-table__row"> *@
+                    @*                 <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th> *@
+                    @*                 <td class="govuk-table__cell govuk-table__cell--numeric" *@
+                    @*                     data-label="Percentage of apprentices that agreed with this statement" *@
+                    @*                     data-title="@feedbackItem.AgreePerc% of @feedbackItem.TotalCount apprentices that agreed with this statement"> *@
+                    @*                     @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.AgreePerc}%" : "-") *@
+                    @*                 </td> *@
+                    @*                 <td class="govuk-table__cell govuk-table__cell--numeric" *@
+                    @*                     data-label="Percentage of apprentices that selected this as needs improvement" *@
+                    @*                     data-title="@feedbackItem.DisagreePerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'"> *@
+                    @*                     @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.DisagreePerc}%" : "-") *@
+                    @*                 </td> *@
+                    @*                 <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of apprentices that selected this statement">@feedbackItem.TotalCount</td> *@
+                    @*             </tr> *@
+                    @*         } *@
+                    @*     </tbody> *@
+                    @* </table> *@
+                    @{
+                        int categoryCount = 0;
+                    }
+                    @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ApprenticeProviderAttribute.GroupBy(s => s.Category).OrderBy(s => s.Key))
+                    {
+                        <table class="govuk-table das-table--responsive govuk-!-font-size-16 govuk-!-margin-bottom-8" data-target="apprentice-feedback-graph" data-label="apprentices" data-feedback-graph="true" @(categoryCount > 0 ? "data-hide-legend=true" : "")>
+                            <caption class="govuk-table__caption govuk-caption-l govuk-!-font-weight-regular">@feedbackCategory.Key</caption>
+                            <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
-                                    <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
-                                    <td class="govuk-table__cell govuk-table__cell--numeric"
-                                        data-label="Percentage of apprentices that agreed with this statement"
-                                        data-title="@feedbackItem.AgreePerc% of @feedbackItem.TotalCount apprentices that agreed with this statement">
-                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.AgreePerc}%" : "-")
-                                    </td>
-                                    <td class="govuk-table__cell govuk-table__cell--numeric"
-                                        data-label="Percentage of apprentices that selected this as needs improvement"
-                                        data-title="@feedbackItem.DisagreePerc% of @feedbackItem.TotalCount apprentices selected this as a 'needs improvement'">
-                                        @(feedbackItem.TotalCount > 0 ? $"{feedbackItem.DisagreePerc}%" : "-")
-                                    </td>
-                                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="Total number of apprentices that selected this statement">@feedbackItem.TotalCount</td>
+                                    <th scope="col" class="govuk-table__header">Statement</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that disagreed with this statement</th>
                                 </tr>
-                            }
-                        </tbody>
-                    </table>
-
+                            </thead>
+                            <tbody class="govuk-table__body">
+                                @foreach (var feedbackItem in feedbackCategory)
+                                {
+                                    <tr class="govuk-table__row">
+                                        <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric"
+                                            data-label="Percentage of apprentices that agreed with this statement"
+                                            data-title="@feedbackItem.AgreePerc% of apprentices agreed with this statement">
+                                            @feedbackItem.AgreePerc%
+                                        </td>
+                                        <td class="govuk-table__cell govuk-table__cell--numeric"
+                                            data-label="Percentage of apprentices that disagreed with this statement"
+                                            data-title="@feedbackItem.DisagreePerc% of apprentices disagreed with this statement">
+                                            @feedbackItem.DisagreePerc%
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                        categoryCount++;
+                    }
                 </div>
             </span>
 
