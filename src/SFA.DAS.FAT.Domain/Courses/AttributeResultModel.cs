@@ -1,5 +1,4 @@
 ﻿namespace SFA.DAS.FAT.Domain.Courses;
-
 public sealed class AttributeResultModel
 {
     public string Name { get; set; }

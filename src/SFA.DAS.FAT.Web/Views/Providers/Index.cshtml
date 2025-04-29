@@ -5,27 +5,25 @@
 @model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
 @{
     ViewData["Title"] = "Provider details";
+    var feedbackSurvey = Model.FeedbackSurvey;
 }
 
 <main class="govuk-main-wrapper" id="main-content">
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds govuk-body">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
         <span class="govuk-caption-l">Training provider</span>
-        <span class="govuk-heading-xl govuk-!-margin-bottom-1">@Model.ProviderName</span>
+        <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">@Model.ProviderName</h1>
         <span class="govuk-caption-l govuk-!-margin-bottom-3">UKPRN @Model.Ukprn</span>
-
         <div class="govuk-body govuk-!-margin-bottom-3">View training provider details, including courses delivered, achievement rating, participation, reviews and contact details.</div>
-
         <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Select a course</h3>
-
-
         <div class="govuk-body">You can select a course for more information, including how training takes place with locations, course-specific achievement rates and participation.</div>
 
         <div asp-show="@Model.ShowCourses" class="govuk-!-margin-bottom-8">
+            <h2 class="govuk-heading-m">Courses offered</h2>
             <details class="govuk-details" data-module="govuk-details">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                            @Model.ProviderCoursesDetails.CoursesDropdownText
+                        @Model.ProviderCoursesDetails.CoursesDropdownText
                     </span>
                 </summary>
                 <div class="govuk-details__text">
@@ -39,8 +37,7 @@
                                     <a class="govuk-link govuk-link--no-visited-state"
                                        asp-route="@RouteNames.CourseProviderDetails"
                                        asp-all-route-data="@course.RouteData"
-                                       asp-route-location="@Model.Location"
-                                    >@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
+                                       asp-route-location="@Model.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
                                 </td>
                             </tr>
                         }
@@ -49,12 +46,13 @@
                 </div>
             </details>
         </div>
-    <hr/>
+        
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
             Training provider achievements and participation
         </h3>
-       @* Achievements Container *@
+        @* Achievements Container *@
         <div class="das-reviews">
             <div class="govuk-grid-column-one-half das-reviews-container">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
@@ -65,175 +63,194 @@
                         @Model.Qar.AchievementRate%
                     </h2>
                     <p class="govuk-body-s">
-                        <div>
-                            of apprentices (@Model.Qar.Achievers of @Model.Qar.TotalParticipantCount) completed a course and passed the end-point assessment with this training provider in academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. @Model.Qar.DidNotPassPercentage% did not pass or left the course before taking their assessment.
-                        </div>
-                        </p>
-                    </span>
+                        of apprentices (@Model.Qar.Achievers of @Model.Qar.TotalParticipantCount) completed a course and passed the end-point assessment with this training provider in academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. @Model.Qar.DidNotPassPercentage% did not pass or left the course before taking their assessment.
+                    </p>
+                </span>
                 <span asp-show="!@Model.Qar.AchievementRatePresent">
                     <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
                         No data
                     </h2>
                     <p class="govuk-body-s">
-                        There is not enough data to show the  achievement rate for this provider for academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. This may be because a small number of apprentices have completed a course with this provider, or this is a new provider.
+                        There is not enough data to show the achievement rate for this provider for academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. This may be because a small number of apprentices have completed a course with this provider, or this is a new provider.
                     </p>
-                    </span>
+                </span>
                 <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
                     @Model.Qar.NationalAchievementRate% national achievement rate
                 </p>
             </div>
-        
-        @* Participation Container *@
+
+            @* Participation Container *@
             <div class="govuk-grid-column-one-half das-reviews-container">
                 <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
-                   Participation
+                    Participation
                 </h3>
                 <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                        @Model.EndpointAssessments.CountFormatted
+                    @Model.EndpointAssessments.CountFormatted
                 </h2>
                 <p class="govuk-body-s">
-                        @Model.EndpointAssessments.DetailsMessage
+                    @Model.EndpointAssessments.DetailsMessage
                 </p>
             </div>
         </div>
-            <div class="govuk-inset-text">Data for all courses delivered by this provider, collected by the Department for Education.</div>
-        <hr/>
+        <div class="govuk-inset-text">Data for all courses delivered by this provider, collected by the Department for Education.</div>
+        <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
             Employer and apprentice reviews for this training provider
         </h3>
-            <div class="das-reviews">
-                @* Employers Container *@
-                <div class="govuk-grid-column-one-half das-reviews-container">
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                        Employers
-                    </h3>
-                    <span asp-show="@Model.EmployerReviewed">
-                        <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                            <span class="das-rating-large das-rating--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.EmployerStarsValue out of 4 stars">
-                                <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 2 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 3 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 4 ? "--empty" : "")"></span>
-                            </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating</span>
-                        </p>
+        <div class="das-reviews">
+            @* Employers Container *@
+            <div class="govuk-grid-column-one-half das-reviews-container">
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+                    Employers
+                </h3>
+                <span asp-show="@Model.EmployerReviewed">
+                    <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                        <span class="das-rating-large das-rating--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.EmployerStarsValue out of 4 stars">
+                            <span aria-hidden="true" class="das-rating__icon-star"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.EmployerStarsValue < 4 ? "--empty" : "")"></span>
+                        </span>
+                        <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.EmployerStarsValue > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating</span>
+                    </p>
                     <p class="govuk-body-s govuk-!-margin-bottom-2">
                         @Model.Reviews.EmployerStarsMessage
                     </p>
-                    </span>
-                    <span asp-show="!@Model.EmployerReviewed">
-                        <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                            No reviews
-                        </h2>
-                        <p class="govuk-body-s">
-                            Not enough employers have reviewed this provider.
-                        </p>
-                    </span>
-                </div>
-                @* Employers Container *@
-                @* Apprentices Container *@
-                <div class="govuk-grid-column-one-half das-reviews-container">
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                        Apprentices
-                    </h3>
-                    <span asp-show="@Model.ApprenticeReviewed">
-                        <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                            <span class="das-rating das-rating--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ApprenticeStarsValue out of 4 stars">
-                                <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 2 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 3 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 4 ? "--empty" : "")"></span>
-                            </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating</span>
-                        </p>
-                        <p class="govuk-body-s govuk-!-margin-bottom-2">
-                            @Model.Reviews.ApprenticeStarsMessage
-                        </p>
-                    </span>
-                    <span asp-show="!@Model.ApprenticeReviewed">
-                        <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                            No reviews
-                        </h2>
-                        <p class="govuk-body-s">
-                            Not enough apprentices have reviewed this provider.
-                        </p>
-                    </span>
-                </div>
-                @* Apprentices Container *@
+                </span>
+                <span asp-show="!@Model.EmployerReviewed">
+                    <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                        No reviews
+                    </h2>
+                    <p class="govuk-body-s">
+                        Not enough employers have reviewed this provider.
+                    </p>
+                </span>
+            </div>
+            @* Employers Container *@
+            @* Apprentices Container *@
+            <div class="govuk-grid-column-one-half das-reviews-container">
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+                    Apprentices
+                </h3>
+                <span asp-show="@Model.ApprenticeReviewed">
+                    <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                        <span class="das-rating das-rating--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ApprenticeStarsValue out of 4 stars">
+                            <span aria-hidden="true" class="das-rating__icon-star"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 2 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 3 ? "--empty" : "")"></span>
+                            <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ApprenticeStarsValue < 4 ? "--empty" : "")"></span>
+                        </span>
+                        <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ApprenticeStarsValue > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating</span>
+                    </p>
+                    <p class="govuk-body-s govuk-!-margin-bottom-2">
+                        @Model.Reviews.ApprenticeStarsMessage
+                    </p>
+                </span>
+                <span asp-show="!@Model.ApprenticeReviewed">
+                    <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                        No reviews
+                    </h2>
+                    <p class="govuk-body-s">
+                        Not enough apprentices have reviewed this provider.
+                    </p>
+                </span>
+            </div>
+            @* Apprentices Container *@
         </div>
-            <div class="govuk-inset-text">Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.StartYear to @Model.Reviews.EndYear. Data collected by the Department for Education.</div>
+        
+        <div class="govuk-inset-text govuk-!-margin-top-3">
+                Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.StartYear to @Model.Reviews.EndYear). Data collected by Department for Education.
+        </div>
+        </div>
+    </div>
 
-        <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-            Contact this training provider
-        </h3>
-        <hr/>
-        <dl class="govuk-summary-list">
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Registered address
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(@Model.ProviderAddress))
-                    {
-                        @Model.ProviderAddress
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Email
-                </dt>
-                <dd class="govuk-summary-list__value">
-                @if (!string.IsNullOrEmpty(Model.Contact?.Email))
-                    {
-                        <a href="mailto:@Model.Contact.Email">@Model.Contact.Email</a>
-                    }
-                else
-                    {
-                        <span>-</span>
-                    }
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Telephone
-                </dt>
-                <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <details class="govuk-details" data-module="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        View reviews with feedback from the last 5 years
+                    </span>
+                </summary>
+                <div class="govuk-details__text">
+                    @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
+                </div>
+            </details>
+        </div>
+    </div>
+    
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+             <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+                Contact this training provider
+            </h3>
+            <dl class="govuk-summary-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Registered address
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (!string.IsNullOrEmpty(@Model.ProviderAddress))
                         {
-                            @Model.Contact.PhoneNumber
+                            @Model.ProviderAddress
                         }
-                    else
+                        else
                         {
                             <span>-</span>
                         }
-                </dd>
-            </div>
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-summary-list__key">
-                    Website
-                </dt>
-                <dd class="govuk-summary-list__value">
-                   @if (!string.IsNullOrEmpty(Model.Contact?.Website))
-                       {
-                           <a href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a>
-                       }
-                   else
-                       {
-                           <span>-</span>
-                       }
-                </dd>
-            </div>
-        </dl>
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Email
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Email))
+                        {
+                            <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Telephone
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
+                        {
+                            @Model.Contact.PhoneNumber
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key">
+                        Website
+                    </dt>
+                    <dd class="govuk-summary-list__value">
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Website))
+                        {
+                            <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    </dd>
+                </div>
+            </dl>
 
-    <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-        Training provider overview
-    </h3>
-    <div>@Html.MarkdownToHtml(@Model.Contact?.MarketingInfo)</div>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+                Training provider overview
+            </h3>
+            <div>@Html.MarkdownToHtml(@Model.Contact?.MarketingInfo)</div>
+        </div>
     </div>
-</div>
 </main>

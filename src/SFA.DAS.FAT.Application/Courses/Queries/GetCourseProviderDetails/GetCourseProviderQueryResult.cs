@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 
@@ -21,12 +22,12 @@ public class GetCourseProviderQueryResult
     public Guid? ShortlistId { get; set; }
     public IEnumerable<LocationModel> Locations { get; set; }
     public IEnumerable<ProviderCourseModel> Courses { get; set; } = [];
-    public IEnumerable<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
-    public IEnumerable<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
-    
+    public List<EmployerFeedbackAnnualSummaries> AnnualEmployerFeedbackDetails { get; set; } = [];
+    public List<ApprenticeFeedbackAnnualSummaries> AnnualApprenticeFeedbackDetails { get; set; } = [];
+
     public static implicit operator GetCourseProviderQueryResult(CourseProviderDetailsModel source)
     {
-        if(source is null)
+        if (source is null)
         {
             return null;
         }

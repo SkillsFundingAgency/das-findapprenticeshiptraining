@@ -45,10 +45,10 @@ public class ShortlistProviderViewModel
     public bool AtEmployer { get; set; }
     public bool HasBlockRelease { get; set; }
     public decimal? BlockReleaseDistance { get; set; }
-    public int BlockReleaseCount { get; set; }
+    public bool HasMultipleBlockRelease { get; set; }
     public bool HasDayRelease { get; set; }
     public decimal? DayReleaseDistance { get; set; }
-    public int DayReleaseCount { get; set; }
+    public bool HasMultipleDayRelease { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Website { get; set; }
@@ -58,8 +58,6 @@ public class ShortlistProviderViewModel
     public ProviderRatingViewModel ApprenticeReviews { get; set; }
     public string LocationDescription { get; set; }
 
-    public string BlockReleaseText => "Block release" + (BlockReleaseCount == 1 ? string.Empty : " at multiple locations");
-    public string DayReleaseText => "Day release" + (DayReleaseCount == 1 ? string.Empty : " at multiple locations");
     public int NoOfDeliveryOptions => Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease);
     public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions > 1;
     public bool HasAchievementRate => decimal.TryParse(AchievementRate, out var _);

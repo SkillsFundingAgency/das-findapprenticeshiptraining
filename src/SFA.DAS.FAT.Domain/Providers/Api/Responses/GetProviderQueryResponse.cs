@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Providers.Api.Responses;
 public class GetProviderQueryResponse
@@ -17,9 +18,9 @@ public class GetProviderQueryResponse
 
     public GetProviderEndpointAssessmentsDetails EndpointAssessments { get; set; }
 
-    public List<GetProviderEmployerFeedbackStarsAnnualSummary> AnnualEmployerFeedbackDetails { get; set; }
+    public List<EmployerFeedbackAnnualSummaries> AnnualEmployerFeedbackDetails { get; set; }
 
-    public List<GetProviderApprenticeFeedbackStarsAnnualSummary> AnnualApprenticeFeedbackDetails { get; set; }
+    public List<ApprenticeFeedbackAnnualSummaries> AnnualApprenticeFeedbackDetails { get; set; }
 }
 
 public sealed class GetProviderReviewsModel
@@ -76,25 +77,28 @@ public class GetProviderEndpointAssessmentsDetails
     public int EndpointAssessmentCount { get; set; }
 }
 
-public class GetProviderApprenticeFeedbackStarsAnnualSummary
+public class ApprenticeFeedbackAnnualSummaries
 {
     public long Ukprn { get; set; }
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
-    public List<GetProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
+
+    public List<AttributeResultModel> ProviderAttribute { get; set; }
 }
 
-public class GetProviderEmployerFeedbackStarsAnnualSummary
+public class EmployerFeedbackAnnualSummaries
 {
     public long Ukprn { get; set; }
     public int Stars { get; set; }
     public int ReviewCount { get; set; }
     public string TimePeriod { get; set; }
-    public List<GetProviderAttributeAnnualSummaryItem> ProviderAttribute { get; set; }
+
+
+    public List<AnnualSummaryItem> ProviderAttribute { get; set; }
 }
 
-public class GetProviderAttributeAnnualSummaryItem
+public class AnnualSummaryItem
 {
     public string Name { get; set; }
     public int Strength { get; set; }

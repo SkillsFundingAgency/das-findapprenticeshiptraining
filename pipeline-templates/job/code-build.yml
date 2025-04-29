@@ -16,6 +16,7 @@ jobs:
     parameters:
       SonarCloudProjectKey: SkillsFundingAgency_das-findapprenticeshiptraining
       ContinueOnVulnerablePackageScanError: true
+      SonarCloud: true
 
   - task: DotNetCoreCLI@2
     displayName: 'Publish Website'

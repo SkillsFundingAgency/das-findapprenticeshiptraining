@@ -7,11 +7,14 @@ using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProviderViewModel : PageLinksViewModelBase
 {
+
+
     public int ShortlistCount { get; set; }
     public long Ukprn { get; set; }
     public string ProviderName { get; set; }
@@ -28,8 +31,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public Guid? ShortlistId { get; set; }
     public IReadOnlyCollection<LocationModel> Locations { get; set; }
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
-    public IReadOnlyCollection<AnnualEmployerFeedbackDetailsModel> AnnualEmployerFeedbackDetails { get; set; } = [];
-    public IReadOnlyCollection<AnnualApprenticeFeedbackDetailsModel> AnnualApprenticeFeedbackDetails { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
     public bool IsNational => Locations.Any(a => a.AtEmployer);
@@ -54,6 +55,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
 
+    public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
+
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
         return new CourseProviderViewModel
@@ -72,9 +75,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
-            Courses = source.Courses?.ToList() ?? [],
-            AnnualEmployerFeedbackDetails = source.AnnualEmployerFeedbackDetails?.ToList() ?? [],
-            AnnualApprenticeFeedbackDetails = source.AnnualApprenticeFeedbackDetails?.ToList() ?? []
+            Courses = source.Courses?.ToList() ?? []
         };
     }
 

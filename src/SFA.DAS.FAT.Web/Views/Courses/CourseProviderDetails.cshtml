@@ -1,16 +1,18 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
+@using SFA.DAS.FAT.Web.Extensions
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
 
 @{
     ViewData["Title"] = $"{Model.ProviderName} - training provider";
     ViewData["Description"] = $"View {Model.ProviderName}'s available training options, pass rate and contact details for {Model.CourseNameAndLevel}. You can also check their employer reviews and any other apprenticeship training courses that they offer.";
+    var feedbackSurvey = Model.FeedbackSurvey;
 }
 
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds govuk-!-padding-right-0">
+        <div class="govuk-grid-column-two-thirds">
 
             <span class="govuk-caption-xl govuk-!-margin-bottom-2">Training provider</span>
 
@@ -73,10 +75,11 @@
 
                     <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
                         <div class="govuk-form-group">
-                            <p for="search-location" class="govuk-hint">Enter a city or postcode</p>
+                        <label for="search-location" class="govuk-label">Enter a city or postcode</label>
                             <div class="govuk-grid-row">
                                 <div class="govuk-grid-column-two-thirds">
                                     <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                                <div class="govuk-!-margin-bottom-2"></div>
                                 </div>
                                 <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
                                     <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
@@ -339,11 +342,7 @@
                 Course-level data collected by the Department for Education.
             </div>
 
-            <hr />
-
-        </div>
-
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
+            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
             <h2 class="govuk-heading-l govuk-!-margin-bottom-5">
 
@@ -376,7 +375,7 @@
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 3 ? "--empty" : "")"></span>
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 4 ? "--empty" : "")"></span>
                             </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
+                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
                         </p>
 
                         <p class="govuk-body-s govuk-!-margin-bottom-2">
@@ -414,7 +413,7 @@
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 3 ? "--empty" : "")"></span>
                                 <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 4 ? "--empty" : "")"></span>
                             </span>
-                            <span class="govuk-!-margin-left-2 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
+                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
                         </p>
 
                         <p class="govuk-body-s govuk-!-margin-bottom-2">
@@ -438,40 +437,49 @@
             </div>
 
             <div class="govuk-inset-text govuk-!-margin-top-3">
-                Combined reviews for all courses delivered by this provider in academic year @Model.Reviews.AcademicPeriod.
-                Data collected by the Department for Education.
+                Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.AcademicPeriod).
+                Data collected by Department for Education.
             </div>
+        </div>
+    </div>
 
-            @*  View results of our survey with employers and apprentices for this provider *@
-
-            <details class="govuk-details govuk-!-margin-bottom-1">
+    @*  View results of our survey with employers and apprentices for this provider *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            <details class="govuk-details govuk-!-margin-bottom-8">
                 <summary class="govuk-details__summary">
                     <span class="govuk-details__summary-text">
-                        View results of our survey with employers and apprentices for this provider
+                        View reviews with feedback from the last 5 years
                     </span>
                 </summary>
                 <div class="govuk-details__text">
-                    @* @await Html.PartialAsync("_providerReviewsAndFeedback", @Model) *@
+                    @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
                 </div>
             </details>
-
-            @*  View results of our survey with employers and apprentices for this provider *@
-
         </div>
+    </div>
 
-        @*  Contact this training provider *@
-
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
+    @*  Contact this training provider *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+        
             <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
                 Contact this training provider
             </h3>
-            <dl class="govuk-summary-list govuk-summary-list-align-right">
+            <dl class="govuk-summary-list">
                 <div class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Registered address
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.ContactAddress
+                        @if (!string.IsNullOrEmpty(@Model.ContactAddress))
+                        {
+                            @Model.ContactAddress
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -479,7 +487,14 @@
                         Email
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Contact.Email" target="_blank">@Model.Contact.Email</a>
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Email))
+                        {
+                            <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -487,7 +502,14 @@
                         Telephone
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.Contact.PhoneNumber
+                        @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
+                        {
+                            @Model.Contact.PhoneNumber
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
                 <div class="govuk-summary-list__row">
@@ -495,68 +517,106 @@
                         Website
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <a class="govuk-link govuk-link--no-visited-state" href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a>
+                        @if (!string.IsNullOrEmpty(Model.Contact?.Website))
+                        {
+                            <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </dd>
                 </div>
             </dl>
+
+            @* <dl class="govuk-summary-list"> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Registered address *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             @Model.ContactAddress *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Email *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             <a class="govuk-link govuk-link--no-visited-state" href="mailto:@Model.Contact.Email" target="_blank">@Model.Contact.Email</a> *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Telephone *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             @Model.Contact.PhoneNumber *@
+            @*         </dd> *@
+            @*     </div> *@
+            @*     <div class="govuk-summary-list__row"> *@
+            @*         <dt class="govuk-summary-list__key"> *@
+            @*             Website *@
+            @*         </dt> *@
+            @*         <dd class="govuk-summary-list__value"> *@
+            @*             <a class="govuk-link govuk-link--no-visited-state" href="@Model.Contact.Website" target="_blank">@Model.Contact.Website</a> *@
+            @*         </dd> *@
+            @*     </div> *@
+            @* </dl> *@
         </div>
+    </div>
 
-        @*  Contact this training provider *@
+    @* Training provider overview and courses delivered *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
+                Training provider overview and courses delivered
+            </h3>
 
-        @* Training provider overview and courses delivered *@
+            <details class="govuk-details">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">
+                        @Model.CoursesDeliveredCountDisplay
+                    </span>
+                </summary>
 
-        @if (Model.Courses.Any())
-        {
-            <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
-                <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
-                    Training provider overview and courses delivered
-                </h3>
+                <div class="govuk-details__text">
+                    <p class="govuk-body">Select a course to view location, training options and contact details</p>
+                    <ul class="govuk-task-list">
+                        @foreach (ProviderCourseModel course in Model.Courses)
+                        {
+                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                                <div class="govuk-task-list__name-and-hint">
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
+                                        @course.NameAndLevel
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </details>
 
-                <details class="govuk-details">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            @Model.CoursesDeliveredCountDisplay
-                        </span>
-                    </summary>
+            <p class="govuk-body">
+                @Html.MarkdownToHtml(@Model.Contact.MarketingInfo)
+            </p>
 
-                    <div class="govuk-details__text">
-                        <p class="govuk-body">Select a course to view location, training options and contact details</p>
-                        <ul class="govuk-task-list">
-                            @foreach (ProviderCourseModel course in Model.Courses)
-                            {
-                                <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                                    <div class="govuk-task-list__name-and-hint">
-                                        <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
-                                            @course.NameAndLevel
-                                        </a>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </details>
+            <p class="govuk-body">
+                For general information about this provider, such as the total participation
+                and achievement rate for all courses they deliver, view our
+                <a class="govuk-link govuk-link--no-visited-state"
+                    asp-route="@RouteNames.Provider"
+                    asp-route-ukprn="@Model.Ukprn">
+                    provider details page for @Model.ProviderName
+                </a>.
+            </p>
+        </div>
+    </div>
 
-                <p class="govuk-body">
-                    @Model.Contact.MarketingInfo
-                </p>
-
-                <p class="govuk-body">
-                    For general information about this provider, such as the total participation
-                    and achievement rate for all courses they deliver, view our
-                    <a class="govuk-link govuk-link--no-visited-state"
-                       asp-route="@RouteNames.Provider"
-                       asp-route-ukprn="@Model.Ukprn">
-                        provider details page for @Model.ProviderName.
-                    </a>
-                </p>
-            </div>
-        }
-
-        @* Training provider overview and courses delivered *@
-
-        <div class="govuk-grid-column-two-thirds govuk-!-margin-top-6 govuk-!-padding-right-0">
+    @* Shortlist *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
             <div class="app-course-provider">
-
                 <div class="das-highlight govuk-!-margin-bottom-5">
                     <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
                         <div class="app-provider-shortlist-add">
@@ -602,4 +662,5 @@
             </div>
         </div>
     </div>
+
 </main>

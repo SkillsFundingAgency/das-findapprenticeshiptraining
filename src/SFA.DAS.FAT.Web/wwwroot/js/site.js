@@ -469,3 +469,93 @@ function toggleDeliveryModeParent() {
         buttonDeliveryModeProvider.checked = true;
     }
 }
+
+
+function toggleTables() {
+
+    // Select all graph panels and table panels based on the prefix
+    var graphPanelsApp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="graph"][id^="app-feedback-graph-"]');
+    var tablePanelsApp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="table and accessible"][id^="app-feedback-table-"]');
+    var graphPanelsEmp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="graph"][id^="emp-feedback-graph-"]');
+    var tablePanelsEmp = document.querySelectorAll('.app-show-hide-panel[data-panel-label="table and accessible"][id^="emp-feedback-table-"]');
+
+
+    // Toggle visibility for all graph panels
+    var graphVisibleApp = false;
+    for (var i = 0; i < graphPanelsApp.length; i++) {
+        graphPanelsApp[i].classList.toggle("app-show-hide-panel__hidden");
+        if (!graphPanelsApp[i].classList.contains("app-show-hide-panel__hidden")) {
+            graphVisibleApp = true;
+        }
+    }
+
+    var graphVisibleEmp = false;
+    for (var j = 0; j < graphPanelsEmp.length; j++) {
+        graphPanelsEmp[j].classList.toggle("app-show-hide-panel__hidden");
+        if (!graphPanelsEmp[j].classList.contains("app-show-hide-panel__hidden")) {
+            graphVisibleEmp = true;
+        }
+    }
+
+    // Toggle visibility for all table panels
+    for (var a = 0; a < tablePanelsApp.length; a++) {
+        tablePanelsApp[a].classList.toggle("app-show-hide-panel__hidden");
+    }
+
+    for (var b = 0; b < tablePanelsEmp.length; b++) {
+        tablePanelsEmp[b].classList.toggle("app-show-hide-panel__hidden");
+    }
+
+
+    var analyticsConsentName = "AnalyticsConsent" + getEnvFromHost();
+    var analyticsConsentChoice = getCookie(analyticsConsentName);
+
+    // Save user preference in a cookie conditional to the analytics consent
+    if (analyticsConsentChoice === "true") {
+        setCookie('viewPreference-apprentice', graphVisibleApp ? 'graph' : 'table', 1);
+        setCookie('viewPreference-employer', graphVisibleEmp ? 'graph' : 'table', 1);
+    }
+}
+
+
+function getEnvFromHost() {
+    var host = window.location.host;
+
+    var env = "";
+
+    if (host.includes("at-")) {
+        env = "AT";
+    } else if (host.includes("test-")) {
+        env = "TEST";
+    } else if (host.includes("test2-")) {
+        env = "TEST2";
+    } else if (host.includes("pp-")) {
+        env = "PP";
+    }
+
+    return env;
+}
+
+
+// Function to create a cookie
+function setCookie(name, value, days) {
+    var expires = "";
+    if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+// Function to read a cookie
+function getCookie(name) {
+    var nameEQ = name + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+}

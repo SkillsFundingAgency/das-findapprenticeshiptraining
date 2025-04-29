@@ -24,6 +24,8 @@ public class WhenBuildingProviderDetailsViewModel
         GetProviderQueryResponse response)
     {
         response.Ukprn = ukprn;
+        response.AnnualEmployerFeedbackDetails = null;
+        response.AnnualApprenticeFeedbackDetails = null;
 
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
