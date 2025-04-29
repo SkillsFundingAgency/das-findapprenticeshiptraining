@@ -7,10 +7,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.FeedbackSurveyViewModelTests;
 
 public class WhenCreatingFeedbackSurveyTabs
 {
-    //[TestCase(2025, 07, 31, "2024 to today")]
-    // [TestCase(2024, 08, 01, "2025 to today", 
-    //     "2024 to 2025")]
-    [TestCaseSource(nameof(TabCases))]
+    [TestCaseSource(nameof(_tabCases))]
     public void Then_The_Model_Is_Converted_From_Result_Correctly(DateTime dateToUse, int tab, string heading, string subHeading, string mainText, string timePeriod)
     {
         var sut = FeedbackSurveyViewModel.ProcessFeedbackDetails(new List<EmployerFeedbackAnnualSummaries>(),
@@ -24,7 +21,7 @@ public class WhenCreatingFeedbackSurveyTabs
         sut.FeedbackByYear[tabToCheck].TimePeriod.Should().Be(timePeriod);
     }
 
-    public static object[] TabCases =
+    private static object[] _tabCases =
     {
         new object[] { new DateTime(2025,07,31),1, "2024 to today","1 August 2024 to today", FeedbackSurveyViewModel.EmployerMostRecentReviewsText, "AY2425" },
         new object[] { new DateTime(2025,07,31),2, "2023 to 2024","1 August 2023 to 31 July 2024", FeedbackSurveyViewModel.AllCoursesDeliveredText, "AY2324" },
