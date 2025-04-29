@@ -8,6 +8,7 @@ namespace SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 public class FeedbackSurveyViewModel
 {
     public const string AllCoursesDeliveredText = "These reviews are for all courses delivered by this provider.";
+    public const string AllCoursesDeliveredTextLastFullYear = "These reviews are for all courses delivered by this provider in the last full academic year.";
     public const string EmployerReviewsOverallText = "These reviews are for all courses delivered by this provider in the last 5 academic years.";
     public const string EmployerMostRecentReviewsText = "These are the most recent reviews for this training provider.  We update the main star rating on this page when we have reviews from a full academic year.";
     public const string EmployersNoResultsPastTab = "No results. Not enough employers gave feedback about this training provider.";
@@ -86,7 +87,7 @@ public class FeedbackSurveyViewModel
             if (feedbackByYear.StartYear == 0)
             {
                 feedbackByYear.Heading = "Overall reviews";
-                feedbackByYear.SubHeading = $"1 August {leastRecentDate} to 31 July {mostRecentDate}";
+                feedbackByYear.SubHeading = $"1 August {leastRecentDate} to today";
                 feedbackByYear.MainText = EmployerReviewsOverallText;
             }
             else
@@ -103,6 +104,11 @@ public class FeedbackSurveyViewModel
                     feedbackByYear.SubHeading = $"1 August {feedbackByYear.StartYear} to 31 July {feedbackByYear.EndYear}";
                     feedbackByYear.MainText = AllCoursesDeliveredText;
                 }
+
+                if (feedbackByYear.IsMostRecentFullYear)
+                {
+                    feedbackByYear.MainText = AllCoursesDeliveredTextLastFullYear;
+                }
             }
         }
     }
@@ -115,6 +121,8 @@ public class FeedbackSurveyViewModel
             ? DateTime.UtcNow.Year + 1
             : DateTime.UtcNow.Year;
 
+        int academicYearLastFullYear = academicYearEnd - 1;
+
         for (int yearEnd = academicYearEnd; yearEnd > academicYearEnd - 5; yearEnd--)
         {
             feedback.Add(new FeedbackByYear
@@ -122,7 +130,8 @@ public class FeedbackSurveyViewModel
                 StartYear = yearEnd - 1,
                 EndYear = yearEnd,
                 TimePeriod = $"AY{yearEnd - 2001}{yearEnd - 2000}",
-                IsMostRecentYear = yearEnd == academicYearEnd
+                IsMostRecentYear = yearEnd == academicYearEnd,
+                IsMostRecentFullYear = yearEnd == academicYearLastFullYear
             });
         }
 

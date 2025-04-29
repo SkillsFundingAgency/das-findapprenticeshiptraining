@@ -77,7 +77,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.StartYear.Should().Be(2023);
         feedbackTab.Heading.Should().Be("2023 to 2024");
         feedbackTab.SubHeading.Should().Be("1 August 2023 to 31 July 2024");
-        feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredText);
+        feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
         feedbackTab.ShowApprenticeFeedbackStars.Should().Be(false);
@@ -110,7 +110,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
-        feedbackTab.SubHeading.Should().Be("1 August 2020 to 31 July 2024");
+        feedbackTab.SubHeading.Should().Be("1 August 2020 to today");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);

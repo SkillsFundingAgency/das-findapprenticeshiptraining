@@ -8,6 +8,7 @@ public class FeedbackByYear
 
     public string SubHeading { get; set; }
     public bool IsMostRecentYear { get; set; }
+    public bool IsMostRecentFullYear { get; set; }
     public string MainText { get; set; }
     public string TimePeriod { get; set; }
 
