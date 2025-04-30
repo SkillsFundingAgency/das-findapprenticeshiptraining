@@ -7,8 +7,8 @@ public enum ProviderOrderBy
     Distance,
     [Description("Achievement rate")]
     AchievementRate,
-    [Description("Employer provider rating")]
+    [Description("Employer reviews")]
     EmployerProviderRating,
-    [Description("Apprentice provider rating")]
+    [Description("Apprentice reviews")]
     ApprenticeProviderRating
 }

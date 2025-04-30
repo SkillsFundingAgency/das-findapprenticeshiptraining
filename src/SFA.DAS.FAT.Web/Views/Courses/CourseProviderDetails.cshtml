@@ -16,7 +16,7 @@
 
             <span class="govuk-caption-xl govuk-!-margin-bottom-2">Training provider</span>
 
-            <h1 class="govuk-heading-xl govuk-!-margin-bottom-2">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
                 @Model.ProviderName
             </h1>
 
@@ -175,7 +175,7 @@
                                                     else
                                                     {
                                                         <li>
-                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                            <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
                                                         </li>
                                                     }
                                                 }
@@ -245,7 +245,7 @@
                                                     else
                                                     {
                                                         <li>
-                                                            <strong>@location.CourseDistance.ToString("0.0")</strong> miles to @location.FormatAddress()
+                                                            <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
                                                         </li>
                                                     }
                                                 }

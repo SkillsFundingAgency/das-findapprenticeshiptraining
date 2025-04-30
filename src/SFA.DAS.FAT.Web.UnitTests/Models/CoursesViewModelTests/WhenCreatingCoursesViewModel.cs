@@ -118,7 +118,7 @@ public class WhenCreatingCoursesViewModel
             Total = 10
         };
 
-        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice’s work location."));
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location."));
     }
 
     [Test]
@@ -186,7 +186,7 @@ public class WhenCreatingCoursesViewModel
             }
         };
 
-        Assert.That(_sut.GetLevelName(3), Is.EqualTo("3 (equal to GCSE)"));
+        Assert.That(_sut.GetLevelName(3), Is.EqualTo("3 - equal to GCSE"));
     }
 
     [Test]

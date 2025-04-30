@@ -4,14 +4,6 @@
 <div class="govuk-form-group">
     <fieldset class="govuk-fieldset">
         <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-padding-bottom-3">
-            <h3 for="@Model.Id" class="govuk-heading-s">
-                    @Model.Heading
-                </h3>
-                @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
-                {
-                    <p class="govuk-hint">@Model.SubHeading</p>
-                }
-                
             @foreach (var filterItem in Model.Items)
             {
                 var inputId = $"filteritem-{Model.Id}-{filterItem.Value}";

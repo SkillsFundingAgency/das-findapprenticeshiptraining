@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
@@ -334,9 +336,16 @@ public static class FilterService
 
     public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, List<string> values)
     {
-        if (values?.Count > 0)
+        var valuesToProcess = values;
+
+        if (filterType == FilterType.DeliveryModes)
         {
-            filters[filterType] = values;
+            valuesToProcess = values?.Where(x => x != ProviderDeliveryMode.Provider.GetDescription()).ToList();
+        }
+
+        if (valuesToProcess is { Count: > 0 })
+        {
+            filters[filterType] = valuesToProcess;
         }
     }
 

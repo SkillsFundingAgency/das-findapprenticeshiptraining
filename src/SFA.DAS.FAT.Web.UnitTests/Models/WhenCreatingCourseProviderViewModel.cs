@@ -264,7 +264,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice’s workplaces across England."));
+        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
     }
 
     [Test]
@@ -278,7 +278,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice’s workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice’s workplace in your location."));
+        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
     }
 
     [Test]
@@ -292,7 +292,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice’s workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice’s workplace in your location."));
+        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
     }
 
 

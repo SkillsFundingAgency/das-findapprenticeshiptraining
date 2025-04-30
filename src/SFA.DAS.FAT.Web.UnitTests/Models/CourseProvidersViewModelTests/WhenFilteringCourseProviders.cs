@@ -45,7 +45,7 @@ public sealed class WhenFilteringCourseProviders
             ReviewPeriod = "2324"
         };
 
-        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=Provider&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
+        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
     }
 
     [Test]
@@ -185,7 +185,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.DeliveryModes);
             Assert.That(clearLinks, Is.Not.Null);
-            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count));
+            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count - 1));
 
             var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("&deliverymodes=Provider", "");
             var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("&deliverymodes=DayRelease", "");
@@ -193,10 +193,10 @@ public sealed class WhenFilteringCourseProviders
 
             Assert.Multiple(() =>
             {
-                var workPlaceLink =
-                    clearLinks.Items.First(a => a.DisplayText == ProviderDeliveryMode.Provider.GetDescription());
-                Assert.That(workPlaceLink, Is.Not.Null);
-                Assert.That(workPlaceLink.ClearLink, Is.EqualTo(urlWithoutDeliveryModeProvider));
+                var workPlaceLinkPresent =
+                    clearLinks.Items.Any(a => a.DisplayText == ProviderDeliveryMode.Provider.GetDescription());
+
+                Assert.That(workPlaceLinkPresent, Is.False);
 
                 var dayReleaseLink =
                     clearLinks.Items.First(a => a.DisplayText == ProviderDeliveryMode.DayRelease.GetDescription());

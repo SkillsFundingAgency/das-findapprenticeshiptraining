@@ -170,11 +170,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
         if (NationalLocation is not null)
         {
-            return "Training is provided at apprentice’s workplaces across England.";
+            return "Training is provided at apprentice's workplaces across England.";
         }
         else
         {
-            return "Training is provided at apprentice’s workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice’s workplace in your location.";
+            return "Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
         }
     }
 

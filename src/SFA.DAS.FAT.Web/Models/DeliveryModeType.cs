@@ -4,7 +4,7 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public enum DeliveryModeType
 {
-    [Description("At apprentice’s workplace")]
+    [Description("At apprentice's workplace")]
     Workplace = 0,
     [Description("Day release")]
     DayRelease = 1,
