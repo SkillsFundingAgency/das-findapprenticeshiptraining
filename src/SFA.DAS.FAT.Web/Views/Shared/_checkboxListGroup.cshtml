@@ -2,8 +2,7 @@
 @model CheckboxListFilterSectionViewModel
 
 <div class="govuk-form-group">
-    <fieldset class="govuk-fieldset">
-        <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-padding-bottom-3">
+    <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-padding-bottom-3">
             <h3 for="@Model.Id" class="govuk-heading-s">
                     @Model.Heading
             </h3>
@@ -37,8 +36,7 @@
                     }
                 </div>
             }
-        </div>
-    </fieldset>
+    </div>
 
     @if (Model.Link is not null)
     {
