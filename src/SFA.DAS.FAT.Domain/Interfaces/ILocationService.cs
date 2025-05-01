@@ -4,6 +4,7 @@ namespace SFA.DAS.FAT.Domain.Interfaces
 {
     public interface ILocationService
     {
-        Task<Domain.Locations.Locations> GetLocations(string searchTerm);
+        Task<Locations.Locations> GetLocations(string searchTerm);
+        Task<bool> IsLocationValid(string locationName);
     }
 }

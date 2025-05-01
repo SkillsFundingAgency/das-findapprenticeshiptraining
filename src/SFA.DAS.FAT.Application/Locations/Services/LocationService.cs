@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -11,7 +12,7 @@ namespace SFA.DAS.FAT.Application.Locations.Services
         private readonly IApiClient _client;
         private readonly FindApprenticeshipTrainingApi _config;
 
-        public LocationService (IApiClient client, IOptions<FindApprenticeshipTrainingApi> config)
+        public LocationService(IApiClient client, IOptions<FindApprenticeshipTrainingApi> config)
         {
             _client = client;
             _config = config.Value;
@@ -19,10 +20,30 @@ namespace SFA.DAS.FAT.Application.Locations.Services
         public async Task<Domain.Locations.Locations> GetLocations(string searchTerm)
         {
             var request = new GetLocationsApiRequest(_config.BaseUrl, searchTerm);
+            return await _client.Get<Domain.Locations.Locations>(request);
+        }
 
-            var result = await _client.Get<Domain.Locations.Locations>(request);
+        public async Task<bool> IsLocationValid(string locationName)
+        {
+            locationName = locationName.Trim();
+            if (locationName.Length < 3) return false;
 
-            return result;
+            if (locationName.Contains(','))
+            {
+                var nameElements = locationName.Split(',');
+                var locations = await GetLocations(nameElements[0]);
+                return locations != null && locations.LocationItems.Any(x => x.Name == locationName);
+            }
+
+            if (locationName.Contains(' '))
+            {
+                var nameElements = locationName.Split(' ');
+                var locations = await GetLocations(nameElements[0]);
+                return locations != null && locations.LocationItems.Any(x => x.Name == locationName);
+            }
+
+            var result = await GetLocations(locationName);
+            return result != null && result.LocationItems.Count > 0;
         }
     }
 }

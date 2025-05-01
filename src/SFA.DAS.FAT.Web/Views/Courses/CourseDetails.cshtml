@@ -8,7 +8,7 @@
 
 @{
     ViewData["Title"] = $"{Model.TitleAndLevel} - apprenticeship training course";
-   
+
     ViewData["Description"] = $"Employers can view details of the {Model.TitleAndLevel} apprenticeship training course, including its qualification level, typical duration and the maximum funding available.";
 }
 
@@ -64,8 +64,7 @@
                                        asp-route="@RouteNames.CourseProviders"
                                        asp-route-id="@Model.LarsCode"
                                        asp-route-location="@Model.Location"
-                                       asp-route-distance="@Model.Distance"
-                                    >
+                                       asp-route-distance="@Model.Distance">
                                         View providers for this course
                                     </a>
                                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-distance="@Model.Distance">Remove location</a>
@@ -81,13 +80,12 @@
                             </p>
 
                             <form method="GET"
-                                id="course-location-form"
-                                asp-route="@RouteNames.CourseDetails"
-                                asp-route-id="@Model.LarsCode"
-                                asp-route-location="@Model.Location"
-                                asp-route-distance="@Model.Distance"
-                                class="govuk-!-width-three-quarters"
-                            >
+                                  id="course-location-form"
+                                  asp-route="@RouteNames.CourseDetails"
+                                  asp-route-id="@Model.LarsCode"
+                                  asp-route-location="@Model.Location"
+                                  asp-route-distance="@Model.Distance"
+                                  class="govuk-!-width-three-quarters">
                                 <input type="hidden" name="distance" value="@Model.Distance" />
 
                                 <div class="govuk-form-group">
@@ -95,11 +93,9 @@
                                     <label for="search-location" class="govuk-label">Enter a city or postcode</label>
                                     <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-submit-on-selection="true">
                                 </div>
-                                <a 
-                                    class="govuk-button govuk-!-margin-bottom-0" 
-                                    asp-route="@RouteNames.CourseProviders" 
-                                    asp-route-id="@Model.LarsCode"
-                                >
+                                <a class="govuk-button govuk-!-margin-bottom-0"
+                                   asp-route="@RouteNames.CourseProviders"
+                                   asp-route-id="@Model.LarsCode">
                                     View providers for this course
                                 </a>
                             </form>
@@ -127,7 +123,7 @@
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
-                                @if(Model.Knowledge.Any())
+                                @if (Model.Knowledge.Any())
                                 {
                                     <h3 class="govuk-heading-m">Knowledge</h3>
                                     <ul class="govuk-list govuk-list--bullet">
@@ -138,7 +134,7 @@
                                     </ul>
                                 }
 
-                                @if(Model.Skills.Any())
+                                @if (Model.Skills.Any())
                                 {
                                     <h3 class="govuk-heading-m">Skills</h3>
                                     <ul class="govuk-list govuk-list--bullet">
@@ -177,7 +173,7 @@
                         Qualification level
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.Level<br/>
+                        @Model.Level<br />
                         <span class="govuk-!-font-size-16 das-text--muted">
                             @Model.GetLevelEquivalentToDisplayText()
                         </span>

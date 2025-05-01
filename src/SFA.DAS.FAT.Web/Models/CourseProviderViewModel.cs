@@ -56,6 +56,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
+    public bool LocationEntryError { get; set; }
+
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
         return new CourseProviderViewModel

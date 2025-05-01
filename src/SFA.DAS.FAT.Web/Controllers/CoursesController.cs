@@ -5,15 +5,12 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 
@@ -25,26 +22,18 @@ public class CoursesController : Controller
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
     private readonly IValidator<GetCourseQuery> _courseValidator;
-    private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-    private readonly ISessionService _sessionService;
-    private readonly IDateTimeService _dateTimeService;
 
     public CoursesController(
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
         IValidator<GetCourseQuery> courseValidator,
-        IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        ISessionService sessionService, IDateTimeService dateTimeService)
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _courseValidator = courseValidator;
         _config = config.Value;
-        _courseProviderDetailsValidator = courseProviderDetailsValidator;
-        _sessionService = sessionService;
-        _dateTimeService = dateTimeService;
     }
 
     [Route("", Name = RouteNames.Courses)]
@@ -54,7 +43,7 @@ public class CoursesController : Controller
 
         int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
 
-        if(string.IsNullOrWhiteSpace(model.Distance) || !DistanceService.IsValidDistance(model.Distance))
+        if (string.IsNullOrWhiteSpace(model.Distance) || !DistanceService.IsValidDistance(model.Distance))
         {
             model.Distance = DistanceService.TEN_MILES.ToString();
         }
@@ -131,7 +120,7 @@ public class CoursesController : Controller
 
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
+            return RedirectToRoute(RouteNames.Error404);
         }
 
         GetCourseQueryResult result = await _mediator.Send(query);
@@ -145,57 +134,6 @@ public class CoursesController : Controller
         viewModel.Location = location;
         viewModel.Distance = distance;
 
-        return View(viewModel);
-    }
-
-    [Route("{id:int}/providers/{ProviderId:long}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails(int id, int ProviderId, string location, string distance)
-    {
-        var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-        var shortlistUserId = shortlistItem?.ShortlistUserId;
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
-
-        if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
-        {
-            distance = DistanceService.TEN_MILES.ToString();
-        }
-
-        var query = new GetCourseProviderDetailsQuery
-        {
-            Ukprn = ProviderId,
-            LarsCode = id,
-            Location = location,
-            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
-            ShortlistUserId = shortlistUserId
-        };
-
-        var validationResult = await _courseProviderDetailsValidator.ValidateAsync(query);
-
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors[0].ErrorMessage);
-        }
-
-        GetCourseProviderQueryResult result = await _mediator.Send(query);
-
-        if (result is null)
-        {
-            return RedirectToRoute(RouteNames.Error404);
-        }
-
-        var viewModel = (CourseProviderViewModel)result;
-        viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
-            result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
-        viewModel.CourseId = id;
-        viewModel.Location = location;
-        viewModel.Distance = distance ?? DistanceService.TEN_MILES.ToString();
-        viewModel.ShortlistId = result.ShortlistId;
-        viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
-        viewModel.ShowApprenticeTrainingCourseCrumb = true;
-        viewModel.ShowApprenticeTrainingCoursesCrumb = true;
-        viewModel.ShowShortListLink = true;
-        viewModel.ShowSearchCrumb = true;
-        viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
         return View(viewModel);
     }
 }

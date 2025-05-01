@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
@@ -14,6 +18,7 @@ using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 
@@ -24,18 +29,27 @@ public class CourseProvidersController : Controller
 {
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
+    private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly ISessionService _sessionService;
+    private readonly IDateTimeService _dateTimeService;
     private readonly FindApprenticeshipTrainingWeb _config;
 
     public CourseProvidersController(
         IMediator mediator,
+        IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
+        IValidator<GetCourseLocationQuery> courseLocationValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IOptions<FindApprenticeshipTrainingWeb> config,
-        ISessionService sessionService)
+        ISessionService sessionService,
+        IDateTimeService dateTimeService)
     {
         _mediator = mediator;
+        _courseProviderDetailsValidator = courseProviderDetailsValidator;
+        _courseLocationValidator = courseLocationValidator;
         _shortlistCookieService = shortlistCookieService;
         _sessionService = sessionService;
+        _dateTimeService = dateTimeService;
         _config = config.Value;
     }
 
@@ -123,6 +137,66 @@ public class CourseProvidersController : Controller
         return View(courseProvidersViewModel);
     }
 
+    [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
+    public async Task<IActionResult> CourseProviderDetails(int id, int providerId, string location, string distance)
+    {
+        var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+        var shortlistUserId = shortlistItem?.ShortlistUserId;
+        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+
+        if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
+        {
+            distance = DistanceService.TEN_MILES.ToString();
+        }
+
+        var query = new GetCourseProviderDetailsQuery
+        {
+            Ukprn = providerId,
+            LarsCode = id,
+            Location = location,
+            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
+            ShortlistUserId = shortlistUserId
+        };
+
+        var validationResult = await _courseProviderDetailsValidator.ValidateAsync(query);
+
+        if (!validationResult.IsValid)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
+        GetCourseProviderQueryResult result = await _mediator.Send(query);
+
+        if (result is null)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
+        var viewModel = (CourseProviderViewModel)result;
+        viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
+            result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
+        viewModel.CourseId = id;
+        viewModel.Location = location;
+        viewModel.Distance = distance ?? DistanceService.TEN_MILES.ToString();
+        viewModel.ShortlistId = result.ShortlistId;
+        viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
+        viewModel.ShowApprenticeTrainingCourseCrumb = true;
+        viewModel.ShowApprenticeTrainingCoursesCrumb = true;
+        viewModel.ShowShortListLink = true;
+        viewModel.ShowSearchCrumb = true;
+        viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
+
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
+
+        if (!validationLocationResult.IsValid)
+        {
+            viewModel.Location = string.Empty;
+            viewModel.LocationEntryError = true;
+            validationLocationResult.AddToModelState(ModelState);
+        }
+
+        return View(viewModel);
+    }
     private static List<ProviderOrderByOptionViewModel> GenerateProviderOrderDropdown(ProviderOrderBy orderBy, bool hideDistance)
     {
         var dropdown = new List<ProviderOrderByOptionViewModel>();

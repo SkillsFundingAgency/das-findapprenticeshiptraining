@@ -205,6 +205,36 @@ public class WhenGettingCourseDetails
 
     [Test]
     [MoqAutoData]
+    public async Task When_Lars_Code_Is_Invalid_Then_Redirects_To_Shutter_Page(
+        GetCourseQueryResult queryResult,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+        [Greedy] CoursesController sut
+    )
+    {
+        int courseId = 999;
+        string location = "SW1";
+        string distance = "20";
+
+        validator
+            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        mediator
+            .Setup(m => m.Send(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetCourseQueryResult)null);
+
+        var result = await sut.CourseDetails(courseId, location, distance);
+
+        result.Should().NotBeNull();
+
+        result.Should().BeOfType<RedirectToRouteResult>();
+        var redirectResult = result as RedirectToRouteResult;
+        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+    }
+
+    [Test]
+    [MoqAutoData]
     public async Task When_Course_Not_Found_Then_Redirects_To_404(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,

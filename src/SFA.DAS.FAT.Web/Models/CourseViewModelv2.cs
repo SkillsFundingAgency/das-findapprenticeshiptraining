@@ -63,7 +63,7 @@ public class CourseViewModelv2 : PageLinksViewModelBase
 
     public string GetLevelEquivalentToDisplayText()
     {
-        if(Levels.Count < 1)
+        if (Levels.Count < 1)
         {
             return string.Empty;
         }
@@ -86,7 +86,7 @@ public class CourseViewModelv2 : PageLinksViewModelBase
     public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
     {
         string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
-        
+
         var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
 
         return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
@@ -104,7 +104,7 @@ public class CourseViewModelv2 : PageLinksViewModelBase
 
     public string GetProviderCountDisplayMessage()
     {
-        if(HasLocation)
+        if (HasLocation)
         {
             return ProvidersCountWithinDistance switch
             {
@@ -121,7 +121,7 @@ public class CourseViewModelv2 : PageLinksViewModelBase
 
     public string GetApprenticeCanTravelDisplayMessage()
     {
-        if(Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
         {
             return DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT;
         }
