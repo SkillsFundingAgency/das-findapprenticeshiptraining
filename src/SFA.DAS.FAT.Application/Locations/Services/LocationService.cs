@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Locations.Api;
 
 namespace SFA.DAS.FAT.Application.Locations.Services
 {
@@ -11,18 +13,38 @@ namespace SFA.DAS.FAT.Application.Locations.Services
         private readonly IApiClient _client;
         private readonly FindApprenticeshipTrainingApi _config;
 
-        public LocationService (IApiClient client, IOptions<FindApprenticeshipTrainingApi> config)
+        public LocationService(IApiClient client, IOptions<FindApprenticeshipTrainingApi> config)
         {
             _client = client;
             _config = config.Value;
         }
-        public async Task<Domain.Locations.Locations> GetLocations(string searchTerm)
+        public async Task<Domain.Locations> GetLocations(string searchTerm)
         {
+            if (searchTerm.Trim().Length < 3) return new Domain.Locations { LocationItems = new List<Domain.Locations.LocationItem>() };
             var request = new GetLocationsApiRequest(_config.BaseUrl, searchTerm);
+            return await _client.Get<Domain.Locations>(request);
+        }
 
-            var result = await _client.Get<Domain.Locations.Locations>(request);
+        public async Task<bool> IsLocationValid(string locationName)
+        {
+            locationName = locationName.Trim();
 
-            return result;
+            if (locationName.Contains(','))
+            {
+                var firstItem = locationName.Split(',').First().Trim();
+                var locations = await GetLocations(firstItem);
+                return locations.LocationItems.Any(x => x.Name == locationName);
+            }
+
+            if (locationName.Contains(' '))
+            {
+                var firstItem = locationName.Split(' ').First().Trim();
+                var locations = await GetLocations(firstItem);
+                return locations.LocationItems.Any(x => x.Name == locationName);
+            }
+
+            var result = await GetLocations(locationName);
+            return result.LocationItems.Count > 0;
         }
     }
 }

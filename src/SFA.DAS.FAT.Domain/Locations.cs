@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace SFA.DAS.FAT.Domain.Locations
+namespace SFA.DAS.FAT.Domain
 {
     public class Locations
     {
@@ -16,7 +16,7 @@ namespace SFA.DAS.FAT.Domain.Locations
             [JsonProperty("name")]
             public string Name { get; set; }
         }
-        
+
         public class LocationPoint
         {
             [JsonProperty("geoPoint")]

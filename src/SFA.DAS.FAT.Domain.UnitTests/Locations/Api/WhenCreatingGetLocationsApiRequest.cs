@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using NUnit.Framework;
-using SFA.DAS.FAT.Domain.Locations.Api;
 
 namespace SFA.DAS.FAT.Domain.UnitTests.Locations.Api
 {

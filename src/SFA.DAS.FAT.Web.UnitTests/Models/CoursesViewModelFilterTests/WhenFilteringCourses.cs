@@ -34,8 +34,8 @@ public sealed class WhenFilteringCourses
             Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
-            Levels = new List<LevelViewModel> 
-            { 
+            Levels = new List<LevelViewModel>
+            {
                 new LevelViewModel { Code = 3, Name = "Level 3" },
                 new LevelViewModel { Code = 4, Name = "Level 4" },
                 new LevelViewModel { Code = 5, Name = "Level 5" }
