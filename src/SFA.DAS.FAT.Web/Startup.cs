@@ -130,7 +130,9 @@ public class Startup
             {
                 var path = ctx.File.PhysicalPath;
 
-                if (path.EndsWith("app.js", StringComparison.OrdinalIgnoreCase) || path.EndsWith("app.css", StringComparison.OrdinalIgnoreCase))
+                if (path.EndsWith("app.js", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith("site.js", StringComparison.OrdinalIgnoreCase)
+                || path.EndsWith("app.css", StringComparison.OrdinalIgnoreCase))
                 {
                     ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
                 }
