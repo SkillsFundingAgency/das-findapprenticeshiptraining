@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -126,7 +124,18 @@ public class Startup
         app.AddRedirectRules();
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            OnPrepareResponse = ctx =>
+            {
+                var path = ctx.File.PhysicalPath;
+
+                if (path.EndsWith("app.js", StringComparison.OrdinalIgnoreCase) || path.EndsWith("app.css", StringComparison.OrdinalIgnoreCase))
+                {
+                    ctx.Context.Response.Headers["Cache-Control"] = "public, max-age=31536000";
+                }
+            }
+        });
         app.UseCookiePolicy();
 
         app.Use(async (context, next) =>
