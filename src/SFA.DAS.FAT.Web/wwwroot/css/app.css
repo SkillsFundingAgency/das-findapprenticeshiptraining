@@ -479,6 +479,13 @@
 .das-reviews {
     display: flex;
     gap: 20px;
+    flex-direction: column;
+}
+
+@media(min-width: 40.0625em) {
+    .das-reviews {
+        flex-direction: row;
+    }
 }
 
 .das-reviews .das-reviews-container {
