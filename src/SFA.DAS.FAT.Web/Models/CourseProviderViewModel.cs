@@ -33,12 +33,12 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
-    public bool IsNational => Locations.Any(a => a.AtEmployer);
-    public bool IsBlockRelease => Locations.Any(a => a.BlockRelease);
-    public bool IsDayRelease => Locations.Any(a => a.DayRelease);
+    public bool ShowApprenticesWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
+    public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease);
+    public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease);
     public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();
     public List<LocationModel> DayReleaseLocations => GetDayReleaseLocations();
-    public string ApprenticeWorkplaceDisplayMessage => GetApprenticeWorkplaceDisplayMessage();
+    public string AtApprenticesWorkplaceWithNoLocationDisplayMessage => GetAtApprenticeWorkplaceWithNoLocationDisplayMessage();
     public bool HasMultipleBlockReleaseLocations => BlockReleaseLocations.Count(a => a.BlockRelease) > 1;
     public bool HasMultipleDayReleaseLocations => DayReleaseLocations.Count(a => a.DayRelease) > 1;
     public LocationModel ClosestBlockReleaseLocation => GetClosestBlockReleaseLocation();
@@ -50,10 +50,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase
                                                         "No data" :
                                                         EndpointAssessments.EndpointAssessmentCount.ToString();
     public LocationModel NationalLocation => Locations.FirstOrDefault(a => a.AtEmployer && a.LocationType == LocationType.National);
-    public string NationalWorkLocationDistanceDisplayText => GetNationalWorkLocationDistanceDisplayText();
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
+    public bool HasMatchingRegionalLocation => Locations.Any(l => l.LocationType == LocationType.Regional && l.AtEmployer);
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
@@ -123,13 +123,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         }
     }
 
-    private string GetNationalWorkLocationDistanceDisplayText()
-    {
-        return NationalLocation is null ?
-            "0.0 miles" :
-            $"{NationalLocation.CourseDistance.ToString("0.0")} miles";
-    }
-
     private LocationModel GetClosestBlockReleaseLocation()
     {
         return Locations.Where(a => a.BlockRelease).OrderBy(a => a.CourseDistance).FirstOrDefault();
@@ -166,9 +159,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase
         return builder.ToString();
     }
 
-    private string GetApprenticeWorkplaceDisplayMessage()
+    private string GetAtApprenticeWorkplaceWithNoLocationDisplayMessage()
     {
-        if (NationalLocation is not null)
+        if (Locations.Any(l => l.LocationType == LocationType.National))
         {
             return "Training is provided at apprentice's workplaces across England.";
         }
