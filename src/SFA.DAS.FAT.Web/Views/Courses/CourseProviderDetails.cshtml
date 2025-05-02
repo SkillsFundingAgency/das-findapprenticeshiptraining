@@ -76,14 +76,9 @@
                     <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
                         <div class="govuk-form-group">
                         <label for="search-location" class="govuk-label">Enter a city or postcode</label>
-                            <div class="govuk-grid-row">
-                                <div class="govuk-grid-column-two-thirds">
-                                    <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
-                                <div class="govuk-!-margin-bottom-2"></div>
-                                </div>
-                                <div class="govuk-grid-column-one-third govuk-!-padding-left-1">
-                                    <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
-                                </div>
+                            <div class="app-inline-search">
+                                <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
                             </div>
                         </div>
                     </div>

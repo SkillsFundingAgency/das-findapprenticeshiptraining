@@ -493,7 +493,17 @@
     padding: 20px;
 }
 
+.app-inline-search {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
+@media(min-width: 40.0625em) {
+    .app-inline-search {
+        flex-direction: row;
+    }
+}
 
 .app-search-results-header {
     margin-top: 1em;
