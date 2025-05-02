@@ -5,7 +5,7 @@
 
 @{
     ViewData["Title"] = "Shortlists";
-    ViewData["Description"] = "View the apprenticeship training providers that you’ve shortlisted.";
+    ViewData["Description"] = "View the apprenticeship training providers that you've shortlisted.";
 }
 
 <partial name="_searchLink" />
@@ -20,13 +20,13 @@
                 </div>
             </div>
 
-            <h1 class="govuk-heading-l">
+            <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
                 Shortlisted training providers
             </h1>
             <div asp-show="Model.HasShortlistItems" class="govuk-body govuk-!-width-two-thirds">We'll save your shortlist until  @Model.ExpiryDateText.</div>
             <div asp-show="Model.HasMaxedOutShortlists" class="govuk-inset-text">
                 <p class="govuk-!-font-weight-bold">Your shortlist is full.</p>
-                <p>You cannot have more than 50 training providers in your shortlist. If you want to shortlist more providers, you’ll need to remove some here first.</p>
+                <p>You cannot have more than 50 training providers in your shortlist. If you want to shortlist more providers, you'll need to remove some here first.</p>
             </div>
         </div>
     </div>
