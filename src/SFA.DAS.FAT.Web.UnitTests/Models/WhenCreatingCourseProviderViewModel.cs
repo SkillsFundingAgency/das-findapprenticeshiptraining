@@ -786,4 +786,17 @@ public class WhenCreatingCourseProviderViewModel
         };
         Assert.That(sut.HasMatchingRegionalLocation, Is.True);
     }
+
+    [Test]
+    public void Then_HasMatchingRegionalLocation_Returns_True_If_Any_National_Location_Exists()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.National}
+            }
+        };
+        Assert.That(sut.HasMatchingRegionalLocation, Is.True);
+    }
 }

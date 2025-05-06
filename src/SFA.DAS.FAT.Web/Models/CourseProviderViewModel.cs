@@ -13,8 +13,6 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProviderViewModel : PageLinksViewModelBase
 {
-
-
     public int ShortlistCount { get; set; }
     public long Ukprn { get; set; }
     public string ProviderName { get; set; }
@@ -46,14 +44,15 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
     public string ApprenticeReviewsDisplayMessage => GetApprenticeReviewsDisplayMessage();
     public string EndpointAssessmentDisplayMessage => GetEndpointAssessmentDisplayMessage();
-    public string EndpointAssessmentsCountDisplay => EndpointAssessments is null || !EndpointAssessments.EarliestAssessment.HasValue ?
-                                                        "No data" :
-                                                        EndpointAssessments.EndpointAssessmentCount.ToString();
+    public string EndpointAssessmentsCountDisplay =>
+        EndpointAssessments is null || !EndpointAssessments.EarliestAssessment.HasValue ?
+        "No data" :
+        EndpointAssessments.EndpointAssessmentCount.ToString();
     public LocationModel NationalLocation => Locations.FirstOrDefault(a => a.AtEmployer && a.LocationType == LocationType.National);
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
-    public bool HasMatchingRegionalLocation => Locations.Any(l => l.LocationType == LocationType.Regional && l.AtEmployer);
+    public bool HasMatchingRegionalLocation => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
