@@ -258,13 +258,14 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
+            Location = string.Empty,
             Locations = new List<LocationModel>
             {
                 new LocationModel { AtEmployer = true, LocationType = LocationType.National }
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
     }
 
     [Test]
@@ -272,13 +273,14 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
+            Location = string.Empty,
             Locations = new List<LocationModel>
             {
-                new LocationModel { AtEmployer = true, LocationType = LocationType.Regional }
+                new LocationModel { LocationType = LocationType.Regional }
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
     }
 
     [Test]
@@ -286,15 +288,15 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
+            Location = string.Empty,
             Locations = new List<LocationModel>
             {
-                new LocationModel { AtEmployer = false, LocationType = LocationType.National }
+                new LocationModel { LocationType = LocationType.National }
             }
         };
 
-        Assert.That(sut.ApprenticeWorkplaceDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
     }
-
 
     [Test]
     public void Get_Achievement_Rate_Information_Returns_Formatted_Message_When_Achievement_Rate_Is_Not_Null()
@@ -517,32 +519,47 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Is_National_Returns_True_If_Any_At_Employer_And_Location_Type_National_Is_True()
+    public void Then_ShowApprenticesWorkplaceOption_Returns_True_If_Any_Location_Type_National_Exists()
     {
         var viewModel = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
             {
-                new LocationModel { AtEmployer = false, LocationType = LocationType.Provider },
-                new LocationModel { AtEmployer = true, LocationType = LocationType.National }
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.National }
             }
         };
 
-        Assert.That(viewModel.IsNational, Is.True);
+        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.True);
     }
 
     [Test]
-    public void Then_Is_National_Returns_False_If_None_At_Employer()
+    public void Then_ShowApprenticesWorkplaceOption_Returns_True_If_Any_Location_Type_Regional_Exists()
     {
         var viewModel = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
             {
-                new LocationModel { AtEmployer = false, LocationType = LocationType.National }
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Regional }
             }
         };
 
-        Assert.That(viewModel.IsNational, Is.False);
+        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.True);
+    }
+
+    [Test]
+    public void Then_ShowApprenticesWorkplaceOption_Returns_False_If_No_National_Or_Regional_Locations()
+    {
+        var viewModel = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider }
+            }
+        };
+
+        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.False);
     }
 
     [Test]
@@ -557,7 +574,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.IsBlockRelease, Is.True);
+        Assert.That(sut.ShowBlockReleaseOption, Is.True);
     }
 
     [Test]
@@ -571,7 +588,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.IsBlockRelease, Is.False);
+        Assert.That(sut.ShowBlockReleaseOption, Is.False);
     }
 
     [Test]
@@ -585,7 +602,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.IsDayRelease, Is.True);
+        Assert.That(sut.ShowDayReleaseOption, Is.True);
     }
 
     [Test]
@@ -599,7 +616,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.IsDayRelease, Is.False);
+        Assert.That(sut.ShowDayReleaseOption, Is.False);
     }
 
     [Test]
@@ -694,55 +711,6 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_National_Work_Location_Distance_Display_Text_Returns_Formatted_Distance_When_National_Location_Is_Not_Null()
-    {
-        var sut = new CourseProviderViewModel
-        {
-            Locations = new List<LocationModel>
-            {
-                new LocationModel
-                {
-                    AtEmployer = true,
-                    LocationType = LocationType.National,
-                    CourseDistance = 12.456
-                }
-            }
-        };
-
-        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("12.5 miles"));
-    }
-
-    [Test]
-    public void Then_National_Work_Location_Distance_Display_Text_Returns_Zero_Miles_When_National_Location_Is_Null()
-    {
-        var sut = new CourseProviderViewModel
-        {
-            Locations = new List<LocationModel>
-            {
-                new LocationModel
-                {
-                    AtEmployer = false,
-                    LocationType = LocationType.Regional,
-                    CourseDistance = 99.99
-                }
-            }
-        };
-
-        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("0.0 miles"));
-    }
-
-    [Test]
-    public void Then_National_Work_Location_Distance_Display_Text_Returns_Zero_Miles_When_Locations_Is_Empty()
-    {
-        var sut = new CourseProviderViewModel
-        {
-            Locations = new List<LocationModel>()
-        };
-
-        Assert.That(sut.NationalWorkLocationDistanceDisplayText, Is.EqualTo("0.0 miles"));
-    }
-
-    [Test]
     public void Then_Closest_Block_Release_Location_Returns_Location_With_Smallest_Course_Distance()
     {
         var closest = new LocationModel { BlockRelease = true, CourseDistance = 5.0 };
@@ -804,5 +772,31 @@ public class WhenCreatingCourseProviderViewModel
         };
 
         Assert.That(sut.ClosestDayReleaseLocation, Is.Null);
+    }
+
+    [Test]
+    public void Then_HasMatchingRegionalLocation_Returns_True_If_Any_Regional_Location_And_AtEmployer_IsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Regional, AtEmployer = true }
+            }
+        };
+        Assert.That(sut.HasMatchingRegionalLocation, Is.True);
+    }
+
+    [Test]
+    public void Then_HasMatchingRegionalLocation_Returns_True_If_Any_National_Location_Exists()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.National}
+            }
+        };
+        Assert.That(sut.HasMatchingRegionalLocation, Is.True);
     }
 }

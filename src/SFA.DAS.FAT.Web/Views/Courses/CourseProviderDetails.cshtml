@@ -68,14 +68,14 @@
 
             @* Search courses by location *@
 
-            @if(string.IsNullOrWhiteSpace(Model.Location))
+            @if (string.IsNullOrWhiteSpace(Model.Location))
             {
                 <form method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
                     <input type="hidden" name="Distance" value="@Model.Distance" />
 
                     <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
                         <div class="govuk-form-group">
-                        <label for="search-location" class="govuk-label">Enter a city or postcode</label>
+                            <label for="search-location" class="govuk-label">Enter a city or postcode</label>
                             <div class="app-inline-search">
                                 <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
                                 <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
@@ -99,7 +99,7 @@
 
                 <tbody class="govuk-table__body">
 
-                    @if (Model.IsNational)
+                    @if (Model.ShowApprenticesWorkplaceOption)
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">
@@ -112,20 +112,30 @@
                                 @if (string.IsNullOrWhiteSpace(Model.Location))
                                 {
                                     <p class="govuk-body govuk-!-margin-top-2">
-                                        @Model.ApprenticeWorkplaceDisplayMessage
+                                        @Model.AtApprenticesWorkplaceWithNoLocationDisplayMessage
                                     </p>
                                 }
                                 else
                                 {
-                                    <p class="govuk-body govuk-!-margin-top-2">
-                                        <strong>@Model.NationalWorkLocationDistanceDisplayText</strong> to apprentice's work location
-                                    </p>
+
+                                    @if (Model.HasMatchingRegionalLocation)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            <strong>0.0 miles</strong> to apprentice's work location
+                                        </p>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            This provider has said they do not deliver training at apprentice's workplaces in your region.
+                                        </p>
+                                    }
                                 }
                             </td>
                         </tr>
                     }
 
-                    @if (Model.IsBlockRelease)
+                    @if (Model.ShowBlockReleaseOption)
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
@@ -195,7 +205,7 @@
                         </tr>
                     }
 
-                    @if (Model.IsDayRelease)
+                    @if (Model.ShowDayReleaseOption)
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
@@ -457,7 +467,7 @@
     @*  Contact this training provider *@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-        
+
             <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
                 Contact this training provider
             </h3>
@@ -600,8 +610,8 @@
                 For general information about this provider, such as the total participation
                 and achievement rate for all courses they deliver, view our
                 <a class="govuk-link govuk-link--no-visited-state"
-                    asp-route="@RouteNames.Provider"
-                    asp-route-ukprn="@Model.Ukprn">
+                   asp-route="@RouteNames.Provider"
+                   asp-route-ukprn="@Model.Ukprn">
                     provider details page for @Model.ProviderName
                 </a>.
             </p>
