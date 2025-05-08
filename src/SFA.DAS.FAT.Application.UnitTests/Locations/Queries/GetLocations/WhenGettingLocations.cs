@@ -1,6 +1,4 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Moq;
 using NUnit.Framework;
@@ -15,7 +13,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Locations.Queries.GetLocations
         [Test, MoqAutoData]
         public async Task Then_Returns_Results_From_Service(
             GetLocationsQuery query,
-            Domain.Locations.Locations locationsFromService,
+            Domain.Locations locationsFromService,
             [Frozen] Mock<ILocationService> mockService,
             GetLocationsQueryHandler handler)
         {
@@ -26,7 +24,6 @@ namespace SFA.DAS.FAT.Application.UnitTests.Locations.Queries.GetLocations
             var result = await handler.Handle(query, CancellationToken.None);
 
             result.LocationItems.Should().BeEquivalentTo(locationsFromService.LocationItems);
-
         }
     }
 }

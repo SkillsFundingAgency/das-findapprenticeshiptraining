@@ -29,33 +29,43 @@ public class CourseProvidersController : Controller
 {
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
-    private readonly IValidator<GetCourseProviderDetailsQuery> _courseProviderDetailsValidator;
+    private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
     private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
+    private readonly IValidator<GetCourseQuery> _courseIdValidator;
     private readonly ISessionService _sessionService;
     private readonly IDateTimeService _dateTimeService;
     private readonly FindApprenticeshipTrainingWeb _config;
 
     public CourseProvidersController(
         IMediator mediator,
-        IValidator<GetCourseProviderDetailsQuery> courseProviderDetailsValidator,
+        IValidator<GetCourseProviderDetailsQuery> ukprnValidator,
         IValidator<GetCourseLocationQuery> courseLocationValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IOptions<FindApprenticeshipTrainingWeb> config,
         ISessionService sessionService,
-        IDateTimeService dateTimeService)
+        IDateTimeService dateTimeService,
+        IValidator<GetCourseQuery> courseIdValidator)
     {
         _mediator = mediator;
-        _courseProviderDetailsValidator = courseProviderDetailsValidator;
+        _ukprnValidator = ukprnValidator;
         _courseLocationValidator = courseLocationValidator;
         _shortlistCookieService = shortlistCookieService;
         _sessionService = sessionService;
         _dateTimeService = dateTimeService;
+        _courseIdValidator = courseIdValidator;
         _config = config.Value;
     }
 
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.Id });
+
+        if (!validationLarsCodeResult.IsValid)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
@@ -140,6 +150,21 @@ public class CourseProvidersController : Controller
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails(int id, int providerId, string location, string distance)
     {
+
+        var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
+
+        if (!validationUkprnResult.IsValid)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = id });
+
+        if (!validationLarsCodeResult.IsValid)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
@@ -153,17 +178,10 @@ public class CourseProvidersController : Controller
         {
             Ukprn = providerId,
             LarsCode = id,
-            Location = location,
+            Location = location?.Trim(),
             Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
             ShortlistUserId = shortlistUserId
         };
-
-        var validationResult = await _courseProviderDetailsValidator.ValidateAsync(query);
-
-        if (!validationResult.IsValid)
-        {
-            return RedirectToRoute(RouteNames.Error404);
-        }
 
         GetCourseProviderQueryResult result = await _mediator.Send(query);
 
@@ -186,12 +204,11 @@ public class CourseProvidersController : Controller
         viewModel.ShowSearchCrumb = true;
         viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
 
-        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location?.Trim() });
 
         if (!validationLocationResult.IsValid)
         {
             viewModel.Location = string.Empty;
-            viewModel.LocationEntryError = true;
             validationLocationResult.AddToModelState(ModelState);
         }
 

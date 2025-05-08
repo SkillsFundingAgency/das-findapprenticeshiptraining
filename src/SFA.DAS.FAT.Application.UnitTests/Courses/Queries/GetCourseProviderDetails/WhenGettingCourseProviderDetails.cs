@@ -12,7 +12,7 @@ public class WhenGettingCourseProviderDetails
 {
     [Test, MoqAutoData]
     public async Task Then_If_The_Query_Is_Valid_The_Service_Is_Called_And_The_Response_Is_Mapped_Correctly(
-        GetCourseProviderDetailsQuery query,
+        Application.Courses.Queries.GetCourseProviderDetails.GetCourseProviderDetailsQuery query,
         CourseProviderDetailsModel CourseProviderDetailsResponse,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Greedy] GetCourseProviderQueryHandler sut
@@ -65,7 +65,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task Then_If_There_Is_No_Course_Provider_Then_Service_Returns_Null(
-        GetCourseProviderDetailsQuery query,
+        Application.Courses.Queries.GetCourseProviderDetails.GetCourseProviderDetailsQuery query,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Greedy] GetCourseProviderQueryHandler sut
 )

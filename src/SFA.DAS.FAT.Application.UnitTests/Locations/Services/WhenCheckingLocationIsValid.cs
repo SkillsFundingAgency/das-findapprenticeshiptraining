@@ -4,9 +4,9 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Locations.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Locations.Api;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Locations.Services;
@@ -22,22 +22,31 @@ public class WhenCheckingLocationIsValid
     [MoqInlineAutoData("   abc   ", "abc", true, 1)]
     [MoqInlineAutoData("abc, def", "abc", true, 1)]
     [MoqInlineAutoData("ghi jkl", "ghi", true, 1)]
+    [MoqInlineAutoData("c, oventry", "", false, 0)]
+    [MoqInlineAutoData("co, ventry", "", false, 0)]
+    [MoqInlineAutoData(" co, ventry", "", false, 0)]
+    [MoqInlineAutoData("co , ventry", "", false, 0)]
+    [MoqInlineAutoData("c oventry", "", false, 0)]
+    [MoqInlineAutoData("co ventry", "", false, 0)]
+    [MoqInlineAutoData(" co ventry", "", false, 0)]
+    [MoqInlineAutoData("co  ventry", "", false, 0)]
+    [MoqInlineAutoData("    co  ventry", "", false, 0)]
     public async Task Then_Selected_Location_Is_Expected_Validity(
         string location,
         string locationUsedInApiCall,
         bool expectedValidity,
         int apiCalled,
         string baseUrl,
-        Domain.Locations.Locations apiResponse,
+        Domain.Locations apiResponse,
         Mock<IOptions<FindApprenticeshipTrainingApi>> config,
         [Frozen] Mock<IApiClient> apiClient,
         LocationService service)
     {
-        apiResponse.LocationItems = new List<Domain.Locations.Locations.LocationItem> { new() { Name = location } };
+        apiResponse.LocationItems = new List<Domain.Locations.LocationItem> { new() { Name = location } };
 
         //Arrange
         apiClient.Setup(x =>
-                x.Get<Domain.Locations.Locations>(
+                x.Get<Domain.Locations>(
                     It.Is<GetLocationsApiRequest>(c => c.GetUrl.Contains(locationUsedInApiCall))))
             .ReturnsAsync(apiResponse);
 
@@ -47,7 +56,7 @@ public class WhenCheckingLocationIsValid
         //Assert
         actual.Should().Be(expectedValidity);
 
-        apiClient.Verify(x => x.Get<Domain.Locations.Locations>(It.Is<GetLocationsApiRequest>(x => x.GetUrl.Contains(locationUsedInApiCall))), Times.Exactly(apiCalled));
+        apiClient.Verify(x => x.Get<Domain.Locations>(It.Is<GetLocationsApiRequest>(x => x.GetUrl.Contains(locationUsedInApiCall))), Times.Exactly(apiCalled));
     }
 
     [Test]
@@ -65,18 +74,18 @@ public class WhenCheckingLocationIsValid
         string locationUsedInApiCall,
         int apiCalled,
         string baseUrl,
-        Domain.Locations.Locations apiResponse,
+        Domain.Locations apiResponse,
         Mock<IOptions<FindApprenticeshipTrainingApi>> config,
         [Frozen] Mock<IApiClient> apiClient,
         LocationService service)
     {
-        apiResponse.LocationItems = new List<Domain.Locations.Locations.LocationItem> { new() { Name = location } };
+        apiResponse.LocationItems = new List<Domain.Locations.LocationItem> { new() { Name = location } };
 
         //Arrange
         apiClient.Setup(x =>
-                x.Get<Domain.Locations.Locations>(
+                x.Get<Domain.Locations>(
                     It.Is<GetLocationsApiRequest>(c => c.GetUrl.Contains(locationUsedInApiCall))))
-            .ReturnsAsync((Domain.Locations.Locations)null);
+            .ReturnsAsync((Domain.Locations)null);
 
         //Act
         var actual = await service.IsLocationValid(location);
@@ -84,6 +93,6 @@ public class WhenCheckingLocationIsValid
         //Assert
         actual.Should().Be(false);
 
-        apiClient.Verify(x => x.Get<Domain.Locations.Locations>(It.IsAny<GetLocationsApiRequest>()), Times.Exactly(apiCalled));
+        apiClient.Verify(x => x.Get<Domain.Locations>(It.IsAny<GetLocationsApiRequest>()), Times.Exactly(apiCalled));
     }
 }

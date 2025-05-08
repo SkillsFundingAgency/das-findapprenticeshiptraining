@@ -1,6 +1,6 @@
 ﻿using SFA.DAS.FAT.Domain.Interfaces;
 
-namespace SFA.DAS.FAT.Domain.Locations.Api
+namespace SFA.DAS.FAT.Domain
 {
     public class GetLocationsApiRequest : IGetApiRequest
     {

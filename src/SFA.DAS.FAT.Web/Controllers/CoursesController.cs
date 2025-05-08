@@ -109,7 +109,7 @@ public class CoursesController : Controller
             convertedDistance = DistanceService.GetValidDistance(distance);
         }
 
-        var query = new GetCourseQuery
+        var query = new GetCourseQuery()
         {
             LarsCode = id,
             Location = location,
@@ -130,7 +130,7 @@ public class CoursesController : Controller
             return RedirectToRoute(RouteNames.Error404);
         }
 
-        var viewModel = (CourseViewModelv2)result;
+        var viewModel = (CourseViewModel)result;
         viewModel.Location = location;
         viewModel.Distance = distance;
 

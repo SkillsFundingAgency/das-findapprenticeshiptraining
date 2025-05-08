@@ -16,20 +16,30 @@ public class GetCourseProviderDetailsQueryValidatorTests
         _validator = new GetCourseProviderDetailsQueryValidator();
     }
 
-    [Test]
-    public void TestValidator_ProviderIdInvalid_ReturnsExpectedErrorMessage()
+    [TestCase(-1)]
+    [TestCase(0)]
+    [TestCase(1)]
+    [TestCase(11)]
+    [TestCase(111)]
+    [TestCase(1111)]
+    [TestCase(11111)]
+    [TestCase(111111)]
+    [TestCase(9999999)]
+    [TestCase(20000000)]
+    public void TestValidator_ProviderIdInvalid_ReturnsExpectedErrorMessage(int ukprn)
     {
-        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery());
+        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 
         result.IsValid.Should().BeFalse();
         result.ShouldHaveValidationErrorFor(c => c.Ukprn)
-            .WithErrorMessage(GetCourseProviderDetailsQueryValidator.ProviderIdErrorMessage);
+            .WithErrorMessage(GetCourseProviderDetailsQueryValidator.InvalidUkprnErrorMessage);
     }
 
-    [Test]
-    public void TestValidator_ProviderIdValid_ReturnsValid()
+    [TestCase(10000000)]
+    [TestCase(19999999)]
+    public void TestValidator_ProviderIdValid_ReturnsValid(int ukprn)
     {
-        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = 1 });
+        var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 
         result.IsValid.Should().BeTrue();
     }
