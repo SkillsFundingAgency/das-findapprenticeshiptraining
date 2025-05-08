@@ -85,7 +85,7 @@ public class WhenCheckingLocationIsValid
         apiClient.Setup(x =>
                 x.Get<Domain.Locations>(
                     It.Is<GetLocationsApiRequest>(c => c.GetUrl.Contains(locationUsedInApiCall))))
-            .ReturnsAsync((Domain.Locations)null);
+            .ReturnsAsync((Domain.Locations)new Domain.Locations { LocationItems = new List<Domain.Locations.LocationItem>() });
 
         //Act
         var actual = await service.IsLocationValid(location);

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain;
@@ -19,7 +20,7 @@ namespace SFA.DAS.FAT.Application.Locations.Services
         }
         public async Task<Domain.Locations> GetLocations(string searchTerm)
         {
-            if (searchTerm.Trim().Length < 3) return new Domain.Locations();
+            if (searchTerm.Trim().Length < 3) return new Domain.Locations { LocationItems = new List<Domain.Locations.LocationItem>() };
             var request = new GetLocationsApiRequest(_config.BaseUrl, searchTerm);
             return await _client.Get<Domain.Locations>(request);
         }
@@ -31,23 +32,19 @@ namespace SFA.DAS.FAT.Application.Locations.Services
             if (locationName.Contains(','))
             {
                 var firstItem = locationName.Split(',').First().Trim();
-                if (firstItem.Length < 3) return false;
                 var locations = await GetLocations(firstItem);
-                return locations != null && locations.LocationItems.Any(x => x.Name == locationName);
+                return locations.LocationItems.Any(x => x.Name == locationName);
             }
 
             if (locationName.Contains(' '))
             {
                 var firstItem = locationName.Split(' ').First().Trim();
-                if (firstItem.Length < 3) return false;
                 var locations = await GetLocations(firstItem);
-                return locations != null && locations.LocationItems.Any(x => x.Name == locationName);
+                return locations.LocationItems.Any(x => x.Name == locationName);
             }
 
-            if (locationName.Length < 3) return false;
-
             var result = await GetLocations(locationName);
-            return result != null && result.LocationItems.Count > 0;
+            return result.LocationItems.Count > 0;
         }
     }
 }

@@ -60,7 +60,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Locations.Services
             var actual = await service.GetLocations(searchTerm);
 
             //Assert
-            actual.Should().BeEquivalentTo(new Domain.Locations());
+            actual.Should().BeEquivalentTo(new Domain.Locations { LocationItems = new List<Domain.Locations.LocationItem>() });
 
             apiClient.Verify(a => a.Get<Domain.Locations>(It.IsAny<GetLocationsApiRequest>()), Times.Never);
         }
