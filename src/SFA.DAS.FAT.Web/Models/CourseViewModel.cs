@@ -1,86 +1,133 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Services;
 
-namespace SFA.DAS.FAT.Web.Models
+namespace SFA.DAS.FAT.Web.Models;
+
+public class CourseViewModel : PageLinksViewModelBase
 {
-    [Obsolete($"FAT25 - Use {nameof(CourseViewModelv2)}")]
-    public class CourseViewModel : PageLinksViewModelBase
+    public string StandardUId { get; set; }
+    public string IFateReferenceNumber { get; set; }
+    public int LarsCode { get; set; }
+    public int ProvidersCountWithinDistance { get; set; }
+    public int TotalProvidersCount { get; set; }
+    public string Title { get; set; }
+    public int Level { get; set; }
+    public string TitleAndLevel { get; set; }
+    public string Version { get; set; }
+    public string OverviewOfRole { get; set; }
+    public string Route { get; set; }
+    public int RouteCode { get; set; }
+    public int MaxFunding { get; set; }
+    public int TypicalDuration { get; set; }
+    public string TypicalJobTitles { get; set; }
+    public string StandardPageUrl { get; set; }
+    public string[] Skills { get; set; }
+    public string[] Knowledge { get; set; }
+    public string[] Behaviours { get; set; }
+    public List<Level> Levels { get; set; } = [];
+
+    public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public string TitleAndLevel { get; private set; }
-        public string Sector { get; private set; }
-        public string IntegratedDegree { get; private set; }
-        public string OverviewOfRole { get; private set; }
-        public List<string> CoreSkills { get; private set; }
-        public List<string> TypicalJobTitles { get; private set; }
-        public string ExternalCourseUrl { get; private set; }
-        public int TypicalDuration { get; private set; }
-        public int Level { get; set; }
-        public string LevelEquivalent { get; set; }
-        public string MaximumFunding { get; set; }
-        public int? TotalProvidersCount { get; set; }
-        public int? ProvidersAtLocationCount { get; set; }
-        public bool OtherBodyApprovalRequired { get; set; }
-        public string ApprovalBody { get; set; }
-        public DateTime? LastDateStarts { get; set; }
-        public bool AfterLastStartDate { get; set; }
-        public string LocationName { get; set; }
-
-        [Obsolete("FAT25")]
-        public bool CanGetHelpFindingCourse(FindApprenticeshipTrainingWeb config)
+        return new CourseViewModel
         {
-            return !string.IsNullOrEmpty(config.EmployerAccountsUrl) && !string.IsNullOrEmpty(config.RequestApprenticeshipTrainingUrl);
+            StandardUId = source.StandardUId,
+            IFateReferenceNumber = source.IFateReferenceNumber,
+            LarsCode = source.LarsCode,
+            ProvidersCountWithinDistance = source.ProvidersCountWithinDistance,
+            TotalProvidersCount = source.TotalProvidersCount,
+            Title = source.Title,
+            Level = source.Level,
+            TitleAndLevel = $"{source.Title} (level {source.Level})",
+            Version = source.Version,
+            OverviewOfRole = source.OverviewOfRole,
+            Route = source.Route,
+            RouteCode = source.RouteCode,
+            MaxFunding = source.MaxFunding,
+            TypicalDuration = source.TypicalDuration,
+            TypicalJobTitles = source.TypicalJobTitles,
+            StandardPageUrl = source.StandardPageUrl,
+            Skills = source.Skills,
+            Knowledge = source.Knowledge,
+            Behaviours = source.Behaviours,
+            Levels = source.Levels,
+            CourseId = source.LarsCode,
+            ShowShortListLink = true,
+            ShowApprenticeTrainingCoursesCrumb = true
+        };
+    }
+
+    public string GetLevelEquivalentToDisplayText()
+    {
+        if (Levels.Count < 1)
+        {
+            return string.Empty;
         }
 
-        [Obsolete("FAT25")]
-        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+        Level EquivalentLevel = Levels.Find(a => a.Code == Level);
+
+        return EquivalentLevel is null ? string.Empty : $"Equal to {EquivalentLevel.Name}";
+    }
+
+    public string[] GetTypicalJobTitles()
+    {
+        if (string.IsNullOrWhiteSpace(TypicalJobTitles))
         {
-            return GetHelpFindingCourseUrl(config, EntryPoint.CourseDetail, LocationName);
+            return [];
         }
 
-        [Obsolete("FAT25 Use RequestApprenticeshipTrainingService instead")]
-        public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config, EntryPoint entryPoint, string location)
+        return TypicalJobTitles.Split('|');
+    }
+
+    public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+    {
+        string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+
+        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+
+        return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+    }
+
+    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the apprentice can travel.";
+
+    public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
+
+    public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
+
+    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the apprentice's work location.";
+
+    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the apprentice's work location.";
+
+    public string GetProviderCountDisplayMessage()
+    {
+        if (HasLocation)
         {
-            if (config.EmployerDemandFeatureToggle)
+            return ProvidersCountWithinDistance switch
             {
-                return $"{config.EmployerDemandUrl}/registerdemand/course/{Id}/share-interest?entrypoint={(short)entryPoint}";
-            }
-
-            string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={Id}&requestType={entryPoint}";
-            var locationQueryParam = !string.IsNullOrEmpty(location) ? $"&location={location}" : string.Empty;
-
-            return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
-        }
-
-        public static implicit operator CourseViewModel(Course course)
-        {
-            return new CourseViewModel
-            {
-                Id = course.Id,
-                Sector = course.Route,
-                CoreSkills = course.CoreSkills ?? new List<string>(),
-                Title = course.Title,
-                TitleAndLevel = $"{course.Title} (level {course.Level})",
-                Level = course.Level,
-                LevelEquivalent = course.LevelEquivalent,
-                IntegratedDegree = course.IntegratedDegree,
-                ExternalCourseUrl = course.StandardPageUrl,
-                OverviewOfRole = course.OverviewOfRole,
-                TypicalJobTitles = course.TypicalJobTitles,
-                TypicalDuration = course.TypicalDuration,
-                MaximumFunding = course.MaxFunding.ToGdsCostFormat(),
-                OtherBodyApprovalRequired = course.OtherBodyApprovalRequired,
-                ApprovalBody = string.IsNullOrEmpty(course.ApprovalBody) ? null : course.ApprovalBody,
-                LastDateStarts = course.StandardDates?.LastDateStarts,
-                AfterLastStartDate = DateTime.UtcNow > course.StandardDates?.LastDateStarts,
+                0 => ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE,
+                1 => SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE,
+                _ => MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
             };
         }
 
-        public bool HasLocation => !string.IsNullOrWhiteSpace(LocationName);
+        return TotalProvidersCount == 1
+            ? SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE
+            : MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
     }
+
+    public string GetApprenticeCanTravelDisplayMessage()
+    {
+        if (Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        {
+            return DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT;
+        }
+
+        return $"{Distance} miles";
+    }
+
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
 }

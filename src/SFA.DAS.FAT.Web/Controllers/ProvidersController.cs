@@ -1,7 +1,10 @@
 ﻿using System.Threading.Tasks;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Application.Providers.Query.GetProvider;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
@@ -13,18 +16,27 @@ namespace SFA.DAS.FAT.Web.Controllers;
 public class ProvidersController : Controller
 {
     private readonly IMediator _mediator;
+    private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
     private readonly IDateTimeService _dateTimeService;
 
-    public ProvidersController(IMediator mediator, IDateTimeService dateTimeService)
+    public ProvidersController(IMediator mediator, IDateTimeService dateTimeService, IValidator<GetCourseProviderDetailsQuery> ukprnValidator)
     {
         _mediator = mediator;
         _dateTimeService = dateTimeService;
+        _ukprnValidator = ukprnValidator;
     }
 
     [HttpGet]
     [Route("")]
     public async Task<IActionResult> Index([FromRoute] int ukprn, [FromQuery] string location)
     {
+        var validationResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
+
+        if (!validationResult.IsValid)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
         var response = await _mediator.Send(new GetProviderQuery(ukprn));
 
         var vm = (ProviderDetailsViewModel)response;

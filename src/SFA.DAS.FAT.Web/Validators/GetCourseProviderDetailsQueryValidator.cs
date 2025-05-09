@@ -5,12 +5,12 @@ namespace SFA.DAS.FAT.Web.Validators;
 
 public class GetCourseProviderDetailsQueryValidator : AbstractValidator<GetCourseProviderDetailsQuery>
 {
-    public const string ProviderIdErrorMessage = "ProviderId must be greater than zero";
+    public const string InvalidUkprnErrorMessage = "Invalid ukprn";
     public GetCourseProviderDetailsQueryValidator()
     {
-        RuleFor(s => s.Ukprn)
+        RuleFor(x => x.Ukprn)
             .Cascade(CascadeMode.Stop)
-            .GreaterThan(0)
-            .WithMessage(ProviderIdErrorMessage);
+            .GreaterThan(9999999).WithMessage(InvalidUkprnErrorMessage)
+            .LessThan(20000000).WithMessage(InvalidUkprnErrorMessage);
     }
 }

@@ -1,11 +1,15 @@
 ﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
@@ -17,6 +21,7 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
+using SFA.DAS.FAT.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
@@ -32,10 +37,18 @@ public class WhenGettingCourseProviders
         string location,
         Guid shortlistUserId,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
         //Arrange
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
+
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
@@ -122,6 +135,7 @@ public class WhenGettingCourseProviders
         string courseDetailsUrl,
         string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -150,6 +164,13 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
+
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -163,7 +184,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Distance_Defaults_To_Ten_Miles(
+    public async Task Then_Invalid_CourseId_Redirects_To_Shutter_Page(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -171,6 +192,7 @@ public class WhenGettingCourseProviders
         string courseDetailsUrl,
         string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -190,6 +212,68 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult
+        {
+            Errors = new List<ValidationFailure>
+            {
+                new("CourseId", GetCourseQueryValidator.CourseIdErrorMessage )
+            }
+        });
+        //Act
+        var sut = await controller.CourseProviders(request);
+
+        //Assert
+        sut.Should().BeOfType<RedirectToRouteResult>();
+        var redirectResult = sut as RedirectToRouteResult;
+        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+
+        mediator.Verify(m => m.Send(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()),
+            Times.Never
+        );
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Distance_Defaults_To_Ten_Miles(
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        string serviceStartUrl,
+        string shortlistUrl,
+        string courseDetailsUrl,
+        string location,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        //Arrange
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
+            .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+
+        request.Location = location;
+        request.Distance = null;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -212,6 +296,7 @@ public class WhenGettingCourseProviders
         string courseDetailsUrl,
         string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -231,6 +316,12 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -252,6 +343,7 @@ public class WhenGettingCourseProviders
         string shortlistUrl,
         string courseDetailsUrl,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -271,6 +363,13 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
+
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -289,6 +388,7 @@ public class WhenGettingCourseProviders
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -305,6 +405,13 @@ public class WhenGettingCourseProviders
                 It.IsAny<GetCourseProvidersQuery>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
+
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
@@ -326,6 +433,7 @@ public class WhenGettingCourseProviders
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -343,6 +451,12 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -369,6 +483,7 @@ public class WhenGettingCourseProviders
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -384,6 +499,12 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -410,6 +531,7 @@ public class WhenGettingCourseProviders
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -426,6 +548,12 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
 
@@ -453,6 +581,7 @@ public class WhenGettingCourseProviders
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -467,6 +596,13 @@ public class WhenGettingCourseProviders
                 It.IsAny<GetCourseProvidersQuery>(),
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
+
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         var expectedProviderOrderDropdown = new List<ProviderOrderByOptionViewModel>
         {
@@ -514,6 +650,7 @@ public class WhenGettingCourseProviders
     public async Task Then_Shortlist_Count_Is_Populated_From_Session(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Greedy] CourseProvidersController sut,
         int shortlistCount,
@@ -524,7 +661,12 @@ public class WhenGettingCourseProviders
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
         shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
         sessionServiceMock.Setup(s => s.Get<ShortlistsCount>()).Returns(new ShortlistsCount { Count = shortlistCount });
-
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         var result = await sut.CourseProviders(new CourseProvidersRequest()) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
@@ -533,12 +675,19 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task Then_OrderBy_Options_Includes_Distance(
         [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
         sut.AddUrlHelperMock();
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry" }) as ViewResult;
 
@@ -548,12 +697,19 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task Then_OrderBy_Options_Excludes_Distance(
         [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
         sut.AddUrlHelperMock();
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty }) as ViewResult;
 
@@ -563,13 +719,19 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task Then_Selected_OrderBy_Is_Defaulted_If_OrderBy_Is_Distance_And_Location_Is_Missing(
         [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
         sut.AddUrlHelperMock();
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
-
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
@@ -582,13 +744,19 @@ public class WhenGettingCourseProviders
     public async Task Then_Selected_OrderBy_Is_Unchanged(
         ProviderOrderBy expectedOrderBy,
         [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Greedy] CourseProvidersController sut,
         GetCourseProvidersResult mediatorResult)
     {
         sut.AddUrlHelperMock();
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
-
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);

@@ -161,10 +161,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                     string.Empty,
                     [
                         CreateCheckboxListFilterSection(
-                            "qar-filter", 
-                            nameof(FilterType.QarRatings), 
-                            QAR_SECTION_HEADING, 
-                            $"From {QarPeriodStartYear} to {QarPeriodEndYear}", 
+                            "qar-filter",
+                            nameof(FilterType.QarRatings),
+                            QAR_SECTION_HEADING,
+                            $"From {QarPeriodStartYear} to {QarPeriodEndYear}",
                             GenerateQarFilterItems()
                         )
                     ])
