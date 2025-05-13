@@ -3,11 +3,11 @@ using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Domain.Shortlist.Api;
 
-public class DeleteShortlistForUserRequest : IDeleteApiRequest
+public class DeleteShortlistItemRequest : IDeleteApiRequest
 {
     private readonly Guid _id;
 
-    public DeleteShortlistForUserRequest(string baseUrl, Guid shortlistId)
+    public DeleteShortlistItemRequest(string baseUrl, Guid shortlistId)
     {
         _id = shortlistId;
         BaseUrl = baseUrl;

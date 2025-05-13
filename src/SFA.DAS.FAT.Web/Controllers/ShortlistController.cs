@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
-using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
+using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistsForUser;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -171,7 +171,7 @@ public class ShortlistController : Controller
     [Route("items/{id}", Name = RouteNames.DeleteShortlistItem)]
     public async Task<IActionResult> DeleteShortlistItemForUser(DeleteShortlistItemRequest request)
     {
-        await _mediator.Send(new DeleteShortlistItemForUserCommand
+        await _mediator.Send(new DeleteShortlistItemCommand
         {
             Id = request.ShortlistId,
         });

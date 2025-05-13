@@ -1,8 +1,5 @@
-﻿using System;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Text.Json;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -21,6 +18,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
         [Test, AutoData]
         public async Task Then_The_Endpoint_Is_Called(
             int id,
+            string expected,
             FindApprenticeshipTrainingApi config)
         {
             //Arrange
@@ -28,7 +26,8 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
             configMock.Setup(x => x.Value).Returns(config);
             var response = new HttpResponseMessage
             {
-                StatusCode = HttpStatusCode.Accepted
+                StatusCode = HttpStatusCode.Accepted,
+                Content = new StringContent(JsonSerializer.Serialize(expected)),
             };
             var deleteTestRequest = new DeleteTestRequest(id, "https://test.local");
             var expectedUrl = deleteTestRequest.DeleteUrl;
@@ -38,7 +37,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
 
 
             //Act
-            await apiClient.Delete(deleteTestRequest);
+            var actual = await apiClient.Delete<string>(deleteTestRequest);
 
             //Assert
             httpMessageHandler.Protected()
@@ -49,6 +48,7 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
                         && c.RequestUri.AbsoluteUri.Equals(expectedUrl)),
                     ItExpr.IsAny<CancellationToken>()
                 );
+            actual.Should().Be(expected);
         }
 
         [Test, AutoData]
@@ -69,9 +69,9 @@ namespace SFA.DAS.FAT.Infrastructure.UnitTests.Api
             var client = new HttpClient(httpMessageHandler.Object);
             var apiClient = new ApiClient(client, configMock.Object);
 
-            Func<Task> check = () => apiClient.Delete(deleteTestRequest);
-            check.Should().ThrowAsync<HttpRequestException>();
+            Func<Task> check = () => apiClient.Delete<string>(deleteTestRequest);
 
+            check.Should().ThrowAsync<HttpRequestException>();
         }
 
         private class DeleteTestRequest : IDeleteApiRequest

@@ -42,12 +42,12 @@ public class ShortlistService : IShortlistService
         return apiResponse;
     }
 
-    public async Task DeleteShortlistItemForUser(Guid id)
+    public async Task DeleteShortlistItem(Guid id)
     {
-        await _apiClient.Delete(new DeleteShortlistForUserRequest(_configValue.BaseUrl, id));
+        var response = await _apiClient.Delete<DeleteShortlistItemResponse>(new DeleteShortlistItemRequest(_configValue.BaseUrl, id));
 
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
-        if (shortlistCount != null)
+        if (response.Success && shortlistCount != null)
         {
             shortlistCount.Count--;
             _sessionService.Set(shortlistCount);
