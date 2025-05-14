@@ -10,8 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
-using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Application.Standards.Queries.GetStandards;
 using SFA.DAS.FAT.Web.Infrastructure;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -69,14 +68,7 @@ public class HomeController : Controller
             };
         }
 
-        var result = await _mediator.Send(new GetCoursesQuery
-        {
-            Keyword = "",
-            Routes = null,
-            Levels = null,
-            OrderBy = OrderBy.Title,
-            ShortlistUserId = null
-        });
+        var result = await _mediator.Send(new GetStandardsQuery());
 
         var urlList = new List<string>
         {
