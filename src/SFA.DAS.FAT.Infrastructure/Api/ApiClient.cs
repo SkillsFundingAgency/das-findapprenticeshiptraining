@@ -1,4 +1,4 @@
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,18 +14,18 @@ namespace SFA.DAS.FAT.Infrastructure.Api
         private readonly HttpClient _httpClient;
         private readonly FindApprenticeshipTrainingApi _config;
 
-        public ApiClient (HttpClient httpClient, IOptions<FindApprenticeshipTrainingApi> config)
+        public ApiClient(HttpClient httpClient, IOptions<FindApprenticeshipTrainingApi> config)
         {
             _httpClient = httpClient;
             _config = config.Value;
         }
-        
-        public async Task<TResponse> Get<TResponse>(IGetApiRequest request) 
+
+        public async Task<TResponse> Get<TResponse>(IGetApiRequest request)
         {
-            
+
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, request.GetUrl);
             AddAuthenticationHeader(requestMessage);
-            
+
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             if (response.StatusCode.Equals(HttpStatusCode.NotFound))
@@ -36,48 +36,51 @@ namespace SFA.DAS.FAT.Infrastructure.Api
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<TResponse>(json);    
+                return JsonConvert.DeserializeObject<TResponse>(json);
             }
-            
+
             response.EnsureSuccessStatusCode();
-            
+
             return default;
         }
 
-        public async Task<TResponse> Post<TResponse,TPostData>(IPostApiRequest<TPostData> request)
+        public async Task<TResponse> Post<TResponse, TPostData>(IPostApiRequest<TPostData> request)
         {
             var stringContent = request.Data != null ? new StringContent(JsonConvert.SerializeObject(request.Data), Encoding.UTF8, "application/json") : null;
-            
+
             var requestMessage = new HttpRequestMessage(HttpMethod.Post, request.PostUrl)
             {
                 Content = stringContent
             };
             AddAuthenticationHeader(requestMessage);
-            
-            
+
+
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
-            
+
             var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return JsonConvert.DeserializeObject<TResponse>(json);    
+            return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
-        public async Task Delete(IDeleteApiRequest request)
+        public async Task<TResponse> Delete<TResponse>(IDeleteApiRequest request)
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Delete, request.DeleteUrl);
             AddAuthenticationHeader(requestMessage);
-            
+
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return JsonConvert.DeserializeObject<TResponse>(json);
         }
 
         public async Task<int> Ping()
         {
             var requestMessage = new HttpRequestMessage(HttpMethod.Get, $"{_config.PingUrl}ping");
             AddAuthenticationHeader(requestMessage);
-            
+
             var response = await _httpClient.SendAsync(requestMessage).ConfigureAwait(false);
 
             return (int)response.StatusCode;

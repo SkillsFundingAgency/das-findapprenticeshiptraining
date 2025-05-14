@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItemForUser;
+using SFA.DAS.FAT.Application.Shortlist.Commands.DeleteShortlistItem;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class WhenDeletingShortlistItemForUser
+public class WhenDeletingShortlistItem
 {
     [Test, MoqAutoData]
     public async Task And_Cookie_Exists_Then_Deletes_Shortlist_Item_For_User(
@@ -37,7 +37,7 @@ public class WhenDeletingShortlistItemForUser
 
         //Assert
         actual.Should().NotBeNull();
-        mockMediator.Verify(x => x.Send(It.Is<DeleteShortlistItemForUserCommand>(c => c.Id.Equals(request.ShortlistId)), It.IsAny<CancellationToken>()), Times.Once);
+        mockMediator.Verify(x => x.Send(It.Is<DeleteShortlistItemCommand>(c => c.Id.Equals(request.ShortlistId)), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]

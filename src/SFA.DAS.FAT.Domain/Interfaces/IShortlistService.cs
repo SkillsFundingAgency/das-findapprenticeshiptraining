@@ -9,6 +9,6 @@ public interface IShortlistService
 {
     Task<int> GetShortlistsCountForUser(Guid shortlistUserId);
     Task<GetShortlistsForUserResponse> GetShortlistsForUser(Guid shortlistUserId);
-    Task DeleteShortlistItemForUser(Guid id);
+    Task DeleteShortlistItem(Guid id);
     Task<Guid> CreateShortlistItemForUser(PostShortlistForUserRequest request);
 }
