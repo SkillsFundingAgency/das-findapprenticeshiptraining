@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using AutoFixture.NUnit3;
@@ -15,8 +12,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
-using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Application.Standards.Queries.GetStandards;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.Testing.AutoFixture;
@@ -35,7 +31,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             string cookiesUrl,
             string cookiesDetailsUrl,
             string coursesUrl,
-            GetCoursesQueryResult result,
+            GetStandardsQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -65,14 +61,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             urlHelper
                 .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName.Equals(RouteNames.CookiesDetails))))
                 .Returns(cookiesDetailsUrl);
-            mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
-                    c.Keyword.Equals("")
-                    && c.Levels == null
-                    && c.Routes == null
-                    && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Title)
-                ), CancellationToken.None))
-                .ReturnsAsync(result);
+
+            mediator.Setup(x => x.Send(It.IsAny<GetStandardsQuery>(), CancellationToken.None)).ReturnsAsync(result);
+
             var controller = new HomeController(mediator.Object, cache.Object, configuration.Object)
             {
                 Url = urlHelper.Object,
@@ -109,7 +100,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_The_Courses_Query_Is_Called_And_Nodes_Built_For_Each_Course_And_Provider_List(
             string courseUrl,
             string courseProvidersUrl,
-            GetCoursesQueryResult result,
+            GetStandardsQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -135,14 +126,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
                     HttpContext = httpContext
                 }
             };
-            mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
-                    c.Keyword.Equals("")
-                    && c.Levels == null
-                    && c.Routes == null
-                    && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Title)
-                    ), CancellationToken.None))
-                .ReturnsAsync(result);
+
+            mediator.Setup(x => x.Send(It.IsAny<GetStandardsQuery>(), CancellationToken.None)).ReturnsAsync(result);
 
             //Act
             var actual = await controller.SitemapXml() as ContentResult;
@@ -165,7 +150,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
         public async Task Then_The_Sitemap_Content_Is_Added_To_The_Cache(
             string courseUrl,
             string courseProvidersUrl,
-            GetCoursesQueryResult result,
+            GetStandardsQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -176,14 +161,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             cache.Setup(x => x.GetAsync("Sitemap", CancellationToken.None))
                 .ReturnsAsync((byte[])default);
 
-            mediator.Setup(x => x.Send(It.Is<GetCoursesQuery>(c =>
-                    c.Keyword.Equals("")
-                    && c.Levels == null
-                    && c.Routes == null
-                    && c.ShortlistUserId == null
-                    && c.OrderBy.Equals(OrderBy.Title)
-                ), CancellationToken.None))
-                .ReturnsAsync(result);
+            mediator.Setup(x => x.Send(It.IsAny<GetStandardsQuery>(), CancellationToken.None)).ReturnsAsync(result);
+
             var controller = new HomeController(mediator.Object, cache.Object, configuration.Object)
             {
                 Url = urlHelper.Object,
@@ -202,7 +181,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
 
         [Test, MoqAutoData]
         public async Task Then_If_The_Cache_Object_Exists_Then_It_Is_Returned(
-            GetCoursesQueryResult result,
+            GetStandardsQueryResult result,
             [Frozen] Mock<IMediator> mediator,
             [Frozen] Mock<IDistributedCache> cache,
             [Frozen] Mock<IConfiguration> configuration)
@@ -228,7 +207,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.HomeControllerTests
             //Assert
             actual.Should().NotBeNull();
             actual.Content.Should().Be(expectedContent);
-            mediator.Verify(x => x.Send(It.IsAny<GetCoursesQuery>(), CancellationToken.None), Times.Never);
+            mediator.Verify(x => x.Send(It.IsAny<GetStandardsQuery>(), CancellationToken.None), Times.Never);
         }
     }
 }
