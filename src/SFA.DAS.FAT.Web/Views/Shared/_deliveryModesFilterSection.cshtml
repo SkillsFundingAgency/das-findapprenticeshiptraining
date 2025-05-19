@@ -15,9 +15,9 @@
 }
 <div class="govuk-form-group">
     <div class="govuk-form-group">
-            <label for="@Model.Id" class="govuk-label das-filter__search-label">
-                @Model.Heading
-            </label>
+        <h2 class="govuk-label das-filter__search-label">
+            @Model.Heading
+        </h2>
             @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
             {
                 <p class="govuk-hint">@Model.SubHeading</p>
