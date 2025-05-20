@@ -30,7 +30,7 @@
                     <p class="govuk-body ">Select a course to view location, training options and contact details.</p>
                     <table class="govuk-table">
                         <tbody class="govuk-table__body">
-                        @foreach (var course in Model.ProviderCoursesDetails.Courses)
+                        @foreach (var course in Model.ProviderCoursesDetails.Courses.OrderBy(c=>c.CourseName))
                         {
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">
