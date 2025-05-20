@@ -27,6 +27,7 @@ namespace SFA.DAS.FAT.Web.Controllers;
 [Route("courses/{id}/providers")]
 public class CourseProvidersController : Controller
 {
+    public const string LocationTempDataKey = "Location";
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
@@ -66,10 +67,18 @@ public class CourseProvidersController : Controller
             return RedirectToRoute(RouteNames.Error404);
         }
 
+        string prevLocation = TempData[LocationTempDataKey]?.ToString();
+        TempData[LocationTempDataKey] = request.Location;
+
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>();
         var orderBy = string.IsNullOrEmpty(request.Location) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
+
+        if (string.IsNullOrEmpty(prevLocation) && !string.IsNullOrEmpty(request.Location))
+        {
+            orderBy = ProviderOrderBy.Distance;
+        }
 
         if (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance))
         {
