@@ -35,7 +35,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
     public static implicit operator ProviderDetailsViewModel(GetProviderQueryResponse source)
     {
         List<GetProviderCourseDetails> orderedCourses = null;
-        if (source?.Courses != null)
+        if (source.Courses != null)
         {
             orderedCourses = new List<GetProviderCourseDetails>();
             orderedCourses.AddRange(source.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level));

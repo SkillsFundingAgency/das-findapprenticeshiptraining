@@ -60,7 +60,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
 
         var orderedCourses = new List<ProviderCourseModel>();
-        if (source?.Courses != null)
+        if (source.Courses != null)
         {
             orderedCourses.AddRange(source.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level));
         }
