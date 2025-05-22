@@ -28,14 +28,14 @@ namespace SFA.DAS.FAT.Web.Controllers
         [Route("")]
         public async Task<IActionResult> Locations([FromQuery] string searchTerm)
         {
-            if (string.IsNullOrEmpty(searchTerm) || searchTerm.Trim().Length < 3)
+            if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Trim().Length < 3)
             {
                 return new JsonResult(new LocationsViewModel { Locations = new List<LocationViewModel>() });
             }
 
             var result = await _mediator.Send(new GetLocationsQuery
             {
-                SearchTerm = searchTerm
+                SearchTerm = searchTerm.Trim()
             });
 
             var model = new LocationsViewModel
