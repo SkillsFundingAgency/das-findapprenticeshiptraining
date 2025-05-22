@@ -139,6 +139,9 @@ public class WhenGettingCourseProviderDetails
 
         var model = viewResult.Model.Should().BeOfType<CourseProviderViewModel>().Subject;
 
+        var expectedCoursesAlphabetically = response.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
+
+
         Assert.Multiple(() =>
         {
             Assert.That(model.Ukprn, Is.EqualTo(response.Ukprn));
@@ -155,7 +158,7 @@ public class WhenGettingCourseProviderDetails
             Assert.That(model.TotalProvidersCount, Is.EqualTo(response.TotalProvidersCount));
             Assert.That(model.ShortlistId, Is.EqualTo(response.ShortlistId));
             Assert.That(model.Locations, Is.EqualTo(response.Locations));
-            Assert.That(model.Courses, Is.EqualTo(response.Courses));
+            Assert.That(model.Courses, Is.EqualTo(expectedCoursesAlphabetically));
             Assert.That(model.CourseId, Is.EqualTo(courseId));
             Assert.That(model.Location, Is.EqualTo(location));
             Assert.That(model.Distance, Is.EqualTo(distance.ToString()));

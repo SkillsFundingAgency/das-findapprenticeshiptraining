@@ -18,6 +18,8 @@ public class WhenCreatingCourseProviderViewModel
         source.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
         var sut = (CourseProviderViewModel)source;
 
+        var expectedCoursesAlphabetically = source.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
+
         Assert.Multiple(() =>
         {
             Assert.That(sut.Ukprn, Is.EqualTo(source.Ukprn));
@@ -34,7 +36,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(sut.TotalProvidersCount, Is.EqualTo(source.TotalProvidersCount));
             Assert.That(sut.ShortlistId, Is.EqualTo(source.ShortlistId));
             Assert.That(sut.Locations, Is.EqualTo(source.Locations));
-            Assert.That(sut.Courses, Is.EqualTo(source.Courses));
+            Assert.That(sut.Courses, Is.EqualTo(expectedCoursesAlphabetically));
         });
     }
 
