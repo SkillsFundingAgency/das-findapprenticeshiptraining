@@ -58,6 +58,13 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     public static implicit operator CourseProviderViewModel(GetCourseProviderQueryResult source)
     {
+
+        var orderedCourses = new List<ProviderCourseModel>();
+        if (source.Courses != null)
+        {
+            orderedCourses.AddRange(source.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level));
+        }
+
         return new CourseProviderViewModel
         {
             Ukprn = source.Ukprn,
@@ -74,7 +81,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
-            Courses = source.Courses?.ToList() ?? []
+            Courses = orderedCourses
         };
     }
 
