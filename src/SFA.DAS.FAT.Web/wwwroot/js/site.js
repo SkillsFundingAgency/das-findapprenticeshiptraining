@@ -41,7 +41,7 @@ if ($locationInput.length > 0) {
         name: 'location',
         displayMenu: 'overlay',
         showNoOptionsFound: false,
-        minLength: 2,
+        minLength: 3,
         source: getSuggestions,
         placeholder: "",
         onConfirm: onConfirm,

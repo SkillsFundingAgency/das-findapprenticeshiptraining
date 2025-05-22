@@ -25,7 +25,7 @@
 
                 @if (Model.TotalProvidersCount == 0)
                 {
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-6">No training providers available for this course yet</h3>
+                    <h2 class="govuk-heading-m govuk-!-margin-bottom-6">No training providers available for this course yet</h2>
 
                     <p class="govuk-body govuk-!-margin-bottom-6">
                         We can ask training providers if they can run @Model.TitleAndLevel. If a training provider can offer the course, we'll send you their contact details.
@@ -49,10 +49,10 @@
                             </p>
 
                             <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.LarsCode">
-                                <h3 class="govuk-heading-s govuk-!-margin-bottom-2">
+                                <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
                                     Apprentice's work location:
                                     <span class="govuk-!-font-weight-regular">@Model.Location</span>
-                                </h3>
+                                </h2>
 
                                 <h3 class="govuk-heading-s govuk-!-margin-bottom-6">
                                     Apprentice can travel:
@@ -89,7 +89,7 @@
                                 <input type="hidden" name="distance" value="@Model.Distance" />
 
                                 <div class="govuk-form-group">
-                                    <h3 class="govuk-heading-m">Apprentice's work location</h3>
+                                    <h2 class="govuk-heading-m">Apprentice's work location</h2>
                                     <label for="search-location" class="govuk-label">Enter a city or postcode</label>
                                     <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-submit-on-selection="true">
                                 </div>
