@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -33,13 +34,20 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
 
     public static implicit operator ProviderDetailsViewModel(GetProviderQueryResponse source)
     {
+        List<GetProviderCourseDetails> orderedCourses = null;
+        if (source?.Courses != null)
+        {
+            orderedCourses = new List<GetProviderCourseDetails>();
+            orderedCourses.AddRange(source.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level));
+        }
+
         var vm = new ProviderDetailsViewModel
         {
             Ukprn = source.Ukprn,
             ProviderName = source.ProviderName,
             ProviderAddress = ((GetProviderAddress)source.ProviderAddress).GetComposedAddress(source.ProviderName),
             Contact = source.Contact,
-            ProviderCoursesDetails = source.Courses,
+            ProviderCoursesDetails = orderedCourses,
             Qar = source.Qar,
             Reviews = source.Reviews,
             EndpointAssessments = source.EndpointAssessments,
