@@ -167,18 +167,26 @@
                         </div>
                         @{
                             int categoryGraphCount = 0;
+                            var firstKeyShow = true;
                         }
                         @foreach (var feedbackCategory in year.ApprenticeFeedbackDetails.ProviderAttributes.GroupBy(s => s.Category).OrderBy(s => s.Key))
                         {
                             <!-- Your graph content -->
                             <div id="apprentice-feedback-graphs-@@year.StartYear">
                                 <div class="app-graph">
-                                    <ul class="app-graph-key"><li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentices that agreed with this statement</li><li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices that disagreed with this statement</li></ul>
+                                    @if (firstKeyShow)
+                                    {
+                                        <ul class="app-graph-key">
+                                            <li class="app-graph-key__list-item app-graph-key__list-item--colour-1">Percentage of apprentices who said this was to a reasonable standard</li>
+                                            <li class="app-graph-key__list-item app-graph-key__list-item--colour-2">Percentage of apprentices who said this was not to a reasonable standard</li>
+                                        </ul>
+                                        firstKeyShow = false;
+                                    }
                                     <h2 class="govuk-caption-l app-graph__category">@feedbackCategory.Key</h2>
                                     @foreach (var feedbackItem in feedbackCategory)
                                     {
                                         var itemLabel = feedbackItem.TotalCount == 1 ? "apprentice" : "apprentices";
-                                    
+
                                         <ul class="app-graph__list">
                                             <li class="app-graph__list-item">
                                                 <h3 class="app-graph__label">@feedbackItem.Name<span class="app-graph__caption">(selected by @feedbackItem.TotalCount @itemLabel)</span></h3>
@@ -219,8 +227,8 @@
                             <thead class="govuk-table__head">
                                 <tr class="govuk-table__row">
                                     <th scope="col" class="govuk-table__header">Statement</th>
-                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that agreed with this statement</th>
-                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices that disagreed with this statement</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices who said this was to a reasonable standard</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">Percentage of apprentices who said this was not to a reasonable standard</th>
                                 </tr>
                             </thead>
                             <tbody class="govuk-table__body">
@@ -229,12 +237,12 @@
                                     <tr class="govuk-table__row">
                                         <th class="govuk-table__cell govuk-!-font-weight-regular" scope="row">@feedbackItem.Name</th>
                                         <td class="govuk-table__cell govuk-table__cell--numeric"
-                                            data-label="Percentage of apprentices that agreed with this statement"
+                                            data-label="Percentage of apprentices who said this was to a reasonable standard"
                                             data-title="@feedbackItem.AgreePerc% of apprentices agreed with this statement">
                                             @feedbackItem.AgreePerc%
                                         </td>
                                         <td class="govuk-table__cell govuk-table__cell--numeric"
-                                            data-label="Percentage of apprentices that disagreed with this statement"
+                                            data-label="Percentage of apprentices who said this was not to a reasonable standard"
                                             data-title="@feedbackItem.DisagreePerc% of apprentices disagreed with this statement">
                                             @feedbackItem.DisagreePerc%
                                         </td>
