@@ -308,7 +308,7 @@ public class WhenCreatingCourseProviderViewModel
             Qar = new QarModel
             {
                 AchievementRate = "90",
-                Leavers = "100",
+                Leavers = "1001001",
                 Period = "2122",
                 NationalLeavers = "120",
                 NationalAchievementRate = "20"
@@ -317,7 +317,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.AchievementRateInformation;
 
-        var expected = "of apprentices (90 of 100) completed this course and passed their end-point assessment with this provider in academic year 2021 to 2022. 10% did not pass or left the course before taking the assessment.";
+        var expected = "of apprentices (900,901 of 1,001,001) completed this course and passed their end-point assessment with this provider in academic year 2021 to 2022. 10% did not pass or left the course before taking the assessment.";
 
         Assert.That(result, Is.EqualTo(expected));
     }
