@@ -63,7 +63,7 @@
                         @Model.Qar.AchievementRate%
                     </h2>
                     <p class="govuk-body-s">
-                        of apprentices (@Model.Qar.Achievers of @Model.Qar.TotalParticipantCount) completed a course and passed the end-point assessment with this training provider in academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. @Model.Qar.DidNotPassPercentage% did not pass or left the course before taking their assessment.
+                            of apprentices (@Model.Qar.Achievers.ToString("N0") of @Model.Qar.TotalParticipantCount.ToString("N0")) completed a course and passed the end-point assessment with this training provider in academic year @Model.Qar.PeriodStartYear to @Model.Qar.PeriodEndYear. @Model.Qar.DidNotPassPercentage% did not pass or left the course before taking their assessment.
                     </p>
                 </span>
                 <span asp-show="!@Model.Qar.AchievementRatePresent">
