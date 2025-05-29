@@ -47,7 +47,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public string EndpointAssessmentsCountDisplay =>
         EndpointAssessments is null || !EndpointAssessments.EarliestAssessment.HasValue ?
         "No data" :
-        EndpointAssessments.EndpointAssessmentCount.ToString();
+        EndpointAssessments.EndpointAssessmentCount.ToString("N0");
     public LocationModel NationalLocation => Locations.FirstOrDefault(a => a.AtEmployer && a.LocationType == LocationType.National);
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
@@ -179,9 +179,15 @@ public class CourseProviderViewModel : PageLinksViewModelBase
 
     private string GetAchievementRateInformation()
     {
+        string leaversText = Qar.Leavers;
+        if (int.TryParse(Qar.Leavers, out var leaversCount))
+        {
+            leaversText = leaversCount.ToString("N0");
+        }
+
         if (this.Qar.AchievementRate is not null)
         {
-            return $"of apprentices ({Qar.TotalNumberOfCompletedParticipants} of {Qar.Leavers}) completed this course and passed their end-point assessment with this " +
+            return $"of apprentices ({Qar.TotalNumberOfCompletedParticipants.ToString("N0")} of {leaversText}) completed this course and passed their end-point assessment with this " +
                    $"provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the " +
                     "assessment.";
         }
