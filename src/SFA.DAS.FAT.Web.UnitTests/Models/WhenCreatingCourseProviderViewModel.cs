@@ -435,15 +435,21 @@ public class WhenCreatingCourseProviderViewModel
         Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo("No data"));
     }
 
-    [Test]
-    public void Then_Endpoint_Assessments_Count_Display_Returns_Count_As_String_When_Valid()
+    [TestCase(8, "8")]
+    [TestCase(80, "80")]
+    [TestCase(800, "800")]
+    [TestCase(8000, "8,000")]
+    [TestCase(80000, "80,000")]
+    [TestCase(800000, "800,000")]
+    [TestCase(8000000, "8,000,000")]
+    public void Then_Endpoint_Assessments_Count_Display_Returns_Count_As_String_When_Valid(int count, string expectedCountDisplay)
     {
         var sut = new CourseProviderViewModel
         {
-            EndpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 9, 1, 0, 0, 0, DateTimeKind.Utc), 8)
+            EndpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 9, 1, 0, 0, 0, DateTimeKind.Utc), count)
         };
 
-        Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo("8"));
+        Assert.That(sut.EndpointAssessmentsCountDisplay, Is.EqualTo(expectedCountDisplay));
     }
 
     [Test]
