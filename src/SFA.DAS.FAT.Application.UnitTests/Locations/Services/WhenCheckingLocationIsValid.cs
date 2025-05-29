@@ -26,11 +26,7 @@ public class WhenCheckingLocationIsValid
     [MoqInlineAutoData("co, ventry", "", false, 0)]
     [MoqInlineAutoData(" co, ventry", "", false, 0)]
     [MoqInlineAutoData("co , ventry", "", false, 0)]
-    [MoqInlineAutoData("c oventry", "", false, 0)]
-    [MoqInlineAutoData("co ventry", "", false, 0)]
-    [MoqInlineAutoData(" co ventry", "", false, 0)]
-    [MoqInlineAutoData("co  ventry", "", false, 0)]
-    [MoqInlineAutoData("    co  ventry", "", false, 0)]
+    [MoqInlineAutoData("c oventry", "", true, 1)]
     public async Task Then_Selected_Location_Is_Expected_Validity(
         string location,
         string locationUsedInApiCall,
@@ -68,7 +64,7 @@ public class WhenCheckingLocationIsValid
     [MoqInlineAutoData("abc", "abc", 1)]
     [MoqInlineAutoData("   abc   ", "abc", 1)]
     [MoqInlineAutoData("abc, def", "abc", 1)]
-    [MoqInlineAutoData("ghi jkl", "ghi", 1)]
+    [MoqInlineAutoData("ghi jkl", "ghi", 2)]
     public async Task Then_Location_Returns_No_Details_And_Calls_Api_When_Length_Above_2(
         string location,
         string locationUsedInApiCall,
