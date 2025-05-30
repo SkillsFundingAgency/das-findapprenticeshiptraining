@@ -36,6 +36,10 @@ namespace SFA.DAS.FAT.Application.Locations.Services
                 return locations.LocationItems.Any(x => x.Name == locationName);
             }
 
+            var result = await GetLocations(locationName);
+
+            if (result.LocationItems.Count > 0) return true;
+
             if (locationName.Contains(' '))
             {
                 var firstItem = locationName.Split(' ').First().Trim();
@@ -43,8 +47,7 @@ namespace SFA.DAS.FAT.Application.Locations.Services
                 return locations.LocationItems.Any(x => x.Name == locationName);
             }
 
-            var result = await GetLocations(locationName);
-            return result.LocationItems.Count > 0;
+            return false;
         }
     }
 }
