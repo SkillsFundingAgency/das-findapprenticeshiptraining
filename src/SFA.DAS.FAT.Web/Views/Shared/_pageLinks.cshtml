@@ -2,6 +2,12 @@
 @using SFA.DAS.FAT.Web.Models.BreadCrumbs
 
 <div class="govuk-grid-row">
+    <div class="govuk-grid-column-full">
+        <div class="govuk-body">
+            <p class="govuk-body">We're improving Find apprenticeship training. <a href="https://forms.office.com/e/3fdxa4HbkE" rel="noopener" class="govuk-link" target="_blank">What did you think of this service? (opens in a new tab)</a></p>
+            <hr/>
+        </div>
+    </div>
     @if (Model is PageLinksViewModelBase pageLinks)
     {
         <div class="govuk-grid-column-three-quarters">
@@ -10,8 +16,7 @@
                     <li asp-show="@Model.ShowSearchCrumb" class="govuk-breadcrumbs__list-item">
                         <a id="home-breadcrumb"
                            class="govuk-breadcrumbs__link"
-                           asp-route="@RouteNames.SearchCourses"
-                        >
+                           asp-route="@RouteNames.SearchCourses">
                             Search
                         </a>
                     </li>
@@ -21,8 +26,7 @@
                            class="govuk-breadcrumbs__link"
                            asp-route="@RouteNames.Courses"
                            asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance"
-                        >
+                           asp-route-distance="@pageLinks.Distance">
                             Course search results
                         </a>
                     </li>
@@ -33,8 +37,7 @@
                            asp-route="@RouteNames.CourseDetails"
                            asp-route-id="@pageLinks.CourseId"
                            asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance"
-                        >
+                           asp-route-distance="@pageLinks.Distance">
                             Course details
                         </a>
                     </li>
@@ -45,8 +48,7 @@
                            asp-route="@RouteNames.CourseProviders"
                            asp-route-id="@pageLinks.CourseId"
                            asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance"
-                        >
+                           asp-route-distance="@pageLinks.Distance">
                             Training provider results
                         </a>
                     </li>
