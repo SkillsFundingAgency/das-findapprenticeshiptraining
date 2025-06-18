@@ -15,6 +15,9 @@ public class GetCoursesViewModel
     public List<int> Levels { get; set; } = [];
 
     [FromQuery]
+    public List<string> ApprenticeshipTypes { get; set; } = [];
+
+    [FromQuery]
     public int PageNumber { get; set; } = 1;
 
     [FromQuery]
