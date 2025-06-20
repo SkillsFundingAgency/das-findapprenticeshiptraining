@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
@@ -25,6 +27,19 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
+        var apprenticeshipType = string.Empty;
+
+        if (query.ApprenticeshipTypes.Count == 1)
+        {
+            var type = query.ApprenticeshipTypes.First();
+            apprenticeshipType = ApprenticeshipType.Apprenticeship.ToString();
+
+            if (type == ApprenticeshipType.FoundationApprenticeship.GetDescription())
+            {
+                apprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString();
+            }
+        }
+
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
             new GetCoursesApiRequest(
                 _config.Value.BaseUrl,
@@ -32,6 +47,7 @@ public class GetCoursesQueryHandler(
                 query.Location,
                 query.Distance,
                 routeIds,
+                apprenticeshipType,
                 query.Levels,
                 query.Page,
                 query.OrderBy

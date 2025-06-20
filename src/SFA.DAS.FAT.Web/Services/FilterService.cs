@@ -33,7 +33,8 @@ public static class FilterService
         QarRatings,
         EmployerProviderRatings,
         ApprenticeProviderRatings,
-        Reviews
+        Reviews,
+        ApprenticeshipTypes
     }
 
     public const string KEYWORD_SECTION_HEADING = "Course";
@@ -57,6 +58,7 @@ public static class FilterService
     public const string DELIVERYMODES_SECTION_HEADING = "Training options";
     public const string DELIVERYMODES_SECTION_SUB_HEADING = "Select a training option";
 
+    public const string APPRENTICESHIP_TYPES_SECTION_HEADING = "Apprenticeship type";
 
     public const string QAR_SECTION_HEADING = "Achievement rate";
 
@@ -76,7 +78,8 @@ public static class FilterService
         { FilterType.DeliveryModes, DELIVERYMODES_SECTION_HEADING },
         { FilterType.QarRatings, QAR_SECTION_HEADING },
         { FilterType.EmployerProviderRatings, EMPLOYER_REVIEWS_SECTION_HEADING},
-        { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING}
+        { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING},
+        { FilterType.ApprenticeshipTypes, APPRENTICESHIP_TYPES_SECTION_HEADING}
     };
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)

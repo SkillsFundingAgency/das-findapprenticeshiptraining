@@ -1,6 +1,8 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models
 @using System.Globalization
+@using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Domain.Extensions
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
     ViewData["Title"] = "Apprenticeship training courses";
@@ -53,13 +55,16 @@
                     <ol class="das-search-results__list">
                         @foreach (var standard in Model.Standards)
                         {
+                            
                             <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
+                                <div id="foundation-tag" asp-show="standard.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship" >
+                                    <strong class="govuk-body govuk-!-margin-bottom-4 govuk-tag govuk-tag--pink">Foundation</strong>
+                                </div>
                                 <h2 class="govuk-heading-m das-search-results__heading">
                                     <a class="das-search-results__link"
                                        id="standard-@standard.LarsCode"
                                        asp-route="@RouteNames.CourseDetails"
-                                       asp-all-route-data="Model.GenerateStandardRouteValues(standard.LarsCode)"
-                                    >
+                                       asp-all-route-data="Model.GenerateStandardRouteValues(standard.LarsCode)">
                                         @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
                                     </a>
                                 </h2>
@@ -69,6 +74,11 @@
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Level</dt>
                                         <dd class="das-definition-list__definition">@Model.GetLevelName(standard.Level)</dd>
+                                    </dl>
+
+                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                        <dt class="das-definition-list__title">Type</dt>
+                                        <dd class="das-definition-list__definition">@standard.ApprenticeshipType.GetDescription() apprenticeship</dd>
                                     </dl>
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
@@ -95,8 +105,7 @@
 
                                     <a class="das-search-results__link"
                                        id="standard-@standard.LarsCode"
-                                       href="@Model.GetProvidersLink(standard)"
-                                    >
+                                       href="@Model.GetProvidersLink(standard)">
                                         @Model.GetProvidersLinkDisplayMessage(standard)<span class="govuk-visually-hidden"> - @standard.Title (level @standard.Level)</span>
                                     </a>
                                 </div>

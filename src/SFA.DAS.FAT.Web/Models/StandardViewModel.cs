@@ -1,4 +1,5 @@
-﻿using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+﻿using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -20,6 +21,8 @@ public class StandardViewModel
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
 
+    public ApprenticeshipType ApprenticeshipType { get; set; }
+
     public static implicit operator StandardViewModel(StandardModel source)
     {
         return new StandardViewModel
@@ -38,7 +41,8 @@ public class StandardViewModel
             Route = source.Route,
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
-            TypicalDuration = source.TypicalDuration
+            TypicalDuration = source.TypicalDuration,
+            ApprenticeshipType = source.ApprenticeshipType
         };
     }
 }

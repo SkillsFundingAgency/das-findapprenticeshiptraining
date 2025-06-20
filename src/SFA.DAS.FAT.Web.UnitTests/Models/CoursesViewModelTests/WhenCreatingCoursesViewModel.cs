@@ -388,7 +388,7 @@ public class WhenCreatingCoursesViewModel
         {
             Levels = new List<LevelViewModel>()
         {
-            new LevelViewModel(
+            new(
                 new Level()
                 {
                     Code = 1,
@@ -413,7 +413,7 @@ public class WhenCreatingCoursesViewModel
         {
             Routes = new List<RouteViewModel>()
         {
-            new RouteViewModel(
+            new(
                 new Route()
                 {
                     Id = 1,
@@ -428,6 +428,32 @@ public class WhenCreatingCoursesViewModel
         var _sut = viewModel.ToQueryString();
 
         Assert.That(_sut.FindIndex(a => a.Item1 == "Categories"), Is.AtLeast(0));
+    }
+
+
+    [Test]
+    public void Then_ToQueryString_Should_Include_ApprenticeshipTypes_When_SelectedTypes_Are_Set()
+    {
+        var selectedTypes = new List<string> { "Standard" };
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Types = new List<TypeViewModel>()
+            {
+                new(
+                    new ApprenticeType
+                    {
+                        Code = "Apprenticeship",
+                        Name = "Standard"
+                    },
+                    selectedTypes
+                )
+            },
+            SelectedTypes = selectedTypes
+        };
+
+        var _sut = viewModel.ToQueryString();
+
+        Assert.That(_sut.FindIndex(a => a.Item1 == "ApprenticeshipTypes"), Is.AtLeast(0));
     }
 
     [Test]

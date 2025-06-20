@@ -4,6 +4,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
@@ -27,6 +28,24 @@ public sealed class WhenFilteringCourses
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
+        var types = new List<ApprenticeType>
+        {
+            new()
+            {
+                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
+                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
+            },
+            new()
+            {
+                Code = ApprenticeshipType.Apprenticeship.ToString(),
+                Name= ApprenticeshipType.Apprenticeship.GetDescription()
+            }
+        };
+        var selectedTypes = new List<string>
+        {
+            ApprenticeshipType.FoundationApprenticeship.GetDescription()
+        };
+
         _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
             Keyword = "Construction",
@@ -34,12 +53,14 @@ public sealed class WhenFilteringCourses
             Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
+            SelectedTypes = selectedTypes,
             Levels = new List<LevelViewModel>
             {
                 new LevelViewModel { Code = 3, Name = "Level 3" },
                 new LevelViewModel { Code = 4, Name = "Level 4" },
                 new LevelViewModel { Code = 5, Name = "Level 5" }
             },
+            Types = types.Select(type => new TypeViewModel(type, selectedTypes)).ToList(),
             Routes = new List<RouteViewModel> { new RouteViewModel(new Route() { Name = "Construction" }, ["Construction"]) }
         };
     }
@@ -166,6 +187,36 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
+    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_ApprenticeTypes()
+    {
+        var _sut = _coursesViewModel.Filters.FilterSections;
+
+        Assert.Multiple(() =>
+        {
+            var accordionFilterSection = _sut.First(a => a.Id == "type-select");
+            Assert.That(accordionFilterSection, Is.TypeOf<AccordionFilterSectionViewModel>());
+            Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
+            Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
+
+            var typeFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(FilterService.FilterType.ApprenticeshipTypes));
+            Assert.That(typeFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
+            Assert.That(typeFilterSection.Id, Is.EqualTo("types-filter"));
+            Assert.That(typeFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
+
+            var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
+            Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(2));
+            Assert.That(typesCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
+            Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
+            Assert.That(typesCheckBoxList.Link, Is.Null);
+            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION));
+
+        });
+    }
+
+    [Test]
     public void Then_Clear_Filter_Sections_Must_Contain_Location_Clear_Link()
     {
         var _sut = _coursesViewModel.Filters.ClearFilterSections;
@@ -193,11 +244,11 @@ public sealed class WhenFilteringCourses
 
             var levelThreeLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 3");
             Assert.That(levelThreeLink, Is.Not.Null);
-            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction"));
+            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&apprenticeshiptypes=Foundation"));
 
             var levelFourLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 4");
             Assert.That(levelFourLink, Is.Not.Null);
-            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction"));
+            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&apprenticeshiptypes=Foundation"));
         });
     }
 
@@ -212,7 +263,7 @@ public sealed class WhenFilteringCourses
             Assert.That(keywordClearLink, Is.Not.Null);
             Assert.That(keywordClearLink.Items, Has.Count.EqualTo(1));
             Assert.That(keywordClearLink.Items[0].DisplayText, Is.EqualTo("Construction"));
-            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction"));
+            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&apprenticeshiptypes=Foundation"));
         });
     }
 
@@ -229,7 +280,7 @@ public sealed class WhenFilteringCourses
 
             var constructionCategoryClearLink = categoryClearLinks.Items.First(a => a.DisplayText == "Construction");
             Assert.That(constructionCategoryClearLink, Is.Not.Null);
-            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4"));
+            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&apprenticeshiptypes=Foundation"));
         });
     }
 
