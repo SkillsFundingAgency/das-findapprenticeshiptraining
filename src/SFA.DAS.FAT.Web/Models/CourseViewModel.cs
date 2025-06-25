@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Services;
+using Ksb = SFA.DAS.FAT.Application.Courses.Queries.GetCourse.Ksb;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -26,10 +28,14 @@ public class CourseViewModel : PageLinksViewModelBase
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public string[] Skills { get; set; }
-    public string[] Knowledge { get; set; }
-    public string[] Behaviours { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public bool IsFoundationApprenticeship => ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship;
+    public int IncentivePayment { get; set; }
+
     public List<Level> Levels { get; set; } = [];
+
+    public List<KsbGroup> KsbDetails { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; }
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
@@ -51,14 +57,42 @@ public class CourseViewModel : PageLinksViewModelBase
             TypicalDuration = source.TypicalDuration,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            Skills = source.Skills,
-            Knowledge = source.Knowledge,
-            Behaviours = source.Behaviours,
+            KsbDetails = ProcessKsbs(source.Ksbs),
             Levels = source.Levels,
             CourseId = source.LarsCode,
             ShowShortListLink = true,
-            ShowApprenticeTrainingCoursesCrumb = true
+            ShowApprenticeTrainingCoursesCrumb = true,
+            ApprenticeshipType = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship.ToString() ? ApprenticeshipType.FoundationApprenticeship : ApprenticeshipType.Apprenticeship,
+            IncentivePayment = source.IncentivePayment,
+            RelatedOccupations = source.RelatedOccupations
         };
+    }
+
+    private static List<KsbGroup> ProcessKsbs(List<Ksb> ksbs)
+    {
+        List<KsbGroup> groups = new List<KsbGroup>();
+        if (ksbs == null || ksbs.Count == 0) return groups;
+
+        var knowledge = ksbs.Where(k => k.Type == KsbType.Knowledge.ToString()).Select(c => c.Detail).ToList();
+        if (knowledge.Count == 0) groups.Add(new KsbGroup { Details = knowledge.ToList(), Type = KsbType.Knowledge });
+
+        var technicalKnowledge = ksbs.Where(k => k.Type == KsbType.TechnicalKnowledge.ToString()).Select(c => c.Detail).ToList();
+        if (technicalKnowledge.Count == 0) groups.Add(new KsbGroup { Details = technicalKnowledge.ToList(), Type = KsbType.TechnicalKnowledge });
+
+
+        var skills = ksbs.Where(k => k.Type == KsbType.Skill.ToString()).Select(c => c.Detail).ToList();
+        if (skills.Count == 0) groups.Add(new KsbGroup { Details = skills.ToList(), Type = KsbType.Skill });
+
+        var technicalSkills = ksbs.Where(k => k.Type == KsbType.TechnicalSkill.ToString()).Select(c => c.Detail).ToList();
+        if (technicalSkills.Count == 0) groups.Add(new KsbGroup { Details = technicalSkills.ToList(), Type = KsbType.TechnicalSkill });
+
+        var behaviours = ksbs.Where(k => k.Type == KsbType.Behaviour.ToString()).Select(c => c.Detail).ToList();
+        if (behaviours.Count == 0) groups.Add(new KsbGroup { Details = behaviours.ToList(), Type = KsbType.Behaviour });
+
+        var employabilitySkillsAndBehaviour = ksbs.Where(k => k.Type == KsbType.EmployabilitySkillsAndBehaviour.ToString()).Select(c => c.Detail).ToList();
+        if (employabilitySkillsAndBehaviour.Count == 0) groups.Add(new KsbGroup { Details = employabilitySkillsAndBehaviour.ToList(), Type = KsbType.EmployabilitySkillsAndBehaviour });
+
+        return groups;
     }
 
     public string GetLevelEquivalentToDisplayText()

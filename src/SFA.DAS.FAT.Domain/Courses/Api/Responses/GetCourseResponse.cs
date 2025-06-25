@@ -1,4 +1,6 @@
-﻿namespace SFA.DAS.FAT.Domain.Courses.Api.Responses;
+﻿using System.Collections.Generic;
+
+namespace SFA.DAS.FAT.Domain.Courses.Api.Responses;
 
 public sealed class GetCourseResponse
 {
@@ -17,7 +19,15 @@ public sealed class GetCourseResponse
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public string[] Skills { get; set; }
-    public string[] Knowledge { get; set; }
-    public string[] Behaviours { get; set; }
+
+    public List<KsbResponse> Ksbs { get; set; }
+    public string ApprenticeshipType { get; set; }
+    public int IncentivePayment { get; set; }
+    public List<RelatedOccupationResponse> RelatedOccupations { get; set; }
+}
+
+public class RelatedOccupationResponse
+{
+    public string Title { get; set; }
+    public int Level { get; set; }
 }
