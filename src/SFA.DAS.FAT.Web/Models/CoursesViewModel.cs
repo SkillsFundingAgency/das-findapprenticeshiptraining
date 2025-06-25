@@ -95,8 +95,8 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
 
-    public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeship for young people, level 2";
-    public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, various levels";
+    public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
+    public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, levels 2 to 7";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
