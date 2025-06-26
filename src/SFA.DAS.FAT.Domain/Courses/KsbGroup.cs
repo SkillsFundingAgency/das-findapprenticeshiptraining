@@ -7,5 +7,5 @@ public class KsbGroup
 {
     public KsbType Type { get; set; }
     public string Title => Type.GetDescription();
-    public List<string> Details { get; set; }
+    public IEnumerable<string> Details { get; set; } = [];
 }

@@ -1,8 +1,9 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -63,21 +64,44 @@ public class WhenBuildingCourseViewModelFromQueryResult
         sut.KsbDetails.Should().BeEquivalentTo(new List<KsbGroup>());
     }
 
-    [Test, MoqAutoData]
-    public void Then_The_Model_Has_Skill_KsbDetails_When_Query_Result_Has_Skill_Ksbs(KsbType type)
+    [Test, AutoData]
+    public void Then_The_Model_Has_Ksbs_Grouped_By_Type()
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
-        var detail1 = "detail 1";
-        var detail2 = "detail 2";
-        source.Ksbs = new List<Ksb> {
-            new() { Type = type, Detail = detail1},
-            new() { Type = type, Detail = detail2},
-        };
-        var expectedKsbs = new List<KsbGroup> { new() { Type = type, Details = new List<string> { detail1, detail2 } } };
+        source.Ksbs = [
+            new() { Type = KsbType.Knowledge, Detail = "Knowledge 1"},
+            new() { Type = KsbType.Skill, Detail = "Skill 1"},
+            new() { Type = KsbType.Skill, Detail = "Skill 2"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 1"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 2"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 3"},
+
+        ];
 
         var sut = (CourseViewModel)source;
-        sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
-        sut.KsbDetails.First().Title.Should().BeEquivalentTo(type.GetDescription());
+
+        using (new AssertionScope())
+        {
+            sut.KsbDetails.Should().HaveCount(3);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.Knowledge);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.Skill);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour);
+            sut.KsbDetails.First(x => x.Type == KsbType.Knowledge).Details.Should().BeEquivalentTo("Knowledge 1");
+            sut.KsbDetails.First(x => x.Type == KsbType.Skill).Details.Should().BeEquivalentTo("Skill 1", "Skill 2");
+            sut.KsbDetails.First(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour).Details.Should().BeEquivalentTo("EmployabilitySkillsAndBehaviour 1", "EmployabilitySkillsAndBehaviour 2", "EmployabilitySkillsAndBehaviour 3");
+        }
+    }
+
+    [Test, AutoData]
+    public void Then_The_Model_Has_Empty_Ksbs()
+    {
+        GetCourseQueryResult source = new GetCourseQueryResult();
+
+        source.Ksbs = [];
+
+        var sut = (CourseViewModel)source;
+
+        sut.KsbDetails.Should().BeEmpty();
     }
 }

@@ -57,7 +57,7 @@ public class CourseViewModel : PageLinksViewModelBase
             TypicalDuration = source.TypicalDuration,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            KsbDetails = source.Ksbs == null ? new List<KsbGroup>() : source.Ksbs.GroupBy(x => x.Type).Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail).ToList() }),
+            KsbDetails = source.Ksbs.GroupBy(x => x.Type).Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail) }),
             Levels = source.Levels,
             CourseId = source.LarsCode,
             ShowShortListLink = true,
