@@ -38,7 +38,7 @@
         }
 
         <div class="das-filter__body das-!-show--from-tablet" id="fat-filter-options">
-
+            <button type="submit" class="govuk-button" id="filters-submit-top">Apply filter</button>
                 @foreach (FilterSection section in @Model.FilterSections)
                 {
                     switch (section.FilterComponentType)
@@ -82,7 +82,7 @@
                             break;
                     }
                 }
-                <button type="submit" class="govuk-button" id="filters-submit">Apply filters</button>
+                <button type="submit" class="govuk-button" id="filters-submit">Apply filter</button>
         </div>
 
     </div>

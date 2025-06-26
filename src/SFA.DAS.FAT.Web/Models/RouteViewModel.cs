@@ -5,7 +5,7 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class RouteViewModel
 {
-    public RouteViewModel (Route route, ICollection<string> selectedRoutes)
+    public RouteViewModel(Route route, ICollection<string> selectedRoutes)
     {
         Selected = selectedRoutes?.Contains(route.Name) ?? false;
         Id = route.Id;
@@ -13,6 +13,6 @@ public class RouteViewModel
     }
 
     public bool Selected { get; }
-    public string Name { get ; }
-    public int Id { get ; }
+    public string Name { get; }
+    public int Id { get; }
 }

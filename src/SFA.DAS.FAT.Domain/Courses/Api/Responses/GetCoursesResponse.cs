@@ -29,4 +29,6 @@ public sealed class StandardModel
     public int RouteCode { get; set; }
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
+
+    public ApprenticeshipType ApprenticeshipType { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using AutoFixture.NUnit3;
+using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
@@ -41,6 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
+            ApprenticeshipTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -49,7 +51,7 @@ public class WhenGettingCourses
 
         var levels = new List<Level>
         {
-            new Level()
+            new()
             {
                 Code = 3,
                 Name = "GCSE"
@@ -58,12 +60,12 @@ public class WhenGettingCourses
 
         var routes = new List<Route>
         {
-            new Route
+            new()
             {
                 Id = 1,
                 Name = "Route1"
             },
-            new Route
+            new()
             {
                 Id = 2,
                 Name = "Route2"
@@ -90,7 +92,8 @@ public class WhenGettingCourses
                     r.Distance == query.Distance &&
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
-                    r.OrderBy == query.OrderBy
+                    r.OrderBy == query.OrderBy &&
+                    r.ApprenticeshipType == String.Empty
                 )
             )
         )
@@ -113,7 +116,8 @@ public class WhenGettingCourses
                 r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
-                r.BaseUrl == BASE_URL
+                r.BaseUrl == BASE_URL &&
+                r.ApprenticeshipType == string.Empty
             )
         ), Times.Once);
 
@@ -127,5 +131,64 @@ public class WhenGettingCourses
             Assert.That(response.Levels, Is.EquivalentTo(levels));
             Assert.That(response.Routes, Is.EquivalentTo(routes));
         });
+    }
+
+    [Test]
+    [MoqInlineAutoData("", "", "")]
+    [MoqInlineAutoData("Foundation", "", "FoundationApprenticeship")]
+    [MoqInlineAutoData("Standard", "", "Apprenticeship")]
+    [MoqInlineAutoData("Foundation", "Standard", "")]
+    public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
+        string apprenticeshipType1,
+        string apprenticeshipType2,
+        string requestApprenticeshipType,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+        )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi()
+        {
+            BaseUrl = BASE_URL
+        });
+
+        var apprenticeshipTypes = new List<string>();
+        if (!string.IsNullOrWhiteSpace(apprenticeshipType1)) { apprenticeshipTypes.Add(apprenticeshipType1); }
+        if (!string.IsNullOrWhiteSpace(apprenticeshipType2)) { apprenticeshipTypes.Add(apprenticeshipType2); }
+
+        var query = new GetCoursesQuery()
+        {
+            Routes = new List<string>(),
+            ApprenticeshipTypes = apprenticeshipTypes,
+            OrderBy = OrderBy.Title
+        };
+
+        var cancellationToken = new CancellationToken();
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = Constants.DefaultPageSize
+        };
+
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(
+                It.IsAny<GetCoursesApiRequest>()
+            )
+        )
+        .ReturnsAsync(coursesResponse);
+
+        var response = await sut.Handle(query, cancellationToken);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r =>
+
+                r.ApprenticeshipType == requestApprenticeshipType
+            )
+        ), Times.Once);
     }
 }

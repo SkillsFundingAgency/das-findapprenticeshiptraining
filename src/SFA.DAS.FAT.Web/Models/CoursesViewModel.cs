@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
@@ -22,6 +23,8 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<RouteViewModel> Routes { get; set; } = [];
 
+    public List<TypeViewModel> Types { get; set; } = [];
+
     public PaginationViewModel Pagination { get; set; }
 
     public string Keyword { get; set; } = string.Empty;
@@ -37,6 +40,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<string> SelectedRoutes { get; set; } = [];
 
+    public List<string> SelectedTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
@@ -90,6 +94,9 @@ public class CoursesViewModel : PageLinksViewModelBase
     public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
+
+    public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
+    public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, levels 2 to 7";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
@@ -207,6 +214,12 @@ public class CoursesViewModel : PageLinksViewModelBase
                 CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
+                        "type-select",
+                        string.Empty,
+                    [
+                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems()),
+                    ]
+                    ),                CreateAccordionFilterSection(
                     "multi-select",
                     string.Empty,
                     [
@@ -228,6 +241,21 @@ public class CoursesViewModel : PageLinksViewModelBase
             Selected = SelectedRoutes?.Contains(category.Name) ?? false
         })
         .ToList() ?? [];
+    }
+
+    private List<FilterItemViewModel> GenerateApprenticeshipTypesFilterItems()
+    {
+        return Types?.Select(type => new FilterItemViewModel
+        {
+            Value = type.Name,
+            DisplayText = type.Name,
+            DisplayDescription =
+                type.Name == ApprenticeshipType.FoundationApprenticeship.GetDescription()
+                    ? APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION
+                    : APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION,
+            Selected = SelectedTypes?.Contains(type.Name) ?? false
+        })
+            .ToList() ?? [];
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
@@ -275,6 +303,16 @@ public class CoursesViewModel : PageLinksViewModelBase
                 .ToList();
 
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
+        }
+
+        if (SelectedTypes?.Count > 0 && Types.Count > 0)
+        {
+            var selectedTypes = Types
+                .Where(type => SelectedTypes.Contains(type.Name))
+                .Select(type => $"{type.Name}")
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, selectedTypes);
         }
 
         if (selectedFilters.Count == 0)
@@ -330,6 +368,14 @@ public class CoursesViewModel : PageLinksViewModelBase
                         foreach (string category in SelectedRoutes)
                         {
                             result.Add(ValueTuple.Create(nameof(FilterType.Categories), category));
+                        }
+                    }
+                    break;
+                case FilterType.ApprenticeshipTypes:
+                    {
+                        foreach (string type in SelectedTypes)
+                        {
+                            result.Add(ValueTuple.Create(nameof(FilterType.ApprenticeshipTypes), type));
                         }
                     }
                     break;
