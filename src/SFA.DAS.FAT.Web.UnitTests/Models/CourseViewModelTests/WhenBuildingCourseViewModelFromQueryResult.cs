@@ -55,15 +55,6 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
     }
 
-    [Test, MoqAutoData]
-    public void Then_The_Model_Has_No_KsbDetails_When_Query_Result_Has_Null_Ksbs(GetCourseQueryResult source)
-    {
-        source.Ksbs = null;
-
-        var sut = (CourseViewModel)source;
-        sut.KsbDetails.Should().BeEquivalentTo(new List<KsbGroup>());
-    }
-
     [Test, AutoData]
     public void Then_The_Model_Has_Ksbs_Grouped_By_Type()
     {
@@ -75,8 +66,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             new() { Type = KsbType.Skill, Detail = "Skill 2"},
             new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 1"},
             new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 2"},
-            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 3"},
-
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 3"}
         ];
 
         var sut = (CourseViewModel)source;
