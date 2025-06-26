@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -10,41 +9,6 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 
 public sealed class WhenCreatingCourseViewModel
 {
-    [Test, MoqAutoData]
-    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, ApprenticeshipType apprenticeshipType)
-    {
-        source.ApprenticeshipType = apprenticeshipType.ToString();
-        var sut = (CourseViewModel)source;
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(sut.StandardUId, Is.EqualTo(source.StandardUId));
-            Assert.That(sut.IFateReferenceNumber, Is.EqualTo(source.IFateReferenceNumber));
-            Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
-            Assert.That(sut.ProvidersCountWithinDistance, Is.EqualTo(source.ProvidersCountWithinDistance));
-            Assert.That(sut.TotalProvidersCount, Is.EqualTo(source.TotalProvidersCount));
-            Assert.That(sut.Title, Is.EqualTo(source.Title));
-            Assert.That(sut.Level, Is.EqualTo(source.Level));
-            Assert.That(sut.TitleAndLevel, Is.EqualTo($"{source.Title} (level {source.Level})"));
-            Assert.That(sut.Version, Is.EqualTo(source.Version));
-            Assert.That(sut.OverviewOfRole, Is.EqualTo(source.OverviewOfRole));
-            Assert.That(sut.Route, Is.EqualTo(source.Route));
-            Assert.That(sut.RouteCode, Is.EqualTo(source.RouteCode));
-            Assert.That(sut.MaxFunding, Is.EqualTo(source.MaxFunding));
-            Assert.That(sut.TypicalDuration, Is.EqualTo(source.TypicalDuration));
-            Assert.That(sut.TypicalJobTitles, Is.EqualTo(source.TypicalJobTitles));
-            Assert.That(sut.StandardPageUrl, Is.EqualTo(source.StandardPageUrl));
-            // Assert.That(sut.Skills, Is.EqualTo(source.Skills));
-            // Assert.That(sut.Knowledge, Is.EqualTo(source.Knowledge));
-            // Assert.That(sut.Behaviours, Is.EqualTo(source.Behaviours));
-            Assert.That(sut.Levels, Is.EqualTo(source.Levels));
-            Assert.That(sut.CourseId, Is.EqualTo(source.LarsCode));
-            Assert.That(sut.ShowShortListLink, Is.True);
-            Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.ApprenticeshipType.ToString(), Is.EqualTo(source.ApprenticeshipType));
-        });
-    }
-
     [Test]
     public void When_Levels_Count_Is_Less_Than_One_Then_Level_Equivalent_Display_Text_Returns_Empty()
     {

@@ -116,7 +116,7 @@
             <h2 class="govuk-heading-l">Information about @Model.TitleAndLevel</h2>
             <p class="govuk-body-l">@Model.OverviewOfRole</p>
             
-            <div class="govuk-inset-text app-inset-text--highlight" id="foundation-information" asp-show="Model.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship">
+            <div class="govuk-inset-text app-inset-text--highlight" id="foundation-information" asp-show="Model.IsFoundationApprenticeship">
                 <p>Foundation apprenticeships introduce skills for a range of jobs in a sector, and provide general skills for work. After a foundation, apprentices can specialise and do a standard level 2 or 3 apprenticeship. </p>
 
                 <p>Employers get an incentive payment for foundation apprenticeships, as well as government funding for training and assessment costs.</p>
@@ -268,7 +268,7 @@
                                     <ul class="govuk-list govuk-list--bullet">
                                         @foreach (var occupation in Model.RelatedOccupations)
                                         {
-                                            <li>@occupation.Title (Level @occupation.Level)</li>
+                                            <li>@occupation.Description</li>
                                         }
                                     </ul>
 

@@ -21,7 +21,7 @@ public sealed class GetCourseResponse
     public string StandardPageUrl { get; set; }
 
     public List<KsbResponse> Ksbs { get; set; }
-    public string ApprenticeshipType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public int IncentivePayment { get; set; }
     public List<RelatedOccupationResponse> RelatedOccupations { get; set; }
 }

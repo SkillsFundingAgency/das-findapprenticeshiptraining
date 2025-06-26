@@ -6,7 +6,6 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Services;
-using Ksb = SFA.DAS.FAT.Application.Courses.Queries.GetCourse.Ksb;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -29,7 +28,8 @@ public class CourseViewModel : PageLinksViewModelBase
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public ApprenticeshipType ApprenticeshipType { get; set; }
-    public bool IsFoundationApprenticeship => ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship;
+    public bool IsFoundationApprenticeship { get; set; }
+
     public int IncentivePayment { get; set; }
 
     public List<Level> Levels { get; set; } = [];
@@ -62,7 +62,8 @@ public class CourseViewModel : PageLinksViewModelBase
             CourseId = source.LarsCode,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
-            ApprenticeshipType = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship.ToString() ? ApprenticeshipType.FoundationApprenticeship : ApprenticeshipType.Apprenticeship,
+            IsFoundationApprenticeship = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship,
+            ApprenticeshipType = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship ? ApprenticeshipType.FoundationApprenticeship : ApprenticeshipType.Apprenticeship,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations
         };
@@ -73,24 +74,24 @@ public class CourseViewModel : PageLinksViewModelBase
         List<KsbGroup> groups = new List<KsbGroup>();
         if (ksbs == null || ksbs.Count == 0) return groups;
 
-        var knowledge = ksbs.Where(k => k.Type == KsbType.Knowledge.ToString()).Select(c => c.Detail).ToList();
-        if (knowledge.Count == 0) groups.Add(new KsbGroup { Details = knowledge.ToList(), Type = KsbType.Knowledge });
+        var knowledge = ksbs.Where(k => k.Type == KsbType.Knowledge).Select(c => c.Detail).ToList();
+        if (knowledge.Count > 0) groups.Add(new KsbGroup { Details = knowledge.ToList(), Type = KsbType.Knowledge });
 
-        var technicalKnowledge = ksbs.Where(k => k.Type == KsbType.TechnicalKnowledge.ToString()).Select(c => c.Detail).ToList();
-        if (technicalKnowledge.Count == 0) groups.Add(new KsbGroup { Details = technicalKnowledge.ToList(), Type = KsbType.TechnicalKnowledge });
+        var technicalKnowledge = ksbs.Where(k => k.Type == KsbType.TechnicalKnowledge).Select(c => c.Detail).ToList();
+        if (technicalKnowledge.Count > 0) groups.Add(new KsbGroup { Details = technicalKnowledge.ToList(), Type = KsbType.TechnicalKnowledge });
 
 
-        var skills = ksbs.Where(k => k.Type == KsbType.Skill.ToString()).Select(c => c.Detail).ToList();
-        if (skills.Count == 0) groups.Add(new KsbGroup { Details = skills.ToList(), Type = KsbType.Skill });
+        var skills = ksbs.Where(k => k.Type == KsbType.Skill).Select(c => c.Detail).ToList();
+        if (skills.Count > 0) groups.Add(new KsbGroup { Details = skills.ToList(), Type = KsbType.Skill });
 
-        var technicalSkills = ksbs.Where(k => k.Type == KsbType.TechnicalSkill.ToString()).Select(c => c.Detail).ToList();
-        if (technicalSkills.Count == 0) groups.Add(new KsbGroup { Details = technicalSkills.ToList(), Type = KsbType.TechnicalSkill });
+        var technicalSkills = ksbs.Where(k => k.Type == KsbType.TechnicalSkill).Select(c => c.Detail).ToList();
+        if (technicalSkills.Count > 0) groups.Add(new KsbGroup { Details = technicalSkills.ToList(), Type = KsbType.TechnicalSkill });
 
-        var behaviours = ksbs.Where(k => k.Type == KsbType.Behaviour.ToString()).Select(c => c.Detail).ToList();
-        if (behaviours.Count == 0) groups.Add(new KsbGroup { Details = behaviours.ToList(), Type = KsbType.Behaviour });
+        var behaviours = ksbs.Where(k => k.Type == KsbType.Behaviour).Select(c => c.Detail).ToList();
+        if (behaviours.Count > 0) groups.Add(new KsbGroup { Details = behaviours.ToList(), Type = KsbType.Behaviour });
 
-        var employabilitySkillsAndBehaviour = ksbs.Where(k => k.Type == KsbType.EmployabilitySkillsAndBehaviour.ToString()).Select(c => c.Detail).ToList();
-        if (employabilitySkillsAndBehaviour.Count == 0) groups.Add(new KsbGroup { Details = employabilitySkillsAndBehaviour.ToList(), Type = KsbType.EmployabilitySkillsAndBehaviour });
+        var employabilitySkillsAndBehaviour = ksbs.Where(k => k.Type == KsbType.EmployabilitySkillsAndBehaviour).Select(c => c.Detail).ToList();
+        if (employabilitySkillsAndBehaviour.Count > 0) groups.Add(new KsbGroup { Details = employabilitySkillsAndBehaviour.ToList(), Type = KsbType.EmployabilitySkillsAndBehaviour });
 
         return groups;
     }
