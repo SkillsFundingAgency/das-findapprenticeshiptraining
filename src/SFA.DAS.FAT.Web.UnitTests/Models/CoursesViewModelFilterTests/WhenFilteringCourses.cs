@@ -193,7 +193,7 @@ public sealed class WhenFilteringCourses
 
         Assert.Multiple(() =>
         {
-            var accordionFilterSection = _sut.First(a => a.Id == "type-select");
+            var accordionFilterSection = _sut.First(a => a.Id == "multi-select");
             Assert.That(accordionFilterSection, Is.TypeOf<AccordionFilterSectionViewModel>());
             Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
             Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
