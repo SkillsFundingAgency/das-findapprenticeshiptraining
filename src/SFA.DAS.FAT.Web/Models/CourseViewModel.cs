@@ -34,7 +34,7 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public List<Level> Levels { get; set; } = [];
 
-    public List<KsbGroup> KsbDetails { get; set; }
+    public IEnumerable<KsbGroup> KsbDetails { get; set; }
     public List<RelatedOccupation> RelatedOccupations { get; set; }
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
@@ -57,7 +57,7 @@ public class CourseViewModel : PageLinksViewModelBase
             TypicalDuration = source.TypicalDuration,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            KsbDetails = ProcessKsbs(source.Ksbs),
+            KsbDetails = source.Ksbs == null ? new List<KsbGroup>() : source.Ksbs.GroupBy(x => x.Type).Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail).ToList() }),
             Levels = source.Levels,
             CourseId = source.LarsCode,
             ShowShortListLink = true,
@@ -67,33 +67,6 @@ public class CourseViewModel : PageLinksViewModelBase
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations
         };
-    }
-
-    private static List<KsbGroup> ProcessKsbs(List<Ksb> ksbs)
-    {
-        List<KsbGroup> groups = new List<KsbGroup>();
-        if (ksbs == null || ksbs.Count == 0) return groups;
-
-        var knowledge = ksbs.Where(k => k.Type == KsbType.Knowledge).Select(c => c.Detail).ToList();
-        if (knowledge.Count > 0) groups.Add(new KsbGroup { Details = knowledge.ToList(), Type = KsbType.Knowledge });
-
-        var technicalKnowledge = ksbs.Where(k => k.Type == KsbType.TechnicalKnowledge).Select(c => c.Detail).ToList();
-        if (technicalKnowledge.Count > 0) groups.Add(new KsbGroup { Details = technicalKnowledge.ToList(), Type = KsbType.TechnicalKnowledge });
-
-
-        var skills = ksbs.Where(k => k.Type == KsbType.Skill).Select(c => c.Detail).ToList();
-        if (skills.Count > 0) groups.Add(new KsbGroup { Details = skills.ToList(), Type = KsbType.Skill });
-
-        var technicalSkills = ksbs.Where(k => k.Type == KsbType.TechnicalSkill).Select(c => c.Detail).ToList();
-        if (technicalSkills.Count > 0) groups.Add(new KsbGroup { Details = technicalSkills.ToList(), Type = KsbType.TechnicalSkill });
-
-        var behaviours = ksbs.Where(k => k.Type == KsbType.Behaviour).Select(c => c.Detail).ToList();
-        if (behaviours.Count > 0) groups.Add(new KsbGroup { Details = behaviours.ToList(), Type = KsbType.Behaviour });
-
-        var employabilitySkillsAndBehaviour = ksbs.Where(k => k.Type == KsbType.EmployabilitySkillsAndBehaviour).Select(c => c.Detail).ToList();
-        if (employabilitySkillsAndBehaviour.Count > 0) groups.Add(new KsbGroup { Details = employabilitySkillsAndBehaviour.ToList(), Type = KsbType.EmployabilitySkillsAndBehaviour });
-
-        return groups;
     }
 
     public string GetLevelEquivalentToDisplayText()

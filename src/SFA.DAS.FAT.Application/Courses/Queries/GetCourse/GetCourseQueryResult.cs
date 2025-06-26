@@ -51,7 +51,7 @@ public class GetCourseQueryResult
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
             IncentivePayment = source.IncentivePayment,
-            Ksbs = source.Ksbs.Select(x => (Ksb)x).ToList(),
+            Ksbs = source.Ksbs,
             RelatedOccupations = source.RelatedOccupations == null
                                     ? new List<RelatedOccupation>() :
                                     source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
