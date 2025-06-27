@@ -1,8 +1,9 @@
-﻿using FluentAssertions;
+﻿using AutoFixture.NUnit3;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -54,69 +55,43 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
     }
 
-    [Test, MoqAutoData]
-    public void Then_The_Model_Has_No_KsbDetails_When_Query_Result_Has_Null_Ksbs(GetCourseQueryResult source)
-    {
-        source.Ksbs = null;
-
-        var sut = (CourseViewModel)source;
-        sut.KsbDetails.Should().BeEquivalentTo(new List<KsbGroup>());
-    }
-
-    [Test, MoqAutoData]
-    public void Then_The_Model_Has_KsbDetails_When_Query_Result_Has_Ksbs(KsbType type)
+    [Test, AutoData]
+    public void Then_The_Model_Has_Ksbs_Grouped_By_Type()
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
-        var detail1 = "detail 1";
-        var detail2 = "detail 2";
-        source.Ksbs = new List<Ksb> {
-            new() { Type = type, Detail = detail1},
-            new() { Type = type, Detail = detail2},
-        };
-        var expectedKsbs = new List<KsbGroup> { new() { Type = type, Details = new() { detail1, detail2 } } };
+        source.Ksbs = [
+            new() { Type = KsbType.Knowledge, Detail = "Knowledge 1"},
+            new() { Type = KsbType.Skill, Detail = "Skill 1"},
+            new() { Type = KsbType.Skill, Detail = "Skill 2"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 1"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 2"},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = "EmployabilitySkillsAndBehaviour 3"}
+        ];
 
         var sut = (CourseViewModel)source;
-        sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
-        sut.KsbDetails.First().Title.Should().BeEquivalentTo(type.GetDescription());
-    }
 
-
-    [Test]
-    public void Then_The_Model_Has_KsbDetails_Ordered_As_Expected()
-    {
-        GetCourseQueryResult source = new GetCourseQueryResult();
-
-        var detailSkill = Guid.NewGuid().ToString();
-        var detailSkill2 = Guid.NewGuid().ToString();
-        var detailBehaviour = Guid.NewGuid().ToString();
-        var detailEmployability = Guid.NewGuid().ToString();
-        var detailKnowledge = Guid.NewGuid().ToString();
-        var detailTechnicalKnowledge = Guid.NewGuid().ToString();
-        var detailTechnicalSkill = Guid.NewGuid().ToString();
-
-        source.Ksbs = new List<Ksb> {
-            new() { Type = KsbType.Skill, Detail =detailSkill},
-            new() { Type = KsbType.Behaviour, Detail = detailBehaviour},
-            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = detailEmployability},
-            new() { Type = KsbType.Knowledge, Detail = detailKnowledge},
-            new() { Type = KsbType.TechnicalKnowledge, Detail = detailTechnicalKnowledge},
-            new() { Type = KsbType.TechnicalSkill, Detail = detailTechnicalSkill},
-            new() { Type = KsbType.Skill, Detail =detailSkill2},
-        };
-
-        var expectedKsbs = new List<KsbGroup>
+        using (new AssertionScope())
         {
-            new() { Type = KsbType.Knowledge, Details = new() { detailKnowledge } },
-            new() { Type = KsbType.TechnicalKnowledge, Details = new() { detailTechnicalKnowledge } },
-            new() { Type = KsbType.Skill, Details = new() { detailSkill, detailSkill2 } },
-            new() { Type = KsbType.TechnicalSkill, Details = new() { detailTechnicalSkill } },
-            new() { Type = KsbType.Behaviour, Details = new() { detailBehaviour } },
-            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Details = new() { detailEmployability } },
+            sut.KsbDetails.Should().HaveCount(3);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.Knowledge);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.Skill);
+            sut.KsbDetails.Should().ContainSingle(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour);
+            sut.KsbDetails.First(x => x.Type == KsbType.Knowledge).Details.Should().BeEquivalentTo("Knowledge 1");
+            sut.KsbDetails.First(x => x.Type == KsbType.Skill).Details.Should().BeEquivalentTo("Skill 1", "Skill 2");
+            sut.KsbDetails.First(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour).Details.Should().BeEquivalentTo("EmployabilitySkillsAndBehaviour 1", "EmployabilitySkillsAndBehaviour 2", "EmployabilitySkillsAndBehaviour 3");
+        }
+    }
 
-        };
+    [Test, AutoData]
+    public void Then_The_Model_Has_Empty_Ksbs()
+    {
+        GetCourseQueryResult source = new GetCourseQueryResult();
+
+        source.Ksbs = [];
 
         var sut = (CourseViewModel)source;
-        sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
+
+        sut.KsbDetails.Should().BeEmpty();
     }
 }

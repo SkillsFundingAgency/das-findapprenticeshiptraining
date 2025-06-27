@@ -14,6 +14,6 @@ public enum KsbType
     TechnicalKnowledge = 4,
     [Description("Technical skills")]
     TechnicalSkill = 5,
-    [Description("Employability skills and behavious")]
+    [Description("Employability skills and behaviours")]
     EmployabilitySkillsAndBehaviour = 6
 }
