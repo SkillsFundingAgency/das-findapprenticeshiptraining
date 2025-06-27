@@ -64,7 +64,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
     }
 
     [Test, MoqAutoData]
-    public void Then_The_Model_Has_Skill_KsbDetails_When_Query_Result_Has_Skill_Ksbs(KsbType type)
+    public void Then_The_Model_Has_KsbDetails_When_Query_Result_Has_Ksbs(KsbType type)
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
@@ -74,10 +74,49 @@ public class WhenBuildingCourseViewModelFromQueryResult
             new() { Type = type, Detail = detail1},
             new() { Type = type, Detail = detail2},
         };
-        var expectedKsbs = new List<KsbGroup> { new() { Type = type, Details = new List<string> { detail1, detail2 } } };
+        var expectedKsbs = new List<KsbGroup> { new() { Type = type, Details = new() { detail1, detail2 } } };
 
         var sut = (CourseViewModel)source;
         sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
         sut.KsbDetails.First().Title.Should().BeEquivalentTo(type.GetDescription());
+    }
+
+
+    [Test]
+    public void Then_The_Model_Has_KsbDetails_Ordered_As_Expected()
+    {
+        GetCourseQueryResult source = new GetCourseQueryResult();
+
+        var detailSkill = Guid.NewGuid().ToString();
+        var detailSkill2 = Guid.NewGuid().ToString();
+        var detailBehaviour = Guid.NewGuid().ToString();
+        var detailEmployability = Guid.NewGuid().ToString();
+        var detailKnowledge = Guid.NewGuid().ToString();
+        var detailTechnicalKnowledge = Guid.NewGuid().ToString();
+        var detailTechnicalSkill = Guid.NewGuid().ToString();
+
+        source.Ksbs = new List<Ksb> {
+            new() { Type = KsbType.Skill, Detail =detailSkill},
+            new() { Type = KsbType.Behaviour, Detail = detailBehaviour},
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = detailEmployability},
+            new() { Type = KsbType.Knowledge, Detail = detailKnowledge},
+            new() { Type = KsbType.TechnicalKnowledge, Detail = detailTechnicalKnowledge},
+            new() { Type = KsbType.TechnicalSkill, Detail = detailTechnicalSkill},
+            new() { Type = KsbType.Skill, Detail =detailSkill2},
+        };
+
+        var expectedKsbs = new List<KsbGroup>
+        {
+            new() { Type = KsbType.Knowledge, Details = new() { detailKnowledge } },
+            new() { Type = KsbType.TechnicalKnowledge, Details = new() { detailTechnicalKnowledge } },
+            new() { Type = KsbType.Skill, Details = new() { detailSkill, detailSkill2 } },
+            new() { Type = KsbType.TechnicalSkill, Details = new() { detailTechnicalSkill } },
+            new() { Type = KsbType.Behaviour, Details = new() { detailBehaviour } },
+            new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Details = new() { detailEmployability } },
+
+        };
+
+        var sut = (CourseViewModel)source;
+        sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
     }
 }
