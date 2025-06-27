@@ -94,4 +94,41 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
         sut.KsbDetails.Should().BeEmpty();
     }
+
+    [Test]
+    public void Then_The_Model_Has_KsbDetails_Ordered_As_Expected()
+    {
+        GetCourseQueryResult source = new GetCourseQueryResult();
+
+        var detailSkill = Guid.NewGuid().ToString();
+        var detailSkill2 = Guid.NewGuid().ToString();
+        var detailBehaviour = Guid.NewGuid().ToString();
+        var detailEmployability = Guid.NewGuid().ToString();
+        var detailKnowledge = Guid.NewGuid().ToString();
+        var detailTechnicalKnowledge = Guid.NewGuid().ToString();
+        var detailTechnicalSkill = Guid.NewGuid().ToString();
+
+        source.Ksbs = new List<Ksb> {
+         new() { Type = KsbType.Skill, Detail =detailSkill},
+         new() { Type = KsbType.Behaviour, Detail = detailBehaviour},
+         new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Detail = detailEmployability},
+         new() { Type = KsbType.Knowledge, Detail = detailKnowledge},
+         new() { Type = KsbType.TechnicalKnowledge, Detail = detailTechnicalKnowledge},
+         new() { Type = KsbType.TechnicalSkill, Detail = detailTechnicalSkill},
+         new() { Type = KsbType.Skill, Detail =detailSkill2},
+     };
+
+        var expectedKsbs = new List<KsbGroup>
+     {
+         new() { Type = KsbType.Knowledge, Details =  [detailKnowledge] },
+         new() { Type = KsbType.TechnicalKnowledge, Details = [ detailTechnicalKnowledge ] },
+         new() { Type = KsbType.Skill, Details =[ detailSkill, detailSkill2 ] },
+         new() { Type = KsbType.TechnicalSkill, Details = [detailTechnicalSkill ]},
+         new() { Type = KsbType.Behaviour, Details = [detailBehaviour ] },
+         new() { Type = KsbType.EmployabilitySkillsAndBehaviour, Details = [ detailEmployability ]},
+     };
+
+        var sut = (CourseViewModel)source;
+        sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
+    }
 }
