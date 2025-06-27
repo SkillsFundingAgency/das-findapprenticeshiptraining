@@ -139,7 +139,7 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
 
-    private static IEnumerable<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
+    private static List<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
     {
         List<KsbGroup> ksbsOrdered = new List<KsbGroup>();
 
