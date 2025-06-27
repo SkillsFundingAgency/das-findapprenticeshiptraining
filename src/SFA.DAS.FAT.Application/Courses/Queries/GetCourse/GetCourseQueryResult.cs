@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 
@@ -21,9 +22,13 @@ public class GetCourseQueryResult
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public string[] Skills { get; set; }
-    public string[] Knowledge { get; set; }
-    public string[] Behaviours { get; set; }
+
+    public int IncentivePayment { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public List<Ksb> Ksbs { get; set; } = [];
+
+    public ApprenticeshipType ApprenticeshipType { get; set; }
+
     public List<Level> Levels { get; set; } = [];
 
     public static implicit operator GetCourseQueryResult(GetCourseResponse source)
@@ -45,9 +50,12 @@ public class GetCourseQueryResult
             TypicalDuration = source.TypicalDuration,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            Skills = source.Skills,
-            Knowledge = source.Knowledge,
-            Behaviours = source.Behaviours
+            IncentivePayment = source.IncentivePayment,
+            Ksbs = source.Ksbs,
+            RelatedOccupations = source.RelatedOccupations == null
+                                    ? new List<RelatedOccupation>() :
+                                    source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
+            ApprenticeshipType = source.ApprenticeshipType,
         };
     }
 }

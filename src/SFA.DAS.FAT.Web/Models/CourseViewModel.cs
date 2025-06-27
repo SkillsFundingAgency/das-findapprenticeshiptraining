@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
@@ -26,10 +27,15 @@ public class CourseViewModel : PageLinksViewModelBase
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public string[] Skills { get; set; }
-    public string[] Knowledge { get; set; }
-    public string[] Behaviours { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public bool IsFoundationApprenticeship { get; set; }
+
+    public int IncentivePayment { get; set; }
+
     public List<Level> Levels { get; set; } = [];
+
+    public IEnumerable<KsbGroup> KsbDetails { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; }
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
@@ -51,13 +57,15 @@ public class CourseViewModel : PageLinksViewModelBase
             TypicalDuration = source.TypicalDuration,
             TypicalJobTitles = source.TypicalJobTitles,
             StandardPageUrl = source.StandardPageUrl,
-            Skills = source.Skills,
-            Knowledge = source.Knowledge,
-            Behaviours = source.Behaviours,
+            KsbDetails = KsbsGroupsOrdered(source.Ksbs),
             Levels = source.Levels,
             CourseId = source.LarsCode,
             ShowShortListLink = true,
-            ShowApprenticeTrainingCoursesCrumb = true
+            ShowApprenticeTrainingCoursesCrumb = true,
+            IsFoundationApprenticeship = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship,
+            ApprenticeshipType = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship ? ApprenticeshipType.FoundationApprenticeship : ApprenticeshipType.Apprenticeship,
+            IncentivePayment = source.IncentivePayment,
+            RelatedOccupations = source.RelatedOccupations
         };
     }
 
@@ -130,4 +138,20 @@ public class CourseViewModel : PageLinksViewModelBase
     }
 
     public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+
+    private static List<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
+    {
+        List<KsbGroup> ksbsOrdered = new List<KsbGroup>();
+
+        var ksbGroups = ksbs.GroupBy(x => x.Type)
+            .Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail).ToList() }).ToList();
+
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Knowledge));
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalKnowledge));
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Skill));
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalSkill));
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Behaviour));
+        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour));
+        return ksbsOrdered;
+    }
 }

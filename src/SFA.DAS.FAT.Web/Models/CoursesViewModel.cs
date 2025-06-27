@@ -214,15 +214,10 @@ public class CoursesViewModel : PageLinksViewModelBase
                 CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
-                        "type-select",
-                        string.Empty,
-                    [
-                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems()),
-                    ]
-                    ),                CreateAccordionFilterSection(
                     "multi-select",
                     string.Empty,
                     [
+                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems()),
                         CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING,null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
                         CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null,GenerateRouteFilterItems())
                     ]
