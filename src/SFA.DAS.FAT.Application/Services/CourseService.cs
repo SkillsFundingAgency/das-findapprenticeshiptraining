@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -40,15 +42,26 @@ public class CourseService : ICourseService
 
     public async Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, int larsCode, string location, int? distance, Guid shortlistUserId)
     {
-        return await _apiClient.Get<CourseProviderDetailsModel>(
-            new GetCourseProviderDetailsApiRequest(
-                _config.BaseUrl, 
-                larsCode, 
-                ukprn, 
-                location,
-                distance,
-                shortlistUserId
-            )
-        );
+        CourseProviderDetailsModel response = null;
+
+        try
+        {
+            response = await _apiClient.Get<CourseProviderDetailsModel>(
+                new GetCourseProviderDetailsApiRequest(
+                    _config.BaseUrl,
+                    larsCode,
+                    ukprn,
+                    location,
+                    distance,
+                    shortlistUserId
+                )
+            );
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            response = null;
+        }
+
+        return response;
     }
 }
