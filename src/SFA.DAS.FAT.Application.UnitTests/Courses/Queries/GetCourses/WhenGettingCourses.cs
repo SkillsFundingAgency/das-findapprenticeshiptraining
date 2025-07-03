@@ -135,8 +135,8 @@ public class WhenGettingCourses
 
     [Test]
     [MoqInlineAutoData("", "", "")]
-    [MoqInlineAutoData("Foundation", "", "FoundationApprenticeship")]
-    [MoqInlineAutoData("Standard", "", "Apprenticeship")]
+    [MoqInlineAutoData("Foundation apprenticeship", "", "FoundationApprenticeship")]
+    [MoqInlineAutoData("Apprenticeship", "", "Apprenticeship")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
     public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
         string apprenticeshipType1,
