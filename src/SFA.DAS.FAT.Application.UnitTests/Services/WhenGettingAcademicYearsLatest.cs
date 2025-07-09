@@ -18,19 +18,17 @@ namespace SFA.DAS.FAT.Application.UnitTests.Services;
 public sealed class WhenGettingAcademicYearsLatest
 {
     [Test, MoqAutoData]
-    public async Task Then_AcademicYearsLatest_Are_Returned_From_The_Session(
+    public async Task Then_Returns_From_Session_When_Valid(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetAcademicYearsLatestResponse sessionResponse,
         AcademicYearService sut,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
-        sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(true);
+        sessionResponse.QarPeriod = "Q1";
+        sessionResponse.ReviewPeriod = "R1";
 
         sessionServiceMock
             .Setup(x => x.Get<GetAcademicYearsLatestResponse>())
@@ -40,169 +38,100 @@ public sealed class WhenGettingAcademicYearsLatest
 
         result.Should().BeEquivalentTo(sessionResponse);
 
-        sessionServiceMock.Verify(x => x.Contains<GetAcademicYearsLatestResponse>(), Times.Once);
-        sessionServiceMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(), Times.Once);
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<GetLevelsListResponse>>>(), It.IsAny<TimeSpan>()), Times.Never);
+        distributedCacheServiceMock.Verify(x => x.GetAsync<GetAcademicYearsLatestResponse>(It.IsAny<string>()), Times.Never);
         apiClientMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_AcademicYearsLatest_Are_Returned_From_The_Cache_If_Not_In_Session(
+    public async Task Then_Returns_From_Cache_When_Session_Empty(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
         GetAcademicYearsLatestResponse cacheResponse,
-        FindApprenticeshipTrainingApi config,
         AcademicYearService sut,
-        CancellationToken cancellationToken
-    )
+        CancellationToken cancellationToken)
     {
         sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(false);
+            .Setup(x => x.Get<GetAcademicYearsLatestResponse>())
+            .Returns((GetAcademicYearsLatestResponse)null);
 
-        configMock
-            .Setup(x => x.Value)
-            .Returns(config);
-
+        cacheResponse.QarPeriod = "Q2";
+        cacheResponse.ReviewPeriod = "R2";
         distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-                CacheSetting.AcademicYearsLatest.CacheDuration))
+            .Setup(x => x.GetAsync<GetAcademicYearsLatestResponse>(CacheSetting.AcademicYearsLatest.Key))
             .ReturnsAsync(cacheResponse);
 
         var result = await sut.GetAcademicYearsLatestAsync(cancellationToken);
 
         result.Should().BeEquivalentTo(cacheResponse);
-
-        sessionServiceMock.Verify(x => x.Contains<GetAcademicYearsLatestResponse>(), Times.Once);
-
-        sessionServiceMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(), Times.Never);
-
         sessionServiceMock.Verify(x => x.Set(cacheResponse), Times.Once);
-
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(
-            CacheSetting.AcademicYearsLatest.Key,
-            It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-            CacheSetting.AcademicYearsLatest.CacheDuration), Times.Once);
+        apiClientMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Never);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_AcademicYearsLatest_Are_Returned_From_The_Outer_Api_If_Not_In_Cache_Or_Session(
+    public async Task Then_Returns_From_Api_When_Not_In_Session_Or_Cache(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-        GetAcademicYearsLatestResponse response,
-        FindApprenticeshipTrainingApi config,
-        AcademicYearService sut,
-        CancellationToken cancellationToken
-    )
-    {
-        sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(false);
-
-        configMock
-            .Setup(x => x.Value)
-            .Returns(config);
-
-        sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(false);
-
-        sessionServiceMock
-            .Setup(x => x.Get<GetAcademicYearsLatestResponse>())
-            .Returns((GetAcademicYearsLatestResponse)null);
-
-        distributedCacheServiceMock
-        .Setup(x => x.GetOrSetAsync(
-            CacheSetting.AcademicYearsLatest.Key,
-            It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-            CacheSetting.AcademicYearsLatest.CacheDuration))
-        .Returns<Func<Task<GetAcademicYearsLatestResponse>>, TimeSpan>((func, duration) => func());
-
-        distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-                CacheSetting.AcademicYearsLatest.CacheDuration))
-            .Returns(async (string key, Func<Task<GetAcademicYearsLatestResponse>> func, TimeSpan duration) => await func());
-
-        apiClientMock
-            .Setup(x => x.Get<GetAcademicYearsLatestResponse>(It.IsAny<GetAcademicYearsLatestRequest>()))
-            .ReturnsAsync(response);
-
-        var result = await sut.GetAcademicYearsLatestAsync(cancellationToken);
-
-        result.Should().BeEquivalentTo(response);
-
-        sessionServiceMock.Verify(x => x.Contains<GetAcademicYearsLatestResponse>(), Times.Once);
-
-        sessionServiceMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(), Times.Never);
-
-        sessionServiceMock.Verify(x => x.Set(response), Times.Once);
-
-        apiClientMock.Verify(x => x.Get<GetAcademicYearsLatestResponse>(It.IsAny<GetAcademicYearsLatestRequest>()), Times.Once);
-
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(
-            CacheSetting.AcademicYearsLatest.Key,
-            It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-            CacheSetting.AcademicYearsLatest.CacheDuration
-        ), Times.Once);
-    }
-
-    [Test, MoqAutoData]
-    public async Task Then_The_Api_Client_Is_Called_With_The_Request_Url(
-        GetCourseProvidersQuery query,
-        [Frozen] Mock<ISessionService> sessionServiceMock,
-        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
-        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-        [Frozen] Mock<IApiClient> mockApiClient,
+        GetAcademicYearsLatestResponse apiResponse,
         FindApprenticeshipTrainingApi config,
         AcademicYearService sut,
         CancellationToken cancellationToken)
     {
 
-        sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(false);
-
-        configMock
-            .Setup(x => x.Value)
-            .Returns(config);
-
-        sessionServiceMock
-            .Setup(x => x.Contains<GetAcademicYearsLatestResponse>())
-            .Returns(false);
-
-        sessionServiceMock
-            .Setup(x => x.Get<GetAcademicYearsLatestResponse>())
+        sessionServiceMock.Setup(x => x.Get<GetAcademicYearsLatestResponse>())
             .Returns((GetAcademicYearsLatestResponse)null);
 
-        distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-                CacheSetting.AcademicYearsLatest.CacheDuration))
-            .Returns<Func<Task<GetAcademicYearsLatestResponse>>, TimeSpan>((func, duration) => func());
 
-        distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                It.IsAny<Func<Task<GetAcademicYearsLatestResponse>>>(),
-                CacheSetting.AcademicYearsLatest.CacheDuration))
-            .Returns(async (string key, Func<Task<GetAcademicYearsLatestResponse>> func, TimeSpan duration) => await func());
+        distributedCacheServiceMock.Setup(x => x.GetAsync<GetAcademicYearsLatestResponse>(
+            CacheSetting.AcademicYearsLatest.Key))
+            .ReturnsAsync((GetAcademicYearsLatestResponse)null);
 
-        var expectedUrl = new GetAcademicYearsLatestRequest(configMock.Object.Value.BaseUrl).GetUrl;
+        configMock.Setup(x => x.Value).Returns(config);
 
-        await sut.GetAcademicYearsLatestAsync(cancellationToken);
+        apiResponse.QarPeriod = "Q3";
+        apiResponse.ReviewPeriod = "R3";
 
-        mockApiClient.Verify(client => client.Get<GetAcademicYearsLatestResponse>(
-            It.IsAny<GetAcademicYearsLatestRequest>()), Times.Once);
-        mockApiClient.Verify(client => client.Get<GetAcademicYearsLatestResponse>(
-            It.Is<GetAcademicYearsLatestRequest>(request => request.GetUrl == expectedUrl)), Times.Once);
+        apiClientMock.Setup(x => x.Get<GetAcademicYearsLatestResponse>(
+            It.IsAny<GetAcademicYearsLatestRequest>())).ReturnsAsync(apiResponse);
+
+        var result = await sut.GetAcademicYearsLatestAsync(cancellationToken);
+
+        result.Should().BeEquivalentTo(apiResponse);
+        sessionServiceMock.Verify(x => x.Set(apiResponse), Times.Once);
+        distributedCacheServiceMock.Verify(x => x.SetAsync(
+            CacheSetting.AcademicYearsLatest.Key,
+            apiResponse,
+            CacheSetting.AcademicYearsLatest.CacheDuration), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Throws_If_All_Sources_Fail(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+        [Frozen] Mock<IApiClient> apiClientMock,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+        FindApprenticeshipTrainingApi config,
+        AcademicYearService sut)
+    {
+        sessionServiceMock.Setup(x => x.Get<GetAcademicYearsLatestResponse>())
+            .Returns((GetAcademicYearsLatestResponse)null);
+
+        distributedCacheServiceMock.Setup(x => x.GetAsync<GetAcademicYearsLatestResponse>(
+            CacheSetting.AcademicYearsLatest.Key))
+            .ReturnsAsync((GetAcademicYearsLatestResponse)null);
+
+        configMock.Setup(x => x.Value).Returns(config);
+
+        apiClientMock.Setup(x => x.Get<GetAcademicYearsLatestResponse>(
+            It.IsAny<GetAcademicYearsLatestRequest>()))
+            .ReturnsAsync(new GetAcademicYearsLatestResponse());
+
+        Func<Task> act = async () => await sut.GetAcademicYearsLatestAsync(CancellationToken.None);
+
+        act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Could not retrieve academic years from any source.");
     }
 }

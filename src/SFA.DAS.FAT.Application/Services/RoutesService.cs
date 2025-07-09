@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -11,24 +13,44 @@ using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Services;
 
-public sealed class RoutesService(IApiClient _apiClient, ISessionService _sessionService, IDistributedCacheService _distributedCacheService, IOptions<FindApprenticeshipTrainingApi> config) : IRoutesService
+public sealed class RoutesService(
+    IApiClient _apiClient,
+    ISessionService _sessionService,
+    IDistributedCacheService _distributedCacheService,
+    IOptions<FindApprenticeshipTrainingApi> config
+) : IRoutesService
 {
     public async Task<IEnumerable<Route>> GetRoutesAsync(CancellationToken cancellationToken)
     {
-        if (_sessionService.Contains<GetRoutesListResponse>())
+        var sessionRoutes = _sessionService.Get<List<Route>>();
+        if (sessionRoutes?.Any() == true)
         {
-            var sessionRoutes = _sessionService.Get<GetRoutesListResponse>();
-            return sessionRoutes.Routes;
+            return sessionRoutes;
         }
 
-        var routesResponse = await _distributedCacheService.GetOrSetAsync(
-            CacheSetting.Routes.Key,
-            () => _apiClient.Get<GetRoutesListResponse>(new GetCourseRoutesApiRequest(config.Value.BaseUrl)),
-            CacheSetting.Routes.CacheDuration
+        var cachedRoutes = await _distributedCacheService.GetAsync<List<Route>>(CacheSetting.Routes.Key);
+        if (cachedRoutes?.Any() == true)
+        {
+            _sessionService.Set(cachedRoutes);
+            return cachedRoutes;
+        }
+
+        var apiResponse = await _apiClient.Get<GetRoutesListResponse>(
+            new GetCourseRoutesApiRequest(config.Value.BaseUrl)
         );
 
-        _sessionService.Set(routesResponse);
+        if (apiResponse?.Routes?.Any() == true)
+        {
+            await _distributedCacheService.SetAsync(
+                CacheSetting.Routes.Key,
+                apiResponse.Routes,
+                CacheSetting.Routes.CacheDuration
+            );
 
-        return routesResponse.Routes;
+            _sessionService.Set(apiResponse.Routes);
+            return apiResponse.Routes;
+        }
+
+        throw new InvalidOperationException("Could not retrieve course routes from any source.");
     }
 }

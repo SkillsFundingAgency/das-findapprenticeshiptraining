@@ -40,4 +40,25 @@ public class DistributedCacheService : IDistributedCacheService
     {
         await _distributedCache.RemoveAsync(cacheKey);
     }
+
+    public async Task<T> GetAsync<T>(string key)
+    {
+        var data = await _distributedCache.GetStringAsync(key);
+        if (string.IsNullOrEmpty(data))
+        {
+            return default;
+        }
+
+        return JsonSerializer.Deserialize<T>(data);
+    }
+
+    public async Task SetAsync<T>(string key, T value, TimeSpan cacheDuration)
+    {
+        var data = JsonSerializer.Serialize(value);
+        var options = new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = cacheDuration
+        };
+        await _distributedCache.SetStringAsync(key, data, options);
+    }
 }
