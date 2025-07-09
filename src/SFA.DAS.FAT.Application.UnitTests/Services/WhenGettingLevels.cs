@@ -50,7 +50,7 @@ public sealed class WhenGettingLevels
         CancellationToken cancellationToken)
     {
         sessionServiceMock.Setup(x => x.Get<List<Level>>())
-            .Returns((List<Level>)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
             .ReturnsAsync(cachedLevels);
@@ -64,26 +64,25 @@ public sealed class WhenGettingLevels
 
     [Test, MoqAutoData]
     public async Task Then_Levels_Are_Returned_From_Api_And_Cached_If_Session_And_Cache_Empty(
-    [Frozen] Mock<ISessionService> sessionServiceMock,
-    [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
-    [Frozen] Mock<IApiClient> apiClientMock,
-    [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-    FindApprenticeshipTrainingApi config,
-    GetLevelsListResponse apiResponse,
-    LevelsService sut,
-    CancellationToken cancellationToken)
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+        [Frozen] Mock<IApiClient> apiClientMock,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+        FindApprenticeshipTrainingApi config,
+        GetLevelsListResponse apiResponse,
+        LevelsService sut,
+        CancellationToken cancellationToken)
     {
-        
         var expectedLevels = new List<Level> { new Level() };
         apiResponse.Levels = expectedLevels;
 
         sessionServiceMock
             .Setup(x => x.Get<List<Level>>())
-            .Returns((List<Level>)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
-            .ReturnsAsync((List<Level>)null);
+            .ReturnsAsync(() => null);
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -91,10 +90,8 @@ public sealed class WhenGettingLevels
             .Setup(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()))
             .ReturnsAsync(apiResponse);
 
-        
         var result = await sut.GetLevelsAsync(cancellationToken);
 
-        
         result.Should().BeEquivalentTo(expectedLevels);
 
         sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Level>>(l => l.SequenceEqual(expectedLevels))), Times.Once);
@@ -117,10 +114,10 @@ public sealed class WhenGettingLevels
         CancellationToken cancellationToken)
     {
         sessionServiceMock.Setup(x => x.Get<List<Level>>())
-            .Returns((List<Level>)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
-            .ReturnsAsync((List<Level>)null);
+            .ReturnsAsync(() => null);
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -130,6 +127,30 @@ public sealed class WhenGettingLevels
         Func<Task> action = async () => await sut.GetLevelsAsync(cancellationToken);
 
         await action.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Could not retrieve course levels from any source.");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Exception_Is_Thrown_If_ApiResponse_Levels_Is_Empty(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+        [Frozen] Mock<IApiClient> apiClientMock,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+        FindApprenticeshipTrainingApi config,
+        GetLevelsListResponse apiResponse,
+        LevelsService sut,
+        CancellationToken cancellationToken)
+    {
+        sessionServiceMock.Setup(x => x.Get<List<Level>>()).Returns(() => null);
+        distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key)).ReturnsAsync(() => null);
+        configMock.Setup(x => x.Value).Returns(config);
+
+        apiResponse.Levels = new List<Level>();
+        apiClientMock.Setup(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>())).ReturnsAsync(apiResponse);
+
+        Func<Task> act = async () => await sut.GetLevelsAsync(cancellationToken);
+
+        await act.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Could not retrieve course levels from any source.");
     }
 }

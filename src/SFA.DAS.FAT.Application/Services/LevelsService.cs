@@ -22,13 +22,13 @@ public sealed class LevelsService(
     public async Task<IEnumerable<Level>> GetLevelsAsync(CancellationToken cancellationToken)
     {
         var sessionLevels = _sessionService.Get<List<Level>>();
-        if (sessionLevels?.Any() == true)
+        if (sessionLevels?.Count > 0)
         {
             return sessionLevels;
         }
 
         var cachedLevels = await _distributedCacheService.GetAsync<List<Level>>(CacheSetting.Levels.Key);
-        if (cachedLevels?.Any() == true)
+        if (cachedLevels?.Count > 0)
         {
             _sessionService.Set(cachedLevels);
             return cachedLevels;
