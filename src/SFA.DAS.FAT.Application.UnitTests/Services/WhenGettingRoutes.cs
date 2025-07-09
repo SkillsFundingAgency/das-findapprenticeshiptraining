@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Services;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Infrastructure;
@@ -21,26 +22,21 @@ public sealed class WhenGettingRoutes
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-        GetRoutesListResponse sessionResponse,
+        List<Route> sessionRoutes,
         RoutesService sut,
         CancellationToken cancellationToken
     )
     {
         sessionServiceMock
-            .Setup(x => x.Contains<GetRoutesListResponse>())
-            .Returns(true);
-
-        sessionServiceMock
-            .Setup(x => x.Get<GetRoutesListResponse>())
-            .Returns(sessionResponse);
+            .Setup(x => x.Get<List<Route>>())
+            .Returns(sessionRoutes);
 
         var result = await sut.GetRoutesAsync(cancellationToken);
 
-        result.Should().BeEquivalentTo(sessionResponse.Routes);
+        result.Should().BeEquivalentTo(sessionRoutes);
 
-        sessionServiceMock.Verify(x => x.Contains<GetRoutesListResponse>(), Times.Once);
-        sessionServiceMock.Verify(x => x.Get<GetRoutesListResponse>(), Times.Once);
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync<GetRoutesListResponse>(It.IsAny<string>(), It.IsAny<Func<Task<GetRoutesListResponse>>>(), It.IsAny<TimeSpan>()), Times.Never);
+        sessionServiceMock.Verify(x => x.Get<List<Route>>(), Times.Once);
+        distributedCacheServiceMock.Verify(x => x.GetAsync<List<Route>>(It.IsAny<string>()), Times.Never);
         apiClientMock.Verify(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()), Times.Never);
     }
 
@@ -50,105 +46,94 @@ public sealed class WhenGettingRoutes
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-        GetRoutesListResponse cacheResponse,
-        FindApprenticeshipTrainingApi config,
+        List<Route> cachedRoutes,
         RoutesService sut,
         CancellationToken cancellationToken
     )
     {
         sessionServiceMock
-            .Setup(x => x.Contains<GetRoutesListResponse>())
-            .Returns(false);
-
-        configMock
-            .Setup(x => x.Value)
-            .Returns(config);
+            .Setup(x => x.Get<List<Route>>())
+            .Returns((List<Route>?)null);
 
         distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.Routes.Key,
-                It.IsAny<Func<Task<GetRoutesListResponse>>>(),
-                CacheSetting.Routes.CacheDuration))
-            .ReturnsAsync(cacheResponse);
+            .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
+            .ReturnsAsync(cachedRoutes);
 
         var result = await sut.GetRoutesAsync(cancellationToken);
 
-        result.Should().BeEquivalentTo(cacheResponse.Routes);
+        result.Should().BeEquivalentTo(cachedRoutes);
 
-        sessionServiceMock.Verify(x => x.Contains<GetRoutesListResponse>(), Times.Once);
-
-        sessionServiceMock.Verify(x => x.Get<GetRoutesListResponse>(), Times.Never);
-
-        sessionServiceMock.Verify(x => x.Set(cacheResponse), Times.Once);
-
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(
-            CacheSetting.Routes.Key,
-            It.IsAny<Func<Task<GetRoutesListResponse>>>(),
-            CacheSetting.Routes.CacheDuration), Times.Once);
+        sessionServiceMock.Verify(x => x.Get<List<Route>>(), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(cachedRoutes), Times.Once);
+        distributedCacheServiceMock.Verify(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key), Times.Once);
+        apiClientMock.Verify(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()), Times.Never);
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Routes_Are_Returned_From_The_Outer_Api_If_Not_In_Cache_Or_Session(
+    public async Task Then_Routes_Are_Returned_From_The_Api_If_Not_In_Session_Or_Cache(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
-        GetRoutesListResponse response,
+        GetRoutesListResponse apiResponse,
         FindApprenticeshipTrainingApi config,
         RoutesService sut,
         CancellationToken cancellationToken
     )
     {
         sessionServiceMock
-            .Setup(x => x.Contains<GetRoutesListResponse>())
-            .Returns(false);
-
-        configMock
-            .Setup(x => x.Value)
-            .Returns(config);
-
-        sessionServiceMock
-            .Setup(x => x.Contains<GetRoutesListResponse>())
-            .Returns(false);
-
-        sessionServiceMock
-            .Setup(x => x.Get<GetRoutesListResponse>())
-            .Returns((GetRoutesListResponse)null);
+            .Setup(x => x.Get<List<Route>>())
+            .Returns((List<Route>?)null);
 
         distributedCacheServiceMock
-        .Setup(x => x.GetOrSetAsync(
-            CacheSetting.Routes.Key,
-            It.IsAny<Func<Task<GetRoutesListResponse>>>(),
-            CacheSetting.Routes.CacheDuration))
-        .Returns<Func<Task<GetRoutesListResponse>>, TimeSpan>((func, duration) => func());
+            .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
+            .ReturnsAsync((List<Route>?)null);
 
-        distributedCacheServiceMock
-            .Setup(x => x.GetOrSetAsync(
-                CacheSetting.Routes.Key,
-                It.IsAny<Func<Task<GetRoutesListResponse>>>(),
-                CacheSetting.Routes.CacheDuration))
-            .Returns(async (string key, Func<Task<GetRoutesListResponse>> func, TimeSpan duration) => await func());
+        configMock.Setup(x => x.Value).Returns(config);
 
         apiClientMock
             .Setup(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()))
-            .ReturnsAsync(response);
+            .ReturnsAsync(apiResponse);
 
         var result = await sut.GetRoutesAsync(cancellationToken);
 
-        result.Should().BeEquivalentTo(response.Routes);
+        result.Should().BeEquivalentTo(apiResponse.Routes);
 
-        sessionServiceMock.Verify(x => x.Contains<GetRoutesListResponse>(), Times.Once);
-
-        sessionServiceMock.Verify(x => x.Get<GetRoutesListResponse>(), Times.Never);
-
-        sessionServiceMock.Verify(x => x.Set(response), Times.Once);
-
-        apiClientMock.Verify(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()), Times.Once);
-
-        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(
+        sessionServiceMock.Verify(x => x.Set(apiResponse.Routes), Times.Once);
+        distributedCacheServiceMock.Verify(x => x.SetAsync(
             CacheSetting.Routes.Key,
-            It.IsAny<Func<Task<GetRoutesListResponse>>>(),
-            CacheSetting.Routes.CacheDuration
-        ), Times.Once);
+            apiResponse.Routes,
+            CacheSetting.Routes.CacheDuration), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public void Then_Exception_Is_Thrown_If_All_Sources_Empty(
+        [Frozen] Mock<ISessionService> sessionServiceMock,
+        [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+        [Frozen] Mock<IApiClient> apiClientMock,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+        FindApprenticeshipTrainingApi config,
+        RoutesService sut,
+        CancellationToken cancellationToken
+    )
+    {
+        sessionServiceMock
+            .Setup(x => x.Get<List<Route>>())
+            .Returns((List<Route>?)null);
+
+        distributedCacheServiceMock
+            .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
+            .ReturnsAsync((List<Route>?)null);
+
+        configMock.Setup(x => x.Value).Returns(config);
+
+        apiClientMock
+            .Setup(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()))
+            .ReturnsAsync(new GetRoutesListResponse { Routes = [] });
+
+        Func<Task> act = async () => await sut.GetRoutesAsync(cancellationToken);
+
+        act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Could not retrieve course routes from any source.");
     }
 }

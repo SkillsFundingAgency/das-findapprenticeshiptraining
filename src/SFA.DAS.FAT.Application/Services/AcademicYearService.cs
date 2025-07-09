@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Domain.AcademicYears.Api.Requests;
@@ -16,20 +17,37 @@ public sealed class AcademicYearService(
 {
     public async Task<GetAcademicYearsLatestResponse> GetAcademicYearsLatestAsync(CancellationToken cancellationToken)
     {
-
-        if (_sessionService.Contains<GetAcademicYearsLatestResponse>())
+        var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>();
+        if (!string.IsNullOrEmpty(sessionData?.QarPeriod) && !string.IsNullOrEmpty(sessionData?.ReviewPeriod))
         {
-            return _sessionService.Get<GetAcademicYearsLatestResponse>();
+            return sessionData;
         }
 
-        var academicYearsLatest = await _distributedCacheService.GetOrSetAsync(
+        var cachedData = await _distributedCacheService.GetAsync<GetAcademicYearsLatestResponse>(
+            CacheSetting.AcademicYearsLatest.Key
+        );
+        if (!string.IsNullOrEmpty(cachedData?.QarPeriod) && !string.IsNullOrEmpty(cachedData?.ReviewPeriod))
+        {
+            _sessionService.Set(cachedData);
+            return cachedData;
+        }
+
+        var apiResponse = await _apiClient.Get<GetAcademicYearsLatestResponse>(
+            new GetAcademicYearsLatestRequest(config.Value.BaseUrl)
+        );
+
+        if (!string.IsNullOrEmpty(apiResponse?.QarPeriod) && !string.IsNullOrEmpty(apiResponse?.ReviewPeriod))
+        {
+            await _distributedCacheService.SetAsync(
                 CacheSetting.AcademicYearsLatest.Key,
-                () => _apiClient.Get<GetAcademicYearsLatestResponse>(new GetAcademicYearsLatestRequest(config.Value.BaseUrl)),
+                apiResponse,
                 CacheSetting.AcademicYearsLatest.CacheDuration
             );
 
-        _sessionService.Set(academicYearsLatest);
+            _sessionService.Set(apiResponse);
+            return apiResponse;
+        }
 
-        return academicYearsLatest;
+        throw new InvalidOperationException("Could not retrieve academic years from any source.");
     }
 }
