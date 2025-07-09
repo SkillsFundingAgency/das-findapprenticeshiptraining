@@ -18,7 +18,7 @@ public sealed class AcademicYearService(
     public async Task<GetAcademicYearsLatestResponse> GetAcademicYearsLatestAsync(CancellationToken cancellationToken)
     {
         var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>();
-        if (!string.IsNullOrEmpty(sessionData?.QarPeriod) && !string.IsNullOrEmpty(sessionData?.ReviewPeriod))
+        if (sessionData is { QarPeriod: not null, ReviewPeriod: not null })
         {
             return sessionData;
         }
@@ -26,7 +26,7 @@ public sealed class AcademicYearService(
         var cachedData = await _distributedCacheService.GetAsync<GetAcademicYearsLatestResponse>(
             CacheSetting.AcademicYearsLatest.Key
         );
-        if (!string.IsNullOrEmpty(cachedData?.QarPeriod) && !string.IsNullOrEmpty(cachedData?.ReviewPeriod))
+        if (cachedData is { QarPeriod: not null, ReviewPeriod: not null })
         {
             _sessionService.Set(cachedData);
             return cachedData;
@@ -36,7 +36,7 @@ public sealed class AcademicYearService(
             new GetAcademicYearsLatestRequest(config.Value.BaseUrl)
         );
 
-        if (!string.IsNullOrEmpty(apiResponse?.QarPeriod) && !string.IsNullOrEmpty(apiResponse?.ReviewPeriod))
+        if (apiResponse is { QarPeriod: not null, ReviewPeriod: not null })
         {
             await _distributedCacheService.SetAsync(
                 CacheSetting.AcademicYearsLatest.Key,

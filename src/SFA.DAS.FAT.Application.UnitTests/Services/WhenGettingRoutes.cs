@@ -53,7 +53,7 @@ public sealed class WhenGettingRoutes
     {
         sessionServiceMock
             .Setup(x => x.Get<List<Route>>())
-            .Returns((List<Route>?)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
@@ -83,11 +83,11 @@ public sealed class WhenGettingRoutes
     {
         sessionServiceMock
             .Setup(x => x.Get<List<Route>>())
-            .Returns((List<Route>?)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
-            .ReturnsAsync((List<Route>?)null);
+            .ReturnsAsync(() => null);
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -119,11 +119,11 @@ public sealed class WhenGettingRoutes
     {
         sessionServiceMock
             .Setup(x => x.Get<List<Route>>())
-            .Returns((List<Route>?)null);
+            .Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
-            .ReturnsAsync((List<Route>?)null);
+            .ReturnsAsync(() => null);
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -134,6 +134,35 @@ public sealed class WhenGettingRoutes
         Func<Task> act = async () => await sut.GetRoutesAsync(cancellationToken);
 
         act.Should().ThrowAsync<InvalidOperationException>()
+            .WithMessage("Could not retrieve course routes from any source.");
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_Exception_Is_Thrown_If_RoutesList_Is_Empty(
+    [Frozen] Mock<ISessionService> sessionServiceMock,
+    [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
+    [Frozen] Mock<IApiClient> apiClientMock,
+    [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> configMock,
+    FindApprenticeshipTrainingApi config,
+    GetRoutesListResponse apiResponse,
+    RoutesService sut,
+    CancellationToken cancellationToken)
+    {
+        sessionServiceMock.Setup(x => x.Get<List<Route>>())
+            .Returns((List<Route>)null);
+
+        distributedCacheServiceMock.Setup(x => x.GetAsync<List<Route>>(CacheSetting.Routes.Key))
+            .ReturnsAsync((List<Route>)null);
+
+        configMock.Setup(x => x.Value).Returns(config);
+
+        apiResponse.Routes = new List<Route>(); 
+        apiClientMock.Setup(x => x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()))
+            .ReturnsAsync(apiResponse);
+
+        Func<Task> action = async () => await sut.GetRoutesAsync(cancellationToken);
+
+        await action.Should().ThrowAsync<InvalidOperationException>()
             .WithMessage("Could not retrieve course routes from any source.");
     }
 }

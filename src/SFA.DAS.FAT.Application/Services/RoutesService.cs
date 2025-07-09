@@ -23,13 +23,13 @@ public sealed class RoutesService(
     public async Task<IEnumerable<Route>> GetRoutesAsync(CancellationToken cancellationToken)
     {
         var sessionRoutes = _sessionService.Get<List<Route>>();
-        if (sessionRoutes?.Any() == true)
+        if (sessionRoutes?.Count > 0)
         {
             return sessionRoutes;
         }
 
         var cachedRoutes = await _distributedCacheService.GetAsync<List<Route>>(CacheSetting.Routes.Key);
-        if (cachedRoutes?.Any() == true)
+        if (cachedRoutes?.Count > 0)
         {
             _sessionService.Set(cachedRoutes);
             return cachedRoutes;
