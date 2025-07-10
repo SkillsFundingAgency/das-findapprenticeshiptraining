@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
@@ -10,7 +12,6 @@ using SFA.DAS.FAT.Domain.Infrastructure;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Services;
-
 public sealed class LevelsService(
     IApiClient _apiClient,
     ISessionService _sessionService,
@@ -20,20 +21,32 @@ public sealed class LevelsService(
 {
     public async Task<IEnumerable<Level>> GetLevelsAsync(CancellationToken cancellationToken)
     {
-        if (_sessionService.Contains<GetLevelsListResponse>())
+        var sessionLevels = _sessionService.Get<List<Level>>();
+        if (sessionLevels?.Count > 0)
         {
-            var sessionLevels = _sessionService.Get<GetLevelsListResponse>();
-            return sessionLevels.Levels;
+            return sessionLevels;
         }
 
-        var levelsResponse = await _distributedCacheService.GetOrSetAsync(
+        var cachedLevels = await _distributedCacheService.GetOrSetAsync(
             CacheSetting.Levels.Key,
-            () => _apiClient.Get<GetLevelsListResponse>(new GetCourseLevelsApiRequest(config.Value.BaseUrl)),
+            async () =>
+            {
+                var apiResponse = await _apiClient.Get<GetLevelsListResponse>(
+                    new GetCourseLevelsApiRequest(config.Value.BaseUrl)
+                );
+
+                if (apiResponse?.Levels?.Any() != true)
+                {
+
+                    throw new InvalidOperationException("Could not retrieve course levels from any source.");
+                }
+
+                return apiResponse.Levels;
+            },
             CacheSetting.Levels.CacheDuration
         );
 
-        _sessionService.Set(levelsResponse);
-
-        return levelsResponse.Levels;
+        _sessionService.Set(cachedLevels);
+        return cachedLevels;
     }
 }
