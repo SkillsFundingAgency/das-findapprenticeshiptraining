@@ -18,36 +18,30 @@ public sealed class AcademicYearService(
     public async Task<GetAcademicYearsLatestResponse> GetAcademicYearsLatestAsync(CancellationToken cancellationToken)
     {
         var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>();
-        if (sessionData is { QarPeriod: not null, ReviewPeriod: not null })
+        if (sessionData?.QarPeriod != null && sessionData.ReviewPeriod != null)
         {
             return sessionData;
         }
 
-        var cachedData = await _distributedCacheService.GetAsync<GetAcademicYearsLatestResponse>(
-            CacheSetting.AcademicYearsLatest.Key
+        var result = await _distributedCacheService.GetOrSetAsync(
+            CacheSetting.AcademicYearsLatest.Key,
+            async () =>
+            {
+                var apiResponse = await _apiClient.Get<GetAcademicYearsLatestResponse>(
+                    new GetAcademicYearsLatestRequest(config.Value.BaseUrl)
+                );
+
+                if (apiResponse?.QarPeriod != null && apiResponse.ReviewPeriod != null)
+                {
+                    return apiResponse;
+                }
+
+                throw new InvalidOperationException("Could not retrieve academic years from any source.");
+            },
+            CacheSetting.AcademicYearsLatest.CacheDuration
         );
-        if (cachedData is { QarPeriod: not null, ReviewPeriod: not null })
-        {
-            _sessionService.Set(cachedData);
-            return cachedData;
-        }
 
-        var apiResponse = await _apiClient.Get<GetAcademicYearsLatestResponse>(
-            new GetAcademicYearsLatestRequest(config.Value.BaseUrl)
-        );
-
-        if (apiResponse is { QarPeriod: not null, ReviewPeriod: not null })
-        {
-            await _distributedCacheService.SetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                apiResponse,
-                CacheSetting.AcademicYearsLatest.CacheDuration
-            );
-
-            _sessionService.Set(apiResponse);
-            return apiResponse;
-        }
-
-        throw new InvalidOperationException("Could not retrieve academic years from any source.");
+        _sessionService.Set(result);
+        return result;
     }
 }

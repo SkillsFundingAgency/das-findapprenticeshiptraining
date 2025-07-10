@@ -36,7 +36,7 @@ public sealed class WhenGettingLevels
         var result = await sut.GetLevelsAsync(cancellationToken);
 
         result.Should().BeEquivalentTo(sessionLevels);
-        distributedCacheServiceMock.Verify(x => x.GetAsync<List<Level>>(It.IsAny<string>()), Times.Never);
+        distributedCacheServiceMock.Verify(x => x.GetOrSetAsync(It.IsAny<string>(), It.IsAny<Func<Task<IEnumerable<Level>>>>(), It.IsAny<TimeSpan>()), Times.Never);
         apiClientMock.Verify(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()), Times.Never);
     }
 
@@ -52,7 +52,11 @@ public sealed class WhenGettingLevels
         sessionServiceMock.Setup(x => x.Get<List<Level>>())
             .Returns(() => null);
 
-        distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
+        distributedCacheServiceMock
+            .Setup(x => x.GetOrSetAsync(
+                CacheSetting.Levels.Key,
+                It.IsAny<Func<Task<IEnumerable<Level>>>>(),
+                CacheSetting.Levels.CacheDuration))
             .ReturnsAsync(cachedLevels);
 
         var result = await sut.GetLevelsAsync(cancellationToken);
@@ -76,13 +80,18 @@ public sealed class WhenGettingLevels
         var expectedLevels = new List<Level> { new Level() };
         apiResponse.Levels = expectedLevels;
 
-        sessionServiceMock
-            .Setup(x => x.Get<List<Level>>())
+        sessionServiceMock.Setup(x => x.Get<List<Level>>())
             .Returns(() => null);
 
         distributedCacheServiceMock
-            .Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
-            .ReturnsAsync(() => null);
+            .Setup(x => x.GetOrSetAsync(
+                CacheSetting.Levels.Key,
+                It.IsAny<Func<Task<IEnumerable<Level>>>>(),
+                CacheSetting.Levels.CacheDuration))
+            .Returns<string, Func<Task<IEnumerable<Level>>>, TimeSpan>(async (key, factory, duration) =>
+            {
+                return await factory();
+            });
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -97,9 +106,9 @@ public sealed class WhenGettingLevels
         sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Level>>(l => l.SequenceEqual(expectedLevels))), Times.Once);
 
         distributedCacheServiceMock.Verify(x =>
-            x.SetAsync(CacheSetting.Levels.Key,
-                       It.Is<IEnumerable<Level>>(l => l.SequenceEqual(expectedLevels)),
-                       CacheSetting.Levels.CacheDuration),
+            x.GetOrSetAsync(CacheSetting.Levels.Key,
+                            It.IsAny<Func<Task<IEnumerable<Level>>>>(),
+                            CacheSetting.Levels.CacheDuration),
             Times.Once);
     }
 
@@ -116,8 +125,15 @@ public sealed class WhenGettingLevels
         sessionServiceMock.Setup(x => x.Get<List<Level>>())
             .Returns(() => null);
 
-        distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key))
-            .ReturnsAsync(() => null);
+        distributedCacheServiceMock
+            .Setup(x => x.GetOrSetAsync(
+                CacheSetting.Levels.Key,
+                It.IsAny<Func<Task<IEnumerable<Level>>>>(),
+                CacheSetting.Levels.CacheDuration))
+            .Returns<string, Func<Task<IEnumerable<Level>>>, TimeSpan>(async (key, factory, duration) =>
+            {
+                return await factory(); 
+            });
 
         configMock.Setup(x => x.Value).Returns(config);
 
@@ -142,11 +158,23 @@ public sealed class WhenGettingLevels
         CancellationToken cancellationToken)
     {
         sessionServiceMock.Setup(x => x.Get<List<Level>>()).Returns(() => null);
-        distributedCacheServiceMock.Setup(x => x.GetAsync<List<Level>>(CacheSetting.Levels.Key)).ReturnsAsync(() => null);
+
+        distributedCacheServiceMock
+            .Setup(x => x.GetOrSetAsync(
+                CacheSetting.Levels.Key,
+                It.IsAny<Func<Task<IEnumerable<Level>>>>(),
+                CacheSetting.Levels.CacheDuration))
+            .Returns<string, Func<Task<IEnumerable<Level>>>, TimeSpan>(async (key, factory, duration) =>
+            {
+                return await factory();
+            });
+
         configMock.Setup(x => x.Value).Returns(config);
 
         apiResponse.Levels = new List<Level>();
-        apiClientMock.Setup(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>())).ReturnsAsync(apiResponse);
+
+        apiClientMock.Setup(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()))
+            .ReturnsAsync(apiResponse);
 
         Func<Task> act = async () => await sut.GetLevelsAsync(cancellationToken);
 
