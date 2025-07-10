@@ -27,29 +27,26 @@ public sealed class LevelsService(
             return sessionLevels;
         }
 
-        var cachedLevels = await _distributedCacheService.GetAsync<List<Level>>(CacheSetting.Levels.Key);
-        if (cachedLevels?.Count > 0)
-        {
-            _sessionService.Set(cachedLevels);
-            return cachedLevels;
-        }
+        var cachedLevels = await _distributedCacheService.GetOrSetAsync(
+            CacheSetting.Levels.Key,
+            async () =>
+            {
+                var apiResponse = await _apiClient.Get<GetLevelsListResponse>(
+                    new GetCourseLevelsApiRequest(config.Value.BaseUrl)
+                );
 
-        var apiResponse = await _apiClient.Get<GetLevelsListResponse>(
-            new GetCourseLevelsApiRequest(config.Value.BaseUrl)
+                if (apiResponse?.Levels?.Any() != true)
+                {
+
+                    throw new InvalidOperationException("Could not retrieve course levels from any source.");
+                }
+
+                return apiResponse.Levels;
+            },
+            CacheSetting.Levels.CacheDuration
         );
 
-        if (apiResponse?.Levels?.Any() == true)
-        {
-            await _distributedCacheService.SetAsync(
-                CacheSetting.Levels.Key,
-                apiResponse.Levels,
-                CacheSetting.Levels.CacheDuration
-            );
-
-            _sessionService.Set(apiResponse.Levels);
-            return apiResponse.Levels;
-        }
-
-        throw new InvalidOperationException("Could not retrieve course levels from any source.");
+        _sessionService.Set(cachedLevels);
+        return cachedLevels;
     }
 }
