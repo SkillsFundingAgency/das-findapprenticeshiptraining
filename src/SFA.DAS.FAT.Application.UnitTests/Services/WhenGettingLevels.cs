@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -30,7 +26,7 @@ public sealed class WhenGettingLevels
         LevelsService sut,
         CancellationToken cancellationToken)
     {
-        sessionServiceMock.Setup(x => x.Get<List<Level>>())
+        sessionServiceMock.Setup(x => x.Get<List<Level>>(SessionKeys.StandardLevels))
             .Returns(sessionLevels);
 
         var result = await sut.GetLevelsAsync(cancellationToken);
@@ -49,7 +45,7 @@ public sealed class WhenGettingLevels
         LevelsService sut,
         CancellationToken cancellationToken)
     {
-        sessionServiceMock.Setup(x => x.Get<List<Level>>())
+        sessionServiceMock.Setup(x => x.Get<List<Level>>(SessionKeys.StandardLevels))
             .Returns(() => null);
 
         distributedCacheServiceMock
@@ -62,7 +58,7 @@ public sealed class WhenGettingLevels
         var result = await sut.GetLevelsAsync(cancellationToken);
 
         result.Should().BeEquivalentTo(cachedLevels);
-        sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Level>>(levels => levels.SequenceEqual(cachedLevels))), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(SessionKeys.StandardLevels, It.Is<IEnumerable<Level>>(levels => levels.SequenceEqual(cachedLevels))), Times.Once);
         apiClientMock.Verify(x => x.Get<GetLevelsListResponse>(It.IsAny<GetCourseLevelsApiRequest>()), Times.Never);
     }
 
@@ -80,7 +76,7 @@ public sealed class WhenGettingLevels
         var expectedLevels = new List<Level> { new Level() };
         apiResponse.Levels = expectedLevels;
 
-        sessionServiceMock.Setup(x => x.Get<List<Level>>())
+        sessionServiceMock.Setup(x => x.Get<List<Level>>(SessionKeys.StandardLevels))
             .Returns(() => null);
 
         distributedCacheServiceMock
@@ -103,7 +99,7 @@ public sealed class WhenGettingLevels
 
         result.Should().BeEquivalentTo(expectedLevels);
 
-        sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Level>>(l => l.SequenceEqual(expectedLevels))), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(SessionKeys.StandardLevels, It.Is<IEnumerable<Level>>(l => l.SequenceEqual(expectedLevels))), Times.Once);
 
         distributedCacheServiceMock.Verify(x =>
             x.GetOrSetAsync(CacheSetting.Levels.Key,
@@ -122,7 +118,7 @@ public sealed class WhenGettingLevels
         LevelsService sut,
         CancellationToken cancellationToken)
     {
-        sessionServiceMock.Setup(x => x.Get<List<Level>>())
+        sessionServiceMock.Setup(x => x.Get<List<Level>>(SessionKeys.StandardLevels))
             .Returns(() => null);
 
         distributedCacheServiceMock
@@ -132,7 +128,7 @@ public sealed class WhenGettingLevels
                 CacheSetting.Levels.CacheDuration))
             .Returns<string, Func<Task<IEnumerable<Level>>>, TimeSpan>(async (key, factory, duration) =>
             {
-                return await factory(); 
+                return await factory();
             });
 
         configMock.Setup(x => x.Value).Returns(config);
@@ -157,7 +153,7 @@ public sealed class WhenGettingLevels
         LevelsService sut,
         CancellationToken cancellationToken)
     {
-        sessionServiceMock.Setup(x => x.Get<List<Level>>()).Returns(() => null);
+        sessionServiceMock.Setup(x => x.Get<List<Level>>(SessionKeys.StandardLevels)).Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetOrSetAsync(

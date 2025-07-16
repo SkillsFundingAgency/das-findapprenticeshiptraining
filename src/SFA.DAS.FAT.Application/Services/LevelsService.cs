@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -21,7 +22,7 @@ public sealed class LevelsService(
 {
     public async Task<IEnumerable<Level>> GetLevelsAsync(CancellationToken cancellationToken)
     {
-        var sessionLevels = _sessionService.Get<List<Level>>();
+        var sessionLevels = _sessionService.Get<List<Level>>(SessionKeys.StandardLevels);
         if (sessionLevels?.Count > 0)
         {
             return sessionLevels;
@@ -46,7 +47,7 @@ public sealed class LevelsService(
             CacheSetting.Levels.CacheDuration
         );
 
-        _sessionService.Set(cachedLevels);
+        _sessionService.Set(SessionKeys.StandardLevels, cachedLevels);
         return cachedLevels;
     }
 }

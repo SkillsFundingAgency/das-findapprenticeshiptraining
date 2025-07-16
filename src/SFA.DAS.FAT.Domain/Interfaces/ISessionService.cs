@@ -2,12 +2,10 @@
 public interface ISessionService
 {
     void Set(string key, string value);
-    void Set<T>(T model);
+    void Set<T>(string key, T model);
     string Get(string key);
-    T Get<T>();
+    T Get<T>(string key);
     void Delete(string key);
-    void Delete<T>();
     void Clear();
-    bool Contains<T>();
     bool Contains(string key);
 }

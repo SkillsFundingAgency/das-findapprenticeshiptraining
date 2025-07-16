@@ -11,6 +11,7 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
@@ -841,7 +842,7 @@ public class WhenGettingCourseProviders
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
         shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
-        sessionServiceMock.Setup(s => s.Get<ShortlistsCount>()).Returns(new ShortlistsCount { Count = shortlistCount });
+        sessionServiceMock.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(new ShortlistsCount { Count = shortlistCount });
         validatorMock
             .Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseQuery>(),

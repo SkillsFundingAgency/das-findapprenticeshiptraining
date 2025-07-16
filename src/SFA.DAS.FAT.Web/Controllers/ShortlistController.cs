@@ -62,7 +62,7 @@ public class ShortlistController : Controller
 
         viewModel.RemovedProviderName = TempData[RemovedProviderNameTempDataKey]?.ToString();
 
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         viewModel.HasMaxedOutShortlists = shortlistCount?.Count >= ShortlistConstants.MaximumShortlistCount;
 
         return View(viewModel);

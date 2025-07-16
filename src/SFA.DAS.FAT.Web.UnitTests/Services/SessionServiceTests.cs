@@ -36,13 +36,13 @@ public class SessionServiceTests
     }
 
     [Test, AutoData]
-    public void SetOfT_AddsSerialisedValueToSession(string context, Person value)
+    public void SetOfT_AddsSerialisedValueToSession(string context, Person value, string key)
     {
         var json = JsonSerializer.Serialize(value);
 
-        _sut.Set(value);
+        _sut.Set(key, value);
 
-        _sessionMock.Verify(s => s.Set(nameof(Person), Encoding.UTF8.GetBytes(json)));
+        _sessionMock.Verify(s => s.Set(key, Encoding.UTF8.GetBytes(json)));
     }
 
     [Test, AutoData]
@@ -83,23 +83,22 @@ public class SessionServiceTests
     }
 
     [Test, AutoData]
-    public void GetOfT_GetsValueForGivenType(Person value)
+    public void GetOfT_GetsValueForGivenType(Person value, string key)
     {
         var json = JsonSerializer.Serialize(value);
-        var key = typeof(Person).Name;
 
         var keyValue = Encoding.UTF8.GetBytes(json);
         _sessionMock.Setup(s => s.TryGetValue(key, out keyValue)).Returns(true);
 
-        var actual = _sut.Get<Person>();
+        var actual = _sut.Get<Person>(key);
 
         actual.Should().BeEquivalentTo(value);
     }
 
     [Test, AutoData]
-    public void GetOfT_ObjectKeyNotFoundInSession_ReturnsNull()
+    public void GetOfT_ObjectKeyNotFoundInSession_ReturnsNull(string key)
     {
-        var actual = _sut.Get<Person>();
+        var actual = _sut.Get<Person>(key);
 
         actual.Should().BeNull();
     }
@@ -123,23 +122,12 @@ public class SessionServiceTests
     }
 
     [Test, AutoData]
-    public void DeleteOfT_ObjectFound_RemovesObjectFromSession()
+    public void Delete_ObjectFound_RemovesObjectFromSession()
     {
         var key = typeof(Person).Name;
         _sessionMock.Setup(s => s.Keys).Returns([key]);
 
         _sut.Delete(key);
-
-        _sessionMock.Verify(s => s.Remove(key));
-    }
-
-    [Test, AutoData]
-    public void DeleteOfT_RemovesKeyByType()
-    {
-        var key = typeof(Person).Name;
-        _sessionMock.Setup(s => s.Keys).Returns([key]);
-
-        _sut.Delete<Person>();
 
         _sessionMock.Verify(s => s.Remove(key));
     }
@@ -173,25 +161,6 @@ public class SessionServiceTests
         actual.Should().BeFalse();
     }
 
-    [Test]
-    public void ContainsOfT_KeyFound_ReturnsTrue()
-    {
-        _sessionMock.Setup(s => s.Keys).Returns([nameof(Person)]);
-
-        var actual = _sut.Contains<Person>();
-
-        actual.Should().BeTrue();
-    }
-
-    [Test]
-    public void ContainsOfT_KeyNotFound_ReturnsFalse()
-    {
-        _sessionMock.Setup(s => s.Keys).Returns(Array.Empty<string>());
-
-        var actual = _sut.Contains<Person>();
-
-        actual.Should().BeFalse();
-    }
     public class Person
     {
         public int Id { get; set; }

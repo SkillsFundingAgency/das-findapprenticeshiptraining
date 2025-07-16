@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -22,7 +23,7 @@ public sealed class RoutesService(
 {
     public async Task<IEnumerable<Route>> GetRoutesAsync(CancellationToken cancellationToken)
     {
-        var sessionRoutes = _sessionService.Get<List<Route>>();
+        var sessionRoutes = _sessionService.Get<List<Route>>(SessionKeys.StandardRoutes);
         if (sessionRoutes?.Count > 0)
         {
             return sessionRoutes;
@@ -46,7 +47,7 @@ public sealed class RoutesService(
             CacheSetting.Routes.CacheDuration
         );
 
-        _sessionService.Set(cachedRoutes);
+        _sessionService.Set(SessionKeys.StandardRoutes, cachedRoutes);
         return cachedRoutes;
     }
 }

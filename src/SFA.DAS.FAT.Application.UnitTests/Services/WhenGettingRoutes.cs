@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -27,7 +28,7 @@ public sealed class WhenGettingRoutes
     )
     {
         sessionServiceMock
-            .Setup(x => x.Get<List<Route>>())
+            .Setup(x => x.Get<List<Route>>(SessionKeys.StandardRoutes))
             .Returns(sessionRoutes);
 
         var result = await sut.GetRoutesAsync(cancellationToken);
@@ -53,7 +54,7 @@ public sealed class WhenGettingRoutes
         CancellationToken cancellationToken
     )
     {
-        sessionServiceMock.Setup(x => x.Get<List<Route>>()).Returns(() => null);
+        sessionServiceMock.Setup(x => x.Get<List<Route>>(SessionKeys.StandardRoutes)).Returns(() => null);
 
         distributedCacheServiceMock
             .Setup(x => x.GetOrSetAsync(
@@ -66,7 +67,7 @@ public sealed class WhenGettingRoutes
 
         result.Should().BeEquivalentTo(cachedRoutes);
 
-        sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Route>>(r => r.SequenceEqual(cachedRoutes))), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(SessionKeys.StandardRoutes, It.Is<IEnumerable<Route>>(r => r.SequenceEqual(cachedRoutes))), Times.Once);
 
         apiClientMock.Verify(x =>
             x.Get<GetRoutesListResponse>(It.IsAny<GetCourseRoutesApiRequest>()),
@@ -88,7 +89,7 @@ public sealed class WhenGettingRoutes
         var expectedRoutes = new List<Route> { new Route() };
         apiResponse.Routes = expectedRoutes;
 
-        sessionServiceMock.Setup(x => x.Get<List<Route>>()).Returns(() => null);
+        sessionServiceMock.Setup(x => x.Get<List<Route>>(SessionKeys.StandardRoutes)).Returns(() => null);
         configMock.Setup(x => x.Value).Returns(config);
 
         distributedCacheServiceMock
@@ -98,7 +99,7 @@ public sealed class WhenGettingRoutes
                 CacheSetting.Routes.CacheDuration))
             .Returns<string, Func<Task<IEnumerable<Route>>>, TimeSpan>(async (key, factory, duration) =>
             {
-                return await factory(); 
+                return await factory();
             });
 
         apiClientMock
@@ -109,7 +110,7 @@ public sealed class WhenGettingRoutes
 
         result.Should().BeEquivalentTo(expectedRoutes);
 
-        sessionServiceMock.Verify(x => x.Set(It.Is<IEnumerable<Route>>(r => r.SequenceEqual(expectedRoutes))), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(SessionKeys.StandardRoutes, It.Is<IEnumerable<Route>>(r => r.SequenceEqual(expectedRoutes))), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -123,7 +124,7 @@ public sealed class WhenGettingRoutes
         CancellationToken cancellationToken
     )
     {
-        sessionServiceMock.Setup(x => x.Get<List<Route>>()).Returns(() => null);
+        sessionServiceMock.Setup(x => x.Get<List<Route>>(SessionKeys.StandardRoutes)).Returns(() => null);
         configMock.Setup(x => x.Value).Returns(config);
 
         distributedCacheServiceMock
@@ -133,7 +134,7 @@ public sealed class WhenGettingRoutes
                 CacheSetting.Routes.CacheDuration))
             .Returns<string, Func<Task<IEnumerable<Route>>>, TimeSpan>(async (key, factory, duration) =>
             {
-                return await factory(); 
+                return await factory();
             });
 
         apiClientMock

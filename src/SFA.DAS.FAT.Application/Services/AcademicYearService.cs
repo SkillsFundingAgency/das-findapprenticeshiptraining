@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.AcademicYears.Api.Requests;
 using SFA.DAS.FAT.Domain.AcademicYears.Api.Responses;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -17,7 +18,7 @@ public sealed class AcademicYearService(
 {
     public async Task<GetAcademicYearsLatestResponse> GetAcademicYearsLatestAsync(CancellationToken cancellationToken)
     {
-        var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>();
+        var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>(SessionKeys.AcademicYears);
         if (sessionData?.QarPeriod != null && sessionData.ReviewPeriod != null)
         {
             return sessionData;
@@ -41,7 +42,7 @@ public sealed class AcademicYearService(
             CacheSetting.AcademicYearsLatest.CacheDuration
         );
 
-        _sessionService.Set(result);
+        _sessionService.Set(SessionKeys.AcademicYears, result);
         return result;
     }
 }
