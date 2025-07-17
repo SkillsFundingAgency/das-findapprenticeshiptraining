@@ -10,7 +10,7 @@ public class WhenBuildingStandardViewModelTests
 {
     [Test]
     [MoqInlineAutoData(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeship")]
-    [MoqInlineAutoData(ApprenticeshipType.Apprenticeship, "Standard apprenticeship")]
+    [MoqInlineAutoData(ApprenticeshipType.Apprenticeship, "Apprenticeship")]
     public void Then_Set_ApprenticeshipTypeDescription(ApprenticeshipType apprenticeshipType, string expectedDescription, StandardModel model)
 
     {

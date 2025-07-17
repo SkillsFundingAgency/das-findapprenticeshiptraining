@@ -5,7 +5,7 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class StandardViewModel
 {
-    private const string StandardApprenticeshipDescription = "Standard apprenticeship";
+    private const string StandardApprenticeshipDescription = "Apprenticeship";
 
     private const string FoundationApprenticeshipDescription = "Foundation apprenticeship";
 
