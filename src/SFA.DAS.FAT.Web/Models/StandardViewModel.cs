@@ -23,7 +23,6 @@ public class StandardViewModel
 
     public ApprenticeshipType ApprenticeshipType { get; set; }
 
-
     public static implicit operator StandardViewModel(StandardModel source)
     {
         return new StandardViewModel
