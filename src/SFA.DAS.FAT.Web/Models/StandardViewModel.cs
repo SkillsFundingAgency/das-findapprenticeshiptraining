@@ -5,6 +5,10 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class StandardViewModel
 {
+    private const string StandardApprenticeshipDescription = "Standard apprenticeship";
+
+    private const string FoundationApprenticeshipDescription = "Foundation apprenticeship";
+
     public int Ordering { get; set; }
     public required string StandardUId { get; set; }
     public required string IfateReferenceNumber { get; set; }
@@ -22,6 +26,8 @@ public class StandardViewModel
     public int TypicalDuration { get; set; }
 
     public ApprenticeshipType ApprenticeshipType { get; set; }
+
+    public string ApprenticeTypeDescription { get; set; }
 
     public static implicit operator StandardViewModel(StandardModel source)
     {
@@ -42,7 +48,10 @@ public class StandardViewModel
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
             TypicalDuration = source.TypicalDuration,
-            ApprenticeshipType = source.ApprenticeshipType
+            ApprenticeshipType = source.ApprenticeshipType,
+            ApprenticeTypeDescription = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship
+                    ? FoundationApprenticeshipDescription
+                    : StandardApprenticeshipDescription
         };
     }
 }
