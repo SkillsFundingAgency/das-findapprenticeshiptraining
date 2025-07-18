@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
@@ -23,7 +24,7 @@ public class WhenGettingShortlistsCountForUser
         Mock<IApiClient> apiClientMock = new();
         Mock<ISessionService> sessionServiceMock = new();
         var sut = new ShortlistService(apiClientMock.Object, Options.Create(config), sessionServiceMock.Object);
-        sessionServiceMock.Setup(x => x.Get<ShortlistsCount>()).Returns((ShortlistsCount)null);
+        sessionServiceMock.Setup(x => x.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns((ShortlistsCount)null);
         apiClientMock
             .Setup(x => x.Get<ShortlistsCount>(It.Is<GetShortlistsCountForUserRequest>(c => c.GetUrl.Contains(shortlistUserId.ToString()))))
             .ReturnsAsync(apiResponse);
@@ -31,7 +32,7 @@ public class WhenGettingShortlistsCountForUser
         var actual = await sut.GetShortlistsCountForUser(shortlistUserId);
         //Assert
         actual.Should().Be(apiResponse.Count);
-        sessionServiceMock.Verify(x => x.Set(apiResponse), Times.Once);
+        sessionServiceMock.Verify(x => x.Set(SessionKeys.ShortlistCount, apiResponse), Times.Once);
     }
 
     [Test, AutoData]
@@ -41,7 +42,7 @@ public class WhenGettingShortlistsCountForUser
         Mock<IApiClient> apiClientMock = new();
         Mock<ISessionService> sessionServiceMock = new();
         var sut = new ShortlistService(apiClientMock.Object, Options.Create(new FindApprenticeshipTrainingApi()), sessionServiceMock.Object);
-        sessionServiceMock.Setup(x => x.Get<ShortlistsCount>()).Returns(shortlistsCount);
+        sessionServiceMock.Setup(x => x.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistsCount);
         //Act
         var actual = await sut.GetShortlistsCountForUser(Guid.NewGuid());
         //Assert

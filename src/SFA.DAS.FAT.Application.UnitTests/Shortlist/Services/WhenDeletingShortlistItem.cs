@@ -2,6 +2,7 @@
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Domain.Shortlist.Api;
@@ -38,7 +39,7 @@ public class WhenDeletingShortlistItem
         ShortlistService sut)
     {
         ShortlistsCount shortlistsCount = new() { Count = count };
-        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(shortlistsCount);
+        sessionService.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistsCount);
         apiClient.Setup(x => x.Delete<DeleteShortlistItemResponse>(It.IsAny<DeleteShortlistItemRequest>()))
             .ReturnsAsync(new DeleteShortlistItemResponse(true));
 
@@ -46,7 +47,7 @@ public class WhenDeletingShortlistItem
         await sut.DeleteShortlistItem(id);
 
         //Assert
-        sessionService.Verify(x => x.Set(It.Is<ShortlistsCount>(c => c.Count == count - 1)), Times.Once);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.Is<ShortlistsCount>(c => c.Count == count - 1)), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -58,7 +59,7 @@ public class WhenDeletingShortlistItem
         ShortlistService sut)
     {
         ShortlistsCount shortlistsCount = new() { Count = count };
-        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(shortlistsCount);
+        sessionService.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistsCount);
         apiClient.Setup(x => x.Delete<DeleteShortlistItemResponse>(It.IsAny<DeleteShortlistItemRequest>()))
             .ReturnsAsync(new DeleteShortlistItemResponse(false));
 
@@ -66,7 +67,7 @@ public class WhenDeletingShortlistItem
         await sut.DeleteShortlistItem(id);
 
         //Assert
-        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.IsAny<ShortlistsCount>()), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -78,11 +79,11 @@ public class WhenDeletingShortlistItem
     {
         apiClient.Setup(x => x.Delete<DeleteShortlistItemResponse>(It.IsAny<DeleteShortlistItemRequest>()))
             .ReturnsAsync(new DeleteShortlistItemResponse(true));
-        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(() => null);
+        sessionService.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(() => null);
         //Act
         await sut.DeleteShortlistItem(id);
 
         //Assert
-        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.IsAny<ShortlistsCount>()), Times.Never);
     }
 }

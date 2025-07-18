@@ -10,6 +10,7 @@ using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Extensions;
@@ -72,7 +73,7 @@ public class CourseProvidersController : Controller
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         var orderBy = string.IsNullOrEmpty(request.Location) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
 
         if (string.IsNullOrEmpty(prevLocation) && !string.IsNullOrEmpty(request.Location))
@@ -176,7 +177,7 @@ public class CourseProvidersController : Controller
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
         if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
         {

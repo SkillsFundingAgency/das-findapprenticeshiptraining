@@ -3,6 +3,7 @@ using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Services;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Domain.Shortlist.Api;
@@ -46,12 +47,12 @@ public class WhenCreatingShortlistItemForUser
         CreateShortlistForUserResponse apiResponse = new(shortlistId, true);
         apiClient.Setup(x => x.Post<CreateShortlistForUserResponse, PostShortlistForUserRequest>(It.IsAny<CreateShortlistForUserRequest>())).ReturnsAsync(apiResponse);
         ShortlistsCount shortlistsCount = new() { Count = count };
-        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(shortlistsCount);
+        sessionService.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistsCount);
         //Act
         await sut.CreateShortlistItemForUser(postShortlistForUserRequest);
 
         //Assert
-        sessionService.Verify(x => x.Set(It.Is<ShortlistsCount>(c => c.Count == count + 1)), Times.Once);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.Is<ShortlistsCount>(c => c.Count == count + 1)), Times.Once);
     }
 
     [Test, MoqAutoData]
@@ -69,8 +70,8 @@ public class WhenCreatingShortlistItemForUser
         await sut.CreateShortlistItemForUser(postShortlistForUserRequest);
 
         //Assert
-        sessionService.Verify(s => s.Get<ShortlistsCount>(), Times.Never);
-        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
+        sessionService.Verify(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount), Times.Never);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.IsAny<ShortlistsCount>()), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -85,12 +86,12 @@ public class WhenCreatingShortlistItemForUser
         //Arrange
         CreateShortlistForUserResponse apiResponse = new(shortlistId, true);
         apiClient.Setup(x => x.Post<CreateShortlistForUserResponse, PostShortlistForUserRequest>(It.IsAny<CreateShortlistForUserRequest>())).ReturnsAsync(apiResponse);
-        sessionService.Setup(s => s.Get<ShortlistsCount>()).Returns(() => null);
+        sessionService.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(() => null);
         //Act
         await sut.CreateShortlistItemForUser(postShortlistForUserRequest);
 
         //Assert
-        sessionService.Verify(s => s.Get<ShortlistsCount>(), Times.Once);
-        sessionService.Verify(x => x.Set(It.IsAny<ShortlistsCount>()), Times.Never);
+        sessionService.Verify(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount), Times.Once);
+        sessionService.Verify(x => x.Set(SessionKeys.ShortlistCount, It.IsAny<ShortlistsCount>()), Times.Never);
     }
 }

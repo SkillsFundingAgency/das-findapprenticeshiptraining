@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
@@ -23,12 +24,12 @@ public class ShortlistService : IShortlistService
 
     public async Task<int> GetShortlistsCountForUser(Guid shortlistUserId)
     {
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         if (shortlistCount == null)
         {
             var apiRequest = new GetShortlistsCountForUserRequest(_configValue.BaseUrl, shortlistUserId);
             shortlistCount = await _apiClient.Get<ShortlistsCount>(apiRequest);
-            _sessionService.Set(shortlistCount);
+            _sessionService.Set(SessionKeys.ShortlistCount, shortlistCount);
         }
         return shortlistCount.Count;
     }
@@ -46,11 +47,11 @@ public class ShortlistService : IShortlistService
     {
         var response = await _apiClient.Delete<DeleteShortlistItemResponse>(new DeleteShortlistItemRequest(_configValue.BaseUrl, id));
 
-        var shortlistCount = _sessionService.Get<ShortlistsCount>();
+        var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         if (response.Success && shortlistCount != null)
         {
             shortlistCount.Count--;
-            _sessionService.Set(shortlistCount);
+            _sessionService.Set(SessionKeys.ShortlistCount, shortlistCount);
         }
     }
 
@@ -60,11 +61,11 @@ public class ShortlistService : IShortlistService
 
         if (response.IsCreated)
         {
-            var shortlistCount = _sessionService.Get<ShortlistsCount>();
+            var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
             if (shortlistCount != null)
             {
                 shortlistCount.Count += 1;
-                _sessionService.Set(shortlistCount);
+                _sessionService.Set(SessionKeys.ShortlistCount, shortlistCount);
             }
         }
 
