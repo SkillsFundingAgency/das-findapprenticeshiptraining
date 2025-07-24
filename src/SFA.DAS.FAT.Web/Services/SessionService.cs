@@ -8,13 +8,13 @@ namespace SFA.DAS.FAT.Web.Services;
 public class SessionService(IHttpContextAccessor _httpContextAccessor) : ISessionService
 {
     public void Set(string key, string value) => _httpContextAccessor.HttpContext?.Session.SetString(key, value);
-    public void Set<T>(T model) => Set(typeof(T).Name, JsonSerializer.Serialize(model));
+    public void Set<T>(string key, T model) => Set(key, JsonSerializer.Serialize(model));
 
     public string Get(string key) => _httpContextAccessor.HttpContext?.Session.GetString(key);
 
-    public T Get<T>()
+    public T Get<T>(string key)
     {
-        var json = Get(typeof(T).Name);
+        var json = Get(key);
         return (string.IsNullOrEmpty(json) ? default : JsonSerializer.Deserialize<T>(json))!;
     }
 
@@ -24,14 +24,7 @@ public class SessionService(IHttpContextAccessor _httpContextAccessor) : ISessio
             _httpContextAccessor.HttpContext.Session.Remove(key);
     }
 
-    public void Delete<T>() => Delete(typeof(T).Name);
-
     public void Clear() => _httpContextAccessor.HttpContext?.Session.Clear();
-
-    public bool Contains<T>()
-    {
-        return Contains(typeof(T).Name);
-    }
 
     public bool Contains(string key)
     {

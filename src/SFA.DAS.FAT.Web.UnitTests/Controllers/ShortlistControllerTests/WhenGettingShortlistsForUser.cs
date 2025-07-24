@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Queries.GetShortlistsForUser;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -113,7 +114,7 @@ public class WhenGettingShortlistsForUser
     public async Task ThenSetsHasMaxedOutShortlistsFlag(int? count, bool expected)
     {
         ShortlistsCount shortlistCount = count is null ? null : new() { Count = count.GetValueOrDefault() };
-        _sessionServiceMock.Setup(x => x.Get<ShortlistsCount>()).Returns(shortlistCount);
+        _sessionServiceMock.Setup(x => x.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistCount);
         //Act
         var result = await _sut.Index();
         //Assert

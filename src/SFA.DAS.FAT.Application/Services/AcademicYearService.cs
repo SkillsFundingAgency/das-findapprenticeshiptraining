@@ -1,6 +1,8 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.AcademicYears.Api.Requests;
 using SFA.DAS.FAT.Domain.AcademicYears.Api.Responses;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -16,20 +18,31 @@ public sealed class AcademicYearService(
 {
     public async Task<GetAcademicYearsLatestResponse> GetAcademicYearsLatestAsync(CancellationToken cancellationToken)
     {
-
-        if (_sessionService.Contains<GetAcademicYearsLatestResponse>())
+        var sessionData = _sessionService.Get<GetAcademicYearsLatestResponse>(SessionKeys.AcademicYears);
+        if (sessionData?.QarPeriod != null && sessionData.ReviewPeriod != null)
         {
-            return _sessionService.Get<GetAcademicYearsLatestResponse>();
+            return sessionData;
         }
 
-        var academicYearsLatest = await _distributedCacheService.GetOrSetAsync(
-                CacheSetting.AcademicYearsLatest.Key,
-                () => _apiClient.Get<GetAcademicYearsLatestResponse>(new GetAcademicYearsLatestRequest(config.Value.BaseUrl)),
-                CacheSetting.AcademicYearsLatest.CacheDuration
-            );
+        var result = await _distributedCacheService.GetOrSetAsync(
+            CacheSetting.AcademicYearsLatest.Key,
+            async () =>
+            {
+                var apiResponse = await _apiClient.Get<GetAcademicYearsLatestResponse>(
+                    new GetAcademicYearsLatestRequest(config.Value.BaseUrl)
+                );
 
-        _sessionService.Set(academicYearsLatest);
+                if (apiResponse?.QarPeriod != null && apiResponse.ReviewPeriod != null)
+                {
+                    return apiResponse;
+                }
 
-        return academicYearsLatest;
+                throw new InvalidOperationException("Could not retrieve academic years from any source.");
+            },
+            CacheSetting.AcademicYearsLatest.CacheDuration
+        );
+
+        _sessionService.Set(SessionKeys.AcademicYears, result);
+        return result;
     }
 }
