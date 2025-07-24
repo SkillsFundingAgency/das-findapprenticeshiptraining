@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -39,10 +40,10 @@ public class WhenGettingCourseProviderDetails
         )).ReturnsAsync(CourseProviderDetailsResponse);
 
         var result = await sut.GetCourseProvider(
-            ukprn, 
-            larsCode, 
-            location, 
-            distance, 
+            ukprn,
+            larsCode,
+            location,
+            distance,
             shortlistUserId
         );
 
@@ -91,6 +92,41 @@ public class WhenGettingCourseProviderDetails
                 request.GetUrl.Contains(shortlistUserId.ToString())
             )
         )).ReturnsAsync((CourseProviderDetailsModel)null);
+
+        var result = await sut.GetCourseProvider(
+            ukprn,
+            larsCode,
+            location,
+            distance,
+            shortlistUserId
+        );
+
+        Assert.That(result, Is.Null);
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task When_Api_Response_Is_NotFoundl_Then_Null_Is_Returned_From_The_Service(
+        string baseUrl,
+        int ukprn,
+        int larsCode,
+        string location,
+        int? distance,
+        Guid shortlistUserId,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> findApprenticeshipTrainingApiConfigurationMock,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        CourseService sut
+    )
+    {
+        mockApiClient.Setup(x => x.Get<CourseProviderDetailsModel>(
+            It.Is<GetCourseProviderDetailsApiRequest>(request =>
+                request.GetUrl.Contains(ukprn.ToString()) &&
+                request.GetUrl.Contains(larsCode.ToString()) &&
+                request.GetUrl.Contains(location) &&
+                request.GetUrl.Contains(location) &&
+                request.GetUrl.Contains(shortlistUserId.ToString())
+            )
+        )).ThrowsAsync(new HttpRequestException("Not Found", null, HttpStatusCode.NotFound)); ;
 
         var result = await sut.GetCourseProvider(
             ukprn,
