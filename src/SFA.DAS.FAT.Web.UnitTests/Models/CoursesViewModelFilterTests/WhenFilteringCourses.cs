@@ -207,12 +207,13 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(2));
             Assert.That(typesCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
             Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
-            Assert.That(typesCheckBoxList.Link, Is.Null);
+            Assert.That(typesCheckBoxList.Link, Is.Not.Null);
+            Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
+            Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
             Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
             Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION));
-
         });
     }
 

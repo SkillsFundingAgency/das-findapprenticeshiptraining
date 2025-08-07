@@ -98,6 +98,13 @@ public class CoursesViewModel : PageLinksViewModelBase
     public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, levels 2 to 7";
 
+    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT =
+        "Find out more about apprenticeship types (opens in new tab)";
+
+    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK =
+        "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+
+
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
     private readonly IUrlHelper _urlHelper;
@@ -217,7 +224,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                     "multi-select",
                     string.Empty,
                     [
-                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems()),
+                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems(), APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK),
                         CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING,null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
                         CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null,GenerateRouteFilterItems())
                     ]
