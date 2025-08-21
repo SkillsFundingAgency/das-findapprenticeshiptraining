@@ -104,6 +104,11 @@ public class CourseProvidersController : Controller
             ShortlistUserId = shortlistUserId
         });
 
+        if (result == null)
+        {
+            return RedirectToRoute(RouteNames.Error404);
+        }
+
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
             Id = request.Id,

@@ -93,6 +93,24 @@ public class WhenGettingCourseProviders
             )), Times.Once);
     }
 
+    [Test]
+    [MoqAutoData]
+    public async Task And_CourseService_Returns_Null_Then_Handler_Returns_Null(
+        GetCourseProvidersQuery query,
+        [Frozen] Mock<ICourseService> mockCourseService,
+        [Frozen] Mock<IAcademicYearsService> mockAcademicYearsService)
+    {
+        mockCourseService.Setup(x => x.GetCourseProviders(It.IsAny<CourseProvidersParameters>()))
+            .ReturnsAsync((CourseProvidersDetails)null);
+
+        GetCourseProvidersQueryHandler sut =
+            new GetCourseProvidersQueryHandler(mockCourseService.Object, mockAcademicYearsService.Object);
+
+        var result = await sut.Handle(query, CancellationToken.None);
+
+        result.Should().BeNull();
+    }
+
     private static CourseProvidersParameters GetCourseProvidersParameters(GetCourseProvidersQuery request)
     {
         return new CourseProvidersParameters
