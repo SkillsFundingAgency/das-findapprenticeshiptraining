@@ -234,9 +234,7 @@ public class WhenGettingCourseProviders
         var sut = await controller.CourseProviders(request);
 
         //Assert
-        sut.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = sut as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        sut.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProviderDetailsQuery>(),
@@ -287,9 +285,7 @@ public class WhenGettingCourseProviders
         var sut = await controller.CourseProviders(request);
 
         //Assert
-        sut.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = sut as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        sut.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
