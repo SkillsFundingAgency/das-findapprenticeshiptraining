@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using FluentAssertions;
+using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
@@ -82,5 +83,19 @@ public sealed class WhenGettingCourse
             ),
             Times.Once
         );
+    }
+
+    [Test]
+    [MoqAutoData]
+    public async Task And_CourseService_Returns_Null_Then_Handler_Returns_Null()
+    {
+        _levelsServiceMock.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Level>());
+
+        _courseServiceMock.Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>()))
+            .ReturnsAsync((GetCourseResponse)null);
+
+        var sut = await _handler.Handle(new GetCourseQuery(), CancellationToken.None);
+
+        sut.Should().BeNull();
     }
 }

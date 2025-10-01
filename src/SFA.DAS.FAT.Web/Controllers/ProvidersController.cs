@@ -34,7 +34,7 @@ public class ProvidersController : Controller
 
         if (!validationResult.IsValid)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         var response = await _mediator.Send(new GetProviderQuery(ukprn));

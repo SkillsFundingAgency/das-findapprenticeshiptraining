@@ -1,4 +1,6 @@
 ﻿#nullable enable
+using System;
+using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
@@ -78,6 +80,22 @@ public class WhenGettingCourseProviders
 
 
         response.Should().BeEquivalentTo(providersFromApi);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_The_Api_Returns_404_Then_Returns_Null(
+        [Frozen] Mock<IApiClient> mockApiClient,
+        CourseService service)
+    {
+        HttpRequestException exception = new HttpRequestException("message", null, HttpStatusCode.NotFound);
+
+        mockApiClient.Setup(x => x.Get<CourseProvidersDetails>(
+                It.IsAny<CourseProvidersApiRequest>()))
+            .ThrowsAsync(exception);
+
+        var response = await service.GetCourseProviders(new CourseProvidersParameters());
+
+        response.Should().BeNull();
     }
 
     [Test, AutoData]

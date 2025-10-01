@@ -228,9 +228,7 @@ public class WhenGettingCourseDetails
 
         result.Should().NotBeNull();
 
-        result.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = result as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        result.Should().BeOfType<NotFoundResult>();
     }
 
     [Test]
@@ -254,9 +252,8 @@ public class WhenGettingCourseDetails
             .Setup(m => m.Send(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseQueryResult)null);
 
-        var result = await sut.CourseDetails(courseId, location, distance) as RedirectToRouteResult;
+        var result = await sut.CourseDetails(courseId, location, distance);
 
-        result.Should().NotBeNull();
-        result.RouteName.Should().Be(RouteNames.Error404);
+        result.Should().BeOfType<NotFoundResult>();
     }
 }

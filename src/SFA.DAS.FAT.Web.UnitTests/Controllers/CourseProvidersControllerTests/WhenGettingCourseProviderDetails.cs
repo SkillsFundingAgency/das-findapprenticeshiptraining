@@ -325,9 +325,7 @@ public class WhenGettingCourseProviderDetails
 
         var result = await sut.CourseProviderDetails(query.LarsCode, query.Ukprn, query.Location, distance.ToString());
 
-        result.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = result as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        result.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProviderDetailsQuery>(),
@@ -378,9 +376,7 @@ public class WhenGettingCourseProviderDetails
 
         var result = await sut.CourseProviderDetails(query.LarsCode, query.Ukprn, query.Location, distance.ToString());
 
-        result.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = result as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        result.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProviderDetailsQuery>(),
@@ -477,10 +473,7 @@ public class WhenGettingCourseProviderDetails
 
         var result = await sut.CourseProviderDetails(query.LarsCode, query.Ukprn, query.Location, distance.Value.ToString());
 
-        result.Should().BeOfType<RedirectToRouteResult>();
-
-        var redirectResult = result as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        result.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
             It.Is<GetCourseProviderDetailsQuery>(q =>

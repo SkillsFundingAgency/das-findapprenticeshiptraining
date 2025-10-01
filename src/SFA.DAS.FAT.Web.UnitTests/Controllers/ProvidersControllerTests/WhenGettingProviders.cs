@@ -103,9 +103,7 @@ public class WhenGettingProviders
 
         var sut = await controller.Index(ukprn, location);
 
-        sut.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = sut as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        sut.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProviderDetailsQuery>(),

@@ -234,14 +234,63 @@ public class WhenGettingCourseProviders
         var sut = await controller.CourseProviders(request);
 
         //Assert
-        sut.Should().BeOfType<RedirectToRouteResult>();
-        var redirectResult = sut as RedirectToRouteResult;
-        redirectResult!.RouteName.Should().Be(RouteNames.Error404);
+        sut.Should().BeOfType<NotFoundResult>();
 
         mediator.Verify(m => m.Send(
                 It.IsAny<GetCourseProviderDetailsQuery>(),
                 It.IsAny<CancellationToken>()),
             Times.Never
+        );
+    }
+
+    [Test, MoqAutoData]
+    public async Task Then_No_Course_Providers_Redirects_To_Shutter_Page(
+        CourseProvidersRequest request,
+        GetCourseProvidersResult response,
+        string serviceStartUrl,
+        string shortlistUrl,
+        string courseDetailsUrl,
+        string location,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Greedy] CourseProvidersController controller)
+    {
+        //Arrange
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
+            .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+        controller.TempData = tempDataMock.Object;
+
+        request.Location = location;
+        request.Distance = null;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(x => x.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetCourseProvidersResult)null);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        //Act
+        var sut = await controller.CourseProviders(request);
+
+        //Assert
+        sut.Should().BeOfType<NotFoundResult>();
+
+        mediator.Verify(m => m.Send(
+                It.IsAny<GetCourseProvidersQuery>(),
+                It.IsAny<CancellationToken>()),
+            Times.Once
         );
     }
 

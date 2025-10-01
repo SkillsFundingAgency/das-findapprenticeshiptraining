@@ -65,7 +65,7 @@ public class CourseProvidersController : Controller
 
         if (!validationLarsCodeResult.IsValid)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         string prevLocation = TempData[LocationTempDataKey]?.ToString();
@@ -103,6 +103,11 @@ public class CourseProvidersController : Controller
             Page = request.PageNumber,
             ShortlistUserId = shortlistUserId
         });
+
+        if (result == null)
+        {
+            return NotFound();
+        }
 
         var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
         {
@@ -165,14 +170,14 @@ public class CourseProvidersController : Controller
 
         if (!validationUkprnResult.IsValid)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = id });
 
         if (!validationLarsCodeResult.IsValid)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
@@ -197,7 +202,7 @@ public class CourseProvidersController : Controller
 
         if (result is null)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         var viewModel = (CourseProviderViewModel)result;

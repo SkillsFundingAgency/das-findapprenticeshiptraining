@@ -34,6 +34,9 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
 
         var courseProvidersDetails = await _courseService.GetCourseProviders(courseProvidersParameters);
 
+        if (courseProvidersDetails == null)
+            return null;
+
         var academicYearsLatest = await _academicYearsService.GetAcademicYearsLatestAsync(cancellationToken);
 
         return new GetCourseProvidersResult
