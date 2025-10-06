@@ -139,14 +139,14 @@ public class CoursesController : Controller
 
         if (!validationResult.IsValid)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         GetCourseQueryResult result = await _mediator.Send(query);
 
         if (result == null)
         {
-            return RedirectToRoute(RouteNames.Error404);
+            return NotFound();
         }
 
         var viewModel = (CourseViewModel)result;

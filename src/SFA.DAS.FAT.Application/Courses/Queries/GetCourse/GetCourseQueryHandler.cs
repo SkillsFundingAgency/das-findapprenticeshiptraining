@@ -14,6 +14,11 @@ public class GetCourseQueryHandler(ICourseService courseService, ILevelsService 
 
         var courseResponse = await courseService.GetCourse(query.LarsCode, query.Location, query.Distance);
 
+        if (courseResponse == null)
+        {
+            return null;
+        }
+
         var result = (GetCourseQueryResult)courseResponse;
         result.Levels = levelsResponse.ToList();
 

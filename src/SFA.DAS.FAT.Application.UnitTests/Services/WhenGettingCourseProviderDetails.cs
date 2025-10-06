@@ -106,7 +106,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test]
     [MoqAutoData]
-    public async Task When_Api_Response_Is_NotFoundl_Then_Null_Is_Returned_From_The_Service(
+    public async Task When_Api_Response_Is_NotFound_Then_Null_Is_Returned_From_The_Service(
         string baseUrl,
         int ukprn,
         int larsCode,

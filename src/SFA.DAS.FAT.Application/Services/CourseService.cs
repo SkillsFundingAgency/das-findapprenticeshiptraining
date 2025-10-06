@@ -26,16 +26,33 @@ public class CourseService : ICourseService
 
     public async Task<GetCourseResponse> GetCourse(int larsCode, string location, int? distance)
     {
-        var request = new GetCourseApiRequest(_config.BaseUrl, larsCode, location, distance);
+        GetCourseResponse response = null;
+        try
+        {
+            response = await _apiClient.Get<GetCourseResponse>(
+                new GetCourseApiRequest(_config.BaseUrl, larsCode, location, distance));
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            response = null;
+        }
 
-        return await _apiClient.Get<GetCourseResponse>(request);
+        return response;
     }
 
     public async Task<CourseProvidersDetails> GetCourseProviders(CourseProvidersParameters courseProvidersParameters)
     {
-        var request = new CourseProvidersApiRequest(_config.BaseUrl, courseProvidersParameters);
+        CourseProvidersDetails response = null;
 
-        var response = await _apiClient.Get<CourseProvidersDetails>(request);
+        try
+        {
+            response = await _apiClient.Get<CourseProvidersDetails>(
+                new CourseProvidersApiRequest(_config.BaseUrl, courseProvidersParameters));
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
+        {
+            response = null;
+        }
 
         return response;
     }

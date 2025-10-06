@@ -1,4 +1,5 @@
-﻿using AutoFixture.NUnit3;
+﻿using System.Net;
+using AutoFixture.NUnit3;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -34,5 +35,20 @@ public class WhenGettingACourse
         var sut = await courseService.GetCourse(larsCode, location, distance);
 
         sut.Should().BeEquivalentTo(response);
+    }
+
+    [Test, MoqAutoData]
+    public async Task And_The_Api_Returns_404_Then_Handler_Returns_Null(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> config,
+        [Frozen] Mock<IApiClient> apiClient,
+        CourseService courseService)
+    {
+        HttpRequestException exception = new HttpRequestException("message", null, HttpStatusCode.NotFound);
+        apiClient.Setup(x => x.Get<GetCourseResponse>(It.IsAny<GetCourseApiRequest>()))
+            .ThrowsAsync(exception);
+
+        var sut = await courseService.GetCourse(1, "", 1);
+
+        sut.Should().BeNull();
     }
 }
