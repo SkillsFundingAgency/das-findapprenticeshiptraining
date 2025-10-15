@@ -25,29 +25,6 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public int PageSize { get; } = Constants.DefaultPageSize;
 
-    //public GetCoursesApiRequest(
-    //    string baseUrl,
-    //    string keyword,
-    //    string location,
-    //    int? distance,
-    //    List<int> routes,
-    //    string apprenticeshipType,
-    //    List<int> levels,
-    //    int page,
-    //    OrderBy orderBy
-    //)
-    //{
-    //    BaseUrl = baseUrl;
-    //    Keyword = keyword;
-    //    Location = location;
-    //    Distance = distance;
-    //    RouteIds = routes;
-    //    Levels = levels;
-    //    ApprenticeshipType = apprenticeshipType;
-    //    Page = page;
-    //    OrderBy = orderBy;
-    //}
-
     public string BaseUrl { get; init; }
 
     public string GetUrl => BuildUrl();
