@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SFA.DAS.FAT.Domain.Configuration;
-using SFA.DAS.FAT.Web.AppStart;
 using StackExchange.Redis;
 
 namespace SFA.DAS.FAT.Web.AppStart;
