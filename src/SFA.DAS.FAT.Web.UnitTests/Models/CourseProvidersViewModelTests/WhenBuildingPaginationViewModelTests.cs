@@ -41,7 +41,7 @@ public class WhenBuildingPaginationViewModelTests
         CourseProvidersRequest request)
     {
         //Act
-        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        var vm = new CourseProvidersViewModel(config.Object)
         {
             Location = request.Location,
             Distance = request.Distance,
@@ -82,7 +82,7 @@ public class WhenBuildingPaginationViewModelTests
           [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         //Act
-        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        var vm = new CourseProvidersViewModel(config.Object)
         {
             Location = request.Location,
             Distance = request.Distance,
@@ -145,7 +145,7 @@ public class WhenBuildingPaginationViewModelTests
     {
         int pagesExpected = 3;
 
-        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        var vm = new CourseProvidersViewModel(config.Object)
         {
             Location = request.Location,
             Distance = request.Distance,
@@ -196,7 +196,7 @@ public class WhenBuildingPaginationViewModelTests
         int currentPage = 5;
         int pagesExpected = 8;
 
-        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        var vm = new CourseProvidersViewModel(config.Object)
         {
             Location = request.Location,
             Distance = request.Distance,
@@ -272,7 +272,7 @@ public class WhenBuildingPaginationViewModelTests
         request.Location = location;
 
         //Act
-        var vm = new CourseProvidersViewModel(config.Object, _urlHelperMock.Object)
+        var vm = new CourseProvidersViewModel(config.Object)
         {
             Location = request.Location,
             Distance = request.Distance,
