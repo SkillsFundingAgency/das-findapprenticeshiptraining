@@ -11,7 +11,6 @@ using SFA.DAS.FAT.Application.Providers.Query.GetProvider;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Controllers;
-using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.FAT.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;

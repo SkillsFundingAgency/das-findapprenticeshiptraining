@@ -17,8 +17,6 @@ public sealed class WhenFilteringCourseProviders
 
     private FindApprenticeshipTrainingWeb _findApprenticeshipTrainingWebConfiguration;
 
-    private Mock<IUrlHelper> _urlHelperMock;
-
     private string _fullQueryString;
 
     private const string ExpectedReviewsSubHeading = "From 2023 to 2024";
@@ -27,13 +25,12 @@ public sealed class WhenFilteringCourseProviders
     [SetUp]
     public void Setup()
     {
-        _urlHelperMock = new Mock<IUrlHelper>();
         _findApprenticeshipTrainingWebConfiguration = new FindApprenticeshipTrainingWeb()
         {
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
-        _viewModel = new CourseProvidersViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        _viewModel = new CourseProvidersViewModel(_findApprenticeshipTrainingWebConfiguration)
         {
             Location = "M60 7RA",
             Distance = "20",
@@ -78,7 +75,7 @@ public sealed class WhenFilteringCourseProviders
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
-        CourseProvidersViewModel viewModel = new CourseProvidersViewModel(findApprenticeshipTrainingWebConfiguration, urlHelperMock.Object)
+        CourseProvidersViewModel viewModel = new CourseProvidersViewModel(findApprenticeshipTrainingWebConfiguration)
         {
             Location = null,
             Distance = null,

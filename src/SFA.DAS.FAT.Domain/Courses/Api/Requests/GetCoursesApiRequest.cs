@@ -7,48 +7,25 @@ namespace SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
 public class GetCoursesApiRequest : IGetApiRequest
 {
-    public string Keyword { get; }
+    public string Keyword { get; init; }
 
-    public List<int> RouteIds { get; }
+    public List<int> RouteIds { get; init; }
 
-    public List<int> Levels { get; }
+    public List<int> Levels { get; init; }
 
-    public string ApprenticeshipType { get; }
+    public string ApprenticeshipType { get; init; }
 
-    public OrderBy OrderBy { get; }
+    public OrderBy OrderBy { get; init; }
 
-    public int? Distance { get; }
+    public int? Distance { get; init; }
 
-    public string Location { get; }
+    public string Location { get; init; }
 
-    public int Page { get; }
+    public int Page { get; init; }
 
     public int PageSize { get; } = Constants.DefaultPageSize;
 
-    public GetCoursesApiRequest(
-        string baseUrl,
-        string keyword,
-        string location,
-        int? distance,
-        List<int> routes,
-        string apprenticeshipType,
-        List<int> levels,
-        int page,
-        OrderBy orderBy
-    )
-    {
-        BaseUrl = baseUrl;
-        Keyword = keyword;
-        Location = location;
-        Distance = distance;
-        RouteIds = routes;
-        Levels = levels;
-        ApprenticeshipType = apprenticeshipType;
-        Page = page;
-        OrderBy = orderBy;
-    }
-
-    public string BaseUrl { get; }
+    public string BaseUrl { get; init; }
 
     public string GetUrl => BuildUrl();
 

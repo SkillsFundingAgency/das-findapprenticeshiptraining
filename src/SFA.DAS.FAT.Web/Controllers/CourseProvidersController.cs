@@ -109,7 +109,7 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
-        var courseProvidersViewModel = new CourseProvidersViewModel(_config, Url)
+        var courseProvidersViewModel = new CourseProvidersViewModel(_config)
         {
             Id = request.Id,
             ShortlistCount = shortlistCount?.Count ?? 0,

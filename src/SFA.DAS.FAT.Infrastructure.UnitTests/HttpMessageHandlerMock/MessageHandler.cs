@@ -1,8 +1,4 @@
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Moq;
+﻿using Moq;
 using Moq.Protected;
 
 namespace SFA.DAS.FAT.Infrastructure.UnitTests.HttpMessageHandlerMock

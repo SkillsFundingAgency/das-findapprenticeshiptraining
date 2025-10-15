@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
@@ -305,15 +304,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             );
     }
 
-    private readonly IUrlHelper _urlHelper;
-
     private readonly string _requestApprenticeshipTrainingUrl;
     private readonly string _employerAccountsUrl;
 
-    public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
+    public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration)
     {
-
-        _urlHelper = urlHelper;
         _valueFunctions = new Dictionary<FilterType, Func<string, string>>
         {
             { FilterType.DeliveryModes, GetDeliveryModeValue },
