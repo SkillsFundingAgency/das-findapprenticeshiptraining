@@ -1,5 +1,4 @@
 ﻿#nullable enable
-using System;
 using System.Net;
 using AutoFixture.NUnit3;
 using FluentAssertions;

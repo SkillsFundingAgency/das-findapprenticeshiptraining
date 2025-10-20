@@ -41,17 +41,17 @@ public class GetCoursesQueryHandler(
         }
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
-            new GetCoursesApiRequest(
-                _config.Value.BaseUrl,
-                query.Keyword,
-                query.Location,
-                query.Distance,
-                routeIds,
-                apprenticeshipType,
-                query.Levels,
-                query.Page,
-                query.OrderBy
-            )
+            new GetCoursesApiRequest{
+                BaseUrl = _config.Value.BaseUrl,
+                Keyword = query.Keyword,
+                Location = query.Location,
+                Distance = query.Distance,
+                RouteIds = routeIds,
+                ApprenticeshipType = apprenticeshipType,
+                Levels = query.Levels,
+                Page = query.Page,
+                OrderBy = query.OrderBy
+            }
         );
 
         return new GetCoursesQueryResult()
