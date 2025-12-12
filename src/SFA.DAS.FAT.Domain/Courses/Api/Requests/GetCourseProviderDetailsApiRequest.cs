@@ -6,13 +6,13 @@ namespace SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
 public class GetCourseProviderDetailsApiRequest : IGetApiRequest
 {
-    private readonly int _larsCode;
+    private readonly string _larsCode;
     private readonly long _ukprn;
     private readonly string _location;
     private readonly int? _distance;
     private readonly Guid _shortlistUserId;
 
-    public GetCourseProviderDetailsApiRequest(string baseUrl, int larsCode, long ukprn, string location, int? distance, Guid shortlistUserId)
+    public GetCourseProviderDetailsApiRequest(string baseUrl, string larsCode, long ukprn, string location, int? distance, Guid shortlistUserId)
     {
         _larsCode = larsCode;
         _ukprn = ukprn;

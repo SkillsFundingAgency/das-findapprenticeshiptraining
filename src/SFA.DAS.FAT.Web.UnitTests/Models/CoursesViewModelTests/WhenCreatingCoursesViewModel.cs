@@ -299,7 +299,7 @@ public class WhenCreatingCoursesViewModel
     public void When_Providers_Count_Is_More_Than_Zero_Link_Returns_Providers_List_Url(StandardViewModel standardViewModel)
     {
         standardViewModel.ProvidersCount = 2;
-        standardViewModel.LarsCode = 123;
+        standardViewModel.LarsCode = "123";
 
         var expectedUrl = "https://localhost/course/123/providers";
         var _mockUrlHelperMock = new Mock<IUrlHelper>();
@@ -465,7 +465,7 @@ public class WhenCreatingCoursesViewModel
             Distance = "10"
         };
 
-        int larsCode = 123;
+        string larsCode = "123";
 
         var result = _sut.GenerateStandardRouteValues(larsCode);
 
@@ -491,7 +491,7 @@ public class WhenCreatingCoursesViewModel
             Distance = "10"
         };
 
-        int larsCode = 123;
+        string larsCode = "123";
 
         var result = _sut.GenerateStandardRouteValues(larsCode);
 
@@ -514,7 +514,7 @@ public class WhenCreatingCoursesViewModel
             Distance = "10"
         };
 
-        int larsCode = 123;
+        string larsCode = "123";
 
         var result = _sut.GenerateStandardRouteValues(larsCode);
 

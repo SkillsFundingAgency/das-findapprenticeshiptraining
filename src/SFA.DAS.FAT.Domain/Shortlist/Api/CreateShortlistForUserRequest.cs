@@ -18,7 +18,7 @@ public class CreateShortlistForUserRequest : IPostApiRequest<PostShortlistForUse
 public class PostShortlistForUserRequest
 {
     public Guid ShortlistUserId { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public int Ukprn { get; set; }
     public string LocationName { get; set; } = null;
 }

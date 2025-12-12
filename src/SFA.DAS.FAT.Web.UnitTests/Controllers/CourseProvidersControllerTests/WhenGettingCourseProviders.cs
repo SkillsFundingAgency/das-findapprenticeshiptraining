@@ -27,6 +27,7 @@ using SFA.DAS.FAT.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
+
 public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
@@ -106,7 +107,7 @@ public class WhenGettingCourseProviders
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
-            actualModel.CourseId.Should().Be(request.Id);
+            actualModel.CourseId.Should().Be(request.Id.ToString());
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
             actualModel.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)

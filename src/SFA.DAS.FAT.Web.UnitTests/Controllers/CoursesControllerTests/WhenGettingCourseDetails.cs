@@ -91,7 +91,7 @@ public class WhenGettingCourseDetails
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                     a.Location.Equals(location) &&
-                    a.LarsCode.Equals(courseId)
+                    a.LarsCode.Equals(courseId.ToString())
                 ), It.IsAny<CancellationToken>()
             ), Times.Once
         );
@@ -130,7 +130,7 @@ public class WhenGettingCourseDetails
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.TEN_MILES) &&
                     a.Location.Equals(location) &&
-                    a.LarsCode.Equals(courseId)
+                    a.LarsCode.Equals(courseId.ToString())
                 ), It.IsAny<CancellationToken>()
             ), Times.Once
         );
@@ -169,7 +169,7 @@ public class WhenGettingCourseDetails
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(Convert.ToInt32(distance)) &&
                     a.Location.Equals(location) &&
-                    a.LarsCode.Equals(courseId)
+                    a.LarsCode.Equals(courseId.ToString())
                 ), It.IsAny<CancellationToken>()
             ), Times.Once
         );

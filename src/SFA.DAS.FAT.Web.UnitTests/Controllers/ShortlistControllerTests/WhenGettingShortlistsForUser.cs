@@ -47,7 +47,7 @@ public class WhenGettingShortlistsForUser
         _sut = new(_mediatorMock.Object, _shortlistCookieServiceMock.Object, _dataProtectionProviderMock.Object, _ratServiceMock.Object, _sessionServiceMock.Object);
         _sut.TempData = _tempDataMock.Object;
 
-        _ratServiceMock.Setup(x => x.GetRequestApprenticeshipTrainingUrl(It.IsAny<int>(), It.IsAny<EntryPoint>(), It.IsAny<string>())).Returns(RatUrl);
+        _ratServiceMock.Setup(x => x.GetRequestApprenticeshipTrainingUrl(It.IsAny<string>(), It.IsAny<EntryPoint>(), It.IsAny<string>())).Returns(RatUrl);
 
         _shortlistCookieServiceMock.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(_shortlistCookieItem);
 
@@ -66,7 +66,7 @@ public class WhenGettingShortlistsForUser
         {
             new ShortlistCourseModel
             {
-                LarsCode = 1,
+                LarsCode = "1",
                 StandardName = "Course 1",
                 Locations = new List<ShortlistLocationModel>
                 {

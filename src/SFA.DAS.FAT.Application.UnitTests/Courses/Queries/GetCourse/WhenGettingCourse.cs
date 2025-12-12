@@ -33,7 +33,7 @@ public sealed class WhenGettingCourse
     {
         var query = new GetCourseQuery
         {
-            LarsCode = 123,
+            LarsCode = "123",
             Location = "London",
             Distance = 20
         };
@@ -91,7 +91,7 @@ public sealed class WhenGettingCourse
     {
         _levelsServiceMock.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Level>());
 
-        _courseServiceMock.Setup(x => x.GetCourse(It.IsAny<int>(), It.IsAny<string>(), It.IsAny<int?>()))
+        _courseServiceMock.Setup(x => x.GetCourse(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int?>()))
             .ReturnsAsync((GetCourseResponse)null);
 
         var sut = await _handler.Handle(new GetCourseQuery(), CancellationToken.None);

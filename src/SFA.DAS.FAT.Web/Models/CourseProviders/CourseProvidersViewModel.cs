@@ -320,7 +320,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
-    public string GetHelpFindingCourseUrl(int larsCode)
+    public string GetHelpFindingCourseUrl(string larsCode)
     {
         var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
 

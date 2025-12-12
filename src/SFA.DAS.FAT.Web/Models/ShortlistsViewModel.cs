@@ -16,7 +16,7 @@ public class ShortlistsViewModel
 
 public class ShortlistCourseViewModel
 {
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string CourseTitle { get; set; }
     public List<ShortlistLocationViewModel> Locations { get; set; } = [];
 }
@@ -38,7 +38,7 @@ public class RequestApprenticeshipTrainingViewModel
 
 public class ShortlistProviderViewModel
 {
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public Guid ShortlistId { get; set; }
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }

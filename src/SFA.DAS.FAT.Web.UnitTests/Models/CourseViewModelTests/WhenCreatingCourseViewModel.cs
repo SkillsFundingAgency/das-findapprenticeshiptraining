@@ -158,7 +158,7 @@ public sealed class WhenCreatingCourseViewModel
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        var _sut = new CourseViewModel() { LarsCode = 1, Location = "SW1" };
+        var _sut = new CourseViewModel() { LarsCode = "1", Location = "SW1" };
 
         string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
         string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=SW1")}";
@@ -172,7 +172,7 @@ public sealed class WhenCreatingCourseViewModel
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        var _sut = new CourseViewModel() { LarsCode = 1, Location = string.Empty };
+        var _sut = new CourseViewModel() { LarsCode = "1", Location = string.Empty };
 
         string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
         string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";

@@ -19,7 +19,7 @@ public class GetCourseQueryValidatorTests
     [Test]
     public void TestValidator_CourseIdInvalid_ReturnsExpectedErrorMessage()
     {
-        var result = _validator.TestValidate(new GetCourseQuery());
+        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = "0" });
 
         result.IsValid.Should().BeFalse();
         result.ShouldHaveValidationErrorFor(c => c.LarsCode)
@@ -29,7 +29,7 @@ public class GetCourseQueryValidatorTests
     [Test]
     public void TestValidator_CourseIdValid_ReturnsValid()
     {
-        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = 1 });
+        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = "1" });
 
         result.IsValid.Should().BeTrue();
     }

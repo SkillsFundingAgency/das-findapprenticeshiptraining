@@ -6,12 +6,12 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public interface IRequestApprenticeshipTrainingService
 {
-    string GetRequestApprenticeshipTrainingUrl(int LarsCode, EntryPoint entryPoint, string location);
+    string GetRequestApprenticeshipTrainingUrl(string LarsCode, EntryPoint entryPoint, string location);
 }
 
 public class RequestApprenticeshipTrainingService(FindApprenticeshipTrainingWeb config) : IRequestApprenticeshipTrainingService
 {
-    public string GetRequestApprenticeshipTrainingUrl(int LarsCode, EntryPoint entryPoint, string location)
+    public string GetRequestApprenticeshipTrainingUrl(string LarsCode, EntryPoint entryPoint, string location)
     {
         string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={entryPoint}";
         var locationQueryParam = !string.IsNullOrEmpty(location) ? $"&location={Uri.EscapeDataString(location)}" : string.Empty;

@@ -8,7 +8,7 @@ public class ProviderCourseDetails
     public string CourseName { get; init; }
     public int Level { get; init; }
 
-    public int LarsCode { get; init; }
+    public string LarsCode { get; init; }
 
     public Dictionary<string, string> RouteData { get; set; } = new();
 

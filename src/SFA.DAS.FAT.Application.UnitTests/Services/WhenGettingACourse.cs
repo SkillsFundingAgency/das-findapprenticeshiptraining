@@ -17,7 +17,7 @@ public class WhenGettingACourse
 {
     [Test, MoqAutoData]
     public async Task Then_The_Api_Client_Is_Called_With_The_Request(
-        int larsCode,
+        string larsCode,
         string location,
         int? distance,
         string baseUrl,
@@ -28,7 +28,7 @@ public class WhenGettingACourse
     )
     {
         var courseApiRequest = new GetCourseApiRequest(config.Object.Value.BaseUrl, larsCode, location, distance);
-        apiClient.Setup(x => 
+        apiClient.Setup(x =>
             x.Get<GetCourseResponse>(
                 It.Is<GetCourseApiRequest>(request => request.GetUrl.Equals(courseApiRequest.GetUrl)))).ReturnsAsync(response);
 
@@ -47,7 +47,7 @@ public class WhenGettingACourse
         apiClient.Setup(x => x.Get<GetCourseResponse>(It.IsAny<GetCourseApiRequest>()))
             .ThrowsAsync(exception);
 
-        var sut = await courseService.GetCourse(1, "", 1);
+        var sut = await courseService.GetCourse("1", "", 1);
 
         sut.Should().BeNull();
     }
