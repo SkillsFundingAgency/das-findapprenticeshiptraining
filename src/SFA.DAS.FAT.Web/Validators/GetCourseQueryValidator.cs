@@ -9,9 +9,9 @@ namespace SFA.DAS.FAT.Web.Validators
 
         public GetCourseQueryValidator()
         {
-            RuleFor(s => int.Parse(s.LarsCode))
+            RuleFor(s => s.LarsCode)
                 .Cascade(CascadeMode.Stop)
-                .GreaterThan(0)
+                .Must(larsCode => int.TryParse(larsCode, out var parsed) && parsed > 0)
                 .WithMessage(CourseIdErrorMessage);
         }
     }
