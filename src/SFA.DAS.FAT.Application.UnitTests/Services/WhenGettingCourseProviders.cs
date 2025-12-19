@@ -98,7 +98,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, AutoData]
-    public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, int id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
+    public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
         List<QarRating> qarRatings,
         int page, Guid shortlistUserId)
     {
@@ -155,7 +155,7 @@ public class WhenGettingCourseProviders
         //Arrange Act
         page ??= 1;
 
-        var id = 1;
+        var id = "1";
         var orderBy = ProviderOrderBy.Distance;
 
         var deliveryModeTypes = new List<ProviderDeliveryMode>();

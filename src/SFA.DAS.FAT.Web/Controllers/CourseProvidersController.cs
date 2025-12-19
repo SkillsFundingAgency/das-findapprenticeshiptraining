@@ -61,7 +61,7 @@ public class CourseProvidersController : Controller
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
-        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.Id.ToString() });
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.Id });
 
         if (!validationLarsCodeResult.IsValid)
         {

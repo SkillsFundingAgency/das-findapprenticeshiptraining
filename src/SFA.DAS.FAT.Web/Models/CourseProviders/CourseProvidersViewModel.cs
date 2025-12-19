@@ -17,7 +17,7 @@ namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
 public class CourseProvidersViewModel : PageLinksViewModelBase
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;

@@ -130,7 +130,7 @@ public class CoursesController : Controller
 
         var query = new GetCourseQuery()
         {
-            LarsCode = id.ToString(),
+            LarsCode = id,
             Location = location,
             Distance = convertedDistance
         };

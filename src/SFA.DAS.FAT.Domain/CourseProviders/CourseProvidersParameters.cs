@@ -4,9 +4,10 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.CourseProviders;
+
 public class CourseProvidersParameters
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public int? Distance { get; set; }
     public string Location { get; set; }
