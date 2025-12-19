@@ -111,7 +111,7 @@ public class CoursesController : Controller
     }
 
     [Route("{id}", Name = RouteNames.CourseDetails)]
-    public async Task<IActionResult> CourseDetails([FromRoute] int id, [FromQuery] string location, [FromQuery] string distance)
+    public async Task<IActionResult> CourseDetails([FromRoute] string id, [FromQuery] string location, [FromQuery] string distance)
     {
         int? convertedDistance = null;
         if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)

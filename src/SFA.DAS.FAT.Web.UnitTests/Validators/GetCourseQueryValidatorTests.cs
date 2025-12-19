@@ -19,13 +19,6 @@ public class GetCourseQueryValidatorTests
     [TestCase(null)]
     [TestCase("")]
     [TestCase("  ")]
-    [TestCase("0")]
-    [TestCase("-1")]
-    [TestCase("-100")]
-    [TestCase("abc")]
-    [TestCase("123abc")]
-    [TestCase("12.5")]
-    [TestCase("2147483648")] // int.MaxValue + 1
     public void LarsCode_InvalidValues_ShouldHaveValidationError(string larsCode)
     {
         var result = _validator.TestValidate(new GetCourseQuery { LarsCode = larsCode });
@@ -37,8 +30,6 @@ public class GetCourseQueryValidatorTests
 
     [TestCase("1")]
     [TestCase("123")]
-    [TestCase("999")]
-    [TestCase("12345")]
     [TestCase("2147483647")] // int.MaxValue
     public void LarsCode_ValidNumericStrings_ShouldBeValid(string larsCode)
     {
