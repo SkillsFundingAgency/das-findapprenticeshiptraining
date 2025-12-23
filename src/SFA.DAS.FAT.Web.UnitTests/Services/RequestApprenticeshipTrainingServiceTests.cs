@@ -20,7 +20,7 @@ public class RequestApprenticeshipTrainingServiceTests
         };
         var service = new RequestApprenticeshipTrainingService(config);
         // Act
-        var result = service.GetRequestApprenticeshipTrainingUrl(1, EntryPoint.Shortlist, "location");
+        var result = service.GetRequestApprenticeshipTrainingUrl("1", EntryPoint.Shortlist, "location");
         // Assert
         result.Should().Be(expected);
     }
@@ -37,7 +37,7 @@ public class RequestApprenticeshipTrainingServiceTests
         };
         var service = new RequestApprenticeshipTrainingService(config);
         // Act
-        var result = service.GetRequestApprenticeshipTrainingUrl(1, EntryPoint.Shortlist, string.Empty);
+        var result = service.GetRequestApprenticeshipTrainingUrl("1", EntryPoint.Shortlist, string.Empty);
         // Assert
         result.Should().Be(expected);
     }

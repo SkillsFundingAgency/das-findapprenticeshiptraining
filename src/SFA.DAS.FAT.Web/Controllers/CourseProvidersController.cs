@@ -115,7 +115,7 @@ public class CourseProvidersController : Controller
             ShortlistCount = shortlistCount?.Count ?? 0,
             OrderBy = orderBy,
             CourseTitleAndLevel = result.StandardName,
-            CourseId = request.Id,
+            CourseId = request.Id.ToString(),
             Location = request.Location,
             Distance = convertedDistance.ToString(),
             SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()).ToList(),
@@ -163,7 +163,7 @@ public class CourseProvidersController : Controller
     }
 
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails(int id, int providerId, string location, string distance)
+    public async Task<IActionResult> CourseProviderDetails(string id, int providerId, string location, string distance)
     {
 
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });

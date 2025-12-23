@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Providers.Api.Responses;
+
 public class GetProviderQueryResponse
 {
     public int Ukprn { get; set; }
@@ -58,7 +59,7 @@ public class GetProviderCourseDetails
 {
     public string CourseName { get; set; }
     public int Level { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }
 
 }

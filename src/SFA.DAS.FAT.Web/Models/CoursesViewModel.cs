@@ -167,7 +167,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         return GetHelpFindingCourseUrl(standard.LarsCode);
     }
 
-    private string GetHelpFindingCourseUrl(int larsCode)
+    private string GetHelpFindingCourseUrl(string larsCode)
     {
         string redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
 
@@ -387,7 +387,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         return result;
     }
 
-    public Dictionary<string, string> GenerateStandardRouteValues(int larsCode)
+    public Dictionary<string, string> GenerateStandardRouteValues(string larsCode)
     {
         var routeValues = new Dictionary<string, string>
         {

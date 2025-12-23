@@ -8,7 +8,7 @@ namespace SFA.DAS.FAT.Domain.Interfaces;
 
 public interface ICourseService
 {
-    Task<GetCourseResponse> GetCourse(int larsCode, string location, int? distance);
+    Task<GetCourseResponse> GetCourse(string larsCode, string location, int? distance);
     Task<CourseProvidersDetails> GetCourseProviders(CourseProvidersParameters courseProvidersParameters);
-    Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, int larsCode, string location, int? distance, Guid shortlistUserId);
+    Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, string larsCode, string location, int? distance, Guid shortlistUserId);
 }

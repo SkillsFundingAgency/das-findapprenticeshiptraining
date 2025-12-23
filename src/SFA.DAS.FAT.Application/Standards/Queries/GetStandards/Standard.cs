@@ -1,5 +1,5 @@
 ﻿namespace SFA.DAS.FAT.Application.Standards.Queries.GetStandards;
 
-public record Standard(int LarsCode, string Title);
+public record Standard(string LarsCode, string Title);
 
 

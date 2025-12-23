@@ -5,13 +5,12 @@ namespace SFA.DAS.FAT.Web.Validators
 {
     public class GetCourseQueryValidator : AbstractValidator<GetCourseQuery>
     {
-        public const string CourseIdErrorMessage = "CourseId must be greater than zero";
+        public const string CourseIdErrorMessage = "LarsCode must not be empty";
 
         public GetCourseQueryValidator()
         {
             RuleFor(s => s.LarsCode)
-                .Cascade(CascadeMode.Stop)
-                .GreaterThan(0)
+                .NotEmpty()
                 .WithMessage(CourseIdErrorMessage);
         }
     }

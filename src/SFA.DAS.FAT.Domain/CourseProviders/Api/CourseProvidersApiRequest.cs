@@ -21,7 +21,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
     private readonly int? _page;
     private readonly int? _pageSize;
     private readonly Guid? _shortlistUserId;
-    private readonly int _id;
+    private readonly string _id;
 
     public CourseProvidersApiRequest(string baseUrl, CourseProvidersParameters courseProvidersParameters)
     {

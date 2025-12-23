@@ -344,7 +344,7 @@ public class WhenCreatingCourseProviderViewModel
         var sut = new CourseProviderViewModel
         {
             Courses = Enumerable.Range(1, courseCount)
-                                .Select(i => new ProviderCourseModel { LarsCode = i })
+                                .Select(i => new ProviderCourseModel { LarsCode = i.ToString() })
                                 .ToList()
         };
 

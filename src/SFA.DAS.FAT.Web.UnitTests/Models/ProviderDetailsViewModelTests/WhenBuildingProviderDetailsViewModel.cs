@@ -62,7 +62,7 @@ public class WhenBuildingProviderDetailsViewModel
             {
                 for (int i = 0; i < coursesCount; i++)
                 {
-                    courses.Add(new GetProviderCourseDetails { CourseName = $"course {i}", LarsCode = i, Level = 1 });
+                    courses.Add(new GetProviderCourseDetails { CourseName = $"course {i}", LarsCode = i.ToString(), Level = 1 });
                 }
             }
         }

@@ -19,7 +19,7 @@ public class WhenGettingCourseProviderDetails
     public async Task Then_The_Correct_Response_Is_Returned_From_The_Api(
         string baseUrl,
         int ukprn,
-        int larsCode,
+        string larsCode,
         string location,
         int? distance,
         Guid shortlistUserId,
@@ -74,7 +74,7 @@ public class WhenGettingCourseProviderDetails
     public async Task When_Api_Response_Is_Null_Then_Null_Is_Returned_From_The_Service(
         string baseUrl,
         int ukprn,
-        int larsCode,
+        string larsCode,
         string location,
         int? distance,
         Guid shortlistUserId,
@@ -109,7 +109,7 @@ public class WhenGettingCourseProviderDetails
     public async Task When_Api_Response_Is_NotFound_Then_Null_Is_Returned_From_The_Service(
         string baseUrl,
         int ukprn,
-        int larsCode,
+        string larsCode,
         string location,
         int? distance,
         Guid shortlistUserId,

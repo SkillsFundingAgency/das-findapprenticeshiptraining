@@ -27,6 +27,7 @@ using SFA.DAS.FAT.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
+
 public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
@@ -106,7 +107,7 @@ public class WhenGettingCourseProviders
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
-            actualModel.CourseId.Should().Be(request.Id);
+            actualModel.CourseId.Should().Be(request.Id.ToString());
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
             actualModel.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
@@ -898,7 +899,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest()) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
@@ -922,7 +923,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = "CV1 Coventry" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().Contain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -946,7 +947,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = string.Empty }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().NotContain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -969,7 +970,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
     }
@@ -996,7 +997,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
     }

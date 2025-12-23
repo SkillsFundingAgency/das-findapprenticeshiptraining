@@ -23,7 +23,7 @@ public class WhenGettingCourseProviderDetails
 {
     [Test, MoqAutoData]
     public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(
-        int courseId,
+        string courseId,
         int providerId,
         string location,
         GetCourseProviderQueryResult response,
@@ -76,7 +76,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Provider_Details_Are_Found_Then_Values_Are_Mapped_To_Model_Correctly(
-        int courseId,
+        string courseId,
         int providerId,
         string location,
         GetCourseProviderQueryResult response,
@@ -171,7 +171,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Location_Is_Set_Then_Distance_Defaults_To_One_Thousand_Miles(
-        int courseId,
+        string courseId,
         int providerId,
         string location,
         GetCourseProviderQueryResult response,
@@ -225,7 +225,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_Null(
-        int courseId,
+        string courseId,
         int providerId,
         string location,
         GetCourseProviderQueryResult response,
@@ -386,7 +386,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Location_Validation_Fails_Then_Validation_Message_Shown(
-        int courseId,
+        string courseId,
         int providerId,
         string location,
         GetCourseProviderDetailsQuery query,

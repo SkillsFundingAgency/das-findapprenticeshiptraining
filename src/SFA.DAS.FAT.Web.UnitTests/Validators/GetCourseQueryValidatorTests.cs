@@ -16,21 +16,26 @@ public class GetCourseQueryValidatorTests
         _validator = new GetCourseQueryValidator();
     }
 
-    [Test]
-    public void TestValidator_CourseIdInvalid_ReturnsExpectedErrorMessage()
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("  ")]
+    public void LarsCode_InvalidValues_ShouldHaveValidationError(string larsCode)
     {
-        var result = _validator.TestValidate(new GetCourseQuery());
+        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = larsCode });
 
         result.IsValid.Should().BeFalse();
         result.ShouldHaveValidationErrorFor(c => c.LarsCode)
             .WithErrorMessage(GetCourseQueryValidator.CourseIdErrorMessage);
     }
 
-    [Test]
-    public void TestValidator_CourseIdValid_ReturnsValid()
+    [TestCase("1")]
+    [TestCase("123")]
+    [TestCase("2147483647")] // int.MaxValue
+    public void LarsCode_ValidNumericStrings_ShouldBeValid(string larsCode)
     {
-        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = 1 });
+        var result = _validator.TestValidate(new GetCourseQuery { LarsCode = larsCode });
 
         result.IsValid.Should().BeTrue();
+        result.ShouldNotHaveValidationErrorFor(c => c.LarsCode);
     }
 }

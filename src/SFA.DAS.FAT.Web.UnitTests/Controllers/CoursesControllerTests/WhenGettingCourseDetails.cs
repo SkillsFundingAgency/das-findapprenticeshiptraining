@@ -25,7 +25,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        int courseId = 123;
+        string courseId = "123";
         string location = "London";
         string distance = "20";
 
@@ -67,7 +67,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController controller
     )
     {
-        int courseId = 123;
+        string courseId = "123";
         string location = "London";
         string distance = "All";
 
@@ -106,7 +106,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController controller
     )
     {
-        int courseId = 123;
+        string courseId = "123";
         string location = "London";
         string distance = "-20";
 
@@ -145,7 +145,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController controller
     )
     {
-        int courseId = 123;
+        string courseId = "123";
         string location = "London";
         string distance = "20";
 
@@ -183,7 +183,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        int courseId = 789;
+        string courseId = "789";
         string location = "SW1";
         string distance = "30";
 
@@ -211,7 +211,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        int courseId = 999;
+        string courseId = "999";
         string location = "SW1";
         string distance = "20";
 
@@ -239,7 +239,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        int courseId = 999;
+        string courseId = "999";
         string location = "SW1";
         string distance = "20";
 

@@ -6,9 +6,9 @@ public class GetCourseApiRequest : IGetApiRequest
 {
     private readonly string _location;
     private readonly int? _distance;
-    private readonly int _larsCode;
+    private readonly string _larsCode;
 
-    public GetCourseApiRequest(string baseUrl, int larsCode, string location, int? distance)
+    public GetCourseApiRequest(string baseUrl, string larsCode, string location, int? distance)
     {
         _location = location;
         _distance = distance;

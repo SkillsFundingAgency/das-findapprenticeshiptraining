@@ -24,7 +24,7 @@ public class CourseService : ICourseService
         _config = config.Value;
     }
 
-    public async Task<GetCourseResponse> GetCourse(int larsCode, string location, int? distance)
+    public async Task<GetCourseResponse> GetCourse(string larsCode, string location, int? distance)
     {
         GetCourseResponse response = null;
         try
@@ -57,7 +57,7 @@ public class CourseService : ICourseService
         return response;
     }
 
-    public async Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, int larsCode, string location, int? distance, Guid shortlistUserId)
+    public async Task<CourseProviderDetailsModel> GetCourseProvider(int ukprn, string larsCode, string location, int? distance, Guid shortlistUserId)
     {
         CourseProviderDetailsModel response = null;
 

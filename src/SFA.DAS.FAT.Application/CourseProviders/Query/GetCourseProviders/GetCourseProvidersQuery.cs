@@ -5,9 +5,10 @@ using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
+
 public class GetCourseProvidersQuery : IRequest<GetCourseProvidersResult>
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public ProviderOrderBy? OrderBy { get; set; }
     public int? Distance { get; set; }
     public string Location { get; set; } = string.Empty;

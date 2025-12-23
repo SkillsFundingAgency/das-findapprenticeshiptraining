@@ -17,7 +17,7 @@ namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
 public class CourseProvidersViewModel : PageLinksViewModelBase
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
@@ -320,7 +320,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
-    public string GetHelpFindingCourseUrl(int larsCode)
+    public string GetHelpFindingCourseUrl(string larsCode)
     {
         var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
 

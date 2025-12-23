@@ -8,7 +8,7 @@ namespace SFA.DAS.FAT.Web.Models;
 public class CourseProvidersRequest
 {
     [FromRoute]
-    public int Id { get; set; }
+    public string Id { get; set; }
 
     [FromQuery]
     public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.Distance;

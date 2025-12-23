@@ -8,7 +8,7 @@ public class StandardViewModel
     public int Ordering { get; set; }
     public required string StandardUId { get; set; }
     public required string IfateReferenceNumber { get; set; }
-    public int LarsCode { get; set; }
+    public string LarsCode { get; set; }
     public float? SearchScore { get; set; }
     public int ProvidersCount { get; set; } = 0;
     public int TotalProvidersCount { get; set; } = 0;
