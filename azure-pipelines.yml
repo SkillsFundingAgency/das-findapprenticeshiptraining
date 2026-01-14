@@ -10,7 +10,7 @@ variables:
 - name: BuildConfiguration
   value: release
 - name: BuildPlatform
-  value: any cpu  
+  value: any cpu
 - group: Release Management Resources
 - group: RELEASE das-findapprenticeshiptraining
 
@@ -39,7 +39,7 @@ stages:
   - template: pipeline-templates/job/code-build.yml
     parameters:
       SolutionBaseName: $(SolutionBaseName)
-      BuildConfiguration: $(BuildConfiguration)   
+      BuildConfiguration: $(BuildConfiguration)
 
 - stage: Deploy_AT
   dependsOn: Build
@@ -47,6 +47,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: AT DevTest Shared Resources
+  - group: AT das-findapprenticeshiptraining
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
@@ -125,7 +126,7 @@ stages:
       Environment: MO
       ServiceConnection: SFA-ASM-ModelOffice-ARM
       SolutionBaseName: $(SolutionBaseName)
-      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS      
+      AppRoleAssignmentsServiceConnection: das-app-role-assignments-FCS
 
 - stage: Deploy_PROD
   dependsOn: Build
