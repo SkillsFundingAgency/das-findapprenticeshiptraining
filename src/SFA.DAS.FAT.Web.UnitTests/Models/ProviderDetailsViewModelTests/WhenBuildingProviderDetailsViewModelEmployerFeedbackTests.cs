@@ -10,8 +10,8 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
 public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
 {
 
-    public const string TimePeriod1 = "AY2425";
-    public const string TimePeriod2 = "AY2324";
+    public const string TimePeriod1 = "AY2526";
+    public const string TimePeriod2 = "AY2425";
     public const string TimePeriodAll = "All";
     public DateTime DateToCheck = new(2025, 4, 28);
 
@@ -35,10 +35,10 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
             sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
 
             firstItem.IsMostRecentYear.Should().Be(true);
-            firstItem.EndYear.Should().Be(2025);
-            firstItem.StartYear.Should().Be(2024);
-            firstItem.Heading.Should().Be("2024 to today");
-            firstItem.SubHeading.Should().Be("1 August 2024 to today");
+            firstItem.EndYear.Should().Be(2026);
+            firstItem.StartYear.Should().Be(2025);
+            firstItem.Heading.Should().Be("2025 to today");
+            firstItem.SubHeading.Should().Be("1 August 2025 to today");
             firstItem.MainText.Should()
                 .Be(
                    FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
@@ -73,10 +73,10 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         sut.FeedbackSurvey.FeedbackByYear.Count.Should().Be(6);
         var feedbackTab = sut.FeedbackSurvey.FeedbackByYear[1];
         feedbackTab.IsMostRecentYear.Should().Be(false);
-        feedbackTab.EndYear.Should().Be(2024);
-        feedbackTab.StartYear.Should().Be(2023);
-        feedbackTab.Heading.Should().Be("2023 to 2024");
-        feedbackTab.SubHeading.Should().Be("1 August 2023 to 31 July 2024");
+        feedbackTab.EndYear.Should().Be(2025);
+        feedbackTab.StartYear.Should().Be(2024);
+        feedbackTab.Heading.Should().Be("2024 to 2025");
+        feedbackTab.SubHeading.Should().Be("1 August 2024 to 31 July 2025");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
@@ -110,7 +110,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
-        feedbackTab.SubHeading.Should().Be("1 August 2020 to today");
+        feedbackTab.SubHeading.Should().Be("1 August 2021 to today");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
