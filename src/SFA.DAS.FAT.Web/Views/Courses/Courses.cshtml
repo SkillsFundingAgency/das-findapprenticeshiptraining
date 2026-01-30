@@ -9,10 +9,13 @@
 }
 
 <main class="govuk-main-wrapper" id="main-content">
+    @{
+        await Html.RenderPartialAsync("_nationalApprenticeshipWeekBanner");
+    }
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">Apprenticeship training courses</h1>
-            @if(!string.IsNullOrWhiteSpace(Model.CoursesSubHeader))
+            @if (!string.IsNullOrWhiteSpace(Model.CoursesSubHeader))
             {
                 <p class="govuk-body">@Model.CoursesSubHeader</p>
             }
@@ -23,7 +26,7 @@
 
         <div class="govuk-grid-column-one-third">
             <form asp-route="@RouteNames.Courses" method="GET">
-            @await Html.PartialAsync("_filters", Model.Filters)
+                @await Html.PartialAsync("_filters", Model.Filters)
             </form>
         </div>
 
@@ -36,7 +39,7 @@
                         <div class="govuk-grid-column-one-half govuk-!-padding-0">
                             <p class="govuk-body govuk-!-font-weight-bold">@Model.TotalMessage</p>
                         </div>
-                        @if(!string.IsNullOrWhiteSpace(Model.SortedDisplayMessage))
+                        @if (!string.IsNullOrWhiteSpace(Model.SortedDisplayMessage))
                         {
                             <div class="govuk-grid-column-one-half govuk-!-padding-0">
                                 <p class="govuk-body govuk-!-text-align-right">
@@ -54,9 +57,9 @@
                     <ol class="das-search-results__list">
                         @foreach (var standard in Model.Standards)
                         {
-                            
+
                             <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
-                                <div id="foundation-tag" asp-show="standard.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship" >
+                                <div id="foundation-tag" asp-show="standard.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship">
                                     <strong class="govuk-body govuk-!-margin-bottom-4 govuk-tag govuk-tag--pink">Foundation</strong>
                                 </div>
                                 <h2 class="govuk-heading-m das-search-results__heading">
@@ -118,7 +121,7 @@
             else
             {
                 <p class="govuk-body govuk-!-font-weight-bold">No results</p>
-                
+
                 <p class="govuk-body">There are no courses that match your search.</p>
 
                 <p class="govuk-body">You may need to:</p>
@@ -130,7 +133,7 @@
                 </ul>
 
                 <p class="govuk-body">
-                    Change your search using the filters on this page or 
+                    Change your search using the filters on this page or
                     <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.SearchCourses">start a new search</a>.
                 </p>
             }
