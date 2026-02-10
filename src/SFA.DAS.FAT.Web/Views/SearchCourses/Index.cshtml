@@ -4,6 +4,10 @@
     ViewData["Title"] = "Search for apprenticeship training courses and training providers";
     ViewData["Description"] = "Search for apprenticeship training courses and training providers";
 }
+@{
+    await Html.RenderPartialAsync("_nationalApprenticeshipWeekBanner");
+}
+
 <section class="govuk-notification-banner" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
@@ -18,9 +22,6 @@
     </div>
 </section>
 <main class="govuk-main-wrapper" id="main-content">
-    @{
-        await Html.RenderPartialAsync("_nationalApprenticeshipWeekBanner");
-    }
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">

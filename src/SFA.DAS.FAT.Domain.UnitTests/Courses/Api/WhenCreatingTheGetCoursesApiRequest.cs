@@ -9,16 +9,18 @@ public class WhenCreatingTheGetCoursesApiRequest
     [Test]
     public void Constructor_Should_Set_Properties()
     {
-        var _sut = new GetCoursesApiRequest{
-            BaseUrl = "https://api.test/", 
-            Keyword = "test", 
-            Location = "London", 
-            Distance = 10, 
+        var _sut = new GetCoursesApiRequest
+        {
+            BaseUrl = "https://api.test/",
+            Keyword = "test",
+            Location = "London",
+            Distance = 10,
             RouteIds = new List<int> { 1, 2 },
-            ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString(), 
-            Levels = new List<int> { 3, 4 }, 
-            Page = 1, 
-            OrderBy = OrderBy.Score};
+            ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString(),
+            Levels = new List<int> { 3, 4 },
+            Page = 1,
+            OrderBy = OrderBy.Score
+        };
 
         Assert.Multiple(() =>
         {
@@ -64,7 +66,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Distance = null,
             RouteIds = new List<int>(),
             ApprenticeshipType = null,
-            Levels = new List<int> (),
+            Levels = new List<int>(),
             Page = 1,
             OrderBy = OrderBy.Title
         };

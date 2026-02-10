@@ -41,7 +41,8 @@ public class GetCoursesQueryHandler(
         }
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
-            new GetCoursesApiRequest{
+            new GetCoursesApiRequest
+            {
                 BaseUrl = _config.Value.BaseUrl,
                 Keyword = query.Keyword,
                 Location = query.Location,

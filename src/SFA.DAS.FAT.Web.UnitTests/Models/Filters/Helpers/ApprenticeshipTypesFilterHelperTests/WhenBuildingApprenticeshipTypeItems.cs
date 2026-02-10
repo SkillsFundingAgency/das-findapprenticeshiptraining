@@ -34,8 +34,8 @@ public sealed class WhenBuildingApprenticeshipTypeItems
         {
             new TypeViewModel(new ApprenticeType
             {
-                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
             }, null)
         };
 
@@ -57,8 +57,8 @@ public sealed class WhenBuildingApprenticeshipTypeItems
         {
             new TypeViewModel(new ApprenticeType
             {
-                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
             }, selectedTypes),
             new TypeViewModel(new ApprenticeType
             {
@@ -76,14 +76,14 @@ public sealed class WhenBuildingApprenticeshipTypeItems
 
         items.Should().HaveCount(3);
 
-        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnits.GetDescription());
+        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
         var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
         var apprenticeship = items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
 
         Assert.Multiple(() =>
         {
-            Assert.That(units.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNITS_DESCRIPTION));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
+            Assert.That(units.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(foundation.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
             Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
@@ -93,7 +93,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
     {
         var selectedTypes = new List<string>
         {
-            ApprenticeshipType.ApprenticeshipUnits.GetDescription(),
+            ApprenticeshipType.ApprenticeshipUnit.GetDescription(),
             ApprenticeshipType.Apprenticeship.GetDescription()
         };
 
@@ -101,8 +101,8 @@ public sealed class WhenBuildingApprenticeshipTypeItems
         {
             new TypeViewModel(new ApprenticeType
             {
-                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
             }, selectedTypes),
             new TypeViewModel(new ApprenticeType
             {
@@ -118,7 +118,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
 
         var items = ApprenticeshipTypesFilterHelper.BuildItems(types, selectedTypes);
 
-        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnits.GetDescription());
+        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
         var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
         var apprenticeship = items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
 

@@ -4,10 +4,10 @@ namespace SFA.DAS.FAT.Domain.Courses;
 
 public enum ApprenticeshipType
 {
-    [Description("Apprenticeship")]
+    [Description("Apprenticeships")]
     Apprenticeship,
-    [Description("Foundation apprenticeship")]
+    [Description("Foundation apprenticeships")]
     FoundationApprenticeship,
     [Description("Apprenticeship units")]
-    ApprenticeshipUnits
+    ApprenticeshipUnit
 }

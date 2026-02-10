@@ -27,8 +27,8 @@ public class SearchCoursesController() : Controller
         {
             new()
             {
-                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
             },
             new()
             {

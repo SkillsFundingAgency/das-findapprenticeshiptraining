@@ -213,7 +213,7 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
             Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
             Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
@@ -246,11 +246,11 @@ public sealed class WhenFilteringCourses
 
             var levelThreeLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 3");
             Assert.That(levelThreeLink, Is.Not.Null);
-            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeship"));
+            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
 
             var levelFourLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 4");
             Assert.That(levelFourLink, Is.Not.Null);
-            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&apprenticeshiptypes=Foundation apprenticeship"));
+            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
         });
     }
 
@@ -265,7 +265,7 @@ public sealed class WhenFilteringCourses
             Assert.That(keywordClearLink, Is.Not.Null);
             Assert.That(keywordClearLink.Items, Has.Count.EqualTo(1));
             Assert.That(keywordClearLink.Items[0].DisplayText, Is.EqualTo("Construction"));
-            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeship"));
+            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
         });
     }
 
@@ -282,7 +282,7 @@ public sealed class WhenFilteringCourses
 
             var constructionCategoryClearLink = categoryClearLinks.Items.First(a => a.DisplayText == "Construction");
             Assert.That(constructionCategoryClearLink, Is.Not.Null);
-            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&apprenticeshiptypes=Foundation apprenticeship"));
+            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&apprenticeshiptypes=Foundation apprenticeships"));
         });
     }
 
