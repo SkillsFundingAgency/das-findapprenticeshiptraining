@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelFilterTests;
@@ -212,8 +213,8 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
             Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
 

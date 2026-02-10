@@ -4,11 +4,11 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
+using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
@@ -94,10 +94,6 @@ public class CoursesViewModel : PageLinksViewModelBase
     public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
-
-    public const string APPRENTICESHIP_TYPE_APPRENTICESHIPUNITS_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
-    public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
-    public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, levels 2 to 7";
 
     public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT =
         "Find out more about apprenticeship types (opens in new tab)";
@@ -222,14 +218,22 @@ public class CoursesViewModel : PageLinksViewModelBase
                 CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
-                    "multi-select",
-                    string.Empty,
-                    [
-                        CreateCheckboxListFilterSection("types-filter", nameof(FilterType.ApprenticeshipTypes), APPRENTICESHIP_TYPES_SECTION_HEADING, null, GenerateApprenticeshipTypesFilterItems(), APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK),
-                        CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING,null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
-                        CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null,GenerateRouteFilterItems())
-                    ]
-                )
+                "multi-select",
+                string.Empty,
+                [
+                    CreateCheckboxListFilterSection(
+                        "types-filter",
+                        nameof(FilterType.ApprenticeshipTypes),
+                        APPRENTICESHIP_TYPES_SECTION_HEADING,
+                        null,
+                        ApprenticeshipTypesFilterHelper.BuildItems(Types, SelectedTypes),
+                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
+                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
+                    ),
+                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
+                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null, GenerateRouteFilterItems())
+                ]
+            )
             ],
             ClearFilterSections = selectedFilterSections
         };
@@ -244,23 +248,6 @@ public class CoursesViewModel : PageLinksViewModelBase
             Selected = SelectedRoutes?.Contains(category.Name) ?? false
         })
         .ToList() ?? [];
-    }
-
-    private List<FilterItemViewModel> GenerateApprenticeshipTypesFilterItems()
-    {
-        return Types?.Select(type => new FilterItemViewModel
-        {
-            Value = type.Name,
-            DisplayText = type.Name,
-            DisplayDescription =
-                type.Name == ApprenticeshipType.ApprenticeshipUnits.GetDescription()
-                    ? APPRENTICESHIP_TYPE_APPRENTICESHIPUNITS_DESCRIPTION
-                    : type.Name == ApprenticeshipType.FoundationApprenticeship.GetDescription()
-                    ? APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION
-                    : APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION,
-            Selected = SelectedTypes?.Contains(type.Name) ?? false
-        })
-            .ToList() ?? [];
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
