@@ -54,6 +54,11 @@ public class CoursesController : Controller
         {
             new()
             {
+                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+            },
+            new()
+            {
                 Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
                 Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
             },

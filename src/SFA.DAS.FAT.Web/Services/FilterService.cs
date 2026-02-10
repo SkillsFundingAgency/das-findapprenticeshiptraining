@@ -58,7 +58,7 @@ public static class FilterService
     public const string DELIVERYMODES_SECTION_HEADING = "Training options";
     public const string DELIVERYMODES_SECTION_SUB_HEADING = "Select a training option";
 
-    public const string APPRENTICESHIP_TYPES_SECTION_HEADING = "Apprenticeship type";
+    public const string APPRENTICESHIP_TYPES_SECTION_HEADING = "Training type";
 
     public const string QAR_SECTION_HEADING = "Achievement rate";
 

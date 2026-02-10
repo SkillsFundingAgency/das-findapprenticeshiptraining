@@ -4,7 +4,19 @@
     ViewData["Title"] = "Search for apprenticeship training courses and training providers";
     ViewData["Description"] = "Search for apprenticeship training courses and training providers";
 }
-
+<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+    <div class="govuk-notification-banner__header">
+        <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
+            Learn about the training we offer
+        </h2>
+    </div>
+    <div class="govuk-notification-banner__content">
+        <p class="govuk-notification-banner__heading">
+            We’ve created guidance to help you decide which type of training is right for your business. Find out more about
+            <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noopener noreferrer">how they’re funded, what their benefits are and who is eligible</a>.
+        </p>
+    </div>
+</div>
 <main class="govuk-main-wrapper" id="main-content">
     @{
         await Html.RenderPartialAsync("_nationalApprenticeshipWeekBanner");
@@ -12,13 +24,11 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-three-quarters">
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
-                Search for apprenticeship training courses and training providers
+                Find training if you’re an employer
             </h1>
+            <h2 class="govuk-heading-m">Employers can use this service to find training for their employees.</h2>
             <p class="govuk-body">
-                Search for a training course or training for a job. We'll show you a list of relevant and
-                similar courses and training providers that run them. You can also enter the apprentice's work
-                location
-                to find providers near that location.
+                Search by location or course type to compare apprenticeships, foundation apprenticeships and apprenticeship units. You can also filter by training type
             </p>
             <p class="govuk-body">
                 If you want to find a specific training provider, you can
@@ -35,22 +45,34 @@
                 <div class="govuk-grid-column-one-third">
                     <div class="govuk-form-group">
                         <label class="govuk-label govuk-label--m" for="CourseTerm">Course</label>
-                        <p class="govuk-hint">Enter the name of a course, job or standard (optional)</p>
+                        <p class="govuk-hint">Enter a job role, course name or subject area (optional)</p>
                         <input id="CourseTerm" name="CourseTerm" type="text" asp-for="CourseTerm" class="govuk-input"
                                sfa-validationerror-class="form-control-error"/>
                     </div>
-
                 </div>
                 <div class="govuk-grid-column-one-half">
                     <div class="govuk-form-group">
-                        <label class="govuk-label govuk-label--m" for="search-location">Apprentice's work
-                            location</label>
-                        <p class="govuk-hint">Enter the city or postcode where the apprentice will work (optional)</p>
+                        <label class="govuk-label govuk-label--m" for="search-location">
+                            Learner’s work location</label>
+                        <p class="govuk-hint">Enter the city or postcode where the learner will work (optional)</p>
                         <input type="search" id="search-location" name="location" title="Search work locations"
                                class="govuk-input" data-submit-on-selection="true">
                     </div>
                 </div>
             </div>
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-form-group">
+                        <label class="govuk-label govuk-label--m" for="TrainingType">Training type</label>
+                        <p class="govuk-hint">
+                            Select all training types that apply (optional). If you’re not sure which is right for your business, find out more about the training we offer
+                            <a class="govuk-link" href="#" target="_blank" rel="noopener noreferrer">find out more about the training we offer</a>.
+                        </p>
+                        @await Html.PartialAsync("_checkboxList", Model.TrainingTypesFilter)
+                    </div>
+                </div>
+            </div>
+
             <div class="govuk-button-group govuk-!-margin-bottom-0">
                 <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
                 <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">Browse all
@@ -58,4 +80,9 @@
             </div>
         </form>
     </div>
+    <p class="govuk-body govuk-!-margin-top-6">
+        If you’re looking to become an apprentice yourself, visit
+        <a class="govuk-link govuk-link--no-visited-state" href="https://www.findapprenticeship.service.gov.uk/apprenticeshipsearch" target="_blank" rel="noopener noreferrer">Find an apprenticeship</a>.
+    </p>
+
 </main>

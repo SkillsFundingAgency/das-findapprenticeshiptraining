@@ -95,6 +95,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
 
+    public const string APPRENTICESHIP_TYPE_APPRENTICESHIPUNITS_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION = "Apprenticeships that qualify you for a job, levels 2 to 7";
 
@@ -252,7 +253,9 @@ public class CoursesViewModel : PageLinksViewModelBase
             Value = type.Name,
             DisplayText = type.Name,
             DisplayDescription =
-                type.Name == ApprenticeshipType.FoundationApprenticeship.GetDescription()
+                type.Name == ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+                    ? APPRENTICESHIP_TYPE_APPRENTICESHIPUNITS_DESCRIPTION
+                    : type.Name == ApprenticeshipType.FoundationApprenticeship.GetDescription()
                     ? APPRENTICESHIP_TYPE_FOUNDATION_DESCRIPTION
                     : APPRENTICESHIP_TYPE_STANDARD_DESCRIPTION,
             Selected = SelectedTypes?.Contains(type.Name) ?? false

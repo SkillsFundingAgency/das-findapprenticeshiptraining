@@ -1,5 +1,9 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Services;
@@ -15,8 +19,30 @@ public class SearchCoursesController() : Controller
         SearchCoursesViewModel model = new SearchCoursesViewModel
         {
             ShowSearchCrumb = false,
-            ShowShortListLink = true
+            ShowShortListLink = true,
+            Types = new List<TypeViewModel>()
         };
+
+        var types = new List<ApprenticeType>
+        {
+            new()
+            {
+                Code = ApprenticeshipType.ApprenticeshipUnits.ToString(),
+                Name = ApprenticeshipType.ApprenticeshipUnits.GetDescription()
+            },
+            new()
+            {
+                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
+                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
+            },
+            new()
+            {
+                Code = ApprenticeshipType.Apprenticeship.ToString(),
+                Name= ApprenticeshipType.Apprenticeship.GetDescription()
+            }
+        };
+
+        model.Types = types.Select(type => new TypeViewModel(type, [])).ToList();
 
         return View(model);
     }
