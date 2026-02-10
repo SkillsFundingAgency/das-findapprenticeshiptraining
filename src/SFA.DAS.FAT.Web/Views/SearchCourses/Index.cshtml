@@ -4,7 +4,7 @@
     ViewData["Title"] = "Search for apprenticeship training courses and training providers";
     ViewData["Description"] = "Search for apprenticeship training courses and training providers";
 }
-<div class="govuk-notification-banner" role="region" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
+<section class="govuk-notification-banner" aria-labelledby="govuk-notification-banner-title" data-module="govuk-notification-banner">
     <div class="govuk-notification-banner__header">
         <h2 class="govuk-notification-banner__title" id="govuk-notification-banner-title">
             Learn about the training we offer
@@ -16,7 +16,7 @@
             <a class="govuk-notification-banner__link" href="#" target="_blank" rel="noopener noreferrer">how they’re funded, what their benefits are and who is eligible</a>.
         </p>
     </div>
-</div>
+</section>
 <main class="govuk-main-wrapper" id="main-content">
     @{
         await Html.RenderPartialAsync("_nationalApprenticeshipWeekBanner");
