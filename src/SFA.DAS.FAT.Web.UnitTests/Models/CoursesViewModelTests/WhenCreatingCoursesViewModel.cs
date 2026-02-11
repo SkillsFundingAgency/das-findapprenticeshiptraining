@@ -60,11 +60,11 @@ public class WhenCreatingCoursesViewModel
 
         var filters = _sut.CreateFilterSections();
 
-        Assert.That(filters.FilterSections.Count, Is.EqualTo(4));
+        Assert.That(filters.FilterSections, Has.Count.EqualTo(4));
 
         var accordion = filters.FilterSections[3] as AccordionFilterSectionViewModel;
         Assert.That(accordion, Is.Not.Null);
-        Assert.That(accordion!.Children.Count, Is.EqualTo(3));
+        Assert.That(accordion!.Children, Has.Count.EqualTo(3));
     }
     [Test]
     public void Then_The_Total_Message_Uses_Providers_Total_When_Unfiltered()
