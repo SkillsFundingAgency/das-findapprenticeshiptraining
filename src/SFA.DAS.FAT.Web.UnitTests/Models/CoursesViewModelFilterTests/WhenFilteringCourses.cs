@@ -29,19 +29,6 @@ public sealed class WhenFilteringCourses
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
-        var types = new List<ApprenticeType>
-        {
-            new()
-            {
-                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
-                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
-            },
-            new()
-            {
-                Code = ApprenticeshipType.Apprenticeship.ToString(),
-                Name= ApprenticeshipType.Apprenticeship.GetDescription()
-            }
-        };
         var selectedTypes = new List<string>
         {
             ApprenticeshipType.FoundationApprenticeship.GetDescription()

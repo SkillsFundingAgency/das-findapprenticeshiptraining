@@ -10,27 +10,27 @@ public static class ApprenticeshipTypesFilterHelper
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION = "Apprenticeships that qualify learners for a job, levels 2 to 7";
-    public static List<FilterItemViewModel> BuildItems(List<string> selectedTypes)
+    public static List<FilterItemViewModel> BuildItems(List<string> selectedTrainingTypes)
     {
-        var allTypes = new[]
+        var allTrainingTypes = new[]
         {
             ApprenticeshipType.ApprenticeshipUnit,
             ApprenticeshipType.FoundationApprenticeship,
             ApprenticeshipType.Apprenticeship
         };
 
-        return allTypes
-            .Select(type => new FilterItemViewModel
+        return allTrainingTypes
+            .Select(trainingType => new FilterItemViewModel
             {
-                Value = type.GetDescription(),
-                DisplayText = type.GetDescription(),
-                DisplayDescription = type switch
+                Value = trainingType.GetDescription(),
+                DisplayText = trainingType.GetDescription(),
+                DisplayDescription = trainingType switch
                 {
                     ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
                     ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
                     _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
                 },
-                IsSelected = selectedTypes?.Contains(type.GetDescription()) ?? false
+                IsSelected = selectedTrainingTypes?.Contains(trainingType.GetDescription()) ?? false
             })
             .ToList();
     }
