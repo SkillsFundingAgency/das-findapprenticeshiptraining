@@ -20,9 +20,6 @@ public class SearchCoursesController() : Controller
             ShowShortListLink = true,
         };
 
-        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.ApprenticeshipUnit.GetDescription(), DisplayText = ApprenticeshipType.ApprenticeshipUnit.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION, IsSelected = false });
-        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.FoundationApprenticeship.GetDescription(), DisplayText = ApprenticeshipType.FoundationApprenticeship.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION, IsSelected = false });
-        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.Apprenticeship.GetDescription(), DisplayText = ApprenticeshipType.Apprenticeship.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION, IsSelected = false });
         model.TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(model.SelectedTypes);
         return View(model);
     }
