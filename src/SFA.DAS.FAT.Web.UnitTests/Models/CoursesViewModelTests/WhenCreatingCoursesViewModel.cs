@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NUnit.Framework;
@@ -624,5 +625,71 @@ public class WhenCreatingCoursesViewModel
                 && (new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["distance"] as string) == "40"
             )
         ), Times.Once);
+    }
+
+    [Test]
+    public void Then_Categories_Items_Are_Generated_From_Routes_And_Selection_Is_Applied()
+    {
+        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Routes =
+            [
+                new RouteViewModel(new Route { Name = "Construction" }, ["Construction"]),
+                new RouteViewModel(new Route { Name = "Digital" }, ["Digital"])
+            ],
+            SelectedRoutes = ["Digital"]
+        };
+
+        var accordion = vm.Filters.FilterSections.First(s => s.Id == "multi-select");
+        var categories = (CheckboxListFilterSectionViewModel)accordion.Children.First(c => c.Id == "categories-filter");
+
+        Assert.That(categories.Items, Has.Count.EqualTo(2));
+        categories.Items.First(i => i.Value == "Construction").IsSelected.Should().BeFalse();
+        categories.Items.First(i => i.Value == "Digital").IsSelected.Should().BeTrue();
+    }
+
+    [Test]
+    public void Then_Categories_Items_Are_Empty_When_Routes_Are_Null()
+    {
+        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Routes = null
+        };
+
+        var accordion = vm.Filters.FilterSections.First(s => s.Id == "multi-select");
+        var categories = (CheckboxListFilterSectionViewModel)accordion.Children.First(c => c.Id == "categories-filter");
+
+        Assert.That(categories.Items, Has.Count.EqualTo(0));
+    }
+
+    [Test]
+    public void Then_CreateSelectedFilterSections_Only_Includes_Valid_Selected_Routes_And_Levels_Are_Coded_In_Links()
+    {
+        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "k",
+            SelectedRoutes = ["Construction", "Invalid"],
+            Routes = [new RouteViewModel(new Route { Name = "Construction" }, ["Construction"])],
+            Levels = [new LevelViewModel { Code = 3, Name = "Level 3" }],
+            SelectedLevels = [3]
+        };
+
+        var clear = vm.Filters.ClearFilterSections;
+        var categories = clear.First(s => s.FilterType == FilterService.FilterType.Categories);
+
+        Assert.That(categories.Items, Has.Count.EqualTo(1));
+        Assert.That(categories.Items[0].DisplayText, Is.EqualTo("Construction"));
+
+        var keyword = clear.First(s => s.FilterType == FilterService.FilterType.KeyWord);
+        keyword.Items[0].ClearLink.Should().Contain("levels=3").And.NotContain("levels=Level 3");
+    }
+
+    [Test]
+    public void Then_CreateSelectedFilterSections_Returns_Empty_Clear_Sections_When_No_Filters_Selected()
+    {
+        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object);
+
+        var clear = vm.Filters.ClearFilterSections;
+        Assert.That(clear, Is.Empty);
     }
 }
