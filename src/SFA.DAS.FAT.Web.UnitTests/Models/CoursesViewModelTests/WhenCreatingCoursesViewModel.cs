@@ -437,17 +437,6 @@ public class WhenCreatingCoursesViewModel
         var selectedTypes = new List<string> { "Standard" };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            Types = new List<TypeViewModel>()
-            {
-                new(
-                    new ApprenticeType
-                    {
-                        Code = "Apprenticeship",
-                        Name = "Standard"
-                    },
-                    selectedTypes
-                )
-            },
             SelectedTypes = selectedTypes
         };
 

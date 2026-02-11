@@ -10,19 +10,28 @@ public static class ApprenticeshipTypesFilterHelper
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION = "Apprenticeships that qualify learners for a job, levels 2 to 7";
-    public static List<FilterItemViewModel> BuildItems(List<TypeViewModel> types, List<string> selectedTypes)
+    public static List<FilterItemViewModel> BuildItems(List<string> selectedTypes)
     {
-        return types?.Select(type => new FilterItemViewModel
+        var allTypes = new[]
         {
-            Value = type.Name,
-            DisplayText = type.Name,
-            DisplayDescription =
-                type.Name == ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-                    ? APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION
-                    : type.Name == ApprenticeshipType.FoundationApprenticeship.GetDescription()
-                        ? APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION
-                        : APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION,
-            Selected = selectedTypes?.Contains(type.Name) ?? false
-        }).ToList() ?? [];
+            ApprenticeshipType.ApprenticeshipUnit,
+            ApprenticeshipType.FoundationApprenticeship,
+            ApprenticeshipType.Apprenticeship
+        };
+
+        return allTypes
+            .Select(type => new FilterItemViewModel
+            {
+                Value = type.GetDescription(),
+                DisplayText = type.GetDescription(),
+                DisplayDescription = type switch
+                {
+                    ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
+                    ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
+                    _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
+                },
+                IsSelected = selectedTypes?.Contains(type.GetDescription()) ?? false
+            })
+            .ToList();
     }
 }

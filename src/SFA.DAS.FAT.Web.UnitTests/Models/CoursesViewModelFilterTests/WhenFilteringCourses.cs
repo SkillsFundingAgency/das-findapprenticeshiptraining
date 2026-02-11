@@ -61,7 +61,6 @@ public sealed class WhenFilteringCourses
                 new LevelViewModel { Code = 4, Name = "Level 4" },
                 new LevelViewModel { Code = 5, Name = "Level 5" }
             },
-            Types = types.Select(type => new TypeViewModel(type, selectedTypes)).ToList(),
             Routes = new List<RouteViewModel> { new RouteViewModel(new Route() { Name = "Construction" }, ["Construction"]) }
         };
     }
@@ -128,7 +127,7 @@ public sealed class WhenFilteringCourses
                 options => options.WithStrictOrdering()
             );
 
-            var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
+            var selectedDistanceValue = dropdownFilter.Items.First(a => a.IsSelected);
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(_coursesViewModel.Distance));
             Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterService.DISTANCE_SECTION_HEADING));
             Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterService.DISTANCE_SECTION_SUB_HEADING));
@@ -154,7 +153,7 @@ public sealed class WhenFilteringCourses
 
             var levelsCheckBoxList = ((CheckboxListFilterSectionViewModel)levelsFilterSection);
             Assert.That(levelsCheckBoxList.Items, Has.Count.EqualTo(_coursesViewModel.Levels.Count));
-            Assert.That(levelsCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedLevels.Count));
+            Assert.That(levelsCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedLevels.Count));
             Assert.That(levelsCheckBoxList.Heading, Is.EqualTo(FilterService.LEVELS_SECTION_HEADING));
             Assert.That(levelsCheckBoxList.Link, Is.Not.Null);
             Assert.That(levelsCheckBoxList.Link.DisplayText, Is.EqualTo(FilterService.LEVEL_INFORMATION_DISPLAY_TEXT));
@@ -181,7 +180,7 @@ public sealed class WhenFilteringCourses
 
             var categoriesCheckBoxList = ((CheckboxListFilterSectionViewModel)categoryFilterSection);
             Assert.That(categoriesCheckBoxList.Items, Has.Count.EqualTo(_coursesViewModel.Routes.Count));
-            Assert.That(categoriesCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedRoutes.Count));
+            Assert.That(categoriesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedRoutes.Count));
             Assert.That(categoriesCheckBoxList.Heading, Is.EqualTo(FilterService.CATEGORIES_SECTION_HEADING));
             Assert.That(categoriesCheckBoxList.Link, Is.Null);
         });
@@ -205,16 +204,18 @@ public sealed class WhenFilteringCourses
             Assert.That(typeFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
 
             var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
-            Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(2));
-            Assert.That(typesCheckBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
+            Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(3));
+            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
             Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
             Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
             Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
-            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
 
@@ -309,7 +310,7 @@ public sealed class WhenFilteringCourses
             var distanceFilterSection = _sut.Filters.FilterSections.First(a => a.For == nameof(_coursesViewModel.Distance));
             Assert.That(distanceFilterSection, Is.Not.Null);
 
-            var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.Selected);
+            var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.IsSelected);
             Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
         });
     }

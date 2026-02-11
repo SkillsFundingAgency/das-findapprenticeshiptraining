@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
@@ -9,7 +8,6 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -50,25 +48,6 @@ public class CoursesController : Controller
             model.Distance = DistanceService.TEN_MILES.ToString();
         }
 
-        var types = new List<ApprenticeType>
-        {
-            new()
-            {
-                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-            },
-            new()
-            {
-                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
-                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
-            },
-            new()
-            {
-                Code = ApprenticeshipType.Apprenticeship.ToString(),
-                Name= ApprenticeshipType.Apprenticeship.GetDescription()
-            }
-        };
-
         var result = await _mediator.Send(new GetCoursesQuery
         {
             Keyword = model.Keyword,
@@ -94,7 +73,6 @@ public class CoursesController : Controller
             Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
             Location = model.Location ?? string.Empty,
             Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
-            Types = types.Select(type => new TypeViewModel(type, model.ApprenticeshipTypes)).ToList(),
             SelectedTypes = model.ApprenticeshipTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true

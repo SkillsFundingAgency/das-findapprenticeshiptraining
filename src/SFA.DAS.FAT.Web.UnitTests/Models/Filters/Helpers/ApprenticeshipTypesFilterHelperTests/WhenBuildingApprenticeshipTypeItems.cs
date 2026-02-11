@@ -10,39 +10,22 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters.Helpers.ApprenticeshipTypesFi
 public sealed class WhenBuildingApprenticeshipTypeItems
 {
     [Test]
-    public void Then_Returns_Empty_List_When_Types_Is_Null()
+    public void Then_Returns_All_Types_When_SelectedTypes_Is_Null()
     {
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(null, null);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
 
         items.Should().NotBeNull();
-        items.Should().BeEmpty();
-    }
-
-    [Test]
-    public void Then_Returns_Empty_List_When_Types_Is_Empty()
-    {
-        var items = ApprenticeshipTypesFilterHelper.BuildItems([], []);
-
-        items.Should().NotBeNull();
-        items.Should().BeEmpty();
+        items.Should().HaveCount(3);
+        items.All(i => i.IsSelected == false).Should().BeTrue();
     }
 
     [Test]
     public void Then_Sets_Selected_Correctly_When_SelectedTypes_Is_Null()
     {
-        var types = new List<TypeViewModel>
-        {
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-            }, null)
-        };
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
 
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(types, null);
-
-        items.Should().HaveCount(1);
-        items[0].Selected.Should().BeFalse();
+        items.Should().HaveCount(3);
+        items.All(i => i.IsSelected == false).Should().BeTrue();
     }
 
     [Test]
@@ -53,26 +36,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
             ApprenticeshipType.FoundationApprenticeship.GetDescription()
         };
 
-        var types = new List<TypeViewModel>
-        {
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-            }, selectedTypes),
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
-                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
-            }, selectedTypes),
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.Apprenticeship.ToString(),
-                Name = ApprenticeshipType.Apprenticeship.GetDescription()
-            }, selectedTypes)
-        };
-
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(types, selectedTypes);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes);
 
         items.Should().HaveCount(3);
 
@@ -97,26 +61,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
             ApprenticeshipType.Apprenticeship.GetDescription()
         };
 
-        var types = new List<TypeViewModel>
-        {
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-            }, selectedTypes),
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
-                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
-            }, selectedTypes),
-            new TypeViewModel(new ApprenticeType
-            {
-                Code = ApprenticeshipType.Apprenticeship.ToString(),
-                Name = ApprenticeshipType.Apprenticeship.GetDescription()
-            }, selectedTypes)
-        };
-
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(types, selectedTypes);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes);
 
         var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
         var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
@@ -124,9 +69,9 @@ public sealed class WhenBuildingApprenticeshipTypeItems
 
         Assert.Multiple(() =>
         {
-            Assert.That(units.Selected, Is.True);
-            Assert.That(foundation.Selected, Is.False);
-            Assert.That(apprenticeship.Selected, Is.True);
+            Assert.That(units.IsSelected, Is.True);
+            Assert.That(foundation.IsSelected, Is.False);
+            Assert.That(apprenticeship.IsSelected, Is.True);
         });
     }
 }

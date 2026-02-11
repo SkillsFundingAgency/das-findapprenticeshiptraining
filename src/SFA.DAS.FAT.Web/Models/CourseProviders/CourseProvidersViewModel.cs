@@ -180,7 +180,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             Value = deliveryMode.DeliveryItemChoice.ToString(),
             DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
-            Selected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
+            IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
         })
             .ToList() ?? [];
     }
@@ -193,7 +193,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             Value = qarRating.QarRatingType.ToString(),
             DisplayText = qarRating.QarRatingType.GetDescription(),
-            Selected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
+            IsSelected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
     }
@@ -209,7 +209,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 rating.ProviderRatingType == ProviderRating.NotYetReviewed
                 ? "No employer reviews"
                 : rating.ProviderRatingType.GetDescription(),
-            Selected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+            IsSelected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
     }
@@ -225,7 +225,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 rating.ProviderRatingType == ProviderRating.NotYetReviewed
                     ? "No apprentice reviews"
                     : rating.ProviderRatingType.GetDescription(),
-            Selected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+            IsSelected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
         })
             .ToList() ?? [];
     }

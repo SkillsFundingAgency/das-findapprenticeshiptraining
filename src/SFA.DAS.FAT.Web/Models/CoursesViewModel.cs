@@ -23,8 +23,6 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<RouteViewModel> Routes { get; set; } = [];
 
-    public List<TypeViewModel> Types { get; set; } = [];
-
     public PaginationViewModel Pagination { get; set; }
 
     public string Keyword { get; set; } = string.Empty;
@@ -226,7 +224,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                         nameof(FilterType.ApprenticeshipTypes),
                         APPRENTICESHIP_TYPES_SECTION_HEADING,
                         null,
-                        ApprenticeshipTypesFilterHelper.BuildItems(Types, SelectedTypes),
+                        ApprenticeshipTypesFilterHelper.BuildItems(SelectedTypes),
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
                     ),
@@ -245,7 +243,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             Value = category.Name,
             DisplayText = category.Name,
-            Selected = SelectedRoutes?.Contains(category.Name) ?? false
+            IsSelected = SelectedRoutes?.Contains(category.Name) ?? false
         })
         .ToList() ?? [];
     }
@@ -257,7 +255,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             Value = level.Code.ToString(),
             DisplayText = $"Level {level.Code}",
             DisplayDescription = $"Equal to {level.Name}",
-            Selected = SelectedLevels?.Contains(level.Code) ?? false
+            IsSelected = SelectedLevels?.Contains(level.Code) ?? false
         })
         .ToList() ?? [];
     }
@@ -297,14 +295,9 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
 
-        if (SelectedTypes?.Count > 0 && Types.Count > 0)
+        if (SelectedTypes?.Count > 0)
         {
-            var selectedTypes = Types
-                .Where(type => SelectedTypes.Contains(type.Name))
-                .Select(type => $"{type.Name}")
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, selectedTypes);
+            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTypes.ToList());
         }
 
         if (selectedFilters.Count == 0)

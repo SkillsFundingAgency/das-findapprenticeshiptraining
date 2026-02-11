@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -20,30 +18,12 @@ public class SearchCoursesController() : Controller
         {
             ShowSearchCrumb = false,
             ShowShortListLink = true,
-            Types = new List<TypeViewModel>()
         };
 
-        var types = new List<ApprenticeType>
-        {
-            new()
-            {
-                Code = ApprenticeshipType.ApprenticeshipUnit.ToString(),
-                Name = ApprenticeshipType.ApprenticeshipUnit.GetDescription()
-            },
-            new()
-            {
-                Code = ApprenticeshipType.FoundationApprenticeship.ToString(),
-                Name = ApprenticeshipType.FoundationApprenticeship.GetDescription()
-            },
-            new()
-            {
-                Code = ApprenticeshipType.Apprenticeship.ToString(),
-                Name= ApprenticeshipType.Apprenticeship.GetDescription()
-            }
-        };
-
-        model.Types = types.Select(type => new TypeViewModel(type, [])).ToList();
-
+        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.ApprenticeshipUnit.GetDescription(), DisplayText = ApprenticeshipType.ApprenticeshipUnit.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION, IsSelected = false });
+        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.FoundationApprenticeship.GetDescription(), DisplayText = ApprenticeshipType.FoundationApprenticeship.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION, IsSelected = false });
+        //model.TrainingTypesFilterItems.Add(new FilterItemViewModel() { Value = ApprenticeshipType.Apprenticeship.GetDescription(), DisplayText = ApprenticeshipType.Apprenticeship.GetDescription(), DisplayDescription = ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION, IsSelected = false });
+        model.TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(model.SelectedTypes);
         return View(model);
     }
 
@@ -62,6 +42,7 @@ public class SearchCoursesController() : Controller
             request.Location = submitModel.Location;
             request.Distance = DistanceService.TEN_MILES.ToString();
         }
+        request.ApprenticeshipTypes = submitModel.SelectedTypes;
 
         return RedirectToAction("Index", "Courses", request);
     }

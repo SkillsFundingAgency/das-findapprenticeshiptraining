@@ -14,7 +14,7 @@
     <select class="govuk-select govuk-select-expand" id="@Model.Id" name="@Model.For">
         @foreach (var item in Model.Items)
         {
-            <option value="@item.Value" selected=@(item.Selected ? "selected" : null)>@item.DisplayText</option>
+            <option value="@item.Value" selected=@(item.IsSelected ? "selected" : null)>@item.DisplayText</option>
         }
     </select>
 

@@ -216,14 +216,14 @@ public static class FilterService
         {
             Value = distance.ToString(),
             DisplayText = $"{distance} miles",
-            Selected = validDistance == distance
+            IsSelected = validDistance == distance
         }));
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
             Value = DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
             DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
-            Selected =
+            IsSelected =
                 string.Equals(
                     selectedDistance,
                     DistanceService.ACROSS_ENGLAND_FILTER_VALUE,

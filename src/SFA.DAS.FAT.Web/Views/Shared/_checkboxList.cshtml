@@ -11,7 +11,7 @@
 
                 <div class="govuk-checkboxes__item">
                     <input
-                        @(filterItem.Selected ? "checked='checked'" : "")
+                        @(filterItem.IsSelected ? "checked='checked'" : "")
                         class="govuk-checkboxes__input"
                         id="@inputId"
                         name="@Model.For"
