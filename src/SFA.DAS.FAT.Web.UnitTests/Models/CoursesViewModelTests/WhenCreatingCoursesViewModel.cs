@@ -6,6 +6,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -23,6 +24,48 @@ public class WhenCreatingCoursesViewModel
         _urlHelper = new Mock<IUrlHelper>();
     }
 
+    [Test]
+    public void When_Location_Is_Not_Selected_Distance_Defaults_To_Ten_Miles_And_Is_Not_In_ClearFilters()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = string.Empty,
+            Location = string.Empty,
+            SelectedLevels = [],
+            SelectedRoutes = []
+        };
+
+        var filters = _sut.Filters;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(_sut.Distance, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
+            Assert.That(filters.ClearFilterSections.Any(s => s.FilterType == FilterService.FilterType.Distance), Is.False);
+            Assert.That(filters.ClearFilterSections, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void Filters_CreateFilterSections_Has_Expected_Sections_And_Subsections()
+    {
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Keyword = "test",
+            Location = "SW1",
+            Distance = "10",
+            SelectedTypes = ["Standard"],
+            Levels = [new LevelViewModel(new Level { Code = 2, Name = "GCSE" }, [])],
+            Routes = [new RouteViewModel(new Route { Id = 1, Name = "Construction" }, [])]
+        };
+
+        var filters = _sut.CreateFilterSections();
+
+        Assert.That(filters.FilterSections.Count, Is.EqualTo(4));
+
+        var accordion = filters.FilterSections[3] as AccordionFilterSectionViewModel;
+        Assert.That(accordion, Is.Not.Null);
+        Assert.That(accordion!.Children.Count, Is.EqualTo(3));
+    }
     [Test]
     public void Then_The_Total_Message_Uses_Providers_Total_When_Unfiltered()
     {
@@ -515,5 +558,71 @@ public class WhenCreatingCoursesViewModel
             Assert.That(result.ContainsKey("location"), Is.False);
             Assert.That(result.ContainsKey("distance"), Is.False);
         });
+    }
+
+    [Test, MoqAutoData]
+    public void When_Providers_Count_Is_More_Than_Zero_And_Distance_Is_All_Route_Uses_Empty_Distance(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 2;
+        standardViewModel.LarsCode = "123";
+
+        var mockUrlHelper = new Mock<IUrlHelper>();
+        mockUrlHelper
+            .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName == RouteNames.CourseProviders)))
+            .Returns("https://localhost/course/123/providers");
+
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, mockUrlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
+        };
+
+        _ = _sut.GetProvidersLink(standardViewModel);
+
+        mockUrlHelper.Verify(m => m.RouteUrl(
+            It.Is<UrlRouteContext>(c =>
+                c.RouteName == RouteNames.CourseProviders
+                && c.Values != null
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("id")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["id"], standardViewModel.LarsCode)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("Location")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["Location"], _sut.Location)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("distance")
+                && string.IsNullOrEmpty(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["distance"] as string)
+            )
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public void When_Providers_Count_Is_More_Than_Zero_And_Distance_Is_Set_Route_Uses_Distance_Value(StandardViewModel standardViewModel)
+    {
+        standardViewModel.ProvidersCount = 2;
+        standardViewModel.LarsCode = "123";
+
+        var mockUrlHelper = new Mock<IUrlHelper>();
+        mockUrlHelper
+            .Setup(m => m.RouteUrl(It.Is<UrlRouteContext>(c => c.RouteName == RouteNames.CourseProviders)))
+            .Returns("https://localhost/course/123/providers");
+
+        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, mockUrlHelper.Object)
+        {
+            Location = "SW1",
+            Distance = "40"
+        };
+
+        _ = _sut.GetProvidersLink(standardViewModel);
+
+        mockUrlHelper.Verify(m => m.RouteUrl(
+            It.Is<UrlRouteContext>(c =>
+                c.RouteName == RouteNames.CourseProviders
+                && c.Values != null
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("id")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["id"], standardViewModel.LarsCode)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("Location")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["Location"], _sut.Location)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("distance")
+                && (new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["distance"] as string) == "40"
+            )
+        ), Times.Once);
     }
 }
