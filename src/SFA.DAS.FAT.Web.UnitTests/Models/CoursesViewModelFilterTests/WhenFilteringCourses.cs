@@ -423,9 +423,12 @@ public sealed class WhenFilteringCourses
         standard.ProvidersCount = 0;
 
         var url = vm.GetProvidersLink(standard);
-        Assert.That(url, Does.StartWith("https://accounts/service/?redirectUri="));
-        Assert.That(Uri.UnescapeDataString(url), Does.Contain("standardId=123"));
-        Assert.That(Uri.UnescapeDataString(url), Does.Contain("location=M60 7RA"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(url, Does.StartWith("https://accounts/service/?redirectUri="));
+            Assert.That(Uri.UnescapeDataString(url), Does.Contain("standardId=123"));
+            Assert.That(Uri.UnescapeDataString(url), Does.Contain("location=M60 7RA"));
+        });
     }
 
     [Test]
@@ -470,31 +473,36 @@ public sealed class WhenFilteringCourses
     public void GenerateStandardRouteValues_Includes_Location_And_Distance_When_Present()
     {
         var values = _coursesViewModel.GenerateStandardRouteValues("55");
-        Assert.That(values["id"], Is.EqualTo("55"));
-        Assert.That(values.ContainsKey("location"), Is.True);
-        Assert.That(values.ContainsKey("distance"), Is.True);
-        Assert.That(values["location"], Is.EqualTo("M60 7RA"));
-        Assert.That(values["distance"], Is.EqualTo("20"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(values["id"], Is.EqualTo("55"));
+            Assert.That(values.ContainsKey("location"), Is.True);
+            Assert.That(values.ContainsKey("distance"), Is.True);
+            Assert.That(values["location"], Is.EqualTo("M60 7RA"));
+            Assert.That(values["distance"], Is.EqualTo("20"));
+        });
     }
 
     [Test]
     public void ToQueryString_Returns_Selected_Filters_As_KeyValuePairs()
     {
         var qs = _coursesViewModel.ToQueryString();
+        Assert.Multiple(() =>
+        {
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Keyword) && kv.Item2 == "Construction"), Is.True);
 
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Keyword) && kv.Item2 == "Construction"), Is.True);
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Location) && kv.Item2 == "M60 7RA"), Is.True);
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Distance) && kv.Item2 == "20"), Is.True);
 
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Location) && kv.Item2 == "M60 7RA"), Is.True);
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Distance) && kv.Item2 == "20"), Is.True);
+            Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Levels)), Is.EqualTo(2));
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "3"), Is.True);
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "4"), Is.True);
 
-        Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Levels)), Is.EqualTo(2));
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "3"), Is.True);
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "4"), Is.True);
+            Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Categories)), Is.EqualTo(1));
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Categories) && kv.Item2 == "Construction"), Is.True);
 
-        Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Categories)), Is.EqualTo(1));
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Categories) && kv.Item2 == "Construction"), Is.True);
-
-        Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes)), Is.EqualTo(1));
-        Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes) && kv.Item2 == ApprenticeshipType.FoundationApprenticeship.GetDescription()), Is.True);
+            Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes)), Is.EqualTo(1));
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes) && kv.Item2 == ApprenticeshipType.FoundationApprenticeship.GetDescription()), Is.True);
+        });
     }
 }
