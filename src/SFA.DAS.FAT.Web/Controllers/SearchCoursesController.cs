@@ -17,9 +17,8 @@ public class SearchCoursesController() : Controller
         {
             ShowSearchCrumb = false,
             ShowShortListLink = true,
+            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems([])
         };
-
-        model.TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(model.SelectedTypes);
         return View(model);
     }
 
