@@ -26,7 +26,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Not_Selected_Distance_Defaults_To_Ten_Miles_And_Is_Not_In_ClearFilters()
+    public void CreateFilters_LocationNotSelected_DistanceDefaultsToTenMilesAndNotInClearFilters()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -47,7 +47,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Filters_CreateFilterSections_Has_Expected_Sections_And_Subsections()
+    public void CreateFilterSections_WithInputs_HasExpectedSectionsAndSubsections()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -68,7 +68,7 @@ public class WhenCreatingCoursesViewModel
         Assert.That(accordion!.Children, Has.Count.EqualTo(3));
     }
     [Test]
-    public void Then_The_Total_Message_Uses_Providers_Total_When_Unfiltered()
+    public void TotalMessage_Unfiltered_UsesProvidersTotal()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -81,7 +81,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Routes()
+    public void TotalMessage_WithSelectedRoutes_UsesFilteredTotal()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -94,7 +94,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_The_Total_Message_Uses_Filtered_Total_If_There_Are_Selected_Levels()
+    public void TotalMessage_WithSelectedLevels_UsesFilteredTotal()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -107,7 +107,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_The_Total_Message_Uses_Filtered_Total_If_Keyword_Is_Set()
+    public void TotalMessage_WithKeyword_UsesFilteredTotal()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -120,7 +120,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Keyword_Is_Set_Then_Courses_Are_Ordered_By_Score()
+    public void OrderBy_WithKeywordSet_IsScore()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -131,7 +131,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Keyword_Is_Not_Set_Then_Courses_Are_Ordered_By_Title()
+    public void OrderBy_WithKeywordEmpty_IsTitle()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -142,7 +142,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Total_Is_Greater_Than_Zero_Then_CoursesSubHeader_Returns_Default_Message()
+    public void CoursesSubHeader_WithTotalGreaterThanZero_ReturnsDefaultMessage()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -153,7 +153,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Set_And_Distance_Is_Not_All_Then_CoursesSubHeader_Returns_Location_Message()
+    public void CoursesSubHeader_WithLocationAndDistanceNotAll_ReturnsLocationMessage()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -166,7 +166,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Set_And_Distance_Is_All_Then_CoursesSubHeader_Returns_Default_Message()
+    public void CoursesSubHeader_WithLocationAndDistanceAll_ReturnsDefaultMessage()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -179,7 +179,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Keyword_Is_Set_But_Total_Is_Zero_Then_CoursesSubHeader_Returns_Empty_String()
+    public void CoursesSubHeader_WithKeywordAndZeroTotal_ReturnsEmptyString()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -191,7 +191,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Keyword_Is_Given_Then_Message_Is_Best_Match_To_Course()
+    public void SortedDisplayMessage_WithKeyword_IsBestMatchToCourse()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -202,7 +202,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_OrderBy_Is_Title_Then_Sorted_Message_Is_Name_Of_Course()
+    public void SortedDisplayMessage_WithOrderByTitle_IsNameOfCourse()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -213,7 +213,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Level_Exists_Then_A_Combination_Of_Level_Code_And_Name_Is_Returned()
+    public void GetLevelName_WithExistingLevel_ReturnsFormattedName()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -234,7 +234,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Level_Does_Not_Exists_Then_An_Empty_String_Is_Returned()
+    public void GetLevelName_WithMissingLevel_ReturnsEmptyString()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -245,7 +245,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_One_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithOneProviderAndNullLocation_ReturnsSingularCourseMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -258,7 +258,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_More_Than_One_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithMultipleProvidersAndNullLocation_ReturnsPluralCourseMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -271,7 +271,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Standard_Providers_Count_Is_Zero_And_Location_Is_Null_Then_View_One_Provider_Message_Is_Returned(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithZeroProvidersAndNullLocation_ReturnsAskProviderMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -284,7 +284,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void Returns_Singular_Provider_Message_When_All_Distance_Is_Selected_And_Location_Is_Set(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithAllDistanceAndLocationAndOneProvider_ReturnsSingularCourseMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -298,7 +298,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void Returns_Plural_Provider_Message_When_All_Distance_Is_Selected_And_Location_Is_Set(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithAllDistanceAndLocationAndMultipleProviders_ReturnsPluralCourseMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -312,7 +312,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void Returns_Singular_Distance_Message_When_Distance_And_Location_Is_Set(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithDistanceAndLocationAndOneProvider_ReturnsSingularDistanceMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -326,7 +326,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void Returns_Plural_Distance_Message_When_Distance_And_Location_Is_Set(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_WithDistanceAndLocationAndMultipleProviders_ReturnsPluralDistanceMessage(StandardViewModel standardViewModel)
     {
         CoursesViewModel model = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -340,7 +340,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_More_Than_Zero_Link_Returns_Providers_List_Url(StandardViewModel standardViewModel)
+    public void GetProvidersLink_WithProviders_ReturnsProvidersListUrl(StandardViewModel standardViewModel)
     {
         standardViewModel.ProvidersCount = 2;
         standardViewModel.LarsCode = "123";
@@ -359,7 +359,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_Zero_And_Location_Is_Set_Link_Returns_Request_Apprenticeship_Training_Url_With_Location(
+    public void GetProvidersLink_WithZeroProvidersAndLocation_ReturnsRequestApprenticeshipTrainingUrlWithLocation(
         StandardViewModel standardViewModel,
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
@@ -378,7 +378,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_Zero_And_Location_Is_Not_Set_Link_Returns_Request_Apprenticeship_Training_Url_Without_Location(
+    public void GetProvidersLink_WithZeroProvidersAndNoLocation_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
         StandardViewModel standardViewModel,
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
@@ -394,7 +394,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_ToQueryString_Should_Include_Keyword_When_Set()
+    public void ToQueryString_WithKeyword_IncludesKeyword()
     {
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -407,7 +407,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_ToQueryString_Should_Include_Location_And_Distance_When_Set()
+    public void ToQueryString_WithLocationAndDistance_IncludesBoth()
     {
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -425,7 +425,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_ToQueryString_Should_Include_Levels_When_SelectedLevels_Are_Set()
+    public void ToQueryString_WithSelectedLevels_IncludesLevels()
     {
         var selectedLevels = new List<int>() { 1 };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
@@ -450,7 +450,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_ToQueryString_Should_Include_Routes_When_SelectedRoutes_Are_Set()
+    public void ToQueryString_WithSelectedRoutes_IncludesCategories()
     {
         var selectedRoutes = new List<string> { "Construction" };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
@@ -476,7 +476,7 @@ public class WhenCreatingCoursesViewModel
 
 
     [Test]
-    public void Then_ToQueryString_Should_Include_ApprenticeshipTypes_When_SelectedTypes_Are_Set()
+    public void ToQueryString_WithSelectedTypes_IncludesApprenticeshipTypes()
     {
         var selectedTypes = new List<string> { "Standard" };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
@@ -490,7 +490,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Set_Then_Location_And_Distance_Must_Be_Added_To_Standard_Routes()
+    public void GenerateStandardRouteValues_WithLocation_AddsLocationAndDistance()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -516,7 +516,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Empty_Then_Location_And_Distance_Must_Not_Be_Added_To_Standard_Routes()
+    public void GenerateStandardRouteValues_WithEmptyLocation_DoesNotAddLocationOrDistance()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -539,7 +539,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void When_Location_Is_Null_Then_Location_And_Distance_Must_Not_Be_Added_To_Standard_Routes()
+    public void GenerateStandardRouteValues_WithNullLocation_DoesNotAddLocationOrDistance()
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -562,7 +562,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_More_Than_Zero_And_Distance_Is_All_Route_Uses_Empty_Distance(StandardViewModel standardViewModel)
+    public void GetProvidersLink_WithProvidersAndAllDistance_UsesEmptyDistance(StandardViewModel standardViewModel)
     {
         standardViewModel.ProvidersCount = 2;
         standardViewModel.LarsCode = "123";
@@ -595,7 +595,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Providers_Count_Is_More_Than_Zero_And_Distance_Is_Set_Route_Uses_Distance_Value(StandardViewModel standardViewModel)
+    public void GetProvidersLink_WithProvidersAndSetDistance_UsesDistanceValue(StandardViewModel standardViewModel)
     {
         standardViewModel.ProvidersCount = 2;
         standardViewModel.LarsCode = "123";
@@ -628,7 +628,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_Categories_Items_Are_Generated_From_Routes_And_Selection_Is_Applied()
+    public void CategoriesItems_WithRoutes_GeneratesItemsAndAppliesSelection()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -649,7 +649,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_Categories_Items_Are_Empty_When_Routes_Are_Null()
+    public void CategoriesItems_WithNullRoutes_IsEmpty()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -663,7 +663,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_CreateSelectedFilterSections_Only_Includes_Valid_Selected_Routes_And_Levels_Are_Coded_In_Links()
+    public void CreateSelectedFilterSections_WithMixedRoutes_IncludesValidRoutesAndCodesLevelsInLinks()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
@@ -685,7 +685,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_CreateSelectedFilterSections_Returns_Empty_ClearFilterSections_When_No_Filters_Selected()
+    public void CreateSelectedFilterSections_WithNoFiltersSelected_ReturnsEmptyClearFilterSections()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object);
 
