@@ -46,7 +46,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Location_Filter_Section()
+    public void Filters_LocationFilterSection_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -66,7 +66,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void When_Location_Filter_Is_Not_Present_Then_Distance_Should_Default_To_Ten_Miles()
+    public void Distance_WhenLocationNotPresent_DefaultsToTenMiles()
     {
         Mock<IUrlHelper> urlHelperMock = new Mock<IUrlHelper>();
 
@@ -102,7 +102,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Distance_Filter_Section()
+    public void Filters_DistanceFilterSection_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -131,7 +131,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Location_Clear_Link()
+    public void ClearFilters_Location_IncludesClearLink()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -148,7 +148,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_DeliveryModes_Filter_Section()
+    public void Filters_DeliveryModesFilterSection_IsPresent()
     {
         var focus = "DeliveryModes";
         var sut = _viewModel.Filters.FilterSections;
@@ -174,7 +174,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_DeliveryModes_Clear_Links()
+    public void ClearFilters_DeliveryModes_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -209,7 +209,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_EmployerProviderReviews()
+    public void Filters_EmployerProviderReviewsAccordion_IsPresent()
     {
         var focus = "Reviews";
         var sut = _viewModel.Filters.FilterSections;
@@ -240,7 +240,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_EmployerProviderReviews_Clear_Links()
+    public void ClearFilters_EmployerProviderReviews_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -269,7 +269,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_ApprenticeProviderReviews()
+    public void Filters_ApprenticeProviderReviewsAccordion_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -292,7 +292,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_ApprenticeProviderReviews_Clear_Links()
+    public void ClearFilters_ApprenticeProviderReviews_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -321,7 +321,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_QarRatings()
+    public void Filters_QarRatingsAccordion_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -344,7 +344,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_QarReviews_Clear_Links()
+    public void ClearFilters_QarRatings_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
