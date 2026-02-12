@@ -319,10 +319,19 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void OrderBy_Is_Score_When_Keyword_Set_Else_Title()
+    public void OrderBy_Is_Score_When_Keyword_Set()
     {
-        Assert.That(_coursesViewModel.OrderBy, Is.EqualTo(OrderBy.Score));
+        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        {
+            Keyword = "Construction"
+        };
 
+        Assert.That(vm.OrderBy, Is.EqualTo(OrderBy.Score));
+    }
+
+    [Test]
+    public void OrderBy_Is_Title_When_Keyword_Empty()
+    {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
             Keyword = string.Empty
@@ -424,42 +433,35 @@ public sealed class WhenFilteringCourses
         });
     }
 
-    [Test]
-    public void TotalMessage_Uses_Total_When_No_Filters_Else_TotalFiltered_With_Pluralization()
+    [TestCase(1, 2, "", 0, 0, "1 result")]
+    [TestCase(2, 3, "x", 1, 2, "3 results")]
+    public void TotalMessage_Uses_Correct_Count_Based_On_Filters(int total, int totalFiltered, string keyword, int routesCount, int levelsCount, string expectedMessage)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
-            Total = 1,
-            TotalFiltered = 2,
-            Keyword = string.Empty,
-            SelectedRoutes = [],
-            SelectedLevels = []
+            Total = total,
+            TotalFiltered = totalFiltered,
+            Keyword = keyword,
+            SelectedRoutes = routesCount == 0 ? [] : Enumerable.Repeat("Construction", routesCount).ToList(),
+            SelectedLevels = levelsCount == 0 ? [] : Enumerable.Range(1, levelsCount).ToList()
         };
-        Assert.That(vm.TotalMessage, Is.EqualTo("1 result"));
 
-        vm.Keyword = "x";
-        vm.Total = 2;
-        vm.TotalFiltered = 3;
-        Assert.That(vm.TotalMessage, Is.EqualTo("3 results"));
+        Assert.That(vm.TotalMessage, Is.EqualTo(expectedMessage));
     }
 
-    [Test]
-    public void CoursesSubHeader_Behavior_With_And_Without_Location()
+    [TestCase(5, "M60 7RA", "20", "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location.")]
+    [TestCase(5, "", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Select the course name to view details about it, or select view training providers to see the training providers who run that course.")]
+    [TestCase(0, "M60 7RA", "20", "")]
+    public void CoursesSubHeader_Displays_Correct_Message_Based_On_Total_Location_And_Distance(int total, string location, string distance, string expected)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
-            Total = 5,
-            Location = "M60 7RA",
-            Distance = "20"
+            Total = total,
+            Location = location,
+            Distance = distance
         };
-        Assert.That(vm.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location."));
 
-        vm.Location = string.Empty;
-        vm.Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
-        Assert.That(vm.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course."));
-
-        vm.Total = 0;
-        Assert.That(vm.CoursesSubHeader, Is.EqualTo(string.Empty));
+        Assert.That(vm.CoursesSubHeader, Is.EqualTo(expected));
     }
 
     [Test]
