@@ -347,14 +347,7 @@ public sealed class WhenFilteringCourses
     [Test, MoqAutoData]
     public void GetProvidersLinkDisplayMessage_No_Providers_Asks_Training_Provider(StandardViewModel standard)
     {
-        standard.LarsCode = "1";
         standard.ProvidersCount = 0;
-        standard.StandardUId = "ST0001";
-        standard.IfateReferenceNumber = "ST0001";
-        standard.Title = "Test Standard";
-        standard.OverviewOfRole = "Test Overview";
-        standard.Keywords = "Test Keywords";
-        standard.Route = "Test Route";
 
         var message = _coursesViewModel.GetProvidersLinkDisplayMessage(standard);
         Assert.That(message, Is.EqualTo(CoursesViewModel.ASK_TRAINING_PROVIDER));
