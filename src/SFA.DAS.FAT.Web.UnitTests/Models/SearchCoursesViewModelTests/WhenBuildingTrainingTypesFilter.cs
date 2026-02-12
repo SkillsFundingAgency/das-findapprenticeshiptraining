@@ -11,7 +11,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.SearchCoursesViewModelTests;
 public sealed class WhenBuildingTrainingTypesFilter
 {
     [Test]
-    public void Then_TrainingTypesCheckboxListItems_Must_Be_Configured_Correctly()
+    public void TrainingTypesCheckboxListItems_WithSelectedTypes_ConfiguredCorrectly()
     {
         var selectedTypes = new List<string>
         {
@@ -60,7 +60,7 @@ public sealed class WhenBuildingTrainingTypesFilter
     }
 
     [Test]
-    public void Then_TrainingTypesCheckboxListItems_Items_Must_Reflect_SelectedTypes()
+    public void TrainingTypesCheckboxListItems_WithSelectedTypes_ReflectsSelection()
     {
         var selectedTypes = new List<string>
         {
@@ -88,7 +88,7 @@ public sealed class WhenBuildingTrainingTypesFilter
     }
 
     [Test]
-    public void Then_TrainingTypesCheckboxListItems_Items_Are_Unselected_When_SelectedTypes_Are_Empty()
+    public void TrainingTypesCheckboxListItems_WithEmptySelectedTypes_AreUnselected()
     {
         var sut = new SearchCoursesViewModel
         {
