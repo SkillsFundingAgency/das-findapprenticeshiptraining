@@ -314,12 +314,13 @@ public sealed class WhenFilteringCourses
     [Test]
     public void GetLevelName_Returns_Empty_When_Level_Does_Not_Exist()
     {
+
         var result = _coursesViewModel.GetLevelName(9);
         Assert.That(result, Is.EqualTo(string.Empty));
     }
 
     [Test]
-    public void OrderBy_Is_Score_When_Keyword_Set()
+    public void WhenFilteringCourses_GivenAKeyword_ThenOrderByIsScore()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -330,7 +331,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void OrderBy_Is_Title_When_Keyword_Empty()
+    public void WhenFilteringCourses_GivenAnEmptyKeyword_ThenOrderByIsTitle()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
