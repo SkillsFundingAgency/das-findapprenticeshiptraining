@@ -9,7 +9,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters.Helpers.ApprenticeshipTypesFi
 public sealed class WhenBuildingApprenticeshipTypeItems
 {
     [Test]
-    public void Then_Returns_All_Types_When_SelectedTypes_Is_Null()
+    public void BuildItems_WithNullSelectedTypes_ReturnsAllUnselectedTypes()
     {
         var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
 
@@ -19,7 +19,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
     }
 
     [Test]
-    public void Then_Maps_Descriptions_For_All_Apprenticeship_Types()
+    public void BuildItems_WithSelectedTypes_MapsDescriptionsForAllTypes()
     {
         var selectedTypes = new List<string>
         {
@@ -43,7 +43,7 @@ public sealed class WhenBuildingApprenticeshipTypeItems
     }
 
     [Test]
-    public void Then_Sets_Selected_Based_On_SelectedTypes_Match()
+    public void BuildItems_WithSelectedTypes_SetsSelectionBasedOnMatch()
     {
         var selectedTypes = new List<string>
         {
