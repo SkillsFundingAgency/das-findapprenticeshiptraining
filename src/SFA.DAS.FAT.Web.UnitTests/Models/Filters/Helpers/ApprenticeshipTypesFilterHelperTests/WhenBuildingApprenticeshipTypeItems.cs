@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
-using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters.Helpers.ApprenticeshipTypesFilterHelperTests;
@@ -15,15 +14,6 @@ public sealed class WhenBuildingApprenticeshipTypeItems
         var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
 
         items.Should().NotBeNull();
-        items.Should().HaveCount(3);
-        items.All(i => i.IsSelected == false).Should().BeTrue();
-    }
-
-    [Test]
-    public void Then_Sets_Selected_Correctly_When_SelectedTypes_Is_Null()
-    {
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
-
         items.Should().HaveCount(3);
         items.All(i => i.IsSelected == false).Should().BeTrue();
     }

@@ -685,7 +685,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void Then_CreateSelectedFilterSections_Returns_Empty_Clear_Sections_When_No_Filters_Selected()
+    public void Then_CreateSelectedFilterSections_Returns_Empty_ClearFilterSections_When_No_Filters_Selected()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object);
 
