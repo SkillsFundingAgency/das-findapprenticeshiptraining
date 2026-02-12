@@ -55,7 +55,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Keyword_Filter_Section()
+    public void Filters_KeywordFilterSection_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -75,7 +75,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Location_Filter_Section()
+    public void Filters_LocationFilterSection_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -95,7 +95,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Distance_Filter_Section()
+    public void Filters_DistanceFilterSection_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -124,7 +124,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_Levels()
+    public void Filters_AccordionWithLevels_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -151,7 +151,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_Categories()
+    public void Filters_AccordionWithCategories_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -176,7 +176,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_ApprenticeTypes()
+    public void Filters_AccordionWithApprenticeshipTypes_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -209,7 +209,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Location_Clear_Link()
+    public void ClearFilters_Location_IncludesClearLink()
     {
         var _sut = _coursesViewModel.Filters.ClearFilterSections;
 
@@ -224,7 +224,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Levels_Clear_Links()
+    public void ClearFilters_Levels_IncludesClearLinks()
     {
         var _sut = _coursesViewModel.Filters.ClearFilterSections;
 
@@ -245,7 +245,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Keyword_Clear_Link()
+    public void ClearFilters_Keyword_IncludesClearLink()
     {
         var _sut = _coursesViewModel.Filters.ClearFilterSections;
 
@@ -260,7 +260,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Category_Clear_Links()
+    public void ClearFilters_Categories_IncludesClearLinks()
     {
         var _sut = _coursesViewModel.Filters.ClearFilterSections;
 
@@ -277,7 +277,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Not_Contain_Distance_Clear_Link()
+    public void ClearFilters_Distance_DoesNotIncludeClearLink()
     {
         var clearFilterSections = _coursesViewModel.Filters.ClearFilterSections;
 
@@ -286,7 +286,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void When_Location_Is_Not_Set_Then_Distance_Filter_Must_Be_Te_Miles()
+    public void Distance_WhenLocationNotSet_DefaultsToTenMiles()
     {
         CoursesViewModel _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -305,14 +305,14 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void GetLevelName_Returns_Formatted_Name_When_Level_Exists()
+    public void GetLevelName_WithExistingLevel_ReturnsFormattedName()
     {
         var result = _coursesViewModel.GetLevelName(3);
         Assert.That(result, Is.EqualTo("3 - equal to Level 3"));
     }
 
     [Test]
-    public void GetLevelName_Returns_Empty_When_Level_Does_Not_Exist()
+    public void GetLevelName_WithMissingLevel_ReturnsEmptyString()
     {
 
         var result = _coursesViewModel.GetLevelName(9);
@@ -320,7 +320,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void WhenFilteringCourses_GivenAKeyword_ThenOrderByIsScore()
+    public void OrderBy_WithKeywordSet_IsScore()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -331,7 +331,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void WhenFilteringCourses_GivenAnEmptyKeyword_ThenOrderByIsTitle()
+    public void OrderBy_WithEmptyKeyword_IsTitle()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -342,7 +342,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void SortedDisplayMessage_Matches_OrderBy()
+    public void SortedDisplayMessage_BasedOnOrderBy_IsCorrect()
     {
         Assert.That(_coursesViewModel.SortedDisplayMessage, Is.EqualTo(CoursesViewModel.BEST_MATCH_TO_COURSE));
 
@@ -355,7 +355,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_No_Providers_Asks_Training_Provider(StandardViewModel standard)
+    public void GetProvidersLinkDisplayMessage_WithZeroProviders_ReturnsAskTrainingProvider(StandardViewModel standard)
     {
         standard.ProvidersCount = 0;
 
@@ -364,7 +364,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_National_Search_Without_Location(StandardViewModel standard)
+    public void GetProvidersLinkDisplayMessage_WithNationalSearchWithoutLocation_ReturnsPluralProviders(StandardViewModel standard)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -380,7 +380,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_Local_Search_With_Distance(StandardViewModel standard)
+    public void GetProvidersLinkDisplayMessage_WithLocalSearchAndDistance_ReturnsSingularProvider(StandardViewModel standard)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -396,7 +396,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLink_When_Providers_Available_Uses_RouteUrl(StandardViewModel standard)
+    public void GetProvidersLink_WithProvidersAvailable_UsesRouteUrl(StandardViewModel standard)
     {
         _urlHelperMock
             .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
@@ -410,7 +410,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLink_No_Providers_Returns_Help_Url_With_Location_When_Present(StandardViewModel standard)
+    public void GetProvidersLink_WithZeroProvidersAndLocation_ReturnsHelpUrlWithLocation(StandardViewModel standard)
     {
         var config = new FindApprenticeshipTrainingWeb
         {
@@ -436,7 +436,7 @@ public sealed class WhenFilteringCourses
 
     [TestCase(1, 2, "", 0, 0, "1 result")]
     [TestCase(2, 3, "x", 1, 2, "3 results")]
-    public void TotalMessage_Uses_Correct_Count_Based_On_Filters(int total, int totalFiltered, string keyword, int routesCount, int levelsCount, string expectedMessage)
+    public void TotalMessage_BasedOnFilters_UsesCorrectCount(int total, int totalFiltered, string keyword, int routesCount, int levelsCount, string expectedMessage)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -453,7 +453,7 @@ public sealed class WhenFilteringCourses
     [TestCase(5, "M60 7RA", "20", "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location.")]
     [TestCase(5, "", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Select the course name to view details about it, or select view training providers to see the training providers who run that course.")]
     [TestCase(0, "M60 7RA", "20", "")]
-    public void CoursesSubHeader_Displays_Correct_Message_Based_On_Total_Location_And_Distance(int total, string location, string distance, string expected)
+    public void CoursesSubHeader_BasedOnTotalLocationAndDistance_DisplaysCorrectMessage(int total, string location, string distance, string expected)
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
         {
@@ -466,7 +466,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void GenerateStandardRouteValues_Includes_Location_And_Distance_When_Present()
+    public void GenerateStandardRouteValues_WithLocationAndDistance_IncludesBoth()
     {
         var values = _coursesViewModel.GenerateStandardRouteValues("55");
         Assert.Multiple(() =>
@@ -480,7 +480,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void ToQueryString_Returns_Selected_Filters_As_KeyValuePairs()
+    public void ToQueryString_WithSelectedFilters_ReturnsKeyValuePairs()
     {
         var qs = _coursesViewModel.ToQueryString();
         Assert.Multiple(() =>
