@@ -14,9 +14,9 @@ public static class TrainingTypesFilterHelper
     {
         var allTrainingTypes = new[]
         {
-            TrainingType.ApprenticeshipUnit,
-            TrainingType.FoundationApprenticeship,
-            TrainingType.Apprenticeship
+            ApprenticeshipType.ApprenticeshipUnit,
+            ApprenticeshipType.FoundationApprenticeship,
+            ApprenticeshipType.Apprenticeship
         };
 
         return allTrainingTypes
@@ -26,8 +26,8 @@ public static class TrainingTypesFilterHelper
                 DisplayText = trainingType.GetDescription(),
                 DisplayDescription = trainingType switch
                 {
-                    TrainingType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
-                    TrainingType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
+                    ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
+                    ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
                     _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
                 },
                 IsSelected = selectedTrainingTypes?.Contains(trainingType.GetDescription()) ?? false

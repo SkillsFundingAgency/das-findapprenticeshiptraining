@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            TrainingTypes = new List<string> { TrainingType.FoundationApprenticeship.ToString(), TrainingType.Apprenticeship.ToString() },
+            TrainingTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };

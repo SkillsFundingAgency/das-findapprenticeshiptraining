@@ -30,5 +30,5 @@ public sealed class StandardModel
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
 
-    public TrainingType TrainingType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
 }

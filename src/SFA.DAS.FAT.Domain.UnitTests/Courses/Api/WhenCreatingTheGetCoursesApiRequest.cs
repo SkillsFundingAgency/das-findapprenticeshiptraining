@@ -16,7 +16,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Location = "London",
             Distance = 10,
             RouteIds = new List<int> { 1, 2 },
-            TrainingType = TrainingType.FoundationApprenticeship.ToString(),
+            TrainingType = ApprenticeshipType.FoundationApprenticeship.ToString(),
             Levels = new List<int> { 3, 4 },
             Page = 1,
             OrderBy = OrderBy.Score
@@ -29,7 +29,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Assert.That(_sut.Location, Is.EqualTo("London"));
             Assert.That(_sut.Distance, Is.EqualTo(10));
             Assert.That(_sut.RouteIds, Is.EquivalentTo(new List<int> { 1, 2 }));
-            Assert.That(_sut.TrainingType, Is.EqualTo(TrainingType.FoundationApprenticeship.ToString()));
+            Assert.That(_sut.TrainingType, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.ToString()));
             Assert.That(_sut.Levels, Is.EquivalentTo(new List<int> { 3, 4 }));
             Assert.That(_sut.Page, Is.EqualTo(1));
             Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Score));
@@ -46,7 +46,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Location = "London",
             Distance = 10,
             RouteIds = new List<int> { 1, 2 },
-            TrainingType = TrainingType.FoundationApprenticeship.ToString(),
+            TrainingType = ApprenticeshipType.FoundationApprenticeship.ToString(),
             Levels = new List<int> { 3, 4 },
             Page = 1,
             OrderBy = OrderBy.Title

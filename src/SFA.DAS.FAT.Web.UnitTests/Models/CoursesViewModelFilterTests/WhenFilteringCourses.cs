@@ -33,7 +33,7 @@ public sealed class WhenFilteringCourses
 
         var selectedTypes = new List<string>
         {
-            TrainingType.FoundationApprenticeship.GetDescription()
+            ApprenticeshipType.FoundationApprenticeship.GetDescription()
         };
 
         _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
@@ -199,9 +199,9 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
             Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
             Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
-            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(TrainingType.ApprenticeshipUnit.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(TrainingType.FoundationApprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(TrainingType.Apprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
             Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
             Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
@@ -498,7 +498,7 @@ public sealed class WhenFilteringCourses
             Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Categories) && kv.Item2 == "Construction"), Is.True);
 
             Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes)), Is.EqualTo(1));
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes) && kv.Item2 == TrainingType.FoundationApprenticeship.GetDescription()), Is.True);
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes) && kv.Item2 == ApprenticeshipType.FoundationApprenticeship.GetDescription()), Is.True);
         });
     }
 }

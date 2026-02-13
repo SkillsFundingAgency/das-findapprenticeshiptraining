@@ -27,7 +27,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public TrainingType TrainingType { get; set; }
+    public ApprenticeshipType TrainingType { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
 
     public int IncentivePayment { get; set; }
@@ -62,8 +62,8 @@ public class CourseViewModel : PageLinksViewModelBase
             CourseId = source.LarsCode,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
-            IsFoundationApprenticeship = source.TrainingType == TrainingType.FoundationApprenticeship,
-            TrainingType = source.TrainingType == TrainingType.FoundationApprenticeship ? TrainingType.FoundationApprenticeship : TrainingType.Apprenticeship,
+            IsFoundationApprenticeship = source.TrainingType == ApprenticeshipType.FoundationApprenticeship,
+            TrainingType = source.TrainingType == ApprenticeshipType.FoundationApprenticeship ? ApprenticeshipType.FoundationApprenticeship : ApprenticeshipType.Apprenticeship,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations
         };

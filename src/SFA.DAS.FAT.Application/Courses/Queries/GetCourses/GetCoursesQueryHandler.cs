@@ -32,11 +32,11 @@ public class GetCoursesQueryHandler(
         if (query.TrainingTypes.Count == 1)
         {
             var type = query.TrainingTypes.First();
-            trainingType = TrainingType.Apprenticeship.ToString();
+            trainingType = ApprenticeshipType.Apprenticeship.ToString();
 
-            if (type == TrainingType.FoundationApprenticeship.GetDescription())
+            if (type == ApprenticeshipType.FoundationApprenticeship.GetDescription())
             {
-                trainingType = TrainingType.FoundationApprenticeship.ToString();
+                trainingType = ApprenticeshipType.FoundationApprenticeship.ToString();
             }
         }
 

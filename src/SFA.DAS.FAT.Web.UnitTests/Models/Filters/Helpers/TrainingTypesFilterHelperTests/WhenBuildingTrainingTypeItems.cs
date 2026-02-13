@@ -23,16 +23,16 @@ public sealed class WhenBuildingTrainingTypeItems
     {
         var selectedTypes = new List<string>
         {
-            TrainingType.FoundationApprenticeship.GetDescription()
+            ApprenticeshipType.FoundationApprenticeship.GetDescription()
         };
 
         var items = TrainingTypesFilterHelper.BuildItems(selectedTypes);
 
         items.Should().HaveCount(3);
 
-        var units = items.First(i => i.DisplayText == TrainingType.ApprenticeshipUnit.GetDescription());
-        var foundation = items.First(i => i.DisplayText == TrainingType.FoundationApprenticeship.GetDescription());
-        var apprenticeship = items.First(i => i.DisplayText == TrainingType.Apprenticeship.GetDescription());
+        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
+        var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
+        var apprenticeship = items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
 
         Assert.Multiple(() =>
         {
@@ -47,15 +47,15 @@ public sealed class WhenBuildingTrainingTypeItems
     {
         var selectedTypes = new List<string>
         {
-            TrainingType.ApprenticeshipUnit.GetDescription(),
-            TrainingType.Apprenticeship.GetDescription()
+            ApprenticeshipType.ApprenticeshipUnit.GetDescription(),
+            ApprenticeshipType.Apprenticeship.GetDescription()
         };
 
         var items = TrainingTypesFilterHelper.BuildItems(selectedTypes);
 
-        var units = items.First(i => i.DisplayText == TrainingType.ApprenticeshipUnit.GetDescription());
-        var foundation = items.First(i => i.DisplayText == TrainingType.FoundationApprenticeship.GetDescription());
-        var apprenticeship = items.First(i => i.DisplayText == TrainingType.Apprenticeship.GetDescription());
+        var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
+        var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
+        var apprenticeship = items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
 
         Assert.Multiple(() =>
         {

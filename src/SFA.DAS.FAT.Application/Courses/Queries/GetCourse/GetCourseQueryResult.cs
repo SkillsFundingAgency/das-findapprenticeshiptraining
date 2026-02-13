@@ -27,7 +27,7 @@ public class GetCourseQueryResult
     public List<RelatedOccupation> RelatedOccupations { get; set; }
     public List<Ksb> Ksbs { get; set; } = [];
 
-    public TrainingType TrainingType { get; set; }
+    public ApprenticeshipType TrainingType { get; set; }
 
     public List<Level> Levels { get; set; } = [];
 
@@ -55,7 +55,7 @@ public class GetCourseQueryResult
             RelatedOccupations = source.RelatedOccupations == null
                                     ? new List<RelatedOccupation>() :
                                     source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
-            TrainingType = source.TrainingType,
+            TrainingType = source.ApprenticeshipType,
         };
     }
 }
