@@ -43,7 +43,7 @@ public sealed class WhenFilteringCourses
             Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
-            SelectedTrainingTypes = selectedTypes,
+            SelectedApprenticeshipTypes = selectedTypes,
             Levels = new List<LevelViewModel>
             {
                 new LevelViewModel { Code = 3, Name = "Level 3" },
@@ -194,7 +194,7 @@ public sealed class WhenFilteringCourses
 
             var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
             Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(3));
-            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTrainingTypes.Count));
+            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedApprenticeshipTypes.Count));
             Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
             Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
@@ -202,9 +202,9 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
 

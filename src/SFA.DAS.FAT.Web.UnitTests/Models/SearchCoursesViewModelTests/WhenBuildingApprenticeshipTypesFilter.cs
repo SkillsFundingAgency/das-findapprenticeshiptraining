@@ -8,7 +8,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.SearchCoursesViewModelTests;
 
-public sealed class WhenBuildingTrainingTypesFilter
+public sealed class WhenBuildingApprenticeshipTypesFilter
 {
     [Test]
     public void TrainingTypesCheckboxListItems_WithSelectedTypes_ConfiguredCorrectly()
@@ -22,7 +22,7 @@ public sealed class WhenBuildingTrainingTypesFilter
         {
             CourseTerm = "engineering",
             SelectedTypes = selectedTypes,
-            TrainingTypesFilterItems = TrainingTypesFilterHelper.BuildItems(selectedTypes)
+            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes)
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
@@ -49,9 +49,9 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(foundation.DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(apprenticeship.DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
 
-            Assert.That(unit.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(unit.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(foundation.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
 
             Assert.That(unit.IsSelected, Is.False);
             Assert.That(foundation.IsSelected, Is.True);
@@ -70,7 +70,7 @@ public sealed class WhenBuildingTrainingTypesFilter
         var sut = new SearchCoursesViewModel
         {
             SelectedTypes = selectedTypes,
-            TrainingTypesFilterItems = TrainingTypesFilterHelper.BuildItems(selectedTypes)
+            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes)
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
@@ -92,7 +92,7 @@ public sealed class WhenBuildingTrainingTypesFilter
     {
         var sut = new SearchCoursesViewModel
         {
-            TrainingTypesFilterItems = TrainingTypesFilterHelper.BuildItems([])
+            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems([])
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;

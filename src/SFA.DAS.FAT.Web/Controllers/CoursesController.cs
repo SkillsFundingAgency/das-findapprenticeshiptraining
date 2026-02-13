@@ -73,7 +73,7 @@ public class CoursesController : Controller
             Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
             Location = model.Location ?? string.Empty,
             Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
-            SelectedTrainingTypes = model.TrainingTypes,
+            SelectedApprenticeshipTypes = model.TrainingTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };

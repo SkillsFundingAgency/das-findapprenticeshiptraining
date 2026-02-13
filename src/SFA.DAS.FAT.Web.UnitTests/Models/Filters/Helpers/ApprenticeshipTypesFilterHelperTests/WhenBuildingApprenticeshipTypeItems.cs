@@ -4,14 +4,14 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters.Helpers.TrainingTypesFilterHelperTests;
+namespace SFA.DAS.FAT.Web.UnitTests.Models.Filters.Helpers.ApprenticeshipTypesFilterHelperTests;
 
-public sealed class WhenBuildingTrainingTypeItems
+public sealed class WhenBuildingApprenticeshipTypeItems
 {
     [Test]
     public void BuildItems_WithNullSelectedTypes_ReturnsAllUnselectedTypes()
     {
-        var items = TrainingTypesFilterHelper.BuildItems(null);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(null);
 
         items.Should().NotBeNull();
         items.Should().HaveCount(3);
@@ -26,7 +26,7 @@ public sealed class WhenBuildingTrainingTypeItems
             ApprenticeshipType.FoundationApprenticeship.GetDescription()
         };
 
-        var items = TrainingTypesFilterHelper.BuildItems(selectedTypes);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes);
 
         items.Should().HaveCount(3);
 
@@ -36,9 +36,9 @@ public sealed class WhenBuildingTrainingTypeItems
 
         Assert.Multiple(() =>
         {
-            Assert.That(units.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(TrainingTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(units.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(foundation.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
 
@@ -51,7 +51,7 @@ public sealed class WhenBuildingTrainingTypeItems
             ApprenticeshipType.Apprenticeship.GetDescription()
         };
 
-        var items = TrainingTypesFilterHelper.BuildItems(selectedTypes);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes);
 
         var units = items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
         var foundation = items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());

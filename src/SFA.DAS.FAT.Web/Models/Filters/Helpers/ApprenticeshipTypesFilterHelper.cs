@@ -5,21 +5,21 @@ using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 namespace SFA.DAS.FAT.Web.Models.Filters.Helpers;
 
-public static class TrainingTypesFilterHelper
+public static class ApprenticeshipTypesFilterHelper
 {
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION = "Apprenticeships that qualify learners for a job, levels 2 to 7";
-    public static List<FilterItemViewModel> BuildItems(List<string> selectedTrainingTypes)
+    public static List<FilterItemViewModel> BuildItems(List<string> selectedApprenticeshipTypes)
     {
-        var allTrainingTypes = new[]
+        var allApprenticeshipTypes = new[]
         {
             ApprenticeshipType.ApprenticeshipUnit,
             ApprenticeshipType.FoundationApprenticeship,
             ApprenticeshipType.Apprenticeship
         };
 
-        return allTrainingTypes
+        return allApprenticeshipTypes
             .Select(trainingType => new FilterItemViewModel
             {
                 Value = trainingType.GetDescription(),
@@ -30,7 +30,7 @@ public static class TrainingTypesFilterHelper
                     ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
                     _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
                 },
-                IsSelected = selectedTrainingTypes?.Contains(trainingType.GetDescription()) ?? false
+                IsSelected = selectedApprenticeshipTypes?.Contains(trainingType.GetDescription()) ?? false
             })
             .ToList();
     }
