@@ -11,10 +11,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 public class WhenBuildingCourseViewModelFromQueryResult
 {
     [Test, MoqAutoData]
-    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, ApprenticeshipType apprenticeshipType)
+    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, TrainingType apprenticeshipType)
     {
-        source.ApprenticeshipType = apprenticeshipType;
-        var isFoundationApprenticeship = apprenticeshipType == ApprenticeshipType.FoundationApprenticeship;
+        source.TrainingType = apprenticeshipType;
+        var isFoundationApprenticeship = apprenticeshipType == TrainingType.FoundationApprenticeship;
 
         var sut = (CourseViewModel)source;
 
@@ -41,7 +41,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.CourseId, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.ApprenticeshipType));
+            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.TrainingType));
         });
     }
 

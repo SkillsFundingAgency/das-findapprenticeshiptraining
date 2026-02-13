@@ -2,7 +2,7 @@
 
 namespace SFA.DAS.FAT.Domain.Courses;
 
-public enum ApprenticeshipType
+public enum TrainingType
 {
     [Description("Apprenticeships")]
     Apprenticeship,

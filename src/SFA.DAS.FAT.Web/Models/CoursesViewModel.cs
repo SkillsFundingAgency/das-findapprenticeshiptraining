@@ -224,7 +224,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                         nameof(FilterType.ApprenticeshipTypes),
                         APPRENTICESHIP_TYPES_SECTION_HEADING,
                         null,
-                        ApprenticeshipTypesFilterHelper.BuildItems(SelectedTypes),
+                        TrainingTypesFilterHelper.BuildItems(SelectedTypes),
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
                     ),

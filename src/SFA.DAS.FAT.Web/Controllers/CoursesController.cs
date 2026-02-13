@@ -56,7 +56,7 @@ public class CoursesController : Controller
             Routes = model.Categories,
             Levels = model.Levels,
             Page = model.PageNumber,
-            ApprenticeshipTypes = model.ApprenticeshipTypes,
+            Trainings = model.ApprenticeshipTypes,
             OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
         });

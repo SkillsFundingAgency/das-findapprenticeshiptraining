@@ -40,16 +40,16 @@ public static class FilterService
     public const string KEYWORD_SECTION_HEADING = "Course";
     public const string KEYWORD_SECTION_SUB_HEADING = "Enter course, job or standard";
 
-    public const string LOCATION_SECTION_HEADING = "Apprentice's work location";
+    public const string LOCATION_SECTION_HEADING = "Learner's work location";
     public const string LOCATION_SECTION_SUB_HEADING = "Enter city or postcode";
 
-    public const string DISTANCE_SECTION_HEADING = "Apprentice can travel";
-    public const string DISTANCE_SECTION_SUB_HEADING = "Distance apprentice can travel";
+    public const string DISTANCE_SECTION_HEADING = "Learner can travel";
+    public const string DISTANCE_SECTION_SUB_HEADING = "Distance learner can travel";
 
-    public const string LEVELS_SECTION_HEADING = "Apprenticeship level";
+    public const string LEVELS_SECTION_HEADING = "Training level";
     public const string CATEGORIES_SECTION_HEADING = "Job categories";
 
-    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What apprenticeship levels mean (opens in new tab or window)";
+    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "Find out more about training levels (opens in new tab or window)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
     public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
@@ -65,7 +65,7 @@ public static class FilterService
     public const string REVIEW_SECTION_HEADING = "Reviews";
 
     public const string EMPLOYER_REVIEWS_SECTION_HEADING = "Average employer review";
-    public const string APPRENTICE_REVIEWS_SECTION_HEADING = "Average apprentice review";
+    public const string APPRENTICE_REVIEWS_SECTION_HEADING = "Average learner review";
 
     public static Dictionary<FilterType, string> ClearFilterSectionHeadings => _ClearFilterSectionHeadings;
 

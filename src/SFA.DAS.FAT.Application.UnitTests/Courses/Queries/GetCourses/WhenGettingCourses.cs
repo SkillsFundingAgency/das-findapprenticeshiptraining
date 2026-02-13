@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            ApprenticeshipTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
+            Trainings = new List<string> { TrainingType.FoundationApprenticeship.ToString(), TrainingType.Apprenticeship.ToString() },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -93,7 +93,7 @@ public class WhenGettingCourses
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
                     r.OrderBy == query.OrderBy &&
-                    r.ApprenticeshipType == String.Empty
+                    r.TrainingType == String.Empty
                 )
             )
         )
@@ -117,7 +117,7 @@ public class WhenGettingCourses
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
                 r.BaseUrl == BASE_URL &&
-                r.ApprenticeshipType == string.Empty
+                r.TrainingType == string.Empty
             )
         ), Times.Once);
 
@@ -139,8 +139,8 @@ public class WhenGettingCourses
     [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
     public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
-        string apprenticeshipType1,
-        string apprenticeshipType2,
+        string trainingType1,
+        string trainingType2,
         string requestApprenticeshipType,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -154,14 +154,14 @@ public class WhenGettingCourses
             BaseUrl = BASE_URL
         });
 
-        var apprenticeshipTypes = new List<string>();
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType1)) { apprenticeshipTypes.Add(apprenticeshipType1); }
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType2)) { apprenticeshipTypes.Add(apprenticeshipType2); }
+        var trainingTypes = new List<string>();
+        if (!string.IsNullOrWhiteSpace(trainingType1)) { trainingTypes.Add(trainingType1); }
+        if (!string.IsNullOrWhiteSpace(trainingType2)) { trainingTypes.Add(trainingType2); }
 
         var query = new GetCoursesQuery()
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = apprenticeshipTypes,
+            Trainings = trainingTypes,
             OrderBy = OrderBy.Title
         };
 
@@ -187,7 +187,7 @@ public class WhenGettingCourses
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
 
-                r.ApprenticeshipType == requestApprenticeshipType
+                r.TrainingType == requestApprenticeshipType
             )
         ), Times.Once);
     }

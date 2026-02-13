@@ -59,7 +59,7 @@
                         {
 
                             <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
-                                <div id="foundation-tag" asp-show="standard.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship">
+                                <div id="foundation-tag" asp-show="standard.TrainingType == TrainingType.FoundationApprenticeship">
                                     <strong class="govuk-body govuk-!-margin-bottom-4 govuk-tag govuk-tag--pink">Foundation</strong>
                                 </div>
                                 <h2 class="govuk-heading-m das-search-results__heading">
@@ -80,7 +80,7 @@
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Type</dt>
-                                        <dd class="das-definition-list__definition">@standard.ApprenticeshipType.GetDescription()</dd>
+                                        <dd class="das-definition-list__definition">@standard.TrainingType.GetDescription()</dd>
                                     </dl>
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">

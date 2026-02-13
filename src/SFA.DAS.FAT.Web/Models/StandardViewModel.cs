@@ -21,7 +21,7 @@ public class StandardViewModel
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
 
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public TrainingType TrainingType { get; set; }
 
     public static implicit operator StandardViewModel(StandardModel source)
     {
@@ -42,7 +42,7 @@ public class StandardViewModel
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
             TypicalDuration = source.TypicalDuration,
-            ApprenticeshipType = source.ApprenticeshipType
+            TrainingType = source.TrainingType
         };
     }
 }
