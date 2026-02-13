@@ -29,9 +29,9 @@ public class GetCoursesQueryHandler(
 
         var trainingType = string.Empty;
 
-        if (query.TrainingTypes.Count == 1)
+        if (query.ApprenticeshipTypes.Count == 1)
         {
-            var type = query.TrainingTypes.First();
+            var type = query.ApprenticeshipTypes.First();
             trainingType = ApprenticeshipType.Apprenticeship.ToString();
 
             if (type == ApprenticeshipType.FoundationApprenticeship.GetDescription())

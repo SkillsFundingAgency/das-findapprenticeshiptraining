@@ -14,7 +14,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
     [Test, MoqAutoData]
     public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, ApprenticeshipType trainingType)
     {
-        source.TrainingType = trainingType;
+        source.ApprenticeshipType = trainingType;
         var isFoundationApprenticeship = trainingType == ApprenticeshipType.FoundationApprenticeship;
 
         var sut = (CourseViewModel)source;
@@ -42,7 +42,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.CourseId, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.TrainingType, Is.EqualTo(source.TrainingType));
+            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.ApprenticeshipType));
         });
     }
 

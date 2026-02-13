@@ -20,17 +20,17 @@ public static class ApprenticeshipTypesFilterHelper
         };
 
         return allApprenticeshipTypes
-            .Select(trainingType => new FilterItemViewModel
+            .Select(apprenticeship => new FilterItemViewModel
             {
-                Value = trainingType.GetDescription(),
-                DisplayText = trainingType.GetDescription(),
-                DisplayDescription = trainingType switch
+                Value = apprenticeship.GetDescription(),
+                DisplayText = apprenticeship.GetDescription(),
+                DisplayDescription = apprenticeship switch
                 {
                     ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
                     ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
                     _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
                 },
-                IsSelected = selectedApprenticeshipTypes?.Contains(trainingType.GetDescription()) ?? false
+                IsSelected = selectedApprenticeshipTypes?.Contains(apprenticeship.GetDescription()) ?? false
             })
             .ToList();
     }

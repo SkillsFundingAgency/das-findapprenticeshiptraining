@@ -37,7 +37,7 @@ public class SearchCoursesController() : Controller
             request.Location = submitModel.Location;
             request.Distance = DistanceService.TEN_MILES.ToString();
         }
-        request.TrainingTypes = submitModel.SelectedTypes;
+        request.ApprenticeshipTypes = submitModel.SelectedTypes;
 
         return RedirectToAction("Index", "Courses", request);
     }

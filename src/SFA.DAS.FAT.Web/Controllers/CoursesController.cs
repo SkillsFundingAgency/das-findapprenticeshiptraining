@@ -56,7 +56,7 @@ public class CoursesController : Controller
             Routes = model.Categories,
             Levels = model.Levels,
             Page = model.PageNumber,
-            TrainingTypes = model.TrainingTypes,
+            ApprenticeshipTypes = model.ApprenticeshipTypes,
             OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
         });
@@ -73,7 +73,7 @@ public class CoursesController : Controller
             Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
             Location = model.Location ?? string.Empty,
             Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
-            SelectedApprenticeshipTypes = model.TrainingTypes,
+            SelectedApprenticeshipTypes = model.ApprenticeshipTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };
