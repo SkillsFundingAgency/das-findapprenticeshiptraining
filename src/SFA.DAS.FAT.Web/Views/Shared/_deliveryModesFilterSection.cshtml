@@ -7,7 +7,7 @@
     @foreach (var filterItem in Model.Items)
     {
         if ((filterItem.Value == ProviderDeliveryMode.BlockRelease.ToString() || filterItem.Value == ProviderDeliveryMode.DayRelease.ToString()) 
-            && filterItem.Selected)
+            && filterItem.IsSelected)
         {
             providerSelected = true;
         }
@@ -30,7 +30,7 @@
                 if (filterItem.Value == ProviderDeliveryMode.Workplace.ToString() || filterItem.Value == ProviderDeliveryMode.Provider.ToString())
                 {
                     <div class="govuk-checkboxes__item">
-                        <input @(filterItem.Selected ||
+                        <input @(filterItem.IsSelected ||
                                  (filterItem.Value == ProviderDeliveryMode.Provider.ToString() && providerSelected)
                                    ? "checked='checked'"
                                    : "")
@@ -62,7 +62,7 @@
                         {
                             <div class="govuk-checkboxes__item">
                                 <input
-                                    @(filterItem.Selected ? "checked='checked'" : "")
+                                    @(filterItem.IsSelected ? "checked='checked'" : "")
                                     class="govuk-checkboxes__input"
                                     id="@inputId"
                                     name="@Model.For"

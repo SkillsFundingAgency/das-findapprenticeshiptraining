@@ -1,0 +1,14 @@
+@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@model CheckboxListFilterSectionViewModel
+
+@if (Model.Link is not null)
+{
+    <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3">
+        <a class="govuk-link govuk-link--no-visited-state"
+           href="@Model.Link.Url"
+           target="_blank"
+           rel="external">
+            @Model.Link.DisplayText
+        </a>
+    </p>
+}

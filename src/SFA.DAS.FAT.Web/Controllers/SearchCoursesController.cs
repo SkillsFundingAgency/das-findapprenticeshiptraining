@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -15,9 +16,9 @@ public class SearchCoursesController() : Controller
         SearchCoursesViewModel model = new SearchCoursesViewModel
         {
             ShowSearchCrumb = false,
-            ShowShortListLink = true
+            ShowShortListLink = true,
+            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems([], true)
         };
-
         return View(model);
     }
 
@@ -36,6 +37,7 @@ public class SearchCoursesController() : Controller
             request.Location = submitModel.Location;
             request.Distance = DistanceService.TEN_MILES.ToString();
         }
+        request.ApprenticeshipTypes = submitModel.SelectedTypes;
 
         return RedirectToAction("Index", "Courses", request);
     }

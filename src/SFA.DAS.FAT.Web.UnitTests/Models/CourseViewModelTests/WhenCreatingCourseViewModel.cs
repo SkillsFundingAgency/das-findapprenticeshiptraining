@@ -10,14 +10,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 public sealed class WhenCreatingCourseViewModel
 {
     [Test]
-    public void When_Levels_Count_Is_Less_Than_One_Then_Level_Equivalent_Display_Text_Returns_Empty()
+    public void GetLevelEquivalentToDisplayText_WithLevelsCountLessThanOne_ReturnsEmpty()
     {
         var sut = new CourseViewModel() { Level = 1 };
         Assert.That(sut.GetLevelEquivalentToDisplayText(), Is.Empty);
     }
 
     [Test]
-    public void When_Level_Is_Not_Found_Then_Level_Equivalent_Display_Text_Returns_Empty()
+    public void GetLevelEquivalentToDisplayText_WhenLevelNotFound_ReturnsEmpty()
     {
         var sut = new CourseViewModel()
         {
@@ -29,7 +29,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Level_Is_Found_Then_Level_Equivalent_Display_Text_Returns_Equal_To_Level_Name()
+    public void GetLevelEquivalentToDisplayText_WhenLevelFound_ReturnsEqualToLevelName()
     {
         var sut = new CourseViewModel()
         {
@@ -41,7 +41,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Typical_Job_Titles_Is_Empty_Then_Empty_Array_Is_Returned()
+    public void GetTypicalJobTitles_WhenEmpty_ReturnsEmptyArray()
     {
         var sut = new CourseViewModel()
         {
@@ -52,7 +52,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Typical_Job_Titles_Is_Populated_Then_Split_Array_Is_Returned()
+    public void GetTypicalJobTitles_WhenPopulated_ReturnsSplitArray()
     {
         var sut = new CourseViewModel()
         {
@@ -63,7 +63,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Model_Has_Location_And_No_Providers_Then_Zero_Provider_Within_Distance_Message_Is_Returned()
+    public void GetProviderCountDisplayMessage_WithLocationAndNoProviders_ReturnsZeroProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -76,7 +76,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Model_Has_Location_And_One_Provider_Then_Single_Provider_Within_Distance_Message_Is_Returned()
+    public void GetProviderCountDisplayMessage_WithLocationAndOneProvider_ReturnsSingleProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -90,7 +90,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Model_Has_Location_And_Multiple_Providers_Then_Multiple_Provider_Within_Distance_Message_Is_Returned()
+    public void GetProviderCountDisplayMessage_WithLocationAndMultipleProviders_ReturnsMultipleProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -104,7 +104,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Model_Has_No_Location_And_One_Provider_Then_Single_Provider_Outside_Distance_Message_Is_Returned()
+    public void GetProviderCountDisplayMessage_WithoutLocationAndOneProvider_ReturnsSingleProviderOutsideDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -118,7 +118,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Model_Has_No_Location_And_Multiple_Providers_Then_Multiple_Providers_Outside_Distance_Message_Is_Returned()
+    public void GetProviderCountDisplayMessage_WithoutLocationAndMultipleProviders_ReturnsMultipleProvidersOutsideDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -132,7 +132,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Distance_Is_All_Then_Across_England_Display_Text_Is_Returned()
+    public void GetApprenticeCanTravelDisplayMessage_WithDistanceAll_ReturnsAcrossEnglandDisplayText()
     {
         var sut = new CourseViewModel()
         {
@@ -143,7 +143,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void When_Distance_Is_Set_Then_Miles_Display_Text_Is_Returned()
+    public void GetApprenticeCanTravelDisplayMessage_WithDistanceSet_ReturnsMilesDisplayText()
     {
         var sut = new CourseViewModel()
         {
@@ -154,7 +154,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Location_Is_Set_Link_Returns_Request_Apprenticeship_Training_Url_Without_Location(
+    public void GetHelpFindingCourseUrl_WithLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithLocation(
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
@@ -168,7 +168,7 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test, MoqAutoData]
-    public void When_Location_Is_Not_Set_Link_Returns_Request_Apprenticeship_Training_Url_Without_Location(
+    public void GetHelpFindingCourseUrl_WithoutLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {

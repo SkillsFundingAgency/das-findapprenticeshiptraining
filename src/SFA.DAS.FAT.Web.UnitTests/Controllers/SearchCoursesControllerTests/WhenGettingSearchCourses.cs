@@ -11,17 +11,30 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
 public class WhenGettingSearchCourses
 {
     [Test, MoqAutoData]
-    public void And_Cookie_Does_Not_Exist_Then_Builds_ViewModel(
+    public void Index_CookieMissing_BuildsViewModel(
         [Greedy] SearchCoursesController controller)
     {
-        //Act
         var actual = controller.Index() as ViewResult;
 
-        //Assert
         actual.Should().NotBeNull();
         var model = actual!.Model as SearchCoursesViewModel;
         model.Should().NotBeNull();
         model.ShowSearchCrumb.Should().BeFalse();
         model.ShowShortListLink.Should().BeTrue();
+    }
+
+    [Test, MoqAutoData]
+    public void Index_GetRequest_PopulatesTrainingTypesFilterItemsWithBold(
+        [Greedy] SearchCoursesController controller)
+    {
+        var actual = controller.Index() as ViewResult;
+
+        actual.Should().NotBeNull();
+        var model = actual!.Model as SearchCoursesViewModel;
+        model.Should().NotBeNull();
+
+        model.TrainingTypesFilterItems.Should().NotBeNull();
+        model.TrainingTypesFilterItems.Should().HaveCount(3);
+        model.TrainingTypesFilterItems.All(i => i.IsApprenticeshipTypeEmphasised).Should().BeTrue();
     }
 }

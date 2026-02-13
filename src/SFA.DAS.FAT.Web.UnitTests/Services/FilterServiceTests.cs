@@ -243,8 +243,8 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == selectedDistance), Is.True, $"'{selectedDistance} Miles' should be marked as selected.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value == null), Is.False, "'Across England' should not be selected when a distance is provided.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == selectedDistance), Is.True, $"'{selectedDistance} Miles' should be marked as selected.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == null), Is.False, "'Across England' should not be selected when a distance is provided.");
         });
     }
 
@@ -257,8 +257,8 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value != DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value != DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
         });
     }
 
@@ -271,8 +271,8 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.Selected && i.Value == $"{selectedDistance} Miles"), Is.False, "An invalid distance should not be marked as selected.");
-            Assert.That(_sut.Any(i => i.Selected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == $"{selectedDistance} Miles"), Is.False, "An invalid distance should not be marked as selected.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
         });
     }
 

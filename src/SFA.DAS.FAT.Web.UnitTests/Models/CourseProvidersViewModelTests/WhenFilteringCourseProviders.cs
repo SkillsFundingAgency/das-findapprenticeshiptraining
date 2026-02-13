@@ -46,7 +46,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Location_Filter_Section()
+    public void Filters_LocationFilterSection_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -66,7 +66,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void When_Location_Filter_Is_Not_Present_Then_Distance_Should_Default_To_Ten_Miles()
+    public void Distance_WhenLocationNotPresent_DefaultsToTenMiles()
     {
         Mock<IUrlHelper> urlHelperMock = new Mock<IUrlHelper>();
 
@@ -96,13 +96,13 @@ public sealed class WhenFilteringCourseProviders
 
             var distanceFilterSection = sut.First(a => a.For == nameof(_viewModel.Distance));
             var dropdownFilter = ((DropdownFilterSectionViewModel)distanceFilterSection);
-            var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
+            var selectedDistanceValue = dropdownFilter.Items.First(a => a.IsSelected);
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
         });
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Distance_Filter_Section()
+    public void Filters_DistanceFilterSection_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -123,7 +123,7 @@ public sealed class WhenFilteringCourseProviders
                 options => options.WithStrictOrdering()
             );
 
-            var selectedDistanceValue = dropdownFilter.Items.First(a => a.Selected);
+            var selectedDistanceValue = dropdownFilter.Items.First(a => a.IsSelected);
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(_viewModel.Distance));
             Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterService.DISTANCE_SECTION_HEADING));
             Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterService.DISTANCE_SECTION_SUB_HEADING));
@@ -131,7 +131,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_Location_Clear_Link()
+    public void ClearFilters_Location_IncludesClearLink()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -148,7 +148,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_DeliveryModes_Filter_Section()
+    public void Filters_DeliveryModesFilterSection_IsPresent()
     {
         var focus = "DeliveryModes";
         var sut = _viewModel.Filters.FilterSections;
@@ -165,7 +165,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(deliveryModesFilterSection.FilterComponentType,
                 Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
             Assert.That(checkboxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderDeliveryMode)).Length));
-            Assert.That(checkboxList.Items.Where(a => a.Selected).ToList(),
+            Assert.That(checkboxList.Items.Where(a => a.IsSelected).ToList(),
                 Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count));
             Assert.That(checkboxList.Heading, Is.EqualTo(FilterService.DELIVERYMODES_SECTION_HEADING));
             Assert.That(checkboxList.SubHeading, Is.EqualTo(FilterService.DELIVERYMODES_SECTION_SUB_HEADING));
@@ -174,7 +174,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_DeliveryModes_Clear_Links()
+    public void ClearFilters_DeliveryModes_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -209,7 +209,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_EmployerProviderReviews()
+    public void Filters_EmployerProviderReviewsAccordion_IsPresent()
     {
         var focus = "Reviews";
         var sut = _viewModel.Filters.FilterSections;
@@ -232,7 +232,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)employerProviderRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.EMPLOYER_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
@@ -240,7 +240,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_EmployerProviderReviews_Clear_Links()
+    public void ClearFilters_EmployerProviderReviews_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -269,7 +269,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_ApprenticeProviderReviews()
+    public void Filters_ApprenticeProviderReviewsAccordion_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -284,7 +284,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)apprenticeProviderRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.APPRENTICE_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
@@ -292,7 +292,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_ApprenticeProviderReviews_Clear_Links()
+    public void ClearFilters_ApprenticeProviderReviews_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
@@ -321,7 +321,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Filters_Must_Contain_Accordion_Filter_Section_With_QarRatings()
+    public void Filters_QarRatingsAccordion_IsPresent()
     {
         var sut = _viewModel.Filters.FilterSections;
 
@@ -336,7 +336,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)qarRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(QarRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.Selected).ToList(), Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.QAR_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.EqualTo(ExpectedQarSubHeading));
@@ -344,7 +344,7 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void Then_Clear_Filter_Sections_Must_Contain_QarReviews_Clear_Links()
+    public void ClearFilters_QarRatings_IncludesClearLinks()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
