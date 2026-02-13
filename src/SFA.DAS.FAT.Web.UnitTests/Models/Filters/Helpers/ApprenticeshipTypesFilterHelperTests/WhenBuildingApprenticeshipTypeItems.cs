@@ -18,6 +18,16 @@ public sealed class WhenBuildingApprenticeshipTypeItems
         items.All(i => i.IsSelected == false).Should().BeTrue();
     }
 
+    [TestCase(true, true)]
+    [TestCase(false, false)]
+    public void BuildItems_WithBoldDisplayText_FlagsAllItems(bool isBoldDisplayText, bool expectedBold)
+    {
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(null, isBoldDisplayText);
+
+        items.Should().HaveCount(3);
+        items.All(i => i.IsBoldDisplayText == expectedBold).Should().BeTrue();
+    }
+
     [Test]
     public void BuildItems_WithSelectedTypes_MapsDescriptionsForAllTypes()
     {
