@@ -54,7 +54,7 @@ public class WhenCreatingCoursesViewModel
             Keyword = "test",
             Location = "SW1",
             Distance = "10",
-            SelectedTypes = ["Standard"],
+            SelectedTrainingTypes = ["Standard"],
             Levels = [new LevelViewModel(new Level { Code = 2, Name = "GCSE" }, [])],
             Routes = [new RouteViewModel(new Route { Id = 1, Name = "Construction" }, [])]
         };
@@ -481,7 +481,7 @@ public class WhenCreatingCoursesViewModel
         var selectedTypes = new List<string> { "Standard" };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            SelectedTypes = selectedTypes
+            SelectedTrainingTypes = selectedTypes
         };
 
         var _sut = viewModel.ToQueryString();

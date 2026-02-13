@@ -8,13 +8,14 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
+
 public class WhenBuildingCourseViewModelFromQueryResult
 {
     [Test, MoqAutoData]
-    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, TrainingType apprenticeshipType)
+    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, TrainingType trainingType)
     {
-        source.TrainingType = apprenticeshipType;
-        var isFoundationApprenticeship = apprenticeshipType == TrainingType.FoundationApprenticeship;
+        source.TrainingType = trainingType;
+        var isFoundationApprenticeship = trainingType == TrainingType.FoundationApprenticeship;
 
         var sut = (CourseViewModel)source;
 
@@ -41,7 +42,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.CourseId, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.TrainingType));
+            Assert.That(sut.TrainingType, Is.EqualTo(source.TrainingType));
         });
     }
 

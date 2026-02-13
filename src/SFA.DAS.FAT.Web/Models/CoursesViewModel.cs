@@ -38,7 +38,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public List<string> SelectedRoutes { get; set; } = [];
 
-    public List<string> SelectedTypes { get; set; } = [];
+    public List<string> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
@@ -224,7 +224,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                         nameof(FilterType.ApprenticeshipTypes),
                         APPRENTICESHIP_TYPES_SECTION_HEADING,
                         null,
-                        TrainingTypesFilterHelper.BuildItems(SelectedTypes),
+                        TrainingTypesFilterHelper.BuildItems(SelectedTrainingTypes),
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
                         APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
                     ),
@@ -295,9 +295,9 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
 
-        if (SelectedTypes?.Count > 0)
+        if (SelectedTrainingTypes?.Count > 0)
         {
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTypes.ToList());
+            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTrainingTypes.ToList());
         }
 
         if (selectedFilters.Count == 0)
@@ -358,7 +358,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                     break;
                 case FilterType.ApprenticeshipTypes:
                     {
-                        foreach (string type in SelectedTypes)
+                        foreach (string type in SelectedTrainingTypes)
                         {
                             result.Add(ValueTuple.Create(nameof(FilterType.ApprenticeshipTypes), type));
                         }

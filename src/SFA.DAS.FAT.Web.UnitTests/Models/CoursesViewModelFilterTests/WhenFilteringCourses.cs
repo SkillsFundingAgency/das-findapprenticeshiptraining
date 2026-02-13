@@ -43,7 +43,7 @@ public sealed class WhenFilteringCourses
             Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
-            SelectedTypes = selectedTypes,
+            SelectedTrainingTypes = selectedTypes,
             Levels = new List<LevelViewModel>
             {
                 new LevelViewModel { Code = 3, Name = "Level 3" },
@@ -194,7 +194,7 @@ public sealed class WhenFilteringCourses
 
             var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
             Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(3));
-            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
+            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTrainingTypes.Count));
             Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
             Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
