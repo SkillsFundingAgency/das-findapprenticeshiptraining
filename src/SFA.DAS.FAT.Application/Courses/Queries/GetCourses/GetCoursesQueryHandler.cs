@@ -27,16 +27,16 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var trainingType = string.Empty;
+        var apprenticeshipType = string.Empty;
 
         if (query.ApprenticeshipTypes.Count == 1)
         {
             var type = query.ApprenticeshipTypes.First();
-            trainingType = ApprenticeshipType.Apprenticeship.ToString();
+            apprenticeshipType = ApprenticeshipType.Apprenticeship.ToString();
 
             if (type == ApprenticeshipType.FoundationApprenticeship.GetDescription())
             {
-                trainingType = ApprenticeshipType.FoundationApprenticeship.ToString();
+                apprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString();
             }
         }
 
@@ -48,7 +48,7 @@ public class GetCoursesQueryHandler(
                 Location = query.Location,
                 Distance = query.Distance,
                 RouteIds = routeIds,
-                TrainingType = trainingType,
+                ApprenticeshipType = apprenticeshipType,
                 Levels = query.Levels,
                 Page = query.Page,
                 OrderBy = query.OrderBy
