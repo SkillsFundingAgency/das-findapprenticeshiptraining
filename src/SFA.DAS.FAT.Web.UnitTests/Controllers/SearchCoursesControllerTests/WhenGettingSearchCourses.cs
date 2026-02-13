@@ -35,6 +35,6 @@ public class WhenGettingSearchCourses
 
         model.TrainingTypesFilterItems.Should().NotBeNull();
         model.TrainingTypesFilterItems.Should().HaveCount(3);
-        model.TrainingTypesFilterItems.All(i => i.IsBoldDisplayText).Should().BeTrue();
+        model.TrainingTypesFilterItems.All(i => i.IsApprenticeshipTypeEmphasised).Should().BeTrue();
     }
 }

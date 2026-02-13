@@ -39,8 +39,8 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(filter.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
             Assert.That(filter.Link, Is.Null);
 
-            Assert.That(filter.Items.Count, Is.EqualTo(3));
-            Assert.That(filter.Items.All(i => i.IsBoldDisplayText == false), Is.True);
+            Assert.That(filter.Items, Has.Count.EqualTo(3));
+            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
 
             Assert.That(unit.DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
             Assert.That(foundation.DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
@@ -95,9 +95,9 @@ public sealed class WhenBuildingTrainingTypesFilter
         var filter = sut.TrainingTypesCheckboxListItems;
         Assert.Multiple(() =>
         {
-            Assert.That(filter.Items.Count, Is.EqualTo(3));
-            Assert.That(filter.Items.All(i => i.IsSelected == false), Is.True);
-            Assert.That(filter.Items.All(i => i.IsBoldDisplayText == false), Is.True);
+            Assert.That(filter.Items, Has.Count.EqualTo(3));
+            Assert.That(filter.Items.All(i => i.IsSelected), Is.False);
+            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
         });
     }
 }

@@ -10,7 +10,7 @@ public static class ApprenticeshipTypesFilterHelper
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION = "Apprenticeships that qualify learners for a job, levels 2 to 7";
-    public static List<FilterItemViewModel> BuildItems(List<string> selectedTrainingTypes, bool isBoldDisplayText = false)
+    public static List<FilterItemViewModel> BuildItems(List<string> selectedTrainingTypes, bool isApprenticeshipTypeEmphasised = false)
     {
         var allTrainingTypes = new[]
         {
@@ -24,7 +24,7 @@ public static class ApprenticeshipTypesFilterHelper
             {
                 Value = trainingType.GetDescription(),
                 DisplayText = trainingType.GetDescription(),
-                IsBoldDisplayText = isBoldDisplayText,
+                IsApprenticeshipTypeEmphasised = isApprenticeshipTypeEmphasised,
                 DisplayDescription = trainingType switch
                 {
                     ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,

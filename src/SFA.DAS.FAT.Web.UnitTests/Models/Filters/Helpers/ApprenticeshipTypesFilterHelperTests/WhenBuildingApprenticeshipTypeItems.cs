@@ -15,17 +15,17 @@ public sealed class WhenBuildingApprenticeshipTypeItems
 
         items.Should().NotBeNull();
         items.Should().HaveCount(3);
-        items.All(i => i.IsSelected == false).Should().BeTrue();
+        items.All(i => i.IsSelected).Should().BeFalse();
     }
 
     [TestCase(true, true)]
     [TestCase(false, false)]
-    public void BuildItems_WithBoldDisplayText_FlagsAllItems(bool isBoldDisplayText, bool expectedBold)
+    public void BuildItems_WithBoldDisplayText_FlagsAllItems(bool isApprenticeshipTypeEmphasised, bool expectedBold)
     {
-        var items = ApprenticeshipTypesFilterHelper.BuildItems(null, isBoldDisplayText);
+        var items = ApprenticeshipTypesFilterHelper.BuildItems(null, isApprenticeshipTypeEmphasised);
 
         items.Should().HaveCount(3);
-        items.All(i => i.IsBoldDisplayText == expectedBold).Should().BeTrue();
+        items.All(i => i.IsApprenticeshipTypeEmphasised == expectedBold).Should().BeTrue();
     }
 
     [Test]
