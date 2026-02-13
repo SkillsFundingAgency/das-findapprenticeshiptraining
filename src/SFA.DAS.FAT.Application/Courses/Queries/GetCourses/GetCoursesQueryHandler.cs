@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -27,18 +29,14 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var apprenticeshipType = string.Empty;
+        var descriptionToEnumName = Enum.GetValues(typeof(ApprenticeshipType))
+            .Cast<ApprenticeshipType>()
+            .ToDictionary(e => e.GetDescription(), e => e.ToString(), StringComparer.OrdinalIgnoreCase);
 
-        if (query.ApprenticeshipTypes.Count == 1)
-        {
-            var type = query.ApprenticeshipTypes.First();
-            apprenticeshipType = ApprenticeshipType.Apprenticeship.ToString();
-
-            if (type == ApprenticeshipType.FoundationApprenticeship.GetDescription())
-            {
-                apprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString();
-            }
-        }
+        var apprenticeshipTypes = (query.ApprenticeshipTypes ?? new List<string>())
+            .Where(d => descriptionToEnumName.ContainsKey(d))
+            .Select(d => descriptionToEnumName[d])
+            .ToList();
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
             new GetCoursesApiRequest
@@ -48,7 +46,7 @@ public class GetCoursesQueryHandler(
                 Location = query.Location,
                 Distance = query.Distance,
                 RouteIds = routeIds,
-                ApprenticeshipType = apprenticeshipType,
+                ApprenticeshipType = apprenticeshipTypes,
                 Levels = query.Levels,
                 Page = query.Page,
                 OrderBy = query.OrderBy

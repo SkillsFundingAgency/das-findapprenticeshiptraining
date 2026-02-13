@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api;
 public class WhenCreatingTheGetCoursesApiRequest
 {
     [Test]
-    public void Constructor_Should_Set_Properties()
+    public void Constructor_GivenValidValues_SetsProperties()
     {
         var _sut = new GetCoursesApiRequest
         {
@@ -15,9 +15,9 @@ public class WhenCreatingTheGetCoursesApiRequest
             Keyword = "test",
             Location = "London",
             Distance = 10,
-            RouteIds = new List<int> { 1, 2 },
-            ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString(),
-            Levels = new List<int> { 3, 4 },
+            RouteIds = [1, 2],
+            ApprenticeshipType = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString() },
+            Levels = [3, 4],
             Page = 1,
             OrderBy = OrderBy.Score
         };
@@ -29,7 +29,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Assert.That(_sut.Location, Is.EqualTo("London"));
             Assert.That(_sut.Distance, Is.EqualTo(10));
             Assert.That(_sut.RouteIds, Is.EquivalentTo(new List<int> { 1, 2 }));
-            Assert.That(_sut.ApprenticeshipType, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.ToString()));
+            Assert.That(_sut.ApprenticeshipType, Is.EquivalentTo([ApprenticeshipType.FoundationApprenticeship.ToString()]));
             Assert.That(_sut.Levels, Is.EquivalentTo(new List<int> { 3, 4 }));
             Assert.That(_sut.Page, Is.EqualTo(1));
             Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Score));
@@ -37,7 +37,7 @@ public class WhenCreatingTheGetCoursesApiRequest
     }
 
     [Test]
-    public void GetUrl_Should_Construct_Correct_Url()
+    public void GetUrl_GivenAllParameters_ConstructsCorrectUrl()
     {
         var _sut = new GetCoursesApiRequest
         {
@@ -45,9 +45,9 @@ public class WhenCreatingTheGetCoursesApiRequest
             Keyword = "test",
             Location = "London",
             Distance = 10,
-            RouteIds = new List<int> { 1, 2 },
-            ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString(),
-            Levels = new List<int> { 3, 4 },
+            RouteIds = [1, 2],
+            ApprenticeshipType = [ApprenticeshipType.FoundationApprenticeship.ToString()],
+            Levels = [3, 4],
             Page = 1,
             OrderBy = OrderBy.Title
         };
@@ -56,7 +56,7 @@ public class WhenCreatingTheGetCoursesApiRequest
     }
 
     [Test]
-    public void GetUrl_Should_Exclude_Empty_Parameters()
+    public void GetUrl_GivenEmptyParameters_ExcludesEmptyParameters()
     {
         var _sut = new GetCoursesApiRequest
         {
@@ -64,9 +64,9 @@ public class WhenCreatingTheGetCoursesApiRequest
             Keyword = null,
             Location = null,
             Distance = null,
-            RouteIds = new List<int>(),
-            ApprenticeshipType = null,
-            Levels = new List<int>(),
+            RouteIds = [],
+            ApprenticeshipType = new List<string>(),
+            Levels = [],
             Page = 1,
             OrderBy = OrderBy.Title
         };

@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -34,16 +35,16 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Return_Correct_Response()
+    public async Task Handle_GivenValidQuery_ReturnsCorrectResponse()
     {
         var query = new GetCoursesQuery()
         {
             Keyword = "test",
             Location = "London",
             Distance = 10,
-            Routes = new List<string> { "Route1" },
-            ApprenticeshipTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
-            Levels = new List<int> { 3 },
+            Routes = ["Route1"],
+            ApprenticeshipTypes = [ApprenticeshipType.FoundationApprenticeship.GetDescription(), ApprenticeshipType.Apprenticeship.GetDescription()],
+            Levels = [3],
             OrderBy = OrderBy.Title
         };
 
@@ -84,6 +85,14 @@ public class WhenGettingCourses
         _levelsServiceMock.Setup(x => x.GetLevelsAsync(cancellationToken)).ReturnsAsync(levels);
         _routesServiceMock.Setup(x => x.GetRoutesAsync(cancellationToken)).ReturnsAsync(routes);
 
+        var descriptionToEnumName = Enum.GetValues(typeof(ApprenticeshipType))
+            .Cast<ApprenticeshipType>()
+            .ToDictionary(e => e.GetDescription(), e => e.ToString(), StringComparer.OrdinalIgnoreCase);
+        var expectedApprenticeshipTypes = (query.ApprenticeshipTypes ?? new List<string>())
+            .Where(d => descriptionToEnumName.ContainsKey(d))
+            .Select(d => descriptionToEnumName[d])
+            .ToList();
+
         _apiClientMock.Setup(x => x.Get<GetCoursesResponse>(
                 It.Is<GetCoursesApiRequest>(r =>
                     r.BaseUrl == BASE_URL &&
@@ -93,10 +102,9 @@ public class WhenGettingCourses
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
                     r.OrderBy == query.OrderBy &&
-                    r.ApprenticeshipType == String.Empty
+                    r.ApprenticeshipType.SequenceEqual(expectedApprenticeshipTypes)
                 )
-            )
-        )
+        ))
         .ReturnsAsync(coursesResponse);
 
         var _sut = new GetCoursesQueryHandler(
@@ -117,7 +125,7 @@ public class WhenGettingCourses
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
                 r.BaseUrl == BASE_URL &&
-                r.ApprenticeshipType == string.Empty
+                r.ApprenticeshipType.SequenceEqual(expectedApprenticeshipTypes)
             )
         ), Times.Once);
 
@@ -135,13 +143,14 @@ public class WhenGettingCourses
 
     [Test]
     [MoqInlineAutoData("", "", "")]
+    [MoqInlineAutoData("Apprenticeship units", "", "ApprenticeshipUnit")]
     [MoqInlineAutoData("Foundation apprenticeships", "", "FoundationApprenticeship")]
     [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
-    public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
+    public async Task Handle_WhenOnlyOneApprenticeshipTypeSelected_CallsApiWithExpectedApprenticeshipType(
         string apprenticeshipType1,
         string apprenticeshipType2,
-        string requestApprenticeshipType,
+        string requestApprenticeshipTypeValue,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -160,7 +169,7 @@ public class WhenGettingCourses
 
         var query = new GetCoursesQuery()
         {
-            Routes = new List<string>(),
+            Routes = [],
             ApprenticeshipTypes = apprenticeshipTypes,
             OrderBy = OrderBy.Title
         };
@@ -169,7 +178,7 @@ public class WhenGettingCourses
 
         var coursesResponse = new GetCoursesResponse
         {
-            Standards = new List<StandardModel>(),
+            Standards = [],
             Page = 1,
             PageSize = Constants.DefaultPageSize,
             TotalPages = 1,
@@ -187,7 +196,8 @@ public class WhenGettingCourses
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
 
-                r.ApprenticeshipType == requestApprenticeshipType
+                (string.IsNullOrEmpty(requestApprenticeshipTypeValue) && r.ApprenticeshipType.Count == 0) ||
+                (r.ApprenticeshipType.Count == 1 && r.ApprenticeshipType[0] == requestApprenticeshipTypeValue)
             )
         ), Times.Once);
     }
