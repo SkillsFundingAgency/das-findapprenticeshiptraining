@@ -10,7 +10,7 @@ public static class ApprenticeshipTypesFilterHelper
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION = "Short training courses based on existing apprenticeships, levels 2 to 7";
     public const string APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION = "Introductory apprenticeships for young people, level 2";
     public const string APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION = "Apprenticeships that qualify learners for a job, levels 2 to 7";
-    public static List<FilterItemViewModel> BuildItems(List<string> selectedApprenticeshipTypes)
+    public static List<FilterItemViewModel> BuildItems(List<string> selectedApprenticeshipTypes, bool isApprenticeshipTypeEmphasised = false)
     {
         var allApprenticeshipTypes = new[]
         {
@@ -20,17 +20,18 @@ public static class ApprenticeshipTypesFilterHelper
         };
 
         return allApprenticeshipTypes
-            .Select(apprenticeship => new FilterItemViewModel
+            .Select(apprenticeshipType => new FilterItemViewModel
             {
-                Value = apprenticeship.GetDescription(),
-                DisplayText = apprenticeship.GetDescription(),
-                DisplayDescription = apprenticeship switch
+                Value = apprenticeshipType.GetDescription(),
+                DisplayText = apprenticeshipType.GetDescription(),
+                IsApprenticeshipTypeEmphasised = isApprenticeshipTypeEmphasised,
+                DisplayDescription = apprenticeshipType switch
                 {
                     ApprenticeshipType.ApprenticeshipUnit => APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION,
                     ApprenticeshipType.FoundationApprenticeship => APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION,
                     _ => APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION
                 },
-                IsSelected = selectedApprenticeshipTypes?.Contains(apprenticeship.GetDescription()) ?? false
+                IsSelected = selectedApprenticeshipTypes?.Contains(apprenticeshipType.GetDescription()) ?? false
             })
             .ToList();
     }

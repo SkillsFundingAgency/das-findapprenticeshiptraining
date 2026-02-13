@@ -14,8 +14,15 @@
             type="checkbox"
             value="@filterItem.Value"/>
 
-        <label class="govuk-label govuk-checkboxes__label" for="@inputId">
-            @filterItem.DisplayText
+        <label class="govuk-label govuk-checkboxes__label" for="@inputId" >
+            @if (filterItem.IsApprenticeshipTypeEmphasised)
+            {
+                <span class="govuk-!-font-weight-bold">@filterItem.DisplayText</span>
+            }
+            else
+            {
+                @filterItem.DisplayText
+            }
         </label>
 
         @if (!string.IsNullOrWhiteSpace(filterItem.DisplayDescription))

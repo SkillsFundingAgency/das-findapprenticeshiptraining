@@ -1,5 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models;
@@ -27,6 +26,10 @@ public sealed class WhenBuildingApprenticeshipTypesFilter
 
         var filter = sut.TrainingTypesCheckboxListItems;
 
+        var unit = filter.Items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
+        var foundation = filter.Items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
+        var apprenticeship = filter.Items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
+
         Assert.Multiple(() =>
         {
             Assert.That(filter, Is.Not.Null);
@@ -35,16 +38,10 @@ public sealed class WhenBuildingApprenticeshipTypesFilter
             Assert.That(filter.For, Is.EqualTo(nameof(SearchCoursesViewModel.SelectedTypes)));
             Assert.That(filter.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
             Assert.That(filter.Link, Is.Null);
-        });
 
-        filter.Items.Should().HaveCount(3);
+            Assert.That(filter.Items, Has.Count.EqualTo(3));
+            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
 
-        var unit = filter.Items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
-        var foundation = filter.Items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
-        var apprenticeship = filter.Items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
-
-        Assert.Multiple(() =>
-        {
             Assert.That(unit.DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
             Assert.That(foundation.DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(apprenticeship.DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
@@ -96,8 +93,11 @@ public sealed class WhenBuildingApprenticeshipTypesFilter
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
-
-        filter.Items.Should().HaveCount(3);
-        filter.Items.All(i => i.IsSelected == false).Should().BeTrue();
+        Assert.Multiple(() =>
+        {
+            Assert.That(filter.Items, Has.Count.EqualTo(3));
+            Assert.That(filter.Items.All(i => i.IsSelected), Is.False);
+            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
+        });
     }
 }
