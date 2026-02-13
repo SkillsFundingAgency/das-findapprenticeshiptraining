@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            Trainings = new List<string> { TrainingType.FoundationApprenticeship.ToString(), TrainingType.Apprenticeship.ToString() },
+            TrainingTypes = new List<string> { TrainingType.FoundationApprenticeship.ToString(), TrainingType.Apprenticeship.ToString() },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -161,7 +161,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery()
         {
             Routes = new List<string>(),
-            Trainings = trainingTypes,
+            TrainingTypes = trainingTypes,
             OrderBy = OrderBy.Title
         };
 
