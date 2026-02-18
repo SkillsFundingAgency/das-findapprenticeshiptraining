@@ -13,7 +13,6 @@ public class CourseViewModel : PageLinksViewModelBase
 {
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
-    public string LarsCode { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
     public int TotalProvidersCount { get; set; }
     public string Title { get; set; }
