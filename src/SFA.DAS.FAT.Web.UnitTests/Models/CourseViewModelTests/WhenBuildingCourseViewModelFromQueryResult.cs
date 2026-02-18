@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
+
 public class WhenBuildingCourseViewModelFromQueryResult
 {
     [Test, MoqAutoData]
@@ -38,7 +39,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.StandardPageUrl, Is.EqualTo(source.StandardPageUrl));
             Assert.That(sut.IsFoundationApprenticeship, Is.EqualTo(isFoundationApprenticeship));
             Assert.That(sut.Levels, Is.EqualTo(source.Levels));
-            Assert.That(sut.CourseId, Is.EqualTo(source.LarsCode));
+            Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
             Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.ApprenticeshipType));

@@ -617,8 +617,8 @@ public class WhenCreatingCoursesViewModel
             It.Is<UrlRouteContext>(c =>
                 c.RouteName == RouteNames.CourseProviders
                 && c.Values != null
-                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("id")
-                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["id"], standardViewModel.LarsCode)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("larsCode")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["larsCode"], standardViewModel.LarsCode)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("Location")
                 && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["Location"], _sut.Location)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("distance")

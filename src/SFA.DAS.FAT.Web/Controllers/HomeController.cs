@@ -76,8 +76,8 @@ public class HomeController : Controller
             Url.RouteUrl(RouteNames.Courses,null,Request.Scheme, Request.Host.Host),
 
         };
-        urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseDetails, new { id = course.LarsCode }, Request.Scheme, Request.Host.Host)));
-        urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseProviders, new { id = course.LarsCode }, Request.Scheme, Request.Host.Host)));
+        urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseDetails, new { larsCode = course.LarsCode }, Request.Scheme, Request.Host.Host)));
+        urlList.AddRange(result.Standards.Select(course => Url.RouteUrl(RouteNames.CourseProviders, new { larsCode = course.LarsCode }, Request.Scheme, Request.Host.Host)));
 
         urlList.Add(Url.RouteUrl(RouteNames.ShortLists, null, Request.Scheme, Request.Host.Host));
         urlList.Add(Url.RouteUrl(RouteNames.Cookies, null, Request.Scheme, Request.Host.Host));

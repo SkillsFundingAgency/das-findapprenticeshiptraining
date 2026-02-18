@@ -32,7 +32,7 @@
             </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET" class="app-search-results-header">
+            <form asp-route="@RouteNames.CourseProviders" larsCode="course-providers-order-form" method="GET" class="app-search-results-header">
                 @foreach (var q in Context.Request.Query)
                 {
                     switch (q.Key.ToLower())
@@ -112,7 +112,7 @@
                                 <div>
                                     @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
                                     {
-                                        CourseId = Model.Id.ToString(),
+                                        LarsCode = Model.LarsCode,
                                         ShortlistCount = Model.ShortlistCount,
                                         ProviderName = provider.ProviderName,
                                         ShortlistId = provider.ShortlistId,
@@ -178,7 +178,7 @@
                 </p>
 
                 <p class="govuk-!-margin-0">
-                    <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.CourseId)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
+                    <a id="ask-training-providers-run-course" href="@Model.GetHelpFindingCourseUrl(Model.LarsCode)" class="govuk-button das-button--blue govuk-!-margin-0">Ask if training providers can run this course</a>
                 </p>
             </div>
    

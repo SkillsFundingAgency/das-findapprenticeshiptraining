@@ -21,12 +21,12 @@ public class CourseProvidersApiRequest : IGetApiRequest
     private readonly int? _page;
     private readonly int? _pageSize;
     private readonly Guid? _shortlistUserId;
-    private readonly string _id;
+    private readonly string _larsCode;
 
     public CourseProvidersApiRequest(string baseUrl, CourseProvidersParameters courseProvidersParameters)
     {
         BaseUrl = baseUrl;
-        _id = courseProvidersParameters.Id;
+        _larsCode = courseProvidersParameters.LarsCode;
         _orderBy = courseProvidersParameters.OrderBy;
         _distance = courseProvidersParameters.Distance;
         _location = courseProvidersParameters.Location;
@@ -44,7 +44,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
 
     private string BuildUrl()
     {
-        var buildUrl = $"{BaseUrl}courses/{_id}/providers?orderBy={_orderBy}";
+        var buildUrl = $"{BaseUrl}courses/{_larsCode}/providers?orderBy={_orderBy}";
 
         buildUrl = AddDistanceToUrl(buildUrl);
         buildUrl = AddLocationToUrl(buildUrl);

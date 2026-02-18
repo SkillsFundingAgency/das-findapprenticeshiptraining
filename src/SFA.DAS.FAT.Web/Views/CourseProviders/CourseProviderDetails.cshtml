@@ -50,7 +50,7 @@
 
                     <a class="govuk-link govuk-link--no-visited-state"
                        asp-route="@RouteNames.CourseProviderDetails"
-                       asp-route-id="@Model.LarsCode"
+                       asp-route-larsCode="@Model.LarsCode"
                        asp-route-providerId="@Model.Ukprn">
                         remove or change your location
                     </a>.
@@ -557,7 +557,7 @@
                         {
                             <li class="govuk-task-list__item govuk-task-list__item--with-link">
                                 <div class="govuk-task-list__name-and-hint">
-                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-id="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
+                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-larsCode="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
                                         @course.NameAndLevel
                                     </a>
                                 </div>
@@ -591,7 +591,7 @@
                     <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
                         <div class="app-provider-shortlist-add">
                             <form method="post" asp-route="@RouteNames.CreateShortlistItem">
-                                <input type="hidden" name="larsCode" value="@Model.CourseId" />
+                                <input type="hidden" name="larsCode" value="@Model.LarsCode" />
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
                                 <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
@@ -610,7 +610,7 @@
                             <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
                                 <input type="hidden" name="ukprn" value="@Model.Ukprn" />
                                 <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                                <input type="hidden" name="trainingCode" value="@Model.CourseId" />
+                                <input type="hidden" name="larsCode" value="@Model.LarsCode" />
                                 <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
                                 <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link das-no-wrap" type="submit">Remove from shortlist</button>
                             </form>
@@ -620,7 +620,7 @@
                     @if (Model.TotalProvidersCount > 1)
                     {
                         <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is 1 of @Model.TotalProvidersCount training providers for @Model.CourseNameAndLevel.</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.CourseId">View training providers for this course</a></p>
+                        <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">View training providers for this course</a></p>
                     }
 
                     @if (Model.TotalProvidersCount == 1)

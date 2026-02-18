@@ -25,7 +25,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
-[Route("courses/{id}/providers")]
+[Route("courses/{larsCode}/providers")]
 public class CourseProvidersController : Controller
 {
     public const string LocationTempDataKey = "Location";
@@ -61,7 +61,7 @@ public class CourseProvidersController : Controller
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
-        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.Id });
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
 
         if (!validationLarsCodeResult.IsValid)
         {
@@ -92,7 +92,7 @@ public class CourseProvidersController : Controller
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
-            Id = request.Id,
+            LarsCode = request.LarsCode,
             Location = request.Location,
             OrderBy = orderBy,
             Distance = convertedDistance,
@@ -111,11 +111,10 @@ public class CourseProvidersController : Controller
 
         var courseProvidersViewModel = new CourseProvidersViewModel(_config)
         {
-            Id = request.Id,
+            LarsCode = request.LarsCode,
             ShortlistCount = shortlistCount?.Count ?? 0,
             OrderBy = orderBy,
             CourseTitleAndLevel = result.StandardName,
-            CourseId = request.Id.ToString(),
             Location = request.Location,
             Distance = convertedDistance.ToString(),
             SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()).ToList(),
@@ -163,7 +162,7 @@ public class CourseProvidersController : Controller
     }
 
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails(string id, int providerId, string location, string distance)
+    public async Task<IActionResult> CourseProviderDetails(string larsCode, int providerId, string location, string distance)
     {
 
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
@@ -173,7 +172,7 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
-        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = id });
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = larsCode });
 
         if (!validationLarsCodeResult.IsValid)
         {
@@ -192,7 +191,7 @@ public class CourseProvidersController : Controller
         var query = new GetCourseProviderDetailsQuery
         {
             Ukprn = providerId,
-            LarsCode = id,
+            LarsCode = larsCode,
             Location = location?.Trim(),
             Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
             ShortlistUserId = shortlistUserId
@@ -208,7 +207,7 @@ public class CourseProvidersController : Controller
         var viewModel = (CourseProviderViewModel)result;
         viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
-        viewModel.CourseId = id;
+        viewModel.LarsCode = larsCode;
         viewModel.Location = location;
         viewModel.Distance = distance ?? DistanceService.TEN_MILES.ToString();
         viewModel.ShortlistId = result.ShortlistId;

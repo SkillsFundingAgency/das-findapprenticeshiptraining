@@ -59,7 +59,6 @@ public class CourseViewModel : PageLinksViewModelBase
             StandardPageUrl = source.StandardPageUrl,
             KsbDetails = KsbsGroupsOrdered(source.Ksbs),
             Levels = source.Levels,
-            CourseId = source.LarsCode,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
             IsFoundationApprenticeship = source.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship,
