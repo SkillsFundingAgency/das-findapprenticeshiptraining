@@ -268,7 +268,7 @@ public static class FilterService
     {
         if (param.Key == filterType)
         {
-            foreach (var val in param.Value.Where(v => v != value))
+            foreach (var val in param.Value.Where(v => v == value))
             {
                 var paramValue = GetClearVal(val, filterType, param.Key);
 
