@@ -162,7 +162,7 @@ public class CoursesProviderViewModel
             ApprenticeRating = source.ApprenticeRating,
             IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
             IsLearnerWorkPlaceAvailable = source.Locations.Any(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional),
-            NearestLearnerWorkPlace = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).Min(x => x.CourseDistance),
+            NearestLearnerWorkPlace = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).MinBy(x => x.CourseDistance)?.CourseDistance,
             IsEmployerLocationAvailable = source.Locations.Any(x => x.AtEmployer),
             NearestEmployerLocation = source.Locations.FirstOrDefault(x => x.AtEmployer)?.CourseDistance,
             IsBlockReleaseAvailable = source.Locations.Any(x => x.BlockRelease),

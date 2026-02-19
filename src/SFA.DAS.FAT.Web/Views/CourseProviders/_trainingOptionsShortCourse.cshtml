@@ -16,7 +16,9 @@
     @if (Model.IsLearnerWorkPlaceAvailable)
     {
         <p class="govuk-body">
-            <span>At learner's workplace</span>
+            <span asp-show="@Model.NearestLearnerWorkPlace <= 0">At learner's workplace</span>
+            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestLearnerWorkPlace > 0">At learner's workplace:</span>
+            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestLearnerWorkPlace > 0" class="govuk-!-font-weight-bold">@Model.NearestLearnerWorkPlace miles</span>
             <br />
             @if (!string.IsNullOrEmpty(Model.LearnerWorkPlaceDisplayDescription))
             {
@@ -28,8 +30,8 @@
     @if (Model.IsEmployerLocationAvailable)
     {
         <p class="govuk-body">
-            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation <= 0">At training provider's location</span>
-            <span asp-show =" @Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0">At training provider's location: </span>
+            <span asp-show="@Model.NearestEmployerLocation <= 0">At training provider's location</span>
+            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0"> At training provider's location:</span>
             <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0" class="govuk-!-font-weight-bold">@Model.NearestEmployerLocation miles</span>
             <br />
             @if (!string.IsNullOrEmpty(Model.EmployerLocationDisplayDescription))
