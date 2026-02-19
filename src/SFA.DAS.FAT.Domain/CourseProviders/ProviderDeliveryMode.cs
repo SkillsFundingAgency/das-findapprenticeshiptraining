@@ -13,5 +13,5 @@ public enum ProviderDeliveryMode
     [Description("Block release")]
     BlockRelease = 3,
     [Description("Online")]
-    Online = 5
+    Online = 4
 }

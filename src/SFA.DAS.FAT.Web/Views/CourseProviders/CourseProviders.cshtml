@@ -88,15 +88,16 @@
                             }
                             else
                             {
-                            <div class="app-search-results-sort">
                                 @if (Model.ProviderOrderOptions.Any(a => a.ProviderOrderBy == ProviderOrderBy.Distance))
                                 {
+                                <div class="app-search-results-sort">
                                     <p class="govuk-body govuk-!-text-align-right">
                                         Sorted by:
                                         <span class="govuk-!-font-weight-bold">@ProviderOrderBy.Distance.ToString()</span>
                                     </p>
+                                </div>
                                 }
-                            </div>
+                           
                             }
                     </div>
                 }
