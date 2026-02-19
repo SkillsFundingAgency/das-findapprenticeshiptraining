@@ -28,7 +28,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-            <form id="course-providers-form" method="GET">
+            <form id="course-providers-form" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode" method="GET">
                 <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
                 @await Html.PartialAsync(Model.CourseType == CourseType.Apprenticeship ? "_filters" : "_filtersShortCourse", Model.Filters)
             </form>
