@@ -17,14 +17,14 @@ public class CourseProvidersRequest
     public string Location { get; set; } = string.Empty;
 
     [FromQuery]
-    public IReadOnlyList<ProviderDeliveryMode> DeliveryModes { get; set; } = new List<ProviderDeliveryMode>();
+    public IReadOnlyList<ProviderDeliveryMode> DeliveryModes { get; set; } = [];
     [FromQuery]
-    public IReadOnlyList<ProviderRating> EmployerProviderRatings { get; set; } = new List<ProviderRating>();
+    public IReadOnlyList<ProviderRating> EmployerProviderRatings { get; set; } = [];
     [FromQuery]
-    public IReadOnlyList<ProviderRating> ApprenticeProviderRatings { get; set; } = new List<ProviderRating>();
+    public IReadOnlyList<ProviderRating> ApprenticeProviderRatings { get; set; } = [];
 
     [FromQuery]
-    public IReadOnlyList<QarRating> QarRatings { get; set; } = new List<QarRating>();
+    public IReadOnlyList<QarRating> QarRatings { get; set; } = [];
 
     [FromQuery]
     public string Distance { get; set; } = string.Empty;

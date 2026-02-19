@@ -20,7 +20,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public int Level { get; set; }
-    public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
     public ReviewsModel Reviews { get; set; }

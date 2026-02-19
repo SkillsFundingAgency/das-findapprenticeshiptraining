@@ -1,0 +1,21 @@
+﻿@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsShortCourseViewModel
+<dt class="govuk-summary-list__key">Training options @Model.DistanceDetails</dt>
+<dd class="govuk-summary-list__value">
+    @if (Model.IsOnlineAvailable)
+    {
+        <p class="govuk-body">
+                <span class="govuk-body-s das-hint-colour">Your learner will complete this training remotely.</span>
+        </p>
+    }
+
+    @if (Model.IsEmployerLocationAvailable)
+    {
+        <p class="govuk-body">
+            <span asp-show="!@Model.ShowDistanceDetails">At apprentice's workplace</span>
+            <span asp-show="@Model.ShowDistanceDetails">At apprentice's workplace: </span>
+            <span asp-show="@Model.ShowDistanceDetails" class="govuk-!-font-weight-bold">0.0 miles</span>
+            <br />
+            <span class="govuk-body-s das-hint-colour">Training at the employer's location.</span>
+        </p>
+    }
+</dd>

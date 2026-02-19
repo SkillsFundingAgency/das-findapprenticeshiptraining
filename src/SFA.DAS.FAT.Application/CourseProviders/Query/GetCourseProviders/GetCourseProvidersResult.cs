@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 
@@ -11,6 +12,8 @@ public class GetCourseProvidersResult
     public int TotalCount { get; set; }
     public string LarsCode { get; set; }
     public string StandardName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
 

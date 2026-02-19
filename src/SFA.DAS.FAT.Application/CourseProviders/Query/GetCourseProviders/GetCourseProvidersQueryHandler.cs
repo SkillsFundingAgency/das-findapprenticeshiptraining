@@ -48,6 +48,8 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
             TotalPages = courseProvidersDetails.TotalPages,
             TotalCount = courseProvidersDetails.TotalCount,
             StandardName = courseProvidersDetails.StandardName,
+            CourseType = courseProvidersDetails.CourseType,
+            ApprenticeshipType = courseProvidersDetails.ApprenticeshipType,
             QarPeriod = academicYearsLatest.QarPeriod,
             ReviewPeriod = academicYearsLatest.ReviewPeriod,
             Providers = courseProvidersDetails.Providers

@@ -15,6 +15,11 @@ public class CoursesProviderViewModel
     public Guid? ShortlistId { get; set; }
     public List<ProviderLocation> Locations { get; set; }
 
+    public bool IsOnlineAvailable
+    {
+        get; init;
+    }
+
     public bool IsEmployerLocationAvailable
     {
         get; init;
@@ -88,6 +93,21 @@ public class CoursesProviderViewModel
         }
     }
 
+    public TrainingOptionsShortCourseViewModel TrainingOptionsShortCourseViewModel
+    {
+        get
+        {
+            return new TrainingOptionsShortCourseViewModel
+            {
+                IsOnlineAvailable = IsOnlineAvailable,
+                IsEmployerLocationAvailable = IsEmployerLocationAvailable,
+                NearestEmployerLocation = NearestEmployerLocation,
+                Distance = Distance,
+                Location = Location
+            };
+        }
+    }
+
     public string AchievementRateMessage
     {
         get
@@ -124,6 +144,7 @@ public class CoursesProviderViewModel
             ApprenticeReviews = source.ApprenticeReviews,
             ApprenticeStars = source.ApprenticeStars,
             ApprenticeRating = source.ApprenticeRating,
+            IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
             IsEmployerLocationAvailable = source.Locations.Any(x => x.AtEmployer),
             NearestEmployerLocation = source.Locations.FirstOrDefault(x => x.AtEmployer)?.CourseDistance,
             IsBlockReleaseAvailable = source.Locations.Any(x => x.BlockRelease),

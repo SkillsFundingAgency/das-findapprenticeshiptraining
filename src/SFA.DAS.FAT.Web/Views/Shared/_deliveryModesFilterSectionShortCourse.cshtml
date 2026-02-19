@@ -1,0 +1,93 @@
+﻿@using SFA.DAS.FAT.Web.Models.Filters.FilterComponents
+@using SFA.DAS.FAT.Domain.CourseProviders
+@model CheckboxListFilterSectionViewModel
+<div class="govuk-form-group">
+    <fieldset class="govuk-fieldset">
+        <legend class="govuk-visually-hidden">@Model.Heading</legend>
+        <h2 class="govuk-label das-filter__search-label">
+            @Model.Heading
+        </h2>
+        @if (!string.IsNullOrWhiteSpace(Model.SubHeading))
+        {
+            <p class="govuk-hint">@Model.SubHeading</p>
+        }
+        <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-padding-bottom-0">
+            @foreach (var filterItem in Model.Items)
+            {
+                var inputId = $"filteritem-{Model.Id}-{filterItem.Value}";
+                if (filterItem.Value == ProviderDeliveryMode.Online.ToString())
+                {
+                    <div class="govuk-checkboxes__item">
+                        <input @(filterItem.IsSelected ? "checked='checked'" : "")
+                            class="govuk-checkboxes__input"
+                            id="@inputId"
+                            name="@Model.For"
+                            type="checkbox"
+                            value="@filterItem.Value"/>
+
+                        <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                            @filterItem.DisplayText
+                        </label>
+
+                        <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                            Your learner will complete this training remotely.
+                        </div>
+                    </div>
+                }
+            }
+            @foreach (var filterItem in Model.Items)
+            {
+                var inputId = $"filteritem-{Model.Id}-{filterItem.Value}";
+                if (filterItem.Value == ProviderDeliveryMode.Workplace.ToString())
+                {
+                    <div class="govuk-checkboxes__item">
+                        <input @(filterItem.IsSelected ? "checked='checked'" : "")
+                            class="govuk-checkboxes__input"
+                            id="@inputId"
+                            name="@Model.For"
+                            type="checkbox"
+                            value="@filterItem.Value"/>
+
+                        <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                            @filterItem.DisplayText
+                        </label>
+
+                        <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                            The training provider will travel to you to deliver this course.
+                        </div>
+                    </div>
+                }
+                if (filterItem.Value == ProviderDeliveryMode.Provider.ToString())
+                {
+                    <div class="govuk-checkboxes__item">
+                        <input @(filterItem.IsSelected ? "checked='checked'" : "")
+                               class="govuk-checkboxes__input"
+                               id="@inputId"
+                               name="@Model.For"
+                               type="checkbox"
+                               value="@filterItem.Value" />
+
+                        <label class="govuk-label govuk-checkboxes__label" for="@inputId">
+                            @filterItem.DisplayText
+                        </label>
+
+                        <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                            Your learner will travel to the training provider to complete this course.
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </fieldset>
+    @if (Model.Link is not null)
+    {
+        <p class="govuk-body govuk-!-font-size-16 govuk-!-margin-top-3">
+            <a class="govuk-link govuk-link--no-visited-state"
+               href="@Model.Link.Url"
+               target="_blank"
+               rel="external">
+                @Model.Link.DisplayText
+            </a>
+        </p>
+    }
+</div>
