@@ -181,6 +181,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             Value = deliveryMode.DeliveryItemChoice.ToString(),
             DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
+            DisplayDescription = deliveryMode.DeliveryItemChoice switch
+            {
+                ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                _ => string.Empty
+            },
             IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
         })
             .ToList() ?? [];

@@ -1,4 +1,5 @@
 ﻿namespace SFA.DAS.FAT.Domain.CourseProviders;
+
 public class ProviderLocation
 {
     public int Ordering { get; set; }

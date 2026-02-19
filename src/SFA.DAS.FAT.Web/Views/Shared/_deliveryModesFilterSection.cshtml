@@ -43,13 +43,6 @@
                         <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                             @filterItem.DisplayText
                         </label>
-
-                        @if (!string.IsNullOrWhiteSpace(filterItem.DisplayDescription))
-                        {
-                            <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
-                                @filterItem.DisplayDescription
-                            </div>
-                        }
                     </div>
                 }
             }
@@ -72,13 +65,6 @@
                                 <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                                     @filterItem.DisplayText
                                 </label>
-
-                                @if (!string.IsNullOrWhiteSpace(filterItem.DisplayDescription))
-                                {
-                                    <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
-                                        @filterItem.DisplayDescription
-                                    </div>
-                                }
                             </div>
                         }
                     }

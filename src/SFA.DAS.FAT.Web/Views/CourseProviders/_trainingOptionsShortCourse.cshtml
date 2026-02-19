@@ -4,18 +4,38 @@
     @if (Model.IsOnlineAvailable)
     {
         <p class="govuk-body">
-                <span class="govuk-body-s das-hint-colour">Your learner will complete this training remotely.</span>
+            <span>Online</span>
+            <br />
+            @if (!string.IsNullOrEmpty(Model.OnlineDisplayDescription))
+            {
+                <span class="govuk-body-s das-hint-colour">@Model.OnlineDisplayDescription</span>
+            }
+        </p>
+    }
+
+    @if (Model.IsLearnerWorkPlaceAvailable)
+    {
+        <p class="govuk-body">
+            <span>At learner's workplace</span>
+            <br />
+            @if (!string.IsNullOrEmpty(Model.LearnerWorkPlaceDisplayDescription))
+            {
+                <span class="govuk-body-s das-hint-colour">@Model.LearnerWorkPlaceDisplayDescription</span>
+            }
         </p>
     }
 
     @if (Model.IsEmployerLocationAvailable)
     {
         <p class="govuk-body">
-            <span asp-show="!@Model.ShowDistanceDetails">At apprentice's workplace</span>
-            <span asp-show="@Model.ShowDistanceDetails">At apprentice's workplace: </span>
-            <span asp-show="@Model.ShowDistanceDetails" class="govuk-!-font-weight-bold">0.0 miles</span>
+            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation <= 0">At training provider's location</span>
+            <span asp-show =" @Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0">At training provider's location: </span>
+            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0" class="govuk-!-font-weight-bold">@Model.NearestEmployerLocation miles</span>
             <br />
-            <span class="govuk-body-s das-hint-colour">Training at the employer's location.</span>
+            @if (!string.IsNullOrEmpty(Model.EmployerLocationDisplayDescription))
+            {
+                <span class="govuk-body-s das-hint-colour">@Model.EmployerLocationDisplayDescription</span>
+            }
         </p>
     }
 </dd>

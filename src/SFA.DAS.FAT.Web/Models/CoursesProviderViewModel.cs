@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -16,6 +17,16 @@ public class CoursesProviderViewModel
     public List<ProviderLocation> Locations { get; set; }
 
     public bool IsOnlineAvailable
+    {
+        get; init;
+    }
+
+    public bool IsLearnerWorkPlaceAvailable
+    {
+        get; init;
+    }
+
+    public decimal? NearestLearnerWorkPlace
     {
         get; init;
     }
@@ -100,8 +111,13 @@ public class CoursesProviderViewModel
             return new TrainingOptionsShortCourseViewModel
             {
                 IsOnlineAvailable = IsOnlineAvailable,
+                IsLearnerWorkPlaceAvailable = IsLearnerWorkPlaceAvailable,
+                NearestLearnerWorkPlace = NearestLearnerWorkPlace,
                 IsEmployerLocationAvailable = IsEmployerLocationAvailable,
                 NearestEmployerLocation = NearestEmployerLocation,
+                OnlineDisplayDescription = FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                LearnerWorkPlaceDisplayDescription = FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                EmployerLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
                 Distance = Distance,
                 Location = Location
             };
@@ -145,6 +161,8 @@ public class CoursesProviderViewModel
             ApprenticeStars = source.ApprenticeStars,
             ApprenticeRating = source.ApprenticeRating,
             IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
+            IsLearnerWorkPlaceAvailable = source.Locations.Any(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional),
+            NearestLearnerWorkPlace = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).Min(x => x.CourseDistance),
             IsEmployerLocationAvailable = source.Locations.Any(x => x.AtEmployer),
             NearestEmployerLocation = source.Locations.FirstOrDefault(x => x.AtEmployer)?.CourseDistance,
             IsBlockReleaseAvailable = source.Locations.Any(x => x.BlockRelease),

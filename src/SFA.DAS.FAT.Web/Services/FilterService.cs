@@ -57,6 +57,9 @@ public static class FilterService
 
     public const string DELIVERYMODES_SECTION_HEADING = "Training options";
     public const string DELIVERYMODES_SECTION_SUB_HEADING = "Select a training option";
+    public const string DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION = "Your learner will complete this training remotely.";
+    public const string DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION = "The training provider will travel to you to deliver this course.";
+    public const string DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION = "Your learner will travel to the training provider to complete this course.";
 
     public const string APPRENTICESHIP_TYPES_SECTION_HEADING = "Training type";
 

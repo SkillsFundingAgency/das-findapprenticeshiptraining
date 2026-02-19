@@ -16,17 +16,17 @@
             @{
                 var deliveryModesToShow = new[] 
                 { 
-                    (Mode: ProviderDeliveryMode.Online, Order: 0, Hint: "Your learner will complete this training remotely."),
-                    (Mode: ProviderDeliveryMode.Workplace, Order: 1, Hint: "The training provider will travel to you to deliver this course."),
-                    (Mode: ProviderDeliveryMode.Provider, Order: 2, Hint: "Your learner will travel to the training provider to complete this course.")
+                    ProviderDeliveryMode.Online,
+                    ProviderDeliveryMode.Workplace,
+                    ProviderDeliveryMode.Provider
                 };
 
                 foreach (var deliveryMode in deliveryModesToShow)
                 {
-                    var filterItem = Model.Items.FirstOrDefault(i => i.Value == deliveryMode.Mode.ToString());
+                    var filterItem = Model.Items.FirstOrDefault(i => i.Value == deliveryMode.ToString());
                     if (filterItem != null)
                     {
-                        var inputId = $"filteritem-{Model.Id}-{deliveryMode.Mode}";
+                        var inputId = $"filteritem-{Model.Id}-{deliveryMode}";
 
                         <div class="govuk-checkboxes__item">
                             <input @(filterItem.IsSelected ? "checked='checked'" : "")
@@ -34,15 +34,18 @@
                                    id="@inputId"
                                    name="@Model.For"
                                    type="checkbox"
-                                   value="@((int)deliveryMode.Mode)" />
+                                   value="@((int)deliveryMode)" />
 
                             <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                                 @filterItem.DisplayText
                             </label>
 
-                            <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
-                                @deliveryMode.Hint
-                            </div>
+                            @if (!string.IsNullOrEmpty(filterItem.DisplayDescription))
+                            {
+                                <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
+                                    @filterItem.DisplayDescription
+                                </div>
+                            }
                         </div>
                     }
                 }
