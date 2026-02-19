@@ -28,20 +28,10 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-            @if (Model.CourseType == CourseType.Apprenticeship)
-            {
-                <form id="course-providers-form" method="GET">
-                    <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
-                    @await Html.PartialAsync("_filters", Model.Filters)
-                </form>
-            }
-            else
-            {
-                <form id="course-providers-form" method="GET">
-                    <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
-                    @await Html.PartialAsync("_filtersShortCourse", Model.Filters)
-                </form>
-            }
+            <form id="course-providers-form" method="GET">
+                <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+                @await Html.PartialAsync(Model.CourseType == CourseType.Apprenticeship ? "_filters" : "_filtersShortCourse", Model.Filters)
+            </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
             <form asp-route="@RouteNames.CourseProviders" larsCode="course-providers-order-form" method="GET" class="app-search-results-header">
@@ -149,17 +139,15 @@
                             </div>
 
                             <div class="govuk-summary-card__content">
-                                @if (Model.CourseType == CourseType.ShortCourse)
-                                {
-                                    <dl class="govuk-summary-list">
+                                <dl class="govuk-summary-list">
+                                    @if (Model.CourseType == CourseType.ShortCourse)
+                                    {
                                         <div class="govuk-summary-list__row">
-                                             @await Html.PartialAsync("_trainingOptionsShortCourse", provider.TrainingOptionsShortCourseViewModel)
+                                            @await Html.PartialAsync("_trainingOptionsShortCourse", provider.TrainingOptionsShortCourseViewModel)
                                         </div>
-                                    </dl>
-                                }
-                                else
-                                {
-                                    <dl class="govuk-summary-list">
+                                    }
+                                    else
+                                    {
                                         <div class="govuk-summary-list__row">
                                             @await Html.PartialAsync("_trainingOptions", provider.TrainingOptionsViewModel)
                                         </div>
@@ -190,8 +178,8 @@
                                                 @provider.AchievementRateMessage
                                             </dd>
                                         </div>
-                                    </dl>
-                                }
+                                    }
+                                </dl>
 
                                     </div>
                                 </div>
