@@ -7,15 +7,15 @@ public class TrainingOptionsShortCourseViewModel
     public required bool IsOnlineAvailable { get; set; }
     public string OnlineDisplayDescription { get; set; }
 
-    public required bool IsLearnerWorkPlaceAvailable { get; set; }
-    public string LearnerWorkPlaceDisplayDescription { get; set; }
-
-    public decimal? NearestLearnerWorkPlace { get; set; }
-
     public required bool IsEmployerLocationAvailable { get; set; }
     public string EmployerLocationDisplayDescription { get; set; }
 
     public decimal? NearestEmployerLocation { get; set; }
+
+    public required bool IsProviderAvailable { get; set; }
+    public string LearnerWorkPlaceDisplayDescription { get; set; }
+
+    public decimal? NearestProviderPlace { get; set; }
 
     public string Distance { get; set; }
     public string Location { get; set; }

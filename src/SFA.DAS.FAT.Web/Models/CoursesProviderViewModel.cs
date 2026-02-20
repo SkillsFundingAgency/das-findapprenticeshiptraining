@@ -21,22 +21,22 @@ public class CoursesProviderViewModel
         get; init;
     }
 
-    public bool IsLearnerWorkPlaceAvailable
-    {
-        get; init;
-    }
-
-    public decimal? NearestLearnerWorkPlace
-    {
-        get; init;
-    }
-
     public bool IsEmployerLocationAvailable
     {
         get; init;
     }
 
     public decimal? NearestEmployerLocation
+    {
+        get; init;
+    }
+
+    public bool IsProviderAvailable
+    {
+        get; init;
+    }
+
+    public decimal? NearestProviderPlace
     {
         get; init;
     }
@@ -111,10 +111,10 @@ public class CoursesProviderViewModel
             return new TrainingOptionsShortCourseViewModel
             {
                 IsOnlineAvailable = IsOnlineAvailable,
-                IsLearnerWorkPlaceAvailable = IsLearnerWorkPlaceAvailable,
-                NearestLearnerWorkPlace = NearestLearnerWorkPlace,
                 IsEmployerLocationAvailable = IsEmployerLocationAvailable,
                 NearestEmployerLocation = NearestEmployerLocation,
+                IsProviderAvailable = IsProviderAvailable,
+                NearestProviderPlace = NearestProviderPlace,
                 OnlineDisplayDescription = FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
                 LearnerWorkPlaceDisplayDescription = FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
                 EmployerLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
@@ -160,11 +160,15 @@ public class CoursesProviderViewModel
             ApprenticeReviews = source.ApprenticeReviews,
             ApprenticeStars = source.ApprenticeStars,
             ApprenticeRating = source.ApprenticeRating,
+
             IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
-            IsLearnerWorkPlaceAvailable = source.Locations.Any(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional),
-            NearestLearnerWorkPlace = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).MinBy(x => x.CourseDistance)?.CourseDistance,
-            IsEmployerLocationAvailable = source.Locations.Any(x => x.LocationType == LocationType.Provider),
-            NearestEmployerLocation = source.Locations.Where(x => x.LocationType == LocationType.Provider).MinBy(x => x.CourseDistance)?.CourseDistance,
+
+            IsEmployerLocationAvailable = source.Locations.Any(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional),
+            NearestEmployerLocation = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).MinBy(x => x.CourseDistance)?.CourseDistance,
+
+            IsProviderAvailable = source.Locations.Any(x => x.LocationType == LocationType.Provider),
+            NearestProviderPlace = source.Locations.Where(x => x.LocationType == LocationType.Provider).MinBy(x => x.CourseDistance)?.CourseDistance,
+
             IsBlockReleaseAvailable = source.Locations.Any(x => x.BlockRelease),
             IsDayReleaseAvailable = source.Locations.Any(l => l.DayRelease),
             IsBlockReleaseMultiple = source.Locations.Count(x => x.BlockRelease) > 1,
