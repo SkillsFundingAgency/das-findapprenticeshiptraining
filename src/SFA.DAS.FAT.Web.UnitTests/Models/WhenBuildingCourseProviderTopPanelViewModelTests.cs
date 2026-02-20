@@ -5,6 +5,7 @@ using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
+
 public class WhenBuildingCourseProviderTopPanelViewModelTests
 {
     [Test]
@@ -20,7 +21,7 @@ public class WhenBuildingCourseProviderTopPanelViewModelTests
         var expectedDictionary = new Dictionary<string, string>
         {
             {"location", sut.Location},
-            {"id", sut.CourseId},
+            {"larsCode", sut.LarsCode},
             {"providerId", sut.Ukprn.ToString()},
             {"distance", distanceExpected}
         };

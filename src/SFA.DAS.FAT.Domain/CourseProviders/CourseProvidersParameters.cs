@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Domain.CourseProviders;
 
 public class CourseProvidersParameters
 {
-    public string Id { get; set; }
+    public string LarsCode { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public int? Distance { get; set; }
     public string Location { get; set; }

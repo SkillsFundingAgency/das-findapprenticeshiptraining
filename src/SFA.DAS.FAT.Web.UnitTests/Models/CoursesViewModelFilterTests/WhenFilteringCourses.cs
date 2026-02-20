@@ -471,7 +471,7 @@ public sealed class WhenFilteringCourses
         var values = _coursesViewModel.GenerateStandardRouteValues("55");
         Assert.Multiple(() =>
         {
-            Assert.That(values["id"], Is.EqualTo("55"));
+            Assert.That(values["larsCode"], Is.EqualTo("55"));
             Assert.That(values.ContainsKey("location"), Is.True);
             Assert.That(values.ContainsKey("distance"), Is.True);
             Assert.That(values["location"], Is.EqualTo("M60 7RA"));

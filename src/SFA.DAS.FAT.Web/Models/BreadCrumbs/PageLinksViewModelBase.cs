@@ -8,6 +8,6 @@ public class PageLinksViewModelBase
     public bool ShowApprenticeTrainingCourseProvidersCrumb { get; set; }
     public string Location { get; set; }
     public string Distance { get; set; }
-    public string CourseId { get; set; }
+    public string LarsCode { get; set; }
     public bool ShowShortListLink { get; set; }
 }

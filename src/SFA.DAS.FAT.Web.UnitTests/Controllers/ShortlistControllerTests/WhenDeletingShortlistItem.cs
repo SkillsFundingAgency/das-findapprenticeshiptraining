@@ -65,8 +65,8 @@ public class WhenDeletingShortlistItem
         //Assert
         actual.Should().NotBeNull();
         actual.RouteName.Should().Be(RouteNames.CourseProviders);
-        actual.RouteValues.Should().ContainKey("id");
-        actual.RouteValues["id"].Should().Be(request.TrainingCode);
+        actual.RouteValues.Should().ContainKey("larsCode");
+        actual.RouteValues["larsCode"].Should().Be(request.LarsCode);
         actual.RouteValues.Should().ContainKey("providerId");
         actual.RouteValues["providerId"].Should().Be(request.Ukprn);
         protector.Verify(c => c.Protect(It.IsAny<byte[]>()), Times.Never);

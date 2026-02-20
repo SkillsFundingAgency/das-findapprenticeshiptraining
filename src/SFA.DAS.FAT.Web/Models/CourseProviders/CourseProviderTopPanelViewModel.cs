@@ -11,7 +11,7 @@ public class CourseProviderTopPanelViewModel
     public Guid? ShortlistId { get; set; }
     public int ShortlistCount { get; set; }
     public string Location { get; set; }
-    public string CourseId { get; set; }
+    public string LarsCode { get; set; }
     public string Distance { get; set; }
 
     public Dictionary<string, string> ProviderRouteData
@@ -27,7 +27,7 @@ public class CourseProviderTopPanelViewModel
             var providerRouteData = new Dictionary<string, string>
             {
                 { "location", Location },
-                { "id", CourseId },
+                { "larsCode", LarsCode },
                 { "providerId", Ukprn.ToString() },
                 { "distance", distance }
             };

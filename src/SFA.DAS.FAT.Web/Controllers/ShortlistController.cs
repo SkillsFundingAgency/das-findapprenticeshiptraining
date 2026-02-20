@@ -181,7 +181,7 @@ public class ShortlistController : Controller
             TempData[RemovedProviderNameTempDataKey] = request.ProviderName;
             return RedirectToRoute(request.RouteName, new
             {
-                Id = request.TrainingCode,
+                LarsCode = request.LarsCode,
                 ProviderId = request.Ukprn
             });
         }

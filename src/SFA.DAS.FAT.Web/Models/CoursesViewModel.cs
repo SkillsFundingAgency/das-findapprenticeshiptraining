@@ -156,7 +156,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         if (standard.ProvidersCount > 0)
         {
-            return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { id = standard.LarsCode, Location, distance = Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? "" : Distance })!;
+            return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = standard.LarsCode, Location, distance = Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? "" : Distance })!;
         }
 
         return GetHelpFindingCourseUrl(standard.LarsCode);
@@ -374,7 +374,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         var routeValues = new Dictionary<string, string>
         {
-            { "id", larsCode.ToString() },
+            { "larsCode", larsCode.ToString() },
         };
 
         if (!string.IsNullOrWhiteSpace(Location))

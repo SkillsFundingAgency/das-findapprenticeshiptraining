@@ -8,7 +8,7 @@ namespace SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 
 public class GetCourseProvidersQuery : IRequest<GetCourseProvidersResult>
 {
-    public string Id { get; set; }
+    public string LarsCode { get; set; }
     public ProviderOrderBy? OrderBy { get; set; }
     public int? Distance { get; set; }
     public string Location { get; set; } = string.Empty;

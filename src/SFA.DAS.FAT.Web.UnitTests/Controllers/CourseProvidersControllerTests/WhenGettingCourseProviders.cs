@@ -76,7 +76,7 @@ public class WhenGettingCourseProviders
             .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
 
         mediator.Setup(x => x.Send(
-                It.Is<GetCourseProvidersQuery>(c => c.Id.Equals(request.Id)
+                It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
                  && c.Location.Equals(request.Location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes)
@@ -107,7 +107,7 @@ public class WhenGettingCourseProviders
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
-            actualModel.CourseId.Should().Be(request.Id.ToString());
+            actualModel.LarsCode.Should().Be(request.LarsCode.ToString());
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
             actualModel.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
@@ -158,7 +158,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistCookieItem)null);
 
         mediator.Setup(x => x.Send(
-                It.Is<GetCourseProvidersQuery>(c => c.Id.Equals(request.Id)
+                It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
                  && c.Location.Equals(request.Location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes)
@@ -899,7 +899,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
@@ -923,7 +923,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = "CV1 Coventry" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = "CV1 Coventry" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().Contain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -947,7 +947,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = string.Empty }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().NotContain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -970,7 +970,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
     }
@@ -997,7 +997,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { Id = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
     }

@@ -4,5 +4,6 @@ public enum LocationType
 {
     Provider,
     National,
-    Regional
+    Regional,
+    Online
 }
