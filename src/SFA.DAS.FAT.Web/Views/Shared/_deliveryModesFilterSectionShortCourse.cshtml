@@ -14,19 +14,19 @@
         }
         <div class="govuk-checkboxes govuk-checkboxes--small govuk-!-padding-bottom-0">
             @{
-                var deliveryModesToShow = new[] 
-                { 
-                    ProviderDeliveryMode.Online,
-                    ProviderDeliveryMode.Workplace,
-                    ProviderDeliveryMode.Provider
-                };
+                var deliveryModesToShow = new[]
+                {
+                        ProviderDeliveryMode.Online,
+                        ProviderDeliveryMode.Workplace,
+                        ProviderDeliveryMode.Provider
+                        };
 
                 foreach (var deliveryMode in deliveryModesToShow)
                 {
                     var filterItem = Model.Items.FirstOrDefault(i => i.Value == deliveryMode.ToString());
                     if (filterItem != null)
                     {
-                        var inputId = $"filteritem-{Model.Id}-{deliveryMode}";
+                        var inputId = $"filteritem-{Model.Id}-{filterItem.Value}";
 
                         <div class="govuk-checkboxes__item">
                             <input @(filterItem.IsSelected ? "checked='checked'" : "")

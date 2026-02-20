@@ -59,9 +59,16 @@
                         }
                         break;
                         case FilterService.FilterComponentType.CheckboxList:
-                           {
-                            @await Html.PartialAsync("_deliveryModesFilterSectionShortCourse", section)
-                           }
+                        {
+                            if (section.For == nameof(FilterService.FilterType.DeliveryModes))
+                            {
+                                @await Html.PartialAsync("_deliveryModesFilterSectionShortCourse", section)
+                            }
+                            else
+                            {
+                                @await Html.PartialAsync("_checkboxList", section)
+                            }
+                        }
                             break;
                     }
                 }

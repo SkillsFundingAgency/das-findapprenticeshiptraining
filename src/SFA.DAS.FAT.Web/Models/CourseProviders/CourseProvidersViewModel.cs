@@ -262,7 +262,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 .Select(dm => dm.DisplayText)
                 .ToList();
 
-            AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
+            if (CourseType == CourseType.ShortCourse)
+            {
+                if (selectedDeliveryNames is { Count: > 0 })
+                {
+                    selectedFilters[FilterType.DeliveryModes] = selectedDeliveryNames;
+                }
+            }
+            else
+            {
+                AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
+            }
         }
 
         if (SelectedEmployerApprovalRatings?.Count > 0 && SelectedEmployerApprovalRatings.Count > 0)
