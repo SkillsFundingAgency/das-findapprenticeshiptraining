@@ -164,7 +164,7 @@ public class CourseProvidersController : Controller
     }
 
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails(string larsCode, int providerId, string location, string distance)
+    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, [FromQuery] string location, [FromQuery] string distance)
     {
 
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });

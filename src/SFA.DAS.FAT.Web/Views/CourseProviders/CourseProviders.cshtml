@@ -34,7 +34,7 @@
             </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.CourseProviders" larsCode="course-providers-order-form" method="GET" class="app-search-results-header">
+            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET" class="app-search-results-header">
                 @foreach (var q in Context.Request.Query)
                 {
                     switch (q.Key.ToLower())
