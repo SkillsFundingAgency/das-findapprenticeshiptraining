@@ -20,6 +20,8 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public List<string> SelectedDeliveryModes { get; set; } = [];
     public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];
@@ -179,6 +181,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             Value = deliveryMode.DeliveryItemChoice.ToString(),
             DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
+            DisplayDescription = deliveryMode.DeliveryItemChoice switch
+            {
+                ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                _ => string.Empty
+            },
             IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
         })
             .ToList() ?? [];
@@ -253,7 +262,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 .Select(dm => dm.DisplayText)
                 .ToList();
 
-            AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
+            if (CourseType == CourseType.ShortCourse)
+            {
+                if (selectedDeliveryNames is { Count: > 0 })
+                {
+                    selectedFilters[FilterType.DeliveryModes] = selectedDeliveryNames;
+                }
+            }
+            else
+            {
+                AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
+            }
         }
 
         if (SelectedEmployerApprovalRatings?.Count > 0 && SelectedEmployerApprovalRatings.Count > 0)

@@ -115,6 +115,8 @@ public class CourseProvidersController : Controller
             ShortlistCount = shortlistCount?.Count ?? 0,
             OrderBy = orderBy,
             CourseTitleAndLevel = result.StandardName,
+            CourseType = result.CourseType,
+            ApprenticeshipType = result.ApprenticeshipType,
             Location = request.Location,
             Distance = convertedDistance.ToString(),
             SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()).ToList(),
@@ -128,7 +130,7 @@ public class CourseProvidersController : Controller
             QarPeriod = result.QarPeriod,
             ReviewPeriod = result.ReviewPeriod,
             TotalCount = result.TotalCount,
-            Providers = new List<CoursesProviderViewModel>()
+            Providers = []
         };
 
         var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
