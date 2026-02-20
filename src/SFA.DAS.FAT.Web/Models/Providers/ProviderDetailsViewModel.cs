@@ -61,7 +61,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             {
                 var routeData = new Dictionary<string, string>
                 {
-                    { "id", course.LarsCode.ToString() },
+                    { "larsCode", course.LarsCode.ToString() },
                     { "providerId", vm.Ukprn.ToString() }
                 };
 
