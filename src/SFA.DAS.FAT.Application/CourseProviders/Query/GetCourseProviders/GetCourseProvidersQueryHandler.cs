@@ -5,6 +5,7 @@ using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
+
 public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResult>
 {
     private readonly ICourseService _courseService;
@@ -20,7 +21,7 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
     {
         var courseProvidersParameters = new CourseProvidersParameters
         {
-            Id = request.Id,
+            LarsCode = request.LarsCode,
             OrderBy = request.OrderBy ?? ProviderOrderBy.Distance,
             Distance = request.Distance,
             Location = request.Location,

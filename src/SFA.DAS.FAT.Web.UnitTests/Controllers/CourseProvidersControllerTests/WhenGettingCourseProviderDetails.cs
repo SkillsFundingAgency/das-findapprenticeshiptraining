@@ -76,7 +76,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Provider_Details_Are_Found_Then_Values_Are_Mapped_To_Model_Correctly(
-        string courseId,
+        string larsCode,
         int providerId,
         string location,
         GetCourseProviderQueryResult response,
@@ -92,14 +92,14 @@ public class WhenGettingCourseProviderDetails
         var distance = 10;
         response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
         response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
-
+        response.LarsCode = larsCode;
         shortlistCookieServiceMock.Setup(x =>
             x.Get(Constants.ShortlistCookieName))
         .Returns(shortlistCookieItem);
 
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(providerId) &&
-                c.LarsCode.Equals(courseId) &&
+                c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
@@ -116,14 +116,14 @@ public class WhenGettingCourseProviderDetails
             )
         ).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviderDetails(courseId, providerId, location, distance.ToString());
+        var result = await sut.CourseProviderDetails(larsCode, providerId, location, distance.ToString());
 
         Assert.That(result, Is.Not.Null);
 
         mediator.Verify(a =>
              a.Send(
                  It.Is<GetCourseProviderDetailsQuery>(q =>
-                     q.LarsCode == courseId &&
+                     q.LarsCode == larsCode &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
                      q.Distance == DistanceService.DEFAULT_DISTANCE &&
@@ -158,7 +158,7 @@ public class WhenGettingCourseProviderDetails
             Assert.That(model.ShortlistId, Is.EqualTo(response.ShortlistId));
             Assert.That(model.Locations, Is.EqualTo(response.Locations));
             Assert.That(model.Courses, Is.EqualTo(expectedCoursesAlphabetically));
-            Assert.That(model.CourseId, Is.EqualTo(courseId));
+            Assert.That(model.LarsCode, Is.EqualTo(larsCode));
             Assert.That(model.Location, Is.EqualTo(location));
             Assert.That(model.Distance, Is.EqualTo(distance.ToString()));
             Assert.That(model.ShowApprenticeTrainingCourseProvidersCrumb, Is.True);

@@ -504,8 +504,8 @@ public class WhenCreatingCoursesViewModel
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey("id"), Is.True);
-            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+            Assert.That(result.ContainsKey("larsCode"), Is.True);
+            Assert.That(result["larsCode"], Is.EqualTo(larsCode));
 
             Assert.That(result.ContainsKey("location"), Is.True);
             Assert.That(result["location"], Is.EqualTo(_sut.Location));
@@ -530,8 +530,8 @@ public class WhenCreatingCoursesViewModel
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey("id"), Is.True);
-            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+            Assert.That(result.ContainsKey("larsCode"), Is.True);
+            Assert.That(result["larsCode"], Is.EqualTo(larsCode.ToString()));
 
             Assert.That(result.ContainsKey("location"), Is.False);
             Assert.That(result.ContainsKey("distance"), Is.False);
@@ -553,8 +553,8 @@ public class WhenCreatingCoursesViewModel
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContainsKey("id"), Is.True);
-            Assert.That(result["id"], Is.EqualTo(larsCode.ToString()));
+            Assert.That(result.ContainsKey("larsCode"), Is.True);
+            Assert.That(result["larsCode"], Is.EqualTo(larsCode));
 
             Assert.That(result.ContainsKey("location"), Is.False);
             Assert.That(result.ContainsKey("distance"), Is.False);
@@ -584,8 +584,8 @@ public class WhenCreatingCoursesViewModel
             It.Is<UrlRouteContext>(c =>
                 c.RouteName == RouteNames.CourseProviders
                 && c.Values != null
-                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("id")
-                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["id"], standardViewModel.LarsCode)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("larsCode")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["larsCode"], standardViewModel.LarsCode)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("Location")
                 && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["Location"], _sut.Location)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("distance")
@@ -617,8 +617,8 @@ public class WhenCreatingCoursesViewModel
             It.Is<UrlRouteContext>(c =>
                 c.RouteName == RouteNames.CourseProviders
                 && c.Values != null
-                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("id")
-                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["id"], standardViewModel.LarsCode)
+                && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("larsCode")
+                && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["larsCode"], standardViewModel.LarsCode)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("Location")
                 && Equals(new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values)["Location"], _sut.Location)
                 && new Microsoft.AspNetCore.Routing.RouteValueDictionary(c.Values).ContainsKey("distance")

@@ -29,7 +29,7 @@ public class WhenGettingCourseProviders
     {
         var courseProvidersParams = new CourseProvidersParameters
         {
-            Id = query.Id,
+            LarsCode = query.LarsCode,
             OrderBy = ProviderOrderBy.Distance,
             Distance = query.Distance,
             Location = query.Location,
@@ -63,7 +63,7 @@ public class WhenGettingCourseProviders
 
         var courseProvidersParams = new CourseProvidersParameters
         {
-            Id = query.Id,
+            LarsCode = query.LarsCode,
             OrderBy = ProviderOrderBy.Distance,
             Distance = query.Distance,
             Location = query.Location,
@@ -105,7 +105,7 @@ public class WhenGettingCourseProviders
         //Arrange
         var courseProvidersParams = new CourseProvidersParameters
         {
-            Id = id,
+            LarsCode = id,
             OrderBy = orderBy,
             Distance = distance,
             Location = location,
@@ -176,7 +176,7 @@ public class WhenGettingCourseProviders
 
         var courseProvidersParams = new CourseProvidersParameters
         {
-            Id = id,
+            LarsCode = id,
             OrderBy = orderBy,
             Distance = distance,
             Location = location,

@@ -61,7 +61,7 @@
                                 </div>
                                 <h2 class="govuk-heading-m das-search-results__heading">
                                     <a class="das-search-results__link"
-                                       id="standard-@standard.LarsCode"
+                                       larsCode="standard-@standard.LarsCode"
                                        asp-route="@RouteNames.CourseDetails"
                                        asp-all-route-data="Model.GenerateStandardRouteValues(standard.LarsCode)">
                                         @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
@@ -103,7 +103,7 @@
                                     }
 
                                     <a class="das-search-results__link"
-                                       id="standard-@standard.LarsCode"
+                                       larsCode="standard-@standard.LarsCode"
                                        href="@Model.GetProvidersLink(standard)">
                                         @Model.GetProvidersLinkDisplayMessage(standard)<span class="govuk-visually-hidden"> - @standard.Title (level @standard.Level)</span>
                                     </a>

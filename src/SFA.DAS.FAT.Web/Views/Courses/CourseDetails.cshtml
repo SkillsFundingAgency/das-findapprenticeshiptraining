@@ -51,7 +51,7 @@
                                 @Model.GetProviderCountDisplayMessage()
                             </p>
 
-                            <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-id="@Model.LarsCode">
+                            <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
                                 <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
                                     Apprentice's work location:
                                     <span class="govuk-!-font-weight-regular">@Model.Location</span>
@@ -65,7 +65,7 @@
                                 <div class="govuk-button-group govuk-!-margin-bottom-0">
                                     <a class="govuk-button govuk-!-margin-bottom-0"
                                        asp-route="@RouteNames.CourseProviders"
-                                       asp-route-id="@Model.LarsCode"
+                                       asp-route-larsCode="@Model.LarsCode"
                                        asp-route-location="@Model.Location"
                                        asp-route-distance="@Model.Distance">
                                         View providers for this course
@@ -85,7 +85,7 @@
                             <form method="GET"
                                   id="course-location-form"
                                   asp-route="@RouteNames.CourseDetails"
-                                  asp-route-id="@Model.LarsCode"
+                                  asp-route-larsCode="@Model.LarsCode"
                                   asp-route-location="@Model.Location"
                                   asp-route-distance="@Model.Distance"
                                   class="govuk-!-width-three-quarters">
@@ -98,7 +98,7 @@
                                 </div>
                                 <a class="govuk-button govuk-!-margin-bottom-0"
                                    asp-route="@RouteNames.CourseProviders"
-                                   asp-route-id="@Model.LarsCode">
+                                   asp-route-larsCode="@Model.LarsCode">
                                     View providers for this course
                                 </a>
                             </form>

@@ -80,7 +80,7 @@ public class WhenGettingCourseProviders
         await sut.Handle(query, cancellationToken);
 
         mockCourseService.Verify(x => x.GetCourseProviders(It.Is<CourseProvidersParameters>(
-            c => c.Id == query.Id
+            c => c.LarsCode == query.LarsCode
             && c.OrderBy == orderBy
             && c.Distance == query.Distance
             && c.Location == query.Location
@@ -115,7 +115,7 @@ public class WhenGettingCourseProviders
     {
         return new CourseProvidersParameters
         {
-            Id = request.Id,
+            LarsCode = request.LarsCode,
             OrderBy = request.OrderBy ?? ProviderOrderBy.Distance,
             Distance = request.Distance,
             Location = request.Location,

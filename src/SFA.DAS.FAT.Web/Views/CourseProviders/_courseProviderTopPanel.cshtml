@@ -20,7 +20,7 @@
                 <div class="app-provider-shortlist-control @(Model.ShortlistId == null ? Model.ShortlistCount < ShortlistConstants.MaximumShortlistCount ? "" : "app-provider-shortlist-full" : "app-provider-shortlist-added")">
                     <div class="app-provider-shortlist-add">
                         <form method="post" asp-route="@RouteNames.CreateShortlistItem">
-                            <input type="hidden" name="larsCode" value="@Model.CourseId"/>
+                            <input type="hidden" name="larsCode" value="@Model.LarsCode"/>
                             <input type="hidden" name="ukprn" value="@Model.Ukprn"/>
                             <input type="hidden" name="providerName" value="@Model.ProviderName"/>
                             <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
@@ -39,7 +39,7 @@
                         <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
                             <input type="hidden" name="ukprn" value="@Model.Ukprn"/>
                             <input type="hidden" name="providerName" value="@Model.ProviderName"/>
-                            <input type="hidden" name="trainingCode" value="@Model.CourseId"/>
+                            <input type="hidden" name="larsCode" value="@Model.LarsCode"/>
                             <input type="hidden" name="routeName" value="@RouteNames.CourseProviders"/>
                             <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link govuk-!-font-weight-regular das-no-wrap" type="submit">Remove from shortlist</button>
                         </form>

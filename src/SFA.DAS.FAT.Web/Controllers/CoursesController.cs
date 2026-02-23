@@ -93,8 +93,8 @@ public class CoursesController : Controller
         return View(viewModel);
     }
 
-    [Route("{id}", Name = RouteNames.CourseDetails)]
-    public async Task<IActionResult> CourseDetails([FromRoute] string id, [FromQuery] string location, [FromQuery] string distance)
+    [Route("{larsCode}", Name = RouteNames.CourseDetails)]
+    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, [FromQuery] string location, [FromQuery] string distance)
     {
         int? convertedDistance = null;
         if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
@@ -113,7 +113,7 @@ public class CoursesController : Controller
 
         var query = new GetCourseQuery()
         {
-            LarsCode = id,
+            LarsCode = larsCode,
             Location = location,
             Distance = convertedDistance
         };

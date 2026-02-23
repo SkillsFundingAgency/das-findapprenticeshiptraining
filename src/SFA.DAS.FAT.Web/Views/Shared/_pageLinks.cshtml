@@ -3,7 +3,7 @@
 
 <div class="govuk-grid-row">
     <partial name="_surveyLink" />
-    @if (Model is PageLinksViewModelBase pageLinks)
+    @if (Model is PageLinksViewModelBase)
     {
         <div class="govuk-grid-column-three-quarters">
             <div class="govuk-breadcrumbs">
@@ -16,34 +16,34 @@
                         </a>
                     </li>
 
-                    <li asp-show="pageLinks.ShowApprenticeTrainingCoursesCrumb" class="govuk-breadcrumbs__list-item">
+                    <li asp-show="@Model.ShowApprenticeTrainingCoursesCrumb" class="govuk-breadcrumbs__list-item">
                         <a id="courses-breadcrumb"
                            class="govuk-breadcrumbs__link"
                            asp-route="@RouteNames.Courses"
-                           asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance">
+                           asp-route-location="@Model.Location"
+                           asp-route-distance="@Model.Distance">
                             Course search results
                         </a>
                     </li>
 
-                    <li asp-show="pageLinks.ShowApprenticeTrainingCourseCrumb" class="govuk-breadcrumbs__list-item">
+                    <li asp-show="@Model.ShowApprenticeTrainingCourseCrumb" class="govuk-breadcrumbs__list-item">
                         <a id="course-detail-breadcrumb"
                            class="govuk-breadcrumbs__link"
                            asp-route="@RouteNames.CourseDetails"
-                           asp-route-id="@pageLinks.CourseId"
-                           asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance">
+                           asp-route-larsCode="@Model.LarsCode"
+                           asp-route-location="@Model.Location"
+                           asp-route-distance="@Model.Distance">
                             Course details
                         </a>
                     </li>
 
-                    <li asp-show="pageLinks.ShowApprenticeTrainingCourseProvidersCrumb" class="govuk-breadcrumbs__list-item">
+                    <li asp-show="@Model.ShowApprenticeTrainingCourseProvidersCrumb" class="govuk-breadcrumbs__list-item">
                         <a id="providers-breadcrumb"
                            class="govuk-breadcrumbs__link"
                            asp-route="@RouteNames.CourseProviders"
-                           asp-route-id="@pageLinks.CourseId"
-                           asp-route-location="@pageLinks.Location"
-                           asp-route-distance="@pageLinks.Distance">
+                           asp-route-larsCode="@Model.LarsCode"
+                           asp-route-location="@Model.Location"
+                           asp-route-distance="@Model.Distance">
                             Training provider results
                         </a>
                     </li>
