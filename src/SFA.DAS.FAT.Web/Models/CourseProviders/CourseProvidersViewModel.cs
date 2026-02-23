@@ -242,6 +242,25 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var selectedFilters = new Dictionary<FilterType, List<string>>();
 
+        AddLocationAndDistanceFilters(selectedFilters);
+        AddDeliveryModesFilter(selectedFilters);
+        AddRatingFilters(selectedFilters);
+        AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
+
+        if (selectedFilters.Count == 0)
+        {
+            return [];
+        }
+
+        return CreateClearFilterSections(
+                selectedFilters,
+                _valueFunctions,
+                [FilterType.Distance, FilterType.OrderBy]
+            );
+    }
+
+    private void AddLocationAndDistanceFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    {
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
@@ -253,7 +272,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
+    }
 
+    private void AddDeliveryModesFilter(Dictionary<FilterType, List<string>> selectedFilters)
+    {
         if (SelectedDeliveryModes?.Count > 0 && SelectedDeliveryModes.Count > 0)
         {
             var deliveryModes = GenerateDeliveryModesFilterItems();
@@ -274,52 +296,27 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
             }
         }
+    }
 
-        if (SelectedEmployerApprovalRatings?.Count > 0 && SelectedEmployerApprovalRatings.Count > 0)
+    private void AddRatingFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    {
+        AddRatingFilter(selectedFilters, SelectedEmployerApprovalRatings, GenerateEmployerReviewsFilterItems, FilterType.EmployerProviderRatings);
+        AddRatingFilter(selectedFilters, SelectedApprenticeApprovalRatings, GenerateApprenticeReviewsFilterItems, FilterType.ApprenticeProviderRatings);
+        AddRatingFilter(selectedFilters, SelectedQarRatings, GenerateQarFilterItems, FilterType.QarRatings);
+    }
+
+    private void AddRatingFilter(Dictionary<FilterType, List<string>> selectedFilters, List<string>? selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
+    {
+        if (selectedRatings?.Count > 0)
         {
-            var reviews = GenerateEmployerReviewsFilterItems();
-            var selectedReviews = reviews
-                .Where(dm => SelectedEmployerApprovalRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
+            var filterItems = generateFilterItems();
+            var selectedItems = filterItems
+                .Where(item => selectedRatings.Contains(item.Value.ToString()))
+                .Select(item => item.DisplayText)
                 .ToList();
 
-            AddSelectedFilter(selectedFilters, FilterType.EmployerProviderRatings, selectedReviews);
+            AddSelectedFilter(selectedFilters, filterType, selectedItems);
         }
-
-        if (SelectedApprenticeApprovalRatings?.Count > 0 && SelectedApprenticeApprovalRatings.Count > 0)
-        {
-            var reviews = GenerateApprenticeReviewsFilterItems();
-            var selectedReviews = reviews
-                .Where(dm => SelectedApprenticeApprovalRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeProviderRatings, selectedReviews);
-        }
-
-        if (SelectedQarRatings?.Count > 0 && SelectedQarRatings.Count > 0)
-        {
-            var qars = GenerateQarFilterItems();
-            var selectedQars = qars
-                .Where(dm => SelectedQarRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.QarRatings, selectedQars);
-        }
-
-        AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
-
-        if (selectedFilters.Count == 0)
-        {
-            return [];
-        }
-
-        return CreateClearFilterSections(
-                selectedFilters,
-                _valueFunctions,
-                [FilterType.Distance, FilterType.OrderBy]
-            );
     }
 
     private readonly string _requestApprenticeshipTrainingUrl;
