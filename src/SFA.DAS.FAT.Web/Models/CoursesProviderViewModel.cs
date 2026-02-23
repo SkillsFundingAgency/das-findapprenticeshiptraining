@@ -116,8 +116,8 @@ public class CoursesProviderViewModel
                 IsProviderAvailable = IsProviderAvailable,
                 NearestProviderPlace = NearestProviderPlace,
                 OnlineDisplayDescription = FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
-                LearnerWorkPlaceDisplayDescription = FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
-                EmployerLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                EmployerLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                ProviderLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
                 Distance = Distance,
                 Location = Location
             };

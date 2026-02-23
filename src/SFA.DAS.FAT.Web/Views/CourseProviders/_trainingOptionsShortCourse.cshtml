@@ -34,9 +34,9 @@
             <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0">At training provider's location:</span>
             <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0" class="govuk-!-font-weight-bold">@Model.NearestProviderPlace miles</span>
             <br />
-            @if (!string.IsNullOrEmpty(Model.LearnerWorkPlaceDisplayDescription))
+            @if (!string.IsNullOrEmpty(Model.ProviderLocationDisplayDescription))
             {
-                <span class="govuk-body-s das-hint-colour">@Model.LearnerWorkPlaceDisplayDescription</span>
+                <span class="govuk-body-s das-hint-colour">@Model.ProviderLocationDisplayDescription</span>
             }
         </p>
     }
