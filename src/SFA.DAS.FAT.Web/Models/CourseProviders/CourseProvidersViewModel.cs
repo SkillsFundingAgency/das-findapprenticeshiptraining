@@ -364,7 +364,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         List<ValueTuple<string, string>> result = new();
 
-        if (OrderBy != ProviderOrderBy.AchievementRate)
+        var defaultOrderBy = CourseType == CourseType.ShortCourse
+            ? ProviderOrderBy.Distance
+            : ProviderOrderBy.AchievementRate;
+
+        if (OrderBy != defaultOrderBy)
         {
             result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
         }
