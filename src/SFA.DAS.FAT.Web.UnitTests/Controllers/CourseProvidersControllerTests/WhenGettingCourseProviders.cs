@@ -31,7 +31,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
+    public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -132,7 +132,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_No_Shortlist_UserId_Is_Added_To_The_Cookie(
+    public async Task CourseProviders_WhenNoShortlistCookie_SendsQueryWithNullShortlistUserId(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -191,7 +191,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Invalid_CourseId_Redirects_To_Shutter_Page(
+    public async Task CourseProviders_WhenCourseIdIsInvalid_ReturnsNotFound(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -245,7 +245,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_No_Course_Providers_Redirects_To_Shutter_Page(
+    public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -296,7 +296,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Distance_Defaults_To_Ten_Miles(
+    public async Task CourseProviders_WhenDistanceIsNull_DefaultsToTenMiles(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -346,7 +346,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_First_Entry_Of_Location_Orders_Sort_By_Distance(
+    public async Task CourseProviders_WhenLocationEnteredForFirstTime_OrdersByDistance(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -398,7 +398,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Further_Entry_Of_Location_Orders_Sorts_By_Users_Choice(
+    public async Task CourseProviders_WhenLocationPreviouslyEntered_OrdersByUserChoice(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -451,7 +451,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_No_Location_Orders_Sort_By_Expected_OrderBy(
+    public async Task CourseProviders_WhenNoLocation_OrdersByAchievementRate(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -503,7 +503,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Distance_Is_Valid(
+    public async Task CourseProviders_WhenDistanceIsProvided_UsesProvidedDistance(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -553,7 +553,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Location_Is_Not_Set(
+    public async Task CourseProviders_WhenLocationIsNotSet_DefaultsDistanceAndOrderBy(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         string serviceStartUrl,
@@ -604,7 +604,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_ReviewPeriod_Details_Are_Set(
+    public async Task CourseProviders_WhenReviewPeriodProvided_SetsReviewPeriodDetails(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
@@ -651,7 +651,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_QarPeriod_Details_Are_Set(
+    public async Task CourseProviders_WhenQarPeriodProvided_SetsQarPeriodDetails(
         CourseProvidersRequest request,
         GetCourseProvidersResult response,
         [Frozen] Mock<IMediator> mediator,
@@ -701,7 +701,7 @@ public class WhenGettingCourseProviders
     [MoqInlineAutoData(1, "1 result")]
     [MoqInlineAutoData(2, "2 results")]
     [MoqInlineAutoData(-1, "No results")]
-    public async Task Then_TotalMessage_Is_Set(
+    public async Task CourseProviders_WithVariousTotalCounts_SetsTotalMessageCorrectly(
         int totalCount,
         string expectedMessage,
         CourseProvidersRequest request,
@@ -749,7 +749,7 @@ public class WhenGettingCourseProviders
     [MoqInlineAutoData(2, "Coventry", "20", "2 results within 20 miles")]
     [MoqInlineAutoData(2, "Coventry", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "2 results")]
     [MoqInlineAutoData(2, "Coventry", "", "2 results within 10 miles")]
-    public async Task Then_TotalMessage_With_Distance_And_Location_Is_Set(
+    public async Task CourseProviders_WithLocationAndDistance_SetsTotalMessageWithDistanceDetails(
         int totalCount,
         string location,
         string distance,
@@ -800,7 +800,7 @@ public class WhenGettingCourseProviders
     [MoqInlineAutoData(ProviderOrderBy.AchievementRate, false, true, false, false)]
     [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating, false, false, true, false)]
     [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating, false, false, false, true)]
-    public async Task Then_ProviderOrderDropdown_Is_Set(
+    public async Task CourseProviders_WithVariousOrderByOptions_SetsProviderOrderDropdownCorrectly(
         ProviderOrderBy orderBy,
         bool distanceSelected,
         bool achievementRateSelected,
@@ -877,7 +877,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Shortlist_Count_Is_Populated_From_Session(
+    public async Task CourseProviders_WhenShortlistCountInSession_PopulatesShortlistCount(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -905,7 +905,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_OrderBy_Options_Includes_Distance(
+    public async Task CourseProviders_WhenLocationProvided_IncludesDistanceInOrderByOptions(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -929,7 +929,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_OrderBy_Options_Excludes_Distance(
+    public async Task CourseProviders_WhenLocationIsEmpty_ExcludesDistanceFromOrderByOptions(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -953,7 +953,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Selected_OrderBy_Is_Defaulted_If_OrderBy_Is_Distance_And_Location_Is_Missing(
+    public async Task CourseProviders_WhenOrderByIsDistanceAndLocationMissing_DefaultsToAchievementRate(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -979,7 +979,7 @@ public class WhenGettingCourseProviders
     [MoqInlineAutoData(ProviderOrderBy.AchievementRate)]
     [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating)]
     [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
-    public async Task Then_Selected_OrderBy_Is_Unchanged(
+    public async Task CourseProviders_WhenLocationProvided_MaintainsSelectedOrderBy(
         ProviderOrderBy expectedOrderBy,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,

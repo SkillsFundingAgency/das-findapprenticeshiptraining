@@ -137,6 +137,7 @@ public class WhenGettingCourses
     [MoqInlineAutoData("", "", "")]
     [MoqInlineAutoData("Foundation apprenticeships", "", "FoundationApprenticeship")]
     [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
+    [MoqInlineAutoData("Apprenticeship units", "", "ApprenticeshipUnit")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
     public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
         string apprenticeshipType1,
@@ -189,6 +190,247 @@ public class WhenGettingCourses
 
                 r.ApprenticeshipType == requestApprenticeshipType
             )
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Filter_Multiple_Routes_Correctly(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var routes = new List<Route>
+        {
+            new() { Id = 1, Name = "Route1" },
+            new() { Id = 2, Name = "Route2" },
+            new() { Id = 3, Name = "Route3" },
+            new() { Id = 4, Name = "Route4" }
+        };
+
+        var query = new GetCoursesQuery
+        {
+            Routes = new List<string> { "Route1", "Route3" },
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = 0
+        };
+
+        mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(routes);
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, CancellationToken.None);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r => r.RouteIds.SequenceEqual(new List<int> { 1, 3 }))
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Pass_Empty_RouteIds_When_No_Routes_Specified(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var routes = new List<Route>
+        {
+            new() { Id = 1, Name = "Route1" },
+            new() { Id = 2, Name = "Route2" }
+        };
+
+        var query = new GetCoursesQuery
+        {
+            Routes = new List<string>(),
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = 0
+        };
+
+        mockRoutesService.Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(routes);
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, CancellationToken.None);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r => r.RouteIds.Count == 0)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Pass_Page_Parameter_Correctly(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var query = new GetCoursesQuery
+        {
+            Page = 5,
+            Routes = new List<string>(),
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 5,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 10,
+            TotalCount = 100
+        };
+
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, CancellationToken.None);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r => r.Page == 5)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Pass_Null_Keyword_And_Location_When_Not_Specified(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var query = new GetCoursesQuery
+        {
+            Keyword = null,
+            Location = null,
+            Distance = null,
+            Routes = new List<string>(),
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = 0
+        };
+
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, CancellationToken.None);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r => 
+                r.Keyword == null && 
+                r.Location == null && 
+                r.Distance == null)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Call_LevelsService_And_RoutesService(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var query = new GetCoursesQuery
+        {
+            Routes = new List<string>(),
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = 0
+        };
+
+        var cancellationToken = new CancellationToken();
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, cancellationToken);
+
+        mockLevelsService.Verify(x => x.GetLevelsAsync(cancellationToken), Times.Once);
+        mockRoutesService.Verify(x => x.GetRoutesAsync(cancellationToken), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task Handle_Should_Pass_All_Levels_Correctly(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+        [Frozen] Mock<IApiClient> mockApiClient,
+        [Frozen] Mock<ILevelsService> mockLevelsService,
+        [Frozen] Mock<IRoutesService> mockRoutesService,
+        [Greedy] GetCoursesQueryHandler sut
+    )
+    {
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+
+        var expectedLevels = new List<int> { 2, 3, 4, 6 };
+        var query = new GetCoursesQuery
+        {
+            Levels = expectedLevels,
+            Routes = new List<string>(),
+            ApprenticeshipTypes = new List<string>(),
+            OrderBy = OrderBy.Title
+        };
+
+        var coursesResponse = new GetCoursesResponse
+        {
+            Standards = new List<StandardModel>(),
+            Page = 1,
+            PageSize = Constants.DefaultPageSize,
+            TotalPages = 1,
+            TotalCount = 0
+        };
+
+        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>())).ReturnsAsync(coursesResponse);
+
+        await sut.Handle(query, CancellationToken.None);
+
+        mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
+            It.Is<GetCoursesApiRequest>(r => r.Levels.SequenceEqual(expectedLevels))
         ), Times.Once);
     }
 }

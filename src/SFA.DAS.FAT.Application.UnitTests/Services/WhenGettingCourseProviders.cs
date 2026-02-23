@@ -21,7 +21,7 @@ public class WhenGettingCourseProviders
     private const string BaseUrl = "BaseUrl";
 
     [Test, MoqAutoData]
-    public async Task Then_The_Api_Client_Is_Called_With_The_Request_Url(
+    public async Task GetCourseProviders_WithValidParameters_CallsApiClientWithCorrectUrl(
         GetCourseProvidersQuery query,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -50,7 +50,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_The_Api_Response_Is_Returned(
+    public async Task GetCourseProviders_WhenApiReturnsData_ReturnsProviderDetails(
         GetCourseProvidersQuery query,
         CourseProvidersDetails providersFromApi,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -82,7 +82,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task And_The_Api_Returns_404_Then_Returns_Null(
+    public async Task GetCourseProviders_WhenApiReturns404_ReturnsNull(
         [Frozen] Mock<IApiClient> mockApiClient,
         CourseService service)
     {
@@ -98,7 +98,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, AutoData]
-    public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
+    public void GetUrl_WithAllParameters_ConstructsUrlCorrectly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
         List<QarRating> qarRatings,
         int page, Guid shortlistUserId)
     {
@@ -120,14 +120,14 @@ public class WhenGettingCourseProviders
         var actual = new CourseProvidersApiRequest(baseUrl, courseProvidersParams);
 
         var pageParam = string.Empty;
-        if (page > 1) pageParam = $"&page={page}&pageSize={Constants.DefaultPageSize}";
+        if (page > 1) pageParam = $"&page={page}";
 
         //Assert
         actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&location={location}&" +
               $"deliveryModes={string.Join("&deliveryModes=", deliveryModeTypes)}&employerProviderRatings=" +
               $"{string.Join("&employerProviderRatings=", employerProviderRatingTypes)}&" +
               $"apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatingTypes)}&" +
-              $"qar={string.Join("&qar=", qarRatings)}{pageParam}&shortlistUserId={shortlistUserId}");
+              $"qar={string.Join("&qar=", qarRatings)}{pageParam}&pageSize={Constants.DefaultPageSize}&shortlistUserId={shortlistUserId}");
     }
 
     [TestCase(null, null, null, null, null, null, 1, null, "&pageSize=10")]
@@ -148,7 +148,7 @@ public class WhenGettingCourseProviders
              "&qar=Good" +
              "&page=25&pageSize=10" +
              "&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
-    public void Then_The_Get_Url_Is_Constructed_Correctly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
+    public void GetUrl_WithVariousParameterCombinations_ConstructsUrlCorrectly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
          QarRating? qarRating,
          int? page, Guid? shortlistUserId, string expectedUrl)
     {
