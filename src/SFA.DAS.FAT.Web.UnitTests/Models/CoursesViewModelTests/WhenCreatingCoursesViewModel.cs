@@ -162,7 +162,7 @@ public class WhenCreatingCoursesViewModel
             Total = 10
         };
 
-        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location."));
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location."));
     }
 
     [Test]

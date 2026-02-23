@@ -40,7 +40,7 @@ public static class FilterService
     public const string KEYWORD_SECTION_HEADING = "Course";
     public const string KEYWORD_SECTION_SUB_HEADING = "Enter course, job or standard";
 
-    public const string LOCATION_SECTION_HEADING = "Apprentice's work location";
+    public const string LOCATION_SECTION_HEADING = "learner's work location";
     public const string LOCATION_SECTION_SUB_HEADING = "Enter city or postcode";
 
     public const string DISTANCE_SECTION_HEADING = "Apprentice can travel";

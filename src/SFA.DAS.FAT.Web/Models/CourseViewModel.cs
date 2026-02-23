@@ -104,9 +104,9 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
 
-    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the apprentice's work location.";
+    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
 
-    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the apprentice's work location.";
+    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
 
     public string GetProviderCountDisplayMessage()
     {

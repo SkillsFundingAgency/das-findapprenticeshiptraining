@@ -87,7 +87,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
 
-    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location.";
+    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
 
     public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
 
