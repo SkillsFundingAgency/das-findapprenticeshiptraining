@@ -33,7 +33,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -134,7 +134,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoShortlistCookie_SendsQueryWithNullShortlistUserId(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -193,7 +193,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenCourseIdIsInvalid_ReturnsNotFound(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -247,7 +247,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -273,7 +273,7 @@ public class WhenGettingCourseProviders
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
                 It.IsAny<CancellationToken>()))
-            .ReturnsAsync((GetCourseProvidersResult)null);
+            .ReturnsAsync((CourseProvidersDetails)null);
 
         validatorMock.Setup(v =>
             v.ValidateAsync(
@@ -298,7 +298,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenDistanceIsNull_DefaultsToTenMiles(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -348,7 +348,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationEnteredForFirstTime_OrdersByDistance(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -400,7 +400,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationPreviouslyEntered_OrdersByUserChoice(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -453,7 +453,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoLocation_OrdersByAchievementRate(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -505,7 +505,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenDistanceIsProvided_UsesProvidedDistance(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -555,7 +555,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationIsNotSet_DefaultsDistanceAndOrderBy(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -606,7 +606,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenReviewPeriodProvided_SetsReviewPeriodDetails(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -653,7 +653,7 @@ public class WhenGettingCourseProviders
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenQarPeriodProvided_SetsQarPeriodDetails(
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -705,7 +705,7 @@ public class WhenGettingCourseProviders
         int totalCount,
         string expectedMessage,
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -755,7 +755,7 @@ public class WhenGettingCourseProviders
         string distance,
         string expectedMessage,
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -807,7 +807,7 @@ public class WhenGettingCourseProviders
         bool employerProviderRatingSelected,
         bool apprenticeProviderRatingSelected,
         CourseProvidersRequest request,
-        GetCourseProvidersResult response,
+        CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -885,7 +885,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
         int shortlistCount,
-        GetCourseProvidersResult mediatorResult)
+        CourseProvidersDetails mediatorResult)
     {
         sut.AddUrlHelperMock();
         sut.TempData = tempDataMock.Object;
@@ -910,7 +910,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
-        GetCourseProvidersResult mediatorResult)
+        CourseProvidersDetails mediatorResult)
     {
         sut.AddUrlHelperMock();
         sut.TempData = tempDataMock.Object;
@@ -934,7 +934,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
-        GetCourseProvidersResult mediatorResult)
+        CourseProvidersDetails mediatorResult)
     {
         sut.AddUrlHelperMock();
         sut.TempData = tempDataMock.Object;
@@ -958,7 +958,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
-        GetCourseProvidersResult mediatorResult)
+        CourseProvidersDetails mediatorResult)
     {
         sut.AddUrlHelperMock();
         sut.TempData = tempDataMock.Object;
@@ -985,7 +985,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
-        GetCourseProvidersResult mediatorResult)
+        CourseProvidersDetails mediatorResult)
     {
         sut.AddUrlHelperMock();
         sut.TempData = tempDataMock.Object;

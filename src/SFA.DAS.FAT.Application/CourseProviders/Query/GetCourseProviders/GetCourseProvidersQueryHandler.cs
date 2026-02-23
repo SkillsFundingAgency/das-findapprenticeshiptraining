@@ -6,7 +6,7 @@ using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.CourseProviders.Query.GetCourseProviders;
 
-public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProvidersQuery, GetCourseProvidersResult>
+public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProvidersQuery, CourseProvidersDetails>
 {
     private readonly ICourseService _courseService;
     private readonly IAcademicYearsService _academicYearsService;
@@ -16,7 +16,7 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
         _academicYearsService = academicYearsService;
     }
 
-    public async Task<GetCourseProvidersResult> Handle(GetCourseProvidersQuery request,
+    public async Task<CourseProvidersDetails> Handle(GetCourseProvidersQuery request,
         CancellationToken cancellationToken)
     {
         var courseProvidersParameters = new CourseProvidersParameters
@@ -40,19 +40,9 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
 
         var academicYearsLatest = await _academicYearsService.GetAcademicYearsLatestAsync(cancellationToken);
 
-        return new GetCourseProvidersResult
-        {
-            LarsCode = courseProvidersDetails.LarsCode,
-            Page = courseProvidersDetails.Page,
-            PageSize = courseProvidersDetails.PageSize,
-            TotalPages = courseProvidersDetails.TotalPages,
-            TotalCount = courseProvidersDetails.TotalCount,
-            StandardName = courseProvidersDetails.StandardName,
-            CourseType = courseProvidersDetails.CourseType,
-            ApprenticeshipType = courseProvidersDetails.ApprenticeshipType,
-            QarPeriod = academicYearsLatest.QarPeriod,
-            ReviewPeriod = academicYearsLatest.ReviewPeriod,
-            Providers = courseProvidersDetails.Providers
-        };
+        courseProvidersDetails.QarPeriod = academicYearsLatest.QarPeriod;
+        courseProvidersDetails.ReviewPeriod = academicYearsLatest.ReviewPeriod;
+
+        return courseProvidersDetails;
     }
 }
