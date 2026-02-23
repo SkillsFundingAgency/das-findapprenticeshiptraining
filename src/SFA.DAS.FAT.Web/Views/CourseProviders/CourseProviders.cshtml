@@ -119,24 +119,24 @@
                 <div class="das-search-results">
                     <ol class="das-search-results__list">
 
-                        @foreach (var provider in Model.Providers)
-                        {
-                            <li>
-
-                                <div class="govuk-summary-card">
-
-                                    <div>
-                                        @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
-                                        {
-                                            LarsCode = Model.LarsCode,
-                                                                ShortlistCount = Model.ShortlistCount,
-                                                                ProviderName = provider.ProviderName,
-                                                                ShortlistId = provider.ShortlistId,
-                                                                Ukprn = provider.Ukprn,
-                                                                Location = Model.Location,
-                                                                Distance = Model.Distance
-                                                                })
-                            </div>
+                    @foreach (var provider in Model.Providers)
+                    {
+                        <li>
+                            
+                            <div class="govuk-summary-card">
+                                
+                                <div>
+                                    @await Html.PartialAsync("_courseProviderTopPanel", new CourseProviderTopPanelViewModel
+                                    {
+                                        LarsCode = Model.LarsCode,
+                                        ShortlistCount = Model.ShortlistCount,
+                                        ProviderName = provider.ProviderName,
+                                        ShortlistId = provider.ShortlistId,
+                                        Ukprn = provider.Ukprn,
+                                        Location = Model.Location,
+                                        Distance = Model.Distance
+                                    })
+                                </div>
 
                             <div class="govuk-summary-card__content">
                                 <dl class="govuk-summary-list">
