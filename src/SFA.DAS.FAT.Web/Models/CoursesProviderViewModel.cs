@@ -173,8 +173,8 @@ public class CoursesProviderViewModel
             IsDayReleaseAvailable = source.Locations.Any(l => l.DayRelease),
             IsBlockReleaseMultiple = source.Locations.Count(x => x.BlockRelease) > 1,
             IsDayReleaseMultiple = source.Locations.Count(x => x.DayRelease) > 1,
-            NearestBlockRelease = source.Locations.FirstOrDefault(x => x.BlockRelease)?.CourseDistance,
-            NearestDayRelease = source.Locations.FirstOrDefault(x => x.DayRelease)?.CourseDistance
+            NearestBlockRelease = source.Locations.Where(x => x.BlockRelease).MinBy(x => x.CourseDistance)?.CourseDistance,
+            NearestDayRelease = source.Locations.Where(x => x.DayRelease).MinBy(x => x.CourseDistance)?.CourseDistance
         };
     }
 }
