@@ -217,7 +217,7 @@ public sealed class WhenFilteringCourses
         {
             var locationClearLink = _sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
-            Assert.That(locationClearLink.Title, Is.EqualTo("learner's work location"));
+            Assert.That(locationClearLink.Title, Is.EqualTo("Learner's work location"));
             Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_coursesViewModel.Location} (within {_coursesViewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.Not.Contain($"location={_coursesViewModel.Location}"));
         });
