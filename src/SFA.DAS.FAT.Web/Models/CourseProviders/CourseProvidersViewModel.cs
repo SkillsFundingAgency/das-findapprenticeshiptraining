@@ -284,12 +284,9 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 .Select(dm => dm.DisplayText)
                 .ToList();
 
-            if (CourseType == CourseType.ShortCourse)
+            if (CourseType == CourseType.ShortCourse && selectedDeliveryNames is { Count: > 0 })
             {
-                if (selectedDeliveryNames is { Count: > 0 })
-                {
-                    selectedFilters[FilterType.DeliveryModes] = selectedDeliveryNames;
-                }
+                selectedFilters[FilterType.DeliveryModes] = selectedDeliveryNames;
             }
             else
             {
