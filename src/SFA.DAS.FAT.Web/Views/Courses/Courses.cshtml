@@ -7,7 +7,9 @@
     ViewData["Title"] = "Apprenticeship training courses";
     ViewData["Description"] = "View all available apprenticeship training courses in England. Search using keywords, different qualification levels and categories.";
 }
-
+@{
+    await Html.RenderPartialAsync("_learnAboutTrainingOfferBanner");
+}
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
