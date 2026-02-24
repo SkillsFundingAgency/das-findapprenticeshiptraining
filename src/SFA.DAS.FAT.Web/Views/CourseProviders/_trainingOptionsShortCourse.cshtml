@@ -1,43 +1,45 @@
 ﻿@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsShortCourseViewModel
-<dt class="govuk-summary-list__key">Training options @Model.DistanceDetails</dt>
-<dd class="govuk-summary-list__value">
-    @if (Model.IsOnlineAvailable)
-    {
-        <p class="govuk-body">
-            <span>Online</span>
-            <br />
-            @if (!string.IsNullOrEmpty(Model.OnlineDisplayDescription))
-            {
-                <span class="govuk-body-s das-hint-colour">@Model.OnlineDisplayDescription</span>
-            }
-        </p>
-    }
+<dl class="govuk-summary-list">
+    <dt class="govuk-summary-list__key">Training options @Model.DistanceDetails</dt>
+    <dd class="govuk-summary-list__value">
+        @if (Model.IsOnlineAvailable)
+        {
+            <p class="govuk-body">
+                <span>Online</span>
+                <br />
+                @if (!string.IsNullOrEmpty(Model.OnlineDisplayDescription))
+                {
+                    <span class="govuk-body-s das-hint-colour">@Model.OnlineDisplayDescription</span>
+                }
+            </p>
+        }
 
-    @if (Model.IsEmployerLocationAvailable)
-    {
-        <p class="govuk-body">
-            <span asp-show="@Model.NearestEmployerLocation <= 0">At learner's workplace</span>
-            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0">At learner's workplace:</span>
-            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0" class="govuk-!-font-weight-bold">@Model.NearestEmployerLocation miles</span>
-            <br />
-            @if (!string.IsNullOrEmpty(Model.EmployerLocationDisplayDescription))
-            {
-                <span class="govuk-body-s das-hint-colour">@Model.EmployerLocationDisplayDescription</span>
-            }
-        </p>
-    }
+        @if (Model.IsEmployerLocationAvailable)
+        {
+            <p class="govuk-body">
+                <span asp-show="@Model.NearestEmployerLocation <= 0">At learner's workplace</span>
+                <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0">At learner's workplace:</span>
+                <span asp-show="@Model.ShowDistanceDetails && @Model.NearestEmployerLocation > 0" class="govuk-!-font-weight-bold">@Model.NearestEmployerLocation miles</span>
+                <br />
+                @if (!string.IsNullOrEmpty(Model.EmployerLocationDisplayDescription))
+                {
+                    <span class="govuk-body-s das-hint-colour">@Model.EmployerLocationDisplayDescription</span>
+                }
+            </p>
+        }
 
-    @if (Model.IsProviderAvailable)
-    {
-        <p class="govuk-body">
-            <span asp-show="@Model.NearestProviderPlace <= 0">At training provider's location</span>
-            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0">At training provider's location:</span>
-            <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0" class="govuk-!-font-weight-bold">@Model.NearestProviderPlace miles</span>
-            <br />
-            @if (!string.IsNullOrEmpty(Model.ProviderLocationDisplayDescription))
-            {
-                <span class="govuk-body-s das-hint-colour">@Model.ProviderLocationDisplayDescription</span>
-            }
-        </p>
-    }
-</dd>
+        @if (Model.IsProviderAvailable)
+        {
+            <p class="govuk-body">
+                <span asp-show="@Model.NearestProviderPlace <= 0">At training provider's location</span>
+                <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0">At training provider's location:</span>
+                <span asp-show="@Model.ShowDistanceDetails && @Model.NearestProviderPlace > 0" class="govuk-!-font-weight-bold">@Model.NearestProviderPlace miles</span>
+                <br />
+                @if (!string.IsNullOrEmpty(Model.ProviderLocationDisplayDescription))
+                {
+                    <span class="govuk-body-s das-hint-colour">@Model.ProviderLocationDisplayDescription</span>
+                }
+            </p>
+        }
+    </dd>
+</dl>

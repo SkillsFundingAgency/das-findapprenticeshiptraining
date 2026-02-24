@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -302,7 +302,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         AddRatingFilter(selectedFilters, SelectedQarRatings, GenerateQarFilterItems, FilterType.QarRatings);
     }
 
-    private void AddRatingFilter(Dictionary<FilterType, List<string>> selectedFilters, List<string>? selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
+    private static void AddRatingFilter(Dictionary<FilterType, List<string>> selectedFilters, List<string> selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
     {
         if (selectedRatings?.Count > 0)
         {
