@@ -62,6 +62,7 @@ stages:
   variables:
   - group: DevTest Management Resources
   - group: TEST DevTest Shared Resources
+  - group: TEST das-findapprenticeshiptraining
   jobs:
   - template: pipeline-templates/job/deploy.yml
     parameters:
