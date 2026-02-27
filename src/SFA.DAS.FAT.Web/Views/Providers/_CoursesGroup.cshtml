@@ -1,0 +1,47 @@
+@using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models.Providers
+@model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
+
+@{
+    var coursesModel = Model.ProviderCoursesDetails;
+    var apprenticeshipTypeOrder = coursesModel?.ApprenticeshipTypeOrder ?? new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
+    var courses = coursesModel?.Courses ?? new List<ProviderCourseDetails>();
+}
+
+@foreach (var apprenticeshipType in apprenticeshipTypeOrder)
+{
+    var count = courses.Count(c => c.ApprenticeshipType == apprenticeshipType);
+    if (count <= 0) { continue; }
+
+    <h4 class="govuk-heading-s">@ProviderCoursesModel.GetDisplayName(apprenticeshipType)</h4>
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                View @count @ProviderCoursesModel.GetDisplayName(apprenticeshipType).ToLower() delivered by this training provider
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            @{
+                var courseslist = courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList();
+            }
+
+            <table class="govuk-table">
+                <tbody class="govuk-table__body">
+                    @foreach (var course in courseslist)
+                    {
+                        <tr class="govuk-table__row">
+                            <td class="govuk-table__cell">
+                                <a class="govuk-link govuk-link--no-visited-state"
+                                   asp-route="@RouteNames.CourseProviderDetails"
+                                   asp-all-route-data="@course.RouteData"
+                                   asp-route-location="@Model.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </details>
+}
