@@ -7,13 +7,22 @@ namespace SFA.DAS.FAT.Web.Models.Providers;
 
 public class ProviderCoursesModel
 {
-    public List<ProviderCourseDetails> Courses { get; set; } = new List<ProviderCourseDetails>();
+    public List<ProviderCourseDetails> Courses { get; set; }
 
     public int CourseCount => Courses?.Count ?? 0;
 
-    public string CoursesDropdownText => CourseCount == 1
-        ? "View 1 course delivered by this training provider"
-        : $"View {CourseCount} courses delivered by this training provider";
+    public string CoursesDropdownText
+    {
+        get
+        {
+            if (Courses == null)
+                return string.Empty;
+
+            return CourseCount == 1
+                ? "View 1 course delivered by this training provider"
+                : $"View {CourseCount} courses delivered by this training provider";
+        }
+    }
 
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
         new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
@@ -41,7 +50,7 @@ public class ProviderCoursesModel
     {
         var model = new ProviderCoursesModel
         {
-            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList() ?? new List<ProviderCourseDetails>()
+            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
         };
 
         return model;
