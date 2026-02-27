@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models;
 public class WhenCreatingCourseProviderViewModel
 {
     [Test, MoqAutoData]
-    public void Then_Properties_Are_Correctly_Mapped(GetCourseProviderQueryResult source)
+    public void ImplicitOperator_FromGetCourseProviderQueryResult_MapsPropertiesCorrectly(GetCourseProviderQueryResult source)
     {
         source.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
         source.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
@@ -41,7 +41,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Returns_Not_Enough_Apprentices_Message_When_Endpoint_Assessments_Is_Null()
+    public void EndpointAssessmentDisplayMessage_WhenEndpointAssessmentsIsNull_ReturnsNotEnoughApprenticesMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -52,7 +52,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Returns_Not_Enough_Apprentices_Message_When_Earliest_Assessment_Is_Null()
+    public void EndpointAssessmentDisplayMessage_WhenEarliestAssessmentIsNull_ReturnsNotEnoughApprenticesMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -63,7 +63,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Returns_Message_When_Assessment_Count_Is_Zero()
+    public void EndpointAssessmentDisplayMessage_WhenAssessmentCountIsZero_ReturnsMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -74,7 +74,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Returns_Message_With_Year_And_Plural_When_Assessment_Count_Greater_Than_One()
+    public void EndpointAssessmentDisplayMessage_WhenAssessmentCountGreaterThanOne_ReturnsMessageWithYearAndPlural()
     {
         var sut = new CourseProviderViewModel
         {
@@ -85,7 +85,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Returns_Message_With_Year_And_Singular_When_Assessment_Count_Is_One()
+    public void EndpointAssessmentDisplayMessage_WhenAssessmentCountIsOne_ReturnsMessageWithYearAndSingular()
     {
         var sut = new CourseProviderViewModel
         {
@@ -96,7 +96,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Provider_Address_Should_Combine_All_Non_Empty_Properties_With_Commas()
+    public void ContactAddress_WithNonEmptyProperties_CombinesWithCommas()
     {
         var sut = new CourseProviderViewModel
         {
@@ -115,7 +115,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Provider_Address_Should_Return_Empty_If_All_Parts_Are_Empty()
+    public void ContactAddress_WhenAllPartsAreEmpty_ReturnsEmpty()
     {
         var sut = new CourseProviderViewModel
         {
@@ -134,7 +134,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Provider_Address_Should_Trim_Values()
+    public void ContactAddress_WithUntrimmedValues_TrimsValues()
     {
         var sut = new CourseProviderViewModel
         {
@@ -150,7 +150,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Block_Release_Locations_Should_Return_Formatted_Addresses_For_Block_Release_Only()
+    public void BlockReleaseLocations_WhenBlockReleaseLocationsExist_ReturnsFormattedAddresses()
     {
         var sut = new CourseProviderViewModel
         {
@@ -194,7 +194,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Day_Release_Locations_Should_Return_Formatted_Addresses_For_Day_Release_Only()
+    public void DayReleaseLocations_WhenDayReleaseLocationsExist_ReturnsFormattedAddresses()
     {
         var sut = new CourseProviderViewModel
         {
@@ -228,7 +228,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Block_Release_Locations_Should_Return_EmptyList_If_No_Block_Release_Locations_Exist()
+    public void BlockReleaseLocations_WhenNoBlockReleaseLocationsExist_ReturnsEmptyList()
     {
         var sut = new CourseProviderViewModel
         {
@@ -242,7 +242,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Day_Release_Locations_Should_Return_Empty_List_If_No_Day_Release_Locations_Exist()
+    public void DayReleaseLocations_WhenNoDayReleaseLocationsExist_ReturnsEmptyList()
     {
         var sut = new CourseProviderViewModel
         {
@@ -256,7 +256,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Get_Apprentice_Work_place_Display_Message_Returns_National_Message_When_Location_Type_Is_National()
+    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsNational_ReturnsNationalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -267,11 +267,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
     }
 
     [Test]
-    public void Then_Get_Apprentice_Workplace_Display_Message_Returns_Regional_Message_When_Location_Type_Is_Regional()
+    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsRegional_ReturnsRegionalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -282,11 +282,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
     }
 
     [Test]
-    public void Then_Get_Apprentice_Workplace_Display_Message_Returns_Regional_Message_When_No_Location_Is_Found()
+    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenNoLocationIsFound_ReturnsNationalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -297,11 +297,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at apprentice's workplaces across England."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
     }
 
     [Test]
-    public void Get_Achievement_Rate_Information_Returns_Formatted_Message_When_Achievement_Rate_Is_Not_Null()
+    public void AchievementRateInformation_WhenAchievementRateIsNotNull_ReturnsFormattedMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -323,7 +323,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Get_Achievement_Rate_Information_Returns_Empty_String_When_Achievement_Rate_Is_Null()
+    public void AchievementRateInformation_WhenAchievementRateIsNull_ReturnsEmptyString()
     {
         var sut = new CourseProviderViewModel
         {
@@ -339,7 +339,7 @@ public class WhenCreatingCourseProviderViewModel
     [TestCase(0, "View 0 courses delivered by this training provider")]
     [TestCase(1, "View 1 course delivered by this training provider")]
     [TestCase(3, "View 3 courses delivered by this training provider")]
-    public void Courses_Delivered_Display_Text_Returns_Correct_Message_Based_On_Courses_Delivered_Count(int courseCount, string expected)
+    public void CoursesDeliveredCountDisplay_WithCourseCount_ReturnsCorrectMessage(int courseCount, string expected)
     {
         var sut = new CourseProviderViewModel
         {
@@ -353,7 +353,7 @@ public class WhenCreatingCourseProviderViewModel
 
     [TestCase("1", "average review from 1 employer when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
     [TestCase("5", "average review from 5 employers when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
-    public void Then_Get_Employer_Reviews_Display_Message_Returns_Correct_Message_For_Valid_Employer_Reviews(string reviewCount, string expected)
+    public void EmployerReviewsDisplayMessage_WithValidEmployerReviews_ReturnsCorrectMessage(string reviewCount, string expected)
     {
         var sut = new CourseProviderViewModel
         {
@@ -369,7 +369,7 @@ public class WhenCreatingCourseProviderViewModel
     [TestCase(null)]
     [TestCase("")]
     [TestCase("abc")]
-    public void Then_Get_Employer_Reviews_Display_Message_Returns_Empty_If_Employer_Reviews_Cannot_Be_Parsed(string invalidReviewValue)
+    public void EmployerReviewsDisplayMessage_WhenEmployerReviewsCannotBeParsed_ReturnsEmpty(string invalidReviewValue)
     {
         var sut = new CourseProviderViewModel
         {
@@ -384,7 +384,7 @@ public class WhenCreatingCourseProviderViewModel
 
     [TestCase("1", "average review from 1 apprentice when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
     [TestCase("5", "average review from 5 apprentices when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
-    public void Then_Get_Apprentice_Reviews_Display_Message_Returns_Correct_Message_For_Valid_Employer_Reviews(string reviewCount, string expected)
+    public void ApprenticeReviewsDisplayMessage_WithValidApprenticeReviews_ReturnsCorrectMessage(string reviewCount, string expected)
     {
         var sut = new CourseProviderViewModel
         {
@@ -400,7 +400,7 @@ public class WhenCreatingCourseProviderViewModel
     [TestCase(null)]
     [TestCase("ds")]
     [TestCase("dsdsd")]
-    public void Then_Get_Apprentice_Reviews_Display_Message_Returns_Empty_If_Apprentice_Reviews_Cannot_Be_Parsed(string invalidReviewValue)
+    public void ApprenticeReviewsDisplayMessage_WhenApprenticeReviewsCannotBeParsed_ReturnsEmpty(string invalidReviewValue)
     {
         var sut = new CourseProviderViewModel
         {
@@ -414,7 +414,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Endpoint_Assessments_Count_Display_Returns_No_Data_When_Endpoint_Assessments_Is_Null()
+    public void EndpointAssessmentsCountDisplay_WhenEndpointAssessmentsIsNull_ReturnsNoData()
     {
         var sut = new CourseProviderViewModel
         {
@@ -425,7 +425,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Endpoint_Assessments_Count_Display_Returns_NoData_When_Earliest_Assessment_Is_Null()
+    public void EndpointAssessmentsCountDisplay_WhenEarliestAssessmentIsNull_ReturnsNoData()
     {
         var sut = new CourseProviderViewModel
         {
@@ -442,7 +442,7 @@ public class WhenCreatingCourseProviderViewModel
     [TestCase(80000, "80,000")]
     [TestCase(800000, "800,000")]
     [TestCase(8000000, "8,000,000")]
-    public void Then_Endpoint_Assessments_Count_Display_Returns_Count_As_String_When_Valid(int count, string expectedCountDisplay)
+    public void EndpointAssessmentsCountDisplay_WhenValid_ReturnsCountAsString(int count, string expectedCountDisplay)
     {
         var sut = new CourseProviderViewModel
         {
@@ -453,7 +453,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Has_Multiple_Block_Release_Locations_Returns_True_When_More_Than_One()
+    public void HasMultipleBlockReleaseLocations_WhenMoreThanOne_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {
@@ -469,7 +469,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Has_Multiple_Block_Release_Locations_Returns_False_When_One_Or_Less()
+    public void HasMultipleBlockReleaseLocations_WhenOneOrLess_ReturnsFalse()
     {
         var sut = new CourseProviderViewModel
         {
@@ -484,7 +484,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Has_Multiple_Day_Release_Locations_Returns_True_When_More_Than_One()
+    public void HasMultipleDayReleaseLocations_WhenMoreThanOne_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {
@@ -500,7 +500,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Has_Multiple_Day_Release_Locations_Returns_False_When_One_Or_Less()
+    public void HasMultipleDayReleaseLocations_WhenOneOrLess_ReturnsFalse()
     {
         var sut = new CourseProviderViewModel
         {
@@ -515,7 +515,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Course_Name_And_Level_Should_Combine_Course_Name_And_Level()
+    public void CourseNameAndLevel_WithCourseNameAndLevel_CombinesBoth()
     {
         var sut = new CourseProviderViewModel
         {
@@ -527,7 +527,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_ShowApprenticesWorkplaceOption_Returns_True_If_Any_Location_Type_National_Exists()
+    public void ShowApprenticesWorkplaceOption_WhenAnyLocationTypeNationalExists_ReturnsTrue()
     {
         var viewModel = new CourseProviderViewModel
         {
@@ -542,7 +542,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_ShowApprenticesWorkplaceOption_Returns_True_If_Any_Location_Type_Regional_Exists()
+    public void ShowApprenticesWorkplaceOption_WhenAnyLocationTypeRegionalExists_ReturnsTrue()
     {
         var viewModel = new CourseProviderViewModel
         {
@@ -557,7 +557,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_ShowApprenticesWorkplaceOption_Returns_False_If_No_National_Or_Regional_Locations()
+    public void ShowApprenticesWorkplaceOption_WhenNoNationalOrRegionalLocations_ReturnsFalse()
     {
         var viewModel = new CourseProviderViewModel
         {
@@ -571,7 +571,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Is_Block_Release_Returns_True_If_Any_Block_Release_Is_True()
+    public void ShowBlockReleaseOption_WhenAnyBlockReleaseIsTrue_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {
@@ -586,7 +586,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Is_Block_Release_Returns_False_If_None_Block_Release()
+    public void ShowBlockReleaseOption_WhenNoneBlockRelease_ReturnsFalse()
     {
         var sut = new CourseProviderViewModel
         {
@@ -600,7 +600,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Is_Day_Release_Returns_True_If_Any_Day_Release_Is_True()
+    public void ShowDayReleaseOption_WhenAnyDayReleaseIsTrue_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {
@@ -614,7 +614,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Is_Day_Release_Returns_False_If_No_Day_Release()
+    public void ShowDayReleaseOption_WhenNoDayRelease_ReturnsFalse()
     {
         var sut = new CourseProviderViewModel
         {
@@ -628,7 +628,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Added_When_Under_Maximum_Shortlist_Count_And_Shortlist_Id_Is_Populated()
+    public void ShortlistClass_WhenUnderMaximumAndShortlistIdPopulated_ReturnsAdded()
     {
         var sut = new CourseProviderViewModel
         {
@@ -640,7 +640,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Full_When_Equal_To_Maximum_Shortlist_Count_And_Shortlist_Id_Is_Null()
+    public void ShortlistClass_WhenEqualToMaximumAndShortlistIdNull_ReturnsFull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -652,7 +652,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Default_When_Shortlist_Id_Is_Null_And_Under_Maximum()
+    public void ShortlistClass_WhenShortlistIdNullAndUnderMaximum_ReturnsDefault()
     {
         var sut = new CourseProviderViewModel
         {
@@ -664,7 +664,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Shortlist_Class_Returns_Full_When_Above_Maximum_Shortlist_Count()
+    public void ShortlistClass_WhenAboveMaximum_ReturnsFull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -675,7 +675,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_National_Location_Returns_First_Matching_Employer_With_National_LocationType()
+    public void NationalLocation_WhenMatchingLocationExists_ReturnsFirstMatchingEmployerWithNationalLocationType()
     {
         var national = new LocationModel { AtEmployer = true, LocationType = LocationType.National };
 
@@ -693,7 +693,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_National_Location_Returns_Null_If_No_Matching_Location()
+    public void NationalLocation_WhenNoMatchingLocation_ReturnsNull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -708,7 +708,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_National_Location_Returns_Null_If_Locations_Is_Empty()
+    public void NationalLocation_WhenLocationsIsEmpty_ReturnsNull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -719,7 +719,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Closest_Block_Release_Location_Returns_Location_With_Smallest_Course_Distance()
+    public void ClosestBlockReleaseLocation_WhenMultipleLocationsExist_ReturnsLocationWithSmallestCourseDistance()
     {
         var closest = new LocationModel { BlockRelease = true, CourseDistance = 5.0 };
         var sut = new CourseProviderViewModel
@@ -736,7 +736,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Closest_Block_Release_Location_Returns_Null_If_None_Are_Block_Release()
+    public void ClosestBlockReleaseLocation_WhenNoneAreBlockRelease_ReturnsNull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -751,7 +751,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Closest_Day_Release_Location_Returns_Location_With_Smallest_Course_Distance()
+    public void ClosestDayReleaseLocation_WhenMultipleLocationsExist_ReturnsLocationWithSmallestCourseDistance()
     {
         var closest = new LocationModel { DayRelease = true, CourseDistance = 3.4 };
         var sut = new CourseProviderViewModel
@@ -768,7 +768,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_Closest_Day_Release_Location_Returns_Null_If_None_Are_DayRelease()
+    public void ClosestDayReleaseLocation_WhenNoneAreDayRelease_ReturnsNull()
     {
         var sut = new CourseProviderViewModel
         {
@@ -783,7 +783,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_HasMatchingRegionalLocation_Returns_True_If_Any_Regional_Location_And_AtEmployer_IsTrue()
+    public void HasMatchingRegionalLocation_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {
@@ -796,7 +796,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void Then_HasMatchingRegionalLocation_Returns_True_If_Any_National_Location_Exists()
+    public void HasMatchingRegionalLocation_WhenNationalLocationExists_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
         {

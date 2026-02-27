@@ -217,7 +217,7 @@ public sealed class WhenFilteringCourses
         {
             var locationClearLink = _sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
-            Assert.That(locationClearLink.Title, Is.EqualTo("Apprentice's work location"));
+            Assert.That(locationClearLink.Title, Is.EqualTo("Learner's work location"));
             Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_coursesViewModel.Location} (within {_coursesViewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.Not.Contain($"location={_coursesViewModel.Location}"));
         });
@@ -450,7 +450,7 @@ public sealed class WhenFilteringCourses
         Assert.That(vm.TotalMessage, Is.EqualTo(expectedMessage));
     }
 
-    [TestCase(5, "M60 7RA", "20", "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location.")]
+    [TestCase(5, "M60 7RA", "20", "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.")]
     [TestCase(5, "", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Select the course name to view details about it, or select view training providers to see the training providers who run that course.")]
     [TestCase(0, "M60 7RA", "20", "")]
     public void CoursesSubHeader_BasedOnTotalLocationAndDistance_DisplaysCorrectMessage(int total, string location, string distance, string expected)

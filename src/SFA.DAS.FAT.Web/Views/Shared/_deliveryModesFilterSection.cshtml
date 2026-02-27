@@ -38,18 +38,11 @@
                             id="@inputId"
                             name="@Model.For"
                             type="checkbox"
-                            value="@filterItem.Value"/>
+                               value="@filterItem.Value" />
 
                         <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                             @filterItem.DisplayText
                         </label>
-
-                        @if (!string.IsNullOrWhiteSpace(filterItem.DisplayDescription))
-                        {
-                            <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
-                                @filterItem.DisplayDescription
-                            </div>
-                        }
                     </div>
                 }
             }
@@ -67,18 +60,11 @@
                                     id="@inputId"
                                     name="@Model.For"
                                     type="checkbox"
-                                    value="@filterItem.Value"/>
+                                       value="@filterItem.Value" />
 
                                 <label class="govuk-label govuk-checkboxes__label" for="@inputId">
                                     @filterItem.DisplayText
                                 </label>
-
-                                @if (!string.IsNullOrWhiteSpace(filterItem.DisplayDescription))
-                                {
-                                    <div id="@inputId-item-hint" class="govuk-hint govuk-checkboxes__hint">
-                                        @filterItem.DisplayDescription
-                                    </div>
-                                }
                             </div>
                         }
                     }
