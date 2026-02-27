@@ -3,7 +3,7 @@
 @using SFA.DAS.FAT.Web.Models.Providers
 @model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
 
-@foreach (var courseGroup in Model.ProviderCoursesDetails?.CourseGroups)
+@foreach (var courseGroup in Model.ProviderCoursesDetails?.CourseGroups ?? Enumerable.Empty<ProviderCourseGroup>())
 {
     <h4 class="govuk-heading-s">@courseGroup.DisplayName</h4>
 
