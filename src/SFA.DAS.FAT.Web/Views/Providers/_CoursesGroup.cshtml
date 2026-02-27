@@ -22,7 +22,8 @@
                             <td class="govuk-table__cell">
                                 <a class="govuk-link govuk-link--no-visited-state"
                                    asp-route="@RouteNames.CourseProviderDetails"
-                                   asp-all-route-data="@course.RouteData"
+                                   asp-route-larsCode="@course.LarsCode"
+                                   asp-route-providerId="@Model.Ukprn"
                                    asp-route-location="@Model.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
                             </td>
                         </tr>

@@ -35,20 +35,6 @@ public class ProviderCoursesModel
         .Where(g => g.Count > 0)
         .ToList();
 
-    public void SetRouteDataForCourses(int ukprn)
-    {
-        if (Courses == null) return;
-
-        foreach (var course in Courses)
-        {
-            course.RouteData = new Dictionary<string, string>
-                {
-                    { "larsCode", course.LarsCode?.ToString() ?? string.Empty },
-                    { "providerId", ukprn.ToString() }
-                };
-        }
-    }
-
     public static implicit operator ProviderCoursesModel(List<GetProviderCourseDetails> source)
     {
         if (source == null) return new ProviderCoursesModel();

@@ -53,8 +53,6 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             ShowShortListLink = true
         };
 
-        model.ProviderCoursesDetails?.SetRouteDataForCourses(model.Ukprn);
-
         return model;
     }
 }
