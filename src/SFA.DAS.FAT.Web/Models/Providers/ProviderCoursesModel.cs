@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
@@ -13,15 +14,26 @@ public class ProviderCoursesModel
 
     public ApprenticeshipType[] ApprenticeshipTypeOrder => new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
 
-    public static string GetDisplayName(ApprenticeshipType type)
+    public static string GetDisplayName(ApprenticeshipType apprenticeshipType)
     {
-        return type switch
+        return apprenticeshipType switch
         {
             ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship units",
             ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeships",
             _ => "Apprenticeships"
         };
     }
+
+    public List<ProviderCourseGroup> CourseGroups => ApprenticeshipTypeOrder
+        .Select(apprenticeshipType => new ProviderCourseGroup
+        {
+            Type = apprenticeshipType,
+            DisplayName = GetDisplayName(apprenticeshipType),
+            Courses = Courses?.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList() ?? new List<ProviderCourseDetails>(),
+            Count = Courses?.Count(c => c.ApprenticeshipType == apprenticeshipType) ?? 0
+        })
+        .Where(g => g.Count > 0)
+        .ToList();
 
     public void SetRouteDataForCourses(int ukprn)
     {

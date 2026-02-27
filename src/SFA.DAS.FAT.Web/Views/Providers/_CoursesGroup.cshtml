@@ -3,33 +3,20 @@
 @using SFA.DAS.FAT.Web.Models.Providers
 @model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
 
-@{
-    var coursesModel = Model.ProviderCoursesDetails;
-    var apprenticeshipTypeOrder = coursesModel?.ApprenticeshipTypeOrder ?? new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
-    var courses = coursesModel?.Courses ?? new List<ProviderCourseDetails>();
-}
-
-@foreach (var apprenticeshipType in apprenticeshipTypeOrder)
+@foreach (var courseGroup in Model.ProviderCoursesDetails?.CourseGroups)
 {
-    var count = courses.Count(c => c.ApprenticeshipType == apprenticeshipType);
-    if (count <= 0) { continue; }
-
-    <h4 class="govuk-heading-s">@ProviderCoursesModel.GetDisplayName(apprenticeshipType)</h4>
+    <h4 class="govuk-heading-s">@courseGroup.DisplayName</h4>
 
     <details class="govuk-details" data-module="govuk-details">
         <summary class="govuk-details__summary">
             <span class="govuk-details__summary-text">
-                View @count @ProviderCoursesModel.GetDisplayName(apprenticeshipType).ToLower() delivered by this training provider
+                View @courseGroup.Count @courseGroup.DisplayName.ToLower() delivered by this training provider
             </span>
         </summary>
         <div class="govuk-details__text">
-            @{
-                var courseslist = courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList();
-            }
-
             <table class="govuk-table">
                 <tbody class="govuk-table__body">
-                    @foreach (var course in courseslist)
+                    @foreach (var course in courseGroup.Courses)
                     {
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">
