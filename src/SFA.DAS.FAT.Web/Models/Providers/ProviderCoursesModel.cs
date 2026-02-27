@@ -35,16 +35,24 @@ public class ProviderCoursesModel
             _ => "Apprenticeships"
         };
 
-    public IReadOnlyList<ProviderCourseGroup> CourseGroups => ApprenticeshipTypeOrder
-        .Select(apprenticeshipType => new ProviderCourseGroup
+    public IList<ProviderCourseGroup> GetCourseGroups()
+    {
+        if (Courses == null || Courses.Count == 0)
         {
-            ApprenticeshipType = apprenticeshipType,
-            DisplayName = GetDisplayName(apprenticeshipType),
-            Courses = Courses?.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList() ?? new List<ProviderCourseDetails>(),
-            Count = Courses?.Count(c => c.ApprenticeshipType == apprenticeshipType) ?? 0
-        })
-        .Where(g => g.Count > 0)
-        .ToList();
+            return new List<ProviderCourseGroup>();
+        }
+
+        return ApprenticeshipTypeOrder
+            .Select(apprenticeshipType => new ProviderCourseGroup
+            {
+                ApprenticeshipType = apprenticeshipType,
+                DisplayName = GetDisplayName(apprenticeshipType),
+                Courses = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
+                Count = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
+            })
+            .Where(g => g.Count > 0)
+            .ToList();
+    }
 
     public static implicit operator ProviderCoursesModel(List<GetProviderCourseDetails> source)
     {

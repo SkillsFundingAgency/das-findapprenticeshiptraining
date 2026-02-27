@@ -1,9 +1,8 @@
-@using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models.Providers
 @model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
 
-@foreach (var courseGroup in Model.ProviderCoursesDetails?.CourseGroups ?? Enumerable.Empty<ProviderCourseGroup>())
+@foreach (var courseGroup in Model.ProviderCoursesDetails?.GetCourseGroups())
 {
     <h4 class="govuk-heading-s">@courseGroup.DisplayName</h4>
 
