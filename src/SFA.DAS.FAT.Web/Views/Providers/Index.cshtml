@@ -1,6 +1,4 @@
-﻿@using SFA.DAS.FAT.Web.Infrastructure
-@using SFA.DAS.FAT.Web.Extensions
-@using Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@using SFA.DAS.FAT.Web.Extensions
 @model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
 @{
     ViewData["Title"] = "Provider details";
@@ -13,44 +11,28 @@
         <span class="govuk-caption-l">Training provider</span>
         <h1 class="govuk-heading-xl govuk-!-margin-bottom-1">@Model.ProviderName</h1>
         <span class="govuk-caption-l govuk-!-margin-bottom-3">UKPRN @Model.Ukprn</span>
-        <div class="govuk-body govuk-!-margin-bottom-3">View training provider details, including courses delivered, achievement rating, participation, reviews and contact details.</div>
-        <h3 class="govuk-heading-m govuk-!-margin-bottom-2">Select a course</h3>
-        <div class="govuk-body">You can select a course for more information, including how training takes place with locations, course-specific achievement rates and participation.</div>
+            <div class="govuk-body govuk-!-margin-bottom-3">View training provider details, including courses delivered, achievement rating, participation, reviews and contact details.</div>
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-4">Courses offered by this training provider</h3>
+            <div class="govuk-body govuk-!-margin-bottom-4">You can select a course for more information, including how training takes place with locations, course-specific achievement rates and participation.</div>
 
         <div asp-show="@Model.ShowCourses" class="govuk-!-margin-bottom-8">
-            <h2 class="govuk-heading-m">Courses offered</h2>
-            <details class="govuk-details" data-module="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        @Model.ProviderCoursesDetails.CoursesDropdownText
-                    </span>
-                </summary>
                 <div class="govuk-details__text">
-                    <p class="govuk-body ">Select a course to view location, training options and contact details.</p>
-                    <table class="govuk-table">
-                        <tbody class="govuk-table__body">
-                        @foreach (var course in Model.ProviderCoursesDetails.Courses)
-                        {
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">
-                                    <a class="govuk-link govuk-link--no-visited-state"
-                                       asp-route="@RouteNames.CourseProviderDetails"
-                                       asp-all-route-data="@course.RouteData"
-                                       asp-route-location="@Model.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
-                                </td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+                    @await Html.PartialAsync("_coursesGroup", Model)
                 </div>
-            </details>
         </div>
         
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
 
         <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-            Training provider achievements and participation
+                Achievements and participation rates
         </h3>
+
+        <div class="govuk-inset-text govuk-!-margin-bottom-6">
+            <p>This is historical data and might include training this provider no longer offers.</p>
+
+            <p>Achievement and participation rate data does not include apprenticeship units.</p>
+        </div>
+
         @* Achievements Container *@
         <div class="das-reviews">
             <div class="govuk-grid-column-one-half das-reviews-container">
@@ -94,8 +76,15 @@
         <div class="govuk-inset-text">Data for all courses delivered by this provider, collected by the Department for Education.</div>
         <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
         <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-            Employer and apprentice reviews for this training provider
+                Reviews from employers and apprentices
         </h3>
+
+        <div class="govuk-inset-text govuk-!-margin-bottom-6">
+            <p>This is the training provider's average review based on all the apprenticeship courses they delivered during the last full academic year (@Model.Reviews.StartYear to @Model.Reviews.EndYear).</p>
+
+            <p>It does not include reviews for apprenticeship units.</p>
+        </div>
+
         <div class="das-reviews">
             @* Employers Container *@
             <div class="govuk-grid-column-one-half das-reviews-container">
@@ -158,7 +147,7 @@
         </div>
         
         <div class="govuk-inset-text govuk-!-margin-top-3">
-                Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.StartYear to @Model.Reviews.EndYear). Data collected by Department for Education.
+                Apprenticeships and foundation apprenticeships data collected by the Department for Education.
         </div>
         </div>
     </div>
