@@ -101,6 +101,34 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
+    public void GetCourseGroups_CoursesNull_ReturnsEmptyList()
+    {
+        var sut = new ProviderCoursesModel
+        {
+            Courses = null
+        };
+
+        var groups = sut.GetCourseGroups();
+
+        groups.Should().NotBeNull();
+        groups.Should().BeEmpty();
+    }
+
+    [Test]
+    public void GetCourseGroups_EmptyCourses_ReturnsEmptyList()
+    {
+        var sut = new ProviderCoursesModel
+        {
+            Courses = new List<ProviderCourseDetails>()
+        };
+
+        var groups = sut.GetCourseGroups();
+
+        groups.Should().NotBeNull();
+        groups.Should().BeEmpty();
+    }
+
+    [Test]
     public void ImplicitOperator_SourceNull_ReturnsModelWithNullCourses()
     {
         List<GetProviderCourseDetails> source = null;
