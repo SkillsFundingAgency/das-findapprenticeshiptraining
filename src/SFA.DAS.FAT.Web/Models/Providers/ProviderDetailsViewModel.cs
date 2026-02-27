@@ -27,7 +27,6 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
     public bool EmployerReviewed => Reviews.EmployerRating != ProviderRating.NotYetReviewed.ToString();
     public bool ApprenticeReviewed => Reviews.ApprenticeRating != ProviderRating.NotYetReviewed.ToString();
 
-
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
     public static implicit operator ProviderDetailsViewModel(GetProviderQueryResponse source)

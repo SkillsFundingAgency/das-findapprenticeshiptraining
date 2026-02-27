@@ -8,7 +8,6 @@ public class ProviderCourseDetails
     public string CourseName { get; init; }
     public ApprenticeshipType ApprenticeshipType { get; init; }
     public int Level { get; init; }
-
     public string LarsCode { get; init; }
 
     public static implicit operator ProviderCourseDetails(GetProviderCourseDetails source)
