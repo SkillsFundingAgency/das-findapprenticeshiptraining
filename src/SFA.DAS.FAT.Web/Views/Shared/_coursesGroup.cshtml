@@ -1,6 +1,7 @@
 @using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @using SFA.DAS.FAT.Web.Models.Providers
-@model SFA.DAS.FAT.Web.Models.Providers.ProviderDetailsViewModel
+@model SFA.DAS.FAT.Web.Models.ICourseGroupModel
 @{
     var courseGroups = Model.ProviderCoursesDetails?.GetCourseGroups() ?? new List<ProviderCourseGroup>();
 }

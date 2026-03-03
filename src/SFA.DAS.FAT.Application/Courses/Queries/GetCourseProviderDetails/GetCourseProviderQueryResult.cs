@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 
 public class GetCourseProviderQueryResult
 {
-    public long Ukprn { get; set; }
+    public int Ukprn { get; set; }
     public string ProviderName { get; set; }
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }

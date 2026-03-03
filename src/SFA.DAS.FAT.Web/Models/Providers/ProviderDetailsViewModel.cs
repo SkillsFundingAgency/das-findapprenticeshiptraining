@@ -7,7 +7,7 @@ using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.Models.Providers;
 
-public class ProviderDetailsViewModel : PageLinksViewModelBase
+public class ProviderDetailsViewModel : PageLinksViewModelBase, ICourseGroupModel
 {
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }

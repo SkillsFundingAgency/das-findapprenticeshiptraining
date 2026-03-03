@@ -6,7 +6,7 @@ namespace SFA.DAS.FAT.Domain.Courses;
 
 public sealed class CourseProviderDetailsModel
 {
-    public long Ukprn { get; set; }
+    public int Ukprn { get; set; }
     public string ProviderName { get; set; }
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }

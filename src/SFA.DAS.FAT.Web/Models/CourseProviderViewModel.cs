@@ -11,10 +11,10 @@ using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class CourseProviderViewModel : PageLinksViewModelBase
+public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 {
     public int ShortlistCount { get; set; }
-    public long Ukprn { get; set; }
+    public int Ukprn { get; set; }
     public string ProviderName { get; set; }
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
@@ -81,9 +81,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase
             TotalProvidersCount = source.TotalProvidersCount,
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
-            Courses = orderedCourses
+            Courses = orderedCourses,
+            ProviderCoursesDetails = (ProviderCoursesModel)(source.Courses?.ToList() ?? new List<ProviderCourseModel>())
         };
     }
+    public ProviderCoursesModel ProviderCoursesDetails { get; set; }
 
     private string GetShortlistClass()
     {
@@ -169,11 +171,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return "Training is provided at apprentice's workplaces across England.";
+            return "Training is provided at learner's workplaces across England.";
         }
         else
         {
-            return "Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
+            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
         }
     }
 
