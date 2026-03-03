@@ -98,7 +98,7 @@ public class CourseViewModel : PageLinksViewModelBase
         return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the apprentice can travel.";
+    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
 
     public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
 

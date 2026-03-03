@@ -19,6 +19,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
@@ -30,7 +32,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
+    public bool ShowOnlineOption => Locations.Any(a => a.LocationType == LocationType.Online);
     public bool ShowApprenticesWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
+    public bool ShowProviderOption => Locations.Any(a => a.LocationType == LocationType.Provider);
     public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease);
     public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease);
     public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();
@@ -71,6 +75,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             ProviderAddress = source.ProviderAddress,
             Contact = source.Contact,
             CourseName = source.CourseName,
+            CourseType = source.CourseType,
+            ApprenticeshipType = source.ApprenticeshipType,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

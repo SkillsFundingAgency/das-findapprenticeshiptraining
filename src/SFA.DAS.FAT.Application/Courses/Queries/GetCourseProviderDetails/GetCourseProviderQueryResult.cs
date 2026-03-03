@@ -12,6 +12,8 @@ public class GetCourseProviderQueryResult
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -39,6 +41,8 @@ public class GetCourseProviderQueryResult
             ProviderAddress = source.ProviderAddress,
             Contact = source.Contact,
             CourseName = source.CourseName,
+            CourseType = source.CourseType,
+            ApprenticeshipType = source.ApprenticeshipType,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

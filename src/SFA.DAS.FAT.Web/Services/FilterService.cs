@@ -43,8 +43,8 @@ public static class FilterService
     public const string LOCATION_SECTION_HEADING = "Learner's work location";
     public const string LOCATION_SECTION_SUB_HEADING = "Enter city or postcode";
 
-    public const string DISTANCE_SECTION_HEADING = "Apprentice can travel";
-    public const string DISTANCE_SECTION_SUB_HEADING = "Distance apprentice can travel";
+    public const string DISTANCE_SECTION_HEADING = "Learner can travel";
+    public const string DISTANCE_SECTION_SUB_HEADING = "Distance learner can travel";
 
     public const string LEVELS_SECTION_HEADING = "Apprenticeship level";
     public const string CATEGORIES_SECTION_HEADING = "Job categories";
