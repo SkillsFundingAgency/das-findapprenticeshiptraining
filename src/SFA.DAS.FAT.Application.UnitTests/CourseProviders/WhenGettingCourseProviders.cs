@@ -32,7 +32,7 @@ public class WhenGettingCourseProviders
         mockAcademicYearsService.Setup(a => a.GetAcademicYearsLatestAsync(cancellationToken))
             .ReturnsAsync(academicYearsLatestResponse);
 
-        var expectedResult = new GetCourseProvidersResult
+        var expectedResult = new CourseProvidersDetails
         {
             LarsCode = courseProvidersDetails.LarsCode,
             Page = courseProvidersDetails.Page,

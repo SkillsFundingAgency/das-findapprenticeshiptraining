@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -15,12 +16,27 @@ public class CoursesProviderViewModel
     public Guid? ShortlistId { get; set; }
     public List<ProviderLocation> Locations { get; set; }
 
+    public bool IsOnlineAvailable
+    {
+        get; init;
+    }
+
     public bool IsEmployerLocationAvailable
     {
         get; init;
     }
 
     public decimal? NearestEmployerLocation
+    {
+        get; init;
+    }
+
+    public bool IsProviderAvailable
+    {
+        get; init;
+    }
+
+    public decimal? NearestProviderPlace
     {
         get; init;
     }
@@ -88,6 +104,26 @@ public class CoursesProviderViewModel
         }
     }
 
+    public TrainingOptionsShortCourseViewModel TrainingOptionsShortCourseViewModel
+    {
+        get
+        {
+            return new TrainingOptionsShortCourseViewModel
+            {
+                IsOnlineAvailable = IsOnlineAvailable,
+                IsEmployerLocationAvailable = IsEmployerLocationAvailable,
+                NearestEmployerLocation = NearestEmployerLocation,
+                IsProviderAvailable = IsProviderAvailable,
+                NearestProviderPlace = NearestProviderPlace,
+                OnlineDisplayDescription = FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                EmployerLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                ProviderLocationDisplayDescription = FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                Distance = Distance,
+                Location = Location
+            };
+        }
+    }
+
     public string AchievementRateMessage
     {
         get
@@ -124,14 +160,21 @@ public class CoursesProviderViewModel
             ApprenticeReviews = source.ApprenticeReviews,
             ApprenticeStars = source.ApprenticeStars,
             ApprenticeRating = source.ApprenticeRating,
-            IsEmployerLocationAvailable = source.Locations.Any(x => x.AtEmployer),
-            NearestEmployerLocation = source.Locations.FirstOrDefault(x => x.AtEmployer)?.CourseDistance,
+
+            IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
+
+            IsEmployerLocationAvailable = source.Locations.Any(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional),
+            NearestEmployerLocation = source.Locations.Where(x => x.LocationType == LocationType.National || x.LocationType == LocationType.Regional).MinBy(x => x.CourseDistance)?.CourseDistance,
+
+            IsProviderAvailable = source.Locations.Any(x => x.LocationType == LocationType.Provider),
+            NearestProviderPlace = source.Locations.Where(x => x.LocationType == LocationType.Provider).MinBy(x => x.CourseDistance)?.CourseDistance,
+
             IsBlockReleaseAvailable = source.Locations.Any(x => x.BlockRelease),
             IsDayReleaseAvailable = source.Locations.Any(l => l.DayRelease),
             IsBlockReleaseMultiple = source.Locations.Count(x => x.BlockRelease) > 1,
             IsDayReleaseMultiple = source.Locations.Count(x => x.DayRelease) > 1,
-            NearestBlockRelease = source.Locations.FirstOrDefault(x => x.BlockRelease)?.CourseDistance,
-            NearestDayRelease = source.Locations.FirstOrDefault(x => x.DayRelease)?.CourseDistance
+            NearestBlockRelease = source.Locations.Where(x => x.BlockRelease).MinBy(x => x.CourseDistance)?.CourseDistance,
+            NearestDayRelease = source.Locations.Where(x => x.DayRelease).MinBy(x => x.CourseDistance)?.CourseDistance
         };
     }
 }
