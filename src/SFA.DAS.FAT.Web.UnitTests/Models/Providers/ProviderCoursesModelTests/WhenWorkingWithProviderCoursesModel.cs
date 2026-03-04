@@ -62,9 +62,17 @@ public class WhenWorkingWithProviderCoursesModel
     [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship units")]
     [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeships")]
     [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeships")]
-    public void GetDisplayName_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
+    public void GetDisplayNamePlural_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
     {
         ProviderCoursesModel.GetDisplayNamePlural(type).Should().Be(expected);
+    }
+
+    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship unit")]
+    [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeship")]
+    [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeship")]
+    public void GetDisplayNameSingular_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
+    {
+        ProviderCoursesModel.GetDisplayNameSingular(type).Should().Be(expected);
     }
 
     [Test]
