@@ -64,7 +64,7 @@ public class WhenWorkingWithProviderCoursesModel
     [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeships")]
     public void GetDisplayName_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
     {
-        ProviderCoursesModel.GetDisplayName(type).Should().Be(expected);
+        ProviderCoursesModel.GetDisplayNamePlural(type).Should().Be(expected);
     }
 
     [Test]
@@ -94,10 +94,9 @@ public class WhenWorkingWithProviderCoursesModel
         groups[1].Count.Should().Be(1);
         groups[2].Count.Should().Be(1);
 
-        for (int i = 0; i < groups.Count; i++)
-        {
-            groups[i].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayName(groups[i].ApprenticeshipType));
-        }
+        groups[0].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
+        groups[1].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[1].ApprenticeshipType));
+        groups[2].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[2].ApprenticeshipType));
     }
 
     [Test]

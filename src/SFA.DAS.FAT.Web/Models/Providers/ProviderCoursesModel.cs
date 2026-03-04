@@ -27,13 +27,21 @@ public class ProviderCoursesModel
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
         new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
 
-    public static string GetDisplayName(ApprenticeshipType apprenticeshipType) =>
+    public static string GetDisplayNamePlural(ApprenticeshipType apprenticeshipType) =>
         apprenticeshipType switch
         {
             ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship units",
             ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeships",
             _ => "Apprenticeships"
         };
+
+    public static string GetDisplayNameSingular(ApprenticeshipType apprenticeshipType) =>
+       apprenticeshipType switch
+       {
+           ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship unit",
+           ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeship",
+           _ => "Apprenticeship"
+       };
 
     public IList<ProviderCourseGroup> GetCourseGroups()
     {
@@ -46,7 +54,7 @@ public class ProviderCoursesModel
             .Select(apprenticeshipType => new ProviderCourseGroup
             {
                 ApprenticeshipType = apprenticeshipType,
-                DisplayName = GetDisplayName(apprenticeshipType),
+                DisplayName = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType) > 1 ? GetDisplayNamePlural(apprenticeshipType) : GetDisplayNameSingular(apprenticeshipType),
                 Courses = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
                 Count = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
             })
