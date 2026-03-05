@@ -9,8 +9,6 @@ namespace SFA.DAS.FAT.Web.Models.Providers;
 
 public class ProviderDetailsViewModel : PageLinksViewModelBase
 {
-
-
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
 

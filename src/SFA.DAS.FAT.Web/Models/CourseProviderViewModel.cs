@@ -20,7 +20,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public int Level { get; set; }
-    public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
     public ReviewsModel Reviews { get; set; }
@@ -169,11 +168,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return "Training is provided at apprentice's workplaces across England.";
+            return "Training is provided at learner's workplaces across England.";
         }
         else
         {
-            return "Training is provided at apprentice's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
+            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
         }
     }
 

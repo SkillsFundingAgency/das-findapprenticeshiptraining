@@ -26,19 +26,19 @@ public class WhenCreatingCoursesProviderViewModel
     }
 
     [Test]
-    [MoqInlineAutoData(true, true, true)]
-    [MoqInlineAutoData(false, true, true)]
-    [MoqInlineAutoData(true, false, true)]
-    [MoqInlineAutoData(true, true, false)]
-    [MoqInlineAutoData(true, false, false)]
-    [MoqInlineAutoData(false, true, false)]
-    [MoqInlineAutoData(false, false, true)]
-    [MoqInlineAutoData(false, false, false)]
-    public void Then_Set_EmployerLocationAvailable_If_There_Is_One_Location_At_Employer(bool isEmployerAvailable, bool isBlockReleaseAvailable, bool isDayReleaseAvailable)
+    [MoqInlineAutoData(LocationType.National, true, true)]
+    [MoqInlineAutoData(LocationType.Regional, true, true)]
+    [MoqInlineAutoData(LocationType.Provider, true, true)]
+    [MoqInlineAutoData(LocationType.Online, true, true)]
+    [MoqInlineAutoData(LocationType.National, false, false)]
+    [MoqInlineAutoData(LocationType.Regional, false, false)]
+    [MoqInlineAutoData(LocationType.Provider, false, false)]
+    [MoqInlineAutoData(LocationType.Online, false, false)]
+    public void Then_Set_EmployerLocationAvailable_If_There_Is_One_Location_At_Employer(LocationType employerLocationType, bool isBlockReleaseAvailable, bool isDayReleaseAvailable)
     {
         var locations = new List<ProviderLocation>
         {
-            new() {AtEmployer = isEmployerAvailable},
+            new() {LocationType = employerLocationType},
             new() {BlockRelease = isBlockReleaseAvailable},
             new() {DayRelease = isDayReleaseAvailable}
         };
@@ -47,6 +47,7 @@ public class WhenCreatingCoursesProviderViewModel
 
         var sut = (CoursesProviderViewModel)providerData;
 
+        var isEmployerAvailable = employerLocationType == LocationType.National || employerLocationType == LocationType.Regional;
         sut.IsEmployerLocationAvailable.Should().Be(isEmployerAvailable);
         sut.IsBlockReleaseAvailable.Should().Be(isBlockReleaseAvailable);
         sut.IsDayReleaseAvailable.Should().Be(isDayReleaseAvailable);
@@ -74,23 +75,23 @@ public class WhenCreatingCoursesProviderViewModel
         sut.AchievementRateMessage.Should().Be(expectedMessage);
     }
 
-    [TestCase(null, null, true, null)]
-    [TestCase(1.5, null, false, null)]
-    [TestCase(1.5, null, true, 1.5)]
-    [TestCase(1.5, 2.5, true, 1.5)]
-    [TestCase(2.5, 1.5, true, 2.5)]
-    public void Then_NearestEmployerLocation_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool atEmployer, decimal? expectedValue)
+    [TestCase(null, null, LocationType.National, null)]
+    [TestCase(1.5, null, LocationType.Provider, null)]
+    [TestCase(1.5, null, LocationType.National, 1.5)]
+    [TestCase(1.5, 2.5, LocationType.National, 1.5)]
+    [TestCase(2.5, 1.5, LocationType.Regional, 1.5)]
+    public void Then_NearestEmployerLocation_Is_set(decimal? courseDistance, decimal? secondCourseDistance, LocationType locationType, decimal? expectedValue)
     {
         var locations = new List<ProviderLocation>();
 
         if (courseDistance != null)
         {
-            locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, AtEmployer = atEmployer });
+            locations.Add(new ProviderLocation { CourseDistance = (decimal)courseDistance, LocationType = locationType });
         }
 
         if (secondCourseDistance != null)
         {
-            locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, AtEmployer = atEmployer });
+            locations.Add(new ProviderLocation { CourseDistance = (decimal)secondCourseDistance, LocationType = locationType });
         }
 
         var providerData = new ProviderData { Locations = locations };
@@ -104,7 +105,7 @@ public class WhenCreatingCoursesProviderViewModel
     [TestCase(1.5, null, false, null)]
     [TestCase(1.5, null, true, 1.5)]
     [TestCase(1.5, 2.5, true, 1.5)]
-    [TestCase(2.5, 1.5, true, 2.5)]
+    [TestCase(2.5, 1.5, true, 1.5)]
     public void Then_NearestBlockRelease_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool blockRelease, decimal? expectedValue)
     {
         var locations = new List<ProviderLocation>();
@@ -130,7 +131,7 @@ public class WhenCreatingCoursesProviderViewModel
     [TestCase(1.5, null, false, null)]
     [TestCase(1.5, null, true, 1.5)]
     [TestCase(1.5, 2.5, true, 1.5)]
-    [TestCase(2.5, 1.5, true, 2.5)]
+    [TestCase(2.5, 1.5, true, 1.5)]
     public void Then_NearestDayRelease_Is_set(decimal? courseDistance, decimal? secondCourseDistance, bool dayRelease, decimal? expectedValue)
     {
         var locations = new List<ProviderLocation>();

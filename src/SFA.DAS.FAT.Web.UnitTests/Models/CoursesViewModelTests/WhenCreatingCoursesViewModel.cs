@@ -162,7 +162,7 @@ public class WhenCreatingCoursesViewModel
             Total = 10
         };
 
-        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the apprentice's work location."));
+        Assert.That(_sut.CoursesSubHeader, Is.EqualTo("Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location."));
     }
 
     [Test]
@@ -190,26 +190,17 @@ public class WhenCreatingCoursesViewModel
         Assert.That(_sut.CoursesSubHeader, Is.EqualTo(string.Empty));
     }
 
-    [Test]
-    public void SortedDisplayMessage_WithKeyword_IsBestMatchToCourse()
+    [TestCase("Construction", "Best match to course")]
+    [TestCase("", "Name of course")]
+    [TestCase(null, "Name of course")]
+    public void SortedDisplayMessage_WithKeyword_ReturnsCorrectMessage(string keyword, string expectedMessage)
     {
         var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            Keyword = "Construction"
+            Keyword = keyword
         };
 
-        Assert.That(_sut.SortedDisplayMessage, Is.EqualTo("Best match to course"));
-    }
-
-    [Test]
-    public void SortedDisplayMessage_WithOrderByTitle_IsNameOfCourse()
-    {
-        var _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
-        {
-            Keyword = string.Empty
-        };
-
-        Assert.That(_sut.SortedDisplayMessage, Is.EqualTo("Name of course"));
+        Assert.That(_sut.SortedDisplayMessage, Is.EqualTo(expectedMessage));
     }
 
     [Test]
