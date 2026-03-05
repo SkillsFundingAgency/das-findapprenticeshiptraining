@@ -16,5 +16,5 @@ public class CourseProvidersDetails
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
 
-    public List<ProviderData> Providers { get; set; }
+    public List<ProviderData> Providers { get; set; } = new List<ProviderData>();
 }
