@@ -96,7 +96,7 @@ public class CourseProvidersController : Controller
             Location = request.Location,
             OrderBy = orderBy,
             Distance = convertedDistance,
-            DeliveryModes = deliveryModes,
+            DeliveryModes = deliveryModes.Count == 3 ? [] : deliveryModes,
             EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatings = request.ApprenticeProviderRatings.ToList(),
             Qar = request.QarRatings.ToList(),
@@ -133,7 +133,7 @@ public class CourseProvidersController : Controller
             Providers = []
         };
 
-        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
+        var providers = result.Providers?.Select(p => (CoursesProviderViewModel)p).ToList();
         foreach (var provider in providers)
         {
             provider.Distance = request.Distance;
