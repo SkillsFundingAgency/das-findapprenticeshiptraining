@@ -102,6 +102,10 @@ public class WhenWorkingWithProviderCoursesModel
         groups[1].Count.Should().Be(1);
         groups[2].Count.Should().Be(1);
 
+        groups[0].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
+        groups[1].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[1].ApprenticeshipType));
+        groups[2].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[2].ApprenticeshipType));
+
         groups[0].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
         groups[1].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[1].ApprenticeshipType));
         groups[2].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[2].ApprenticeshipType));

@@ -54,6 +54,7 @@ public class ProviderCoursesModel
             .Select(apprenticeshipType => new ProviderCourseGroup
             {
                 ApprenticeshipType = apprenticeshipType,
+                DisplayNameHeader = GetDisplayNamePlural(apprenticeshipType),
                 DisplayName = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType) > 1 ? GetDisplayNamePlural(apprenticeshipType) : GetDisplayNameSingular(apprenticeshipType),
                 Courses = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
                 Count = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
