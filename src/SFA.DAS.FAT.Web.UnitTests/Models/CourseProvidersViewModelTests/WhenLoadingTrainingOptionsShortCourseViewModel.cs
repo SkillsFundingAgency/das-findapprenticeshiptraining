@@ -4,7 +4,8 @@ using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
-public class WhenLoadingTrainingOptionsViewModel
+
+public class WhenLoadingTrainingOptionsShortCourseViewModel
 {
     [TestCase("", "", "", false)]
     [TestCase("10", "", "", false)]
@@ -13,13 +14,11 @@ public class WhenLoadingTrainingOptionsViewModel
     [TestCase(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Coventry", "", true)]
     public void Constructor_WithVariousDistanceAndLocationValues_SetsDistanceDetailsAndShowDistanceDetailsCorrectly(string distance, string location, string expectedDistanceDetails, bool showDistanceDetails)
     {
-        var sut = new TrainingOptionsViewModel
+        var sut = new TrainingOptionsShortCourseViewModel
         {
+            IsOnlineAvailable = true,
             IsEmployerLocationAvailable = true,
-            IsBlockReleaseAvailable = true,
-            IsBlockReleaseMultiple = false,
-            IsDayReleaseAvailable = true,
-            IsDayReleaseMultiple = true,
+            IsProviderAvailable = true,
             Distance = distance,
             Location = location
         };

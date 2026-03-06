@@ -6,11 +6,13 @@ namespace SFA.DAS.FAT.Domain.Courses;
 
 public sealed class CourseProviderDetailsModel
 {
-    public long Ukprn { get; set; }
+    public int Ukprn { get; set; }
     public string ProviderName { get; set; }
     public ShortProviderAddressModel ProviderAddress { get; set; }
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }
