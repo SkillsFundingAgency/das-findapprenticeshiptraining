@@ -77,7 +77,7 @@ public class ProviderCoursesModel
     {
         var model = new ProviderCoursesModel
         {
-            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
+            Courses = source?.Select(c => c).ToList()
         };
 
         return model;
