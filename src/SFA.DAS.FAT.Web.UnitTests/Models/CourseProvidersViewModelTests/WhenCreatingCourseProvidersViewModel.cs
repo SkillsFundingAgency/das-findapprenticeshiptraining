@@ -365,10 +365,15 @@ public class WhenCreatingCourseProvidersViewModel
         sut.CourseTitleAndLevel.Should().Be(title);
     }
 
-    [TestCase(CourseType.ShortCourse, ProviderOrderBy.Distance, false)]
-    [TestCase(CourseType.ShortCourse, ProviderOrderBy.AchievementRate, true)]
-    [TestCase(CourseType.Apprenticeship, ProviderOrderBy.AchievementRate, false)]
-    [TestCase(CourseType.Apprenticeship, ProviderOrderBy.Distance, true)]
+    private static IEnumerable<TestCaseData> CourseTypeOrderByCases()
+    {
+        yield return new TestCaseData(CourseType.ShortCourse, ProviderOrderBy.Distance, false);
+        yield return new TestCaseData(CourseType.ShortCourse, ProviderOrderBy.AchievementRate, true);
+        yield return new TestCaseData(CourseType.Apprenticeship, ProviderOrderBy.AchievementRate, false);
+        yield return new TestCaseData(CourseType.Apprenticeship, ProviderOrderBy.Distance, true);
+    }
+
+    [TestCaseSource(nameof(CourseTypeOrderByCases))]
     public void ToQueryString_WithCourseTypeAndOrderBy_IncludesOrderByWhenNotDefault(CourseType courseType, ProviderOrderBy orderBy, bool shouldIncludeOrderBy)
     {
         var sut = new CourseProvidersViewModel(_config)
@@ -391,8 +396,13 @@ public class WhenCreatingCourseProvidersViewModel
         }
     }
 
-    [TestCase(CourseType.Apprenticeship, ProviderOrderBy.EmployerProviderRating)]
-    [TestCase(CourseType.ShortCourse, ProviderOrderBy.AchievementRate)]
+    private static IEnumerable<TestCaseData> MultipleFiltersCases()
+    {
+        yield return new TestCaseData(CourseType.Apprenticeship, ProviderOrderBy.EmployerProviderRating);
+        yield return new TestCaseData(CourseType.ShortCourse, ProviderOrderBy.AchievementRate);
+    }
+
+    [TestCaseSource(nameof(MultipleFiltersCases))]
     public void ToQueryString_WithMultipleFiltersAndNonDefaultOrderBy_IncludesSelectedFilters(CourseType courseType, ProviderOrderBy providerOrderBy)
     {
         var sut = new CourseProvidersViewModel(_config);

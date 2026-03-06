@@ -1,21 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Web.Models.Providers;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
-namespace SFA.DAS.FAT.Web.Models;
+namespace SFA.DAS.FAT.Web.Models.Providers;
 
-public static class ProviderCoursesHelper
+public class ProviderCoursesModel
 {
-    public static string CoursesDropdownText(IEnumerable<ProviderCourseDetails> courses)
-    {
-        if (courses == null)
-            return string.Empty;
+    public List<ProviderCourseDetails> Courses { get; set; } = new();
 
-        var count = courses.Count();
-        return count == 1
-            ? "View 1 course delivered by this training provider"
-            : $"View {count} courses delivered by this training provider";
+    public int CourseCount => Courses?.Count ?? 0;
+
+    public string CoursesDropdownText
+    {
+        get
+        {
+            if (Courses == null)
+                return string.Empty;
+
+            return CourseCount == 1
+                ? "View 1 course delivered by this training provider"
+                : $"View {CourseCount} courses delivered by this training provider";
+        }
     }
 
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
@@ -39,7 +45,7 @@ public static class ProviderCoursesHelper
 
     public IList<ProviderCourseGroup> GetCourseGroups()
     {
-        if (courses == null || !courses.Any())
+        if (Courses == null || Courses.Count == 0)
         {
             return new List<ProviderCourseGroup>();
         }
@@ -55,5 +61,25 @@ public static class ProviderCoursesHelper
             })
             .Where(g => g.Count > 0)
             .ToList();
+    }
+
+    public static implicit operator ProviderCoursesModel(List<GetProviderCourseDetails> source)
+    {
+        var model = new ProviderCoursesModel
+        {
+            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
+        };
+
+        return model;
+    }
+
+    public static implicit operator ProviderCoursesModel(List<ProviderCourseDetails> source)
+    {
+        var model = new ProviderCoursesModel
+        {
+            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
+        };
+
+        return model;
     }
 }

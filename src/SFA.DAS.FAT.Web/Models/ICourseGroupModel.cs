@@ -1,4 +1,7 @@
-﻿namespace SFA.DAS.FAT.Web.Models;
+﻿
+using SFA.DAS.FAT.Web.Models.Providers;
+
+namespace SFA.DAS.FAT.Web.Models;
 
 public interface ICourseGroupModel
 {

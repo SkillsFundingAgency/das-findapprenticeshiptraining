@@ -2,7 +2,6 @@
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
-using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Providers;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.Providers.ProviderCoursesModelTests;
@@ -95,9 +94,9 @@ public class WhenWorkingWithProviderCoursesModel
         var groups = sut.GetCourseGroups();
 
         groups.Count.Should().Be(3);
-        groups[0].ApprenticeshipType.Should().Be(ProviderCoursesHelper.ApprenticeshipTypeOrder[0]);
-        groups[1].ApprenticeshipType.Should().Be(ProviderCoursesHelper.ApprenticeshipTypeOrder[1]);
-        groups[2].ApprenticeshipType.Should().Be(ProviderCoursesHelper.ApprenticeshipTypeOrder[2]);
+        groups[0].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[0]);
+        groups[1].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[1]);
+        groups[2].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[2]);
 
         groups[0].Count.Should().Be(2);
         groups[1].Count.Should().Be(1);

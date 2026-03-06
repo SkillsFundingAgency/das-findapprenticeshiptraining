@@ -8,6 +8,9 @@ using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
+using SFA.DAS.FAT.Web.Models.Providers;
+using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
+using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -90,7 +93,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
             Courses = orderedCourses,
-            ProviderCoursesDetails = (ProviderCoursesModel)(source.Courses?.ToList() ?? new List<ProviderCourseModel>())
+            ProviderCoursesDetails = orderedCourses.Select(c => (ProviderCourseDetails)c).ToList()
         };
     }
     public ProviderCoursesModel ProviderCoursesDetails { get; set; }
