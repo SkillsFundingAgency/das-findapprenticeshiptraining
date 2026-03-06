@@ -21,7 +21,7 @@ public static class ProviderCoursesHelper
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
         new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
 
-    public static string GetDisplayName(ApprenticeshipType apprenticeshipType) =>
+    public static string GetDisplayNamePlural(ApprenticeshipType apprenticeshipType) =>
         apprenticeshipType switch
         {
             ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship units",
@@ -29,7 +29,15 @@ public static class ProviderCoursesHelper
             _ => "Apprenticeships"
         };
 
-    public static IList<ProviderCourseGroup> GetCourseGroups(IEnumerable<ProviderCourseDetails> courses)
+    public static string GetDisplayNameSingular(ApprenticeshipType apprenticeshipType) =>
+       apprenticeshipType switch
+       {
+           ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship unit",
+           ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeship",
+           _ => "Apprenticeship"
+       };
+
+    public IList<ProviderCourseGroup> GetCourseGroups()
     {
         if (courses == null || !courses.Any())
         {
@@ -40,9 +48,10 @@ public static class ProviderCoursesHelper
             .Select(apprenticeshipType => new ProviderCourseGroup
             {
                 ApprenticeshipType = apprenticeshipType,
-                DisplayName = GetDisplayName(apprenticeshipType),
-                Courses = courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
-                Count = courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
+                DisplayNameHeader = GetDisplayNamePlural(apprenticeshipType),
+                DisplayName = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType) > 1 ? GetDisplayNamePlural(apprenticeshipType) : GetDisplayNameSingular(apprenticeshipType),
+                Courses = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
+                Count = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
             })
             .Where(g => g.Count > 0)
             .ToList();
