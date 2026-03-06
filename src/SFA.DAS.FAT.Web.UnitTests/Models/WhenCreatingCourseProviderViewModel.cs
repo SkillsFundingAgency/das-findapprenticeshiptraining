@@ -807,4 +807,82 @@ public class WhenCreatingCourseProviderViewModel
         };
         Assert.That(sut.HasMatchingRegionalLocation, Is.True);
     }
+
+    [TestCase(CourseType.ShortCourse, true, false)]
+    [TestCase(CourseType.Apprenticeship, false, true)]
+    public void IsShortCourseAndIsApprenticeship_AreDerivedFromCourseType(CourseType courseType, bool isShortCourse, bool isApprenticeship)
+    {
+        var sut = new CourseProviderViewModel { CourseType = courseType };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.IsShortCourse, Is.EqualTo(isShortCourse));
+            Assert.That(sut.IsApprenticeship, Is.EqualTo(isApprenticeship));
+        });
+    }
+
+    [TestCase(CourseType.ShortCourse, true)]
+    [TestCase(CourseType.Apprenticeship, false)]
+    public void ShowOnlineOption_WhenCourseTypeAndOnlineLocation_ReturnsExpected(CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.ShowOnlineOption, Is.EqualTo(expected));
+    }
+
+    [TestCase(CourseType.ShortCourse, true)]
+    [TestCase(CourseType.Apprenticeship, false)]
+    public void ShowProviderOption_WhenCourseTypeAndProviderLocation_ReturnsExpected(CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider }
+            }
+        };
+
+        Assert.That(sut.ShowProviderOption, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void ClosestProviderLocation_ReturnsLocationWithSmallestCourseDistance()
+    {
+        var closest = new LocationModel { LocationType = LocationType.Provider, CourseDistance = 1.2 };
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+                {
+                    new LocationModel { LocationType = LocationType.Provider, CourseDistance = 5.0 },
+                    closest,
+                    new LocationModel { LocationType = LocationType.Provider, CourseDistance = 3.5 }
+                }
+        };
+
+        Assert.That(sut.ClosestProviderLocation, Is.EqualTo(closest));
+    }
+
+    [Test]
+    public void ClosestProviderLocation_WhenNoneAreProvider_ReturnsNull()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+                {
+                    new LocationModel { LocationType = LocationType.Online, CourseDistance = 1.0 },
+                    new LocationModel { LocationType = LocationType.National, CourseDistance = 2.0 }
+                }
+        };
+
+        Assert.That(sut.ClosestProviderLocation, Is.Null);
+    }
 }
+
