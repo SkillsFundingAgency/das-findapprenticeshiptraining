@@ -32,16 +32,19 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
-    public bool ShowOnlineOption => Locations.Any(a => a.LocationType == LocationType.Online);
+    public bool IsShortCourse => CourseType == CourseType.ShortCourse;
+    public bool IsApprenticeship => CourseType == CourseType.Apprenticeship;
+    public bool ShowOnlineOption => Locations.Any(a => a.LocationType == LocationType.Online) && IsShortCourse;
     public bool ShowApprenticesWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
-    public bool ShowProviderOption => Locations.Any(a => a.LocationType == LocationType.Provider);
-    public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease);
-    public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease);
+    public bool ShowProviderOption => Locations.Any(a => a.LocationType == LocationType.Provider) && IsShortCourse;
+    public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease) && IsApprenticeship;
+    public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease) && IsApprenticeship;
     public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();
     public List<LocationModel> DayReleaseLocations => GetDayReleaseLocations();
     public string AtApprenticesWorkplaceWithNoLocationDisplayMessage => GetAtApprenticeWorkplaceWithNoLocationDisplayMessage();
     public bool HasMultipleBlockReleaseLocations => BlockReleaseLocations.Count(a => a.BlockRelease) > 1;
     public bool HasMultipleDayReleaseLocations => DayReleaseLocations.Count(a => a.DayRelease) > 1;
+    public LocationModel ClosestProviderLocation => GetClosestProviderLocation();
     public LocationModel ClosestBlockReleaseLocation => GetClosestBlockReleaseLocation();
     public LocationModel ClosestDayReleaseLocation => GetClosestDayReleaseLocation();
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
@@ -136,6 +139,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         }
     }
 
+    private LocationModel GetClosestProviderLocation()
+    {
+        return Locations.Where(a => a.LocationType == LocationType.Provider).OrderBy(a => a.CourseDistance).FirstOrDefault();
+    }
     private LocationModel GetClosestBlockReleaseLocation()
     {
         return Locations.Where(a => a.BlockRelease).OrderBy(a => a.CourseDistance).FirstOrDefault();
@@ -176,7 +183,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return "Training is provided at learner's workplaces across England.";
+            return "The training provider can travel to you to deliver this course.";
         }
         else
         {
