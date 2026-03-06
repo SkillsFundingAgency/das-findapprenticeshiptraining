@@ -157,7 +157,7 @@
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">
                                 <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                                    At training provider’s location - check this
+                                    At training provider’s location
                                 </p>
                             </th>
                             <td class="govuk-table__cell">
@@ -170,7 +170,7 @@
                                 else
                                 {
                                     <p class="govuk-body govuk-!-margin-top-2">
-                                        Training provider’s closest location is @Model.ClosestProviderLocation.CourseDistance.ToString("0.0") miles away: @Model.ClosestProviderLocation.FormatAddress()
+                                        Training provider’s closest location is <strong>@Model.ClosestProviderLocation.CourseDistance.ToString("0.0") miles away:</strong> @Model.ClosestProviderLocation.FormatAddress()
                                     </p>
                                 }
                             </td>
