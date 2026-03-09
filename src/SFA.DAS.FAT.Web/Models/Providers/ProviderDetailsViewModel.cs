@@ -27,7 +27,6 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
     public bool EmployerReviewed => Reviews.EmployerRating != ProviderRating.NotYetReviewed.ToString();
     public bool ApprenticeReviewed => Reviews.ApprenticeRating != ProviderRating.NotYetReviewed.ToString();
 
-
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
     public static implicit operator ProviderDetailsViewModel(GetProviderQueryResponse source)
@@ -39,7 +38,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             orderedCourses.AddRange(source.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level));
         }
 
-        var vm = new ProviderDetailsViewModel
+        var model = new ProviderDetailsViewModel
         {
             Ukprn = source.Ukprn,
             ProviderName = source.ProviderName,
@@ -53,22 +52,6 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             ShowShortListLink = true
         };
 
-        if (vm.ProviderCoursesDetails is { Courses: { } })
-        {
-            foreach (var course in vm.ProviderCoursesDetails.Courses)
-            {
-                var routeData = new Dictionary<string, string>
-                {
-                    { "larsCode", course.LarsCode.ToString() },
-                    { "providerId", vm.Ukprn.ToString() }
-                };
-
-                course.RouteData = routeData;
-            }
-        }
-
-        return vm;
+        return model;
     }
-
-
 }
