@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using Humanizer;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
@@ -28,6 +29,18 @@ public class WhenWorkingWithProviderCoursesModel
         };
 
         sut.CoursesDropdownText.Should().Be(string.Empty);
+    }
+
+    [Test]
+    public void CoursesDropdownText_EmptyCourses_ReturnsZeroPluralMessage()
+    {
+        var sut = new ProviderCoursesModel
+        {
+            Courses = new List<ProviderCourseDetails>()
+        };
+
+        sut.CourseCount.Should().Be(0);
+        sut.CoursesDropdownText.Should().Be("View 0 courses delivered by this training provider");
     }
 
     [Test]
@@ -86,13 +99,17 @@ public class WhenWorkingWithProviderCoursesModel
         groups[1].Count.Should().Be(1);
         groups[2].Count.Should().Be(1);
 
-        groups[0].DisplayNameHeader.Should().Be("Apprenticeship units");
-        groups[1].DisplayNameHeader.Should().Be("Foundation apprenticeships");
-        groups[2].DisplayNameHeader.Should().Be("Apprenticeships");
+        var baseUnit = "Apprenticeship unit";
+        var baseFoundation = "Foundation apprenticeship";
+        var baseApprenticeship = "Apprenticeship";
 
-        groups[0].DisplayName.Should().Be("Apprenticeship units");
-        groups[1].DisplayName.Should().Be("Foundation apprenticeship");
-        groups[2].DisplayName.Should().Be("Apprenticeship");
+        groups[0].DisplayNameHeader.Should().Be(baseUnit.Pluralize());
+        groups[1].DisplayNameHeader.Should().Be(baseFoundation.Pluralize());
+        groups[2].DisplayNameHeader.Should().Be(baseApprenticeship.Pluralize());
+
+        groups[0].DisplayName.Should().Be(baseUnit.Pluralize());
+        groups[1].DisplayName.Should().Be(baseFoundation);
+        groups[2].DisplayName.Should().Be(baseApprenticeship);
     }
 
     [Test]
@@ -124,6 +141,30 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
+    public void GetCourseGroups_SetsUkprnAndLocationOnGroups()
+    {
+        var courses = new List<ProviderCourseDetails>
+        {
+            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.ApprenticeshipUnit },
+            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship }
+        };
+
+        var sut = new ProviderCoursesModel
+        {
+            Courses = courses,
+            Ukprn = 123456,
+            Location = "TestLocation"
+        };
+
+        var groups = sut.GetCourseGroups();
+
+        groups.Should().NotBeNull();
+        groups.Should().HaveCount(2);
+        groups.All(g => g.Ukprn == 123456).Should().BeTrue();
+        groups.All(g => g.Location == "TestLocation").Should().BeTrue();
+    }
+
+    [Test]
     public void ImplicitOperator_SourceNull_ReturnsModelWithNullCourses()
     {
         List<GetProviderCourseDetails> source = null;
@@ -149,5 +190,34 @@ public class WhenWorkingWithProviderCoursesModel
         sut.Should().NotBeNull();
         sut.Courses.Should().NotBeNull();
         sut.Courses.Count.Should().Be(source.Count);
+    }
+
+    [Test]
+    public void ImplicitOperator_FromProviderCourseDetails_SourceNull_ReturnsModelWithNullCourses()
+    {
+        List<ProviderCourseDetails> source = null;
+
+        ProviderCoursesModel sut = source;
+
+        sut.Should().NotBeNull();
+        sut.Courses.Should().BeNull();
+        sut.CourseCount.Should().Be(0);
+    }
+
+    [Test]
+    public void ImplicitOperator_FromProviderCourseDetails_SourceWithItems_MapsToModelCourses()
+    {
+        var source = new List<ProviderCourseDetails>
+        {
+            new ProviderCourseDetails { CourseName = "X", LarsCode = "10", Level = 3 },
+            new ProviderCourseDetails { CourseName = "Y", LarsCode = "20", Level = 4 }
+        };
+
+        ProviderCoursesModel sut = source;
+
+        sut.Should().NotBeNull();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Count.Should().Be(source.Count);
+        sut.Courses.Select(c => c.CourseName).Should().BeEquivalentTo(source.Select(s => s.CourseName));
     }
 }
