@@ -38,7 +38,7 @@ public class ProviderCoursesModel
         [ApprenticeshipType.Apprenticeship] = "Apprenticeship"
     };
 
-    private static string GetBaseDisplayName(ApprenticeshipType apprenticeshipType) =>
+    private static string GetApprenticeshipTypeDisplayName(ApprenticeshipType apprenticeshipType) =>
         ApprenticeshipDisplayNames.TryGetValue(apprenticeshipType, out var displayName)
             ? displayName
             : "Apprenticeship";
@@ -59,8 +59,8 @@ public class ProviderCoursesModel
             .Where(tuple => tuple.coursesByType.Count > 0)
             .Select(tuple =>
             {
-                var baseDisplayName = GetBaseDisplayName(tuple.apprenticeshipType);
-                var pluralDisplayName = baseDisplayName.Pluralize();
+                var apprenticeshipTypeDisplayName = GetApprenticeshipTypeDisplayName(tuple.apprenticeshipType);
+                var pluralDisplayName = apprenticeshipTypeDisplayName.Pluralize();
 
                 return new CourseGroupViewModel
                 {
@@ -68,7 +68,7 @@ public class ProviderCoursesModel
                     Location = this.Location,
                     ApprenticeshipType = tuple.apprenticeshipType,
                     DisplayNameHeader = pluralDisplayName,
-                    DisplayName = tuple.coursesByType.Count > 1 ? pluralDisplayName : baseDisplayName,
+                    DisplayName = tuple.coursesByType.Count > 1 ? pluralDisplayName : apprenticeshipTypeDisplayName,
                     Courses = tuple.coursesByType,
                     Count = tuple.coursesByType.Count
                 };
