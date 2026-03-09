@@ -1,0 +1,31 @@
+@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
+@using SFA.DAS.FAT.Web.Models.Providers
+@model IEnumerable<SFA.DAS.FAT.Web.Models.Providers.CourseGroupViewModel>
+
+@foreach (var courseGroup in Model)
+{
+    <h4 class="govuk-heading-s">@courseGroup.DisplayNameHeader</h4>
+
+    <details class="govuk-details" data-module="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                View @courseGroup.Count @courseGroup.DisplayName.ToLower() delivered by this training provider
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+            <ul class="govuk-list">
+                @foreach (var course in courseGroup.Courses)
+                {
+                    <li>
+                        <a class="govuk-link govuk-link--no-visited-state"
+                           asp-route="@RouteNames.CourseProviderDetails"
+                           asp-route-larsCode="@course.LarsCode"
+                           asp-route-providerId="@courseGroup.Ukprn"
+                           asp-route-location="@courseGroup.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </details>
+}

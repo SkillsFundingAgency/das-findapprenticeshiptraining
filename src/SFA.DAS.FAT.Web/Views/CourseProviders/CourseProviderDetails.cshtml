@@ -12,7 +12,7 @@
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-        <partial name="_validationSummary" />
+            <partial name="_validationSummary" />
             <span class="govuk-caption-xl govuk-!-margin-bottom-2">Training provider</span>
 
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
@@ -58,11 +58,14 @@
                     This may change what options are available.
                 </p>
 
-                <p class="govuk-body">
-                    If there are multiple training options, the apprentice may do a combination of these.
+                <p class="govuk-body">You will need to contact the provider to confirm:</p>
 
-                    You'll need to contact the provider to confirm what training they offer.
-                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>what training they offer</li>
+                    <li>your chosen delivery method.</li>
+                </ul>
+
+                <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
             }
 
             @* Search courses by location *@
@@ -99,14 +102,29 @@
 
                 <tbody class="govuk-table__body">
 
+                    @if (Model.ShowOnlineOption)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                                    Online
+                                </p>
+                            </th>
+                            <td class="govuk-table__cell">
+                                <p class="govuk-body govuk-!-margin-top-2">
+                                    Your learner can complete this training remotely.
+                                </p>
+                            </td>
+                        </tr>
+                    }
+
                     @if (Model.ShowApprenticesWorkplaceOption)
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">
                                 <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                                    At apprentice's workplace
+                                    At learner's workplace
                                 </p>
-                                <p class="govuk-body-m das-hint-colour">Training at the employer's location.</p>
                             </th>
                             <td class="govuk-table__cell">
                                 @if (string.IsNullOrWhiteSpace(Model.Location))
@@ -117,19 +135,43 @@
                                 }
                                 else
                                 {
-
                                     @if (Model.HasMatchingRegionalLocation)
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>0.0 miles</strong> to apprentice's work location
+                                            The training provider can travel to you to deliver this course.
                                         </p>
                                     }
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            This provider has said they do not deliver training at apprentice's workplaces in your region.
+                                            This provider has said they do not deliver training at learner's workplaces in your region.The training provider can travel to you to deliver this course.
                                         </p>
                                     }
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.ShowProviderOption)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                                    At training provider’s location
+                                </p>
+                            </th>
+                            <td class="govuk-table__cell">
+                                @if (string.IsNullOrWhiteSpace(Model.Location))
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        Training is provided at learner’s workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner’s workplace in your location.
+                                    </p>
+                                }
+                                else
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        Training provider’s closest location is <strong>@Model.ClosestProviderLocation.CourseDistance.ToString("0.0") miles away:</strong> @Model.ClosestProviderLocation.FormatAddress()
+                                    </p>
                                 }
                             </td>
                         </tr>
@@ -279,191 +321,195 @@
 
             @* Training Options *@
 
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-                Course achievements and participation
-            </h3>
-
-            @* Achievements Container *@
-
-            <div class="das-reviews">
-                <div class="govuk-grid-column-one-half das-reviews-container">
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
-                        Achievements
-                    </h3>
-
-                    @if (Model.Qar.ConvertedAchievementRate is not null)
-                    {
-                        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                            @Model.Qar.AchievementRate%
-                        </h2>
-
-                        <p class="govuk-body-s">
-                            @Model.AchievementRateInformation
-                        </p>
-
-                        <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
-                            @Model.Qar.NationalAchievementRate% national achievement rate
-                        </p>
-
-                    }
-                    else
-                    {
-                        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                            No data
-                        </h2>
-
-                        <p class="govuk-body-s">
-                            There is not enough data to show the achievement rate for this course.
-                            This may be because a small number of apprentices completed this course,
-                            or this is a new course for this provider.
-                        </p>
-                    }
-                </div>
+            @if (Model.IsApprenticeship)
+            {
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+                    Course achievements and participation
+                </h3>
 
                 @* Achievements Container *@
 
-                @* Participation Container *@
+                <div class="das-reviews">
+                    <div class="govuk-grid-column-one-half das-reviews-container">
+                        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+                            Achievements
+                        </h3>
 
-                <div class="govuk-grid-column-one-half das-reviews-container">
+                        @if (Model.Qar.ConvertedAchievementRate is not null)
+                        {
+                            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                                @Model.Qar.AchievementRate%
+                            </h2>
 
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
-                        Participation
-                    </h3>
+                            <p class="govuk-body-s">
+                                @Model.AchievementRateInformation
+                            </p>
 
-                    <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                        @Model.EndpointAssessmentsCountDisplay
-                    </h2>
+                            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                                @Model.Qar.NationalAchievementRate% national achievement rate
+                            </p>
 
-                    <p class="govuk-body-s">
-                        @Model.EndpointAssessmentDisplayMessage
-                    </p>
-                </div>
+                        }
+                        else
+                        {
+                            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                                No data
+                            </h2>
 
-                @* Participation Container *@
+                            <p class="govuk-body-s">
+                                There is not enough data to show the achievement rate for this course.
+                                This may be because a small number of apprentices completed this course,
+                                or this is a new course for this provider.
+                            </p>
+                        }
+                    </div>
 
-            </div>
+                    @* Achievements Container *@
 
-            <div class="govuk-inset-text govuk-!-margin-top-3">
-                Course-level data collected by the Department for Education.
-            </div>
+                    @* Participation Container *@
 
-            <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+                    <div class="govuk-grid-column-one-half das-reviews-container">
 
-            <h2 class="govuk-heading-l govuk-!-margin-bottom-5">
+                        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+                            Participation
+                        </h3>
 
-                Training provider information
-
-            </h2>
-
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-
-                Employer and apprentice reviews for this training provider
-
-            </h3>
-
-            <div class="das-reviews">
-
-                @* Employers Container *@
-
-                <div class="govuk-grid-column-one-half das-reviews-container">
-
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                        Employers
-                    </h3>
-
-                    @if (Model.Reviews.EmployerRating != ProviderRating.NotYetReviewed)
-                    {
-                        <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                            <span class="das-rating-large das-rating--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedEmployerStars out of 4 stars">
-                                <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 2 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 3 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 4 ? "--empty" : "")"></span>
-                            </span>
-                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
-                        </p>
-
-                        <p class="govuk-body-s govuk-!-margin-bottom-2">
-                            @Model.EmployerReviewsDisplayMessage
-                        </p>
-                    }
-                    else
-                    {
-                        <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                            No reviews
-                        </h2>
-                        <p class="govuk-body-s">
-                            Not enough employers have reviewed this provider.
-                        </p>
-                    }
-
-                </div>
-
-                @* Employers Container *@
-
-                @* Apprentices Container *@
-
-                <div class="govuk-grid-column-one-half das-reviews-container">
-
-                    <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                        Apprentices
-                    </h3>
-
-                    @if (Model.Reviews.ApprenticeRating != ProviderRating.NotYetReviewed)
-                    {
-                        <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                            <span class="das-rating das-rating--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedApprenticeStars out of 4 stars">
-                                <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 2 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 3 ? "--empty" : "")"></span>
-                                <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 4 ? "--empty" : "")"></span>
-                            </span>
-                            <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
-                        </p>
-
-                        <p class="govuk-body-s govuk-!-margin-bottom-2">
-                            @Model.ApprenticeReviewsDisplayMessage
-                        </p>
-                    }
-                    else
-                    {
-                        <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                            No reviews
+                        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                            @Model.EndpointAssessmentsCountDisplay
                         </h2>
 
                         <p class="govuk-body-s">
-                            Not enough apprentices have reviewed this provider.
+                            @Model.EndpointAssessmentDisplayMessage
                         </p>
-                    }
+                    </div>
+
+                    @* Participation Container *@
+
                 </div>
 
-                @* Apprentices Container *@
-
-            </div>
-
-            <div class="govuk-inset-text govuk-!-margin-top-3">
-                Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.AcademicPeriod).
-                Data collected by Department for Education.
-            </div>
-        </div>
-    </div>
-
-    @*  View results of our survey with employers and apprentices for this provider *@
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full">
-            <details class="govuk-details govuk-!-margin-bottom-8">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        View reviews with feedback from the last 5 years
-                    </span>
-                </summary>
-                <div class="govuk-details__text">
-                    @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
+                <div class="govuk-inset-text govuk-!-margin-top-3">
+                    Course-level data collected by the Department for Education.
                 </div>
-            </details>
+
+                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
+
+                <h2 class="govuk-heading-l govuk-!-margin-bottom-5">
+
+                    Training provider information
+
+                </h2>
+
+                <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+
+                    Employer and apprentice reviews for this training provider
+
+                </h3>
+
+                <div class="das-reviews">
+
+                    @* Employers Container *@
+
+                    <div class="govuk-grid-column-one-half das-reviews-container">
+
+                        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+                            Employers
+                        </h3>
+
+                        @if (Model.Reviews.EmployerRating != ProviderRating.NotYetReviewed)
+                        {
+                            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                                <span class="das-rating-large das-rating--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedEmployerStars out of 4 stars">
+                                    <span aria-hidden="true" class="das-rating__icon-star"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 2 ? "--empty" : "")"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 3 ? "--empty" : "")"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 4 ? "--empty" : "")"></span>
+                                </span>
+                                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
+                            </p>
+
+                            <p class="govuk-body-s govuk-!-margin-bottom-2">
+                                @Model.EmployerReviewsDisplayMessage
+                            </p>
+                        }
+                        else
+                        {
+                            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                                No reviews
+                            </h2>
+                            <p class="govuk-body-s">
+                                Not enough employers have reviewed this provider.
+                            </p>
+                        }
+
+                    </div>
+
+                    @* Employers Container *@
+
+                    @* Apprentices Container *@
+
+                    <div class="govuk-grid-column-one-half das-reviews-container">
+
+                        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+                            Apprentices
+                        </h3>
+
+                        @if (Model.Reviews.ApprenticeRating != ProviderRating.NotYetReviewed)
+                        {
+                            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                                <span class="das-rating das-rating--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedApprenticeStars out of 4 stars">
+                                    <span aria-hidden="true" class="das-rating__icon-star"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 2 ? "--empty" : "")"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 3 ? "--empty" : "")"></span>
+                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 4 ? "--empty" : "")"></span>
+                                </span>
+                                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
+                            </p>
+
+                            <p class="govuk-body-s govuk-!-margin-bottom-2">
+                                @Model.ApprenticeReviewsDisplayMessage
+                            </p>
+                        }
+                        else
+                        {
+                            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                                No reviews
+                            </h2>
+
+                            <p class="govuk-body-s">
+                                Not enough apprentices have reviewed this provider.
+                            </p>
+                        }
+                    </div>
+
+                    @* Apprentices Container *@
+
+                </div>
+
+                <div class="govuk-inset-text govuk-!-margin-top-3">
+                    Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.AcademicPeriod).
+                    Data collected by Department for Education.
+                </div>
+            }
         </div>
     </div>
-
+    @if (Model.IsApprenticeship)
+    {
+        @*  View results of our survey with employers and apprentices for this provider *@
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-full">
+                <details class="govuk-details govuk-!-margin-bottom-8">
+                    <summary class="govuk-details__summary">
+                        <span class="govuk-details__summary-text">
+                            View reviews with feedback from the last 5 years
+                        </span>
+                    </summary>
+                    <div class="govuk-details__text">
+                        @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
+                    </div>
+                </details>
+            </div>
+        </div>
+    }
     @*  Contact this training provider *@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -536,52 +582,36 @@
         </div>
     </div>
 
-    @* Training provider overview and courses delivered *@
+    @* Training provider overview*@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
-                Training provider overview and courses delivered
-            </h3>
-
-            <details class="govuk-details">
-                <summary class="govuk-details__summary">
-                    <span class="govuk-details__summary-text">
-                        @Model.CoursesDeliveredCountDisplay
-                    </span>
-                </summary>
-
-                <div class="govuk-details__text">
-                    <p class="govuk-body">Select a course to view location, training options and contact details</p>
-                    <ul class="govuk-task-list">
-                        @foreach (ProviderCourseModel course in Model.Courses)
-                        {
-                            <li class="govuk-task-list__item govuk-task-list__item--with-link">
-                                <div class="govuk-task-list__name-and-hint">
-                                    <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviderDetails" asp-route-larsCode="@course.LarsCode" asp-route-providerId="@Model.Ukprn" asp-route-location="@Model.Location" asp-route-distance="@Model.Distance">
-                                        @course.NameAndLevel
-                                    </a>
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </details>
-
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">Training provider overview</h3>
             <p class="govuk-body">
                 @Html.MarkdownToHtml(@Model.Contact.MarketingInfo)
             </p>
-
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">Overall participation rates and reviews</h3>
             <p class="govuk-body">
-                For general information about this provider, such as the total participation
-                and achievement rate for all courses they deliver, view our
+                Find overall participation rates and reviews from employers and apprentices by visiting their
                 <a class="govuk-link govuk-link--no-visited-state"
                    asp-route="@RouteNames.Provider"
                    asp-route-ukprn="@Model.Ukprn">
-                    provider details page for @Model.ProviderName
+                    training provider details page
                 </a>.
             </p>
         </div>
     </div>
+    @* Training provider overview *@
+    
+    @* Courses offered by this training provider *@
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">Courses offered by this training provider</h3>
+            <div class="govuk-body">
+                @await Html.PartialAsync("_coursesGroup", Model.ProviderCoursesDetails.GetCourseGroups())
+            </div>
+        </div>
+    </div>
+    @* Courses offered by this training provider *@
 
     @* Shortlist *@
     <div class="govuk-grid-row">

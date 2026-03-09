@@ -7,14 +7,14 @@ using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 
 namespace SFA.DAS.FAT.Web.Models.Providers;
 
-public class ProviderDetailsViewModel : PageLinksViewModelBase
+public class ProviderDetailsViewModel : PageLinksViewModelBase, ICourseGroupModel
 {
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
 
     public string ProviderAddress { get; set; }
     public ContactDetailsModel Contact { get; set; }
-    public ProviderCoursesModel ProviderCoursesDetails { get; set; }
+    public ProviderCoursesModel ProviderCoursesDetails { get; set; } = new();
 
     public ProviderQarModel Qar { get; set; }
 
@@ -44,7 +44,11 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase
             ProviderName = source.ProviderName,
             ProviderAddress = ((GetProviderAddress)source.ProviderAddress).GetComposedAddress(source.ProviderName),
             Contact = source.Contact,
-            ProviderCoursesDetails = orderedCourses,
+            ProviderCoursesDetails = new ProviderCoursesModel
+            {
+                Courses = orderedCourses?.Select(c => (ProviderCourseDetails)c).ToList(),
+                Ukprn = source.Ukprn
+            },
             Qar = source.Qar,
             Reviews = source.Reviews,
             EndpointAssessments = source.EndpointAssessments,

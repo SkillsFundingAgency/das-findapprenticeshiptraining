@@ -5,9 +5,9 @@
     @if (Model.IsEmployerLocationAvailable)
     {
         <p class="govuk-body">
-            <span asp-show="!@Model.ShowDistanceDetails">At apprentice's workplace</span>
-            <span asp-show="@Model.ShowDistanceDetails">At apprentice's workplace: </span>
-            <span asp-show="@Model.ShowDistanceDetails" class="govuk-!-font-weight-bold">0.0 miles</span>
+            <span asp-show="@(Model.NearestEmployerLocation <= 0)">At learner's workplace</span>
+            <span asp-show="@(Model.ShowDistanceDetails && Model.NearestEmployerLocation > 0)">At learner's workplace:</span>
+            <span asp-show="@(Model.ShowDistanceDetails && Model.NearestEmployerLocation > 0)" class="govuk-!-font-weight-bold">@Model.NearestEmployerLocation miles</span>
             <br />
             <span class="govuk-body-s das-hint-colour">Training at the employer's location.</span>
         </p>

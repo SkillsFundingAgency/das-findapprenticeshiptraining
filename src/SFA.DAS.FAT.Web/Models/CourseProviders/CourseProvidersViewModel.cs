@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -20,6 +20,8 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
+    public CourseType CourseType { get; set; }
+    public ApprenticeshipType ApprenticeshipType { get; set; }
     public List<string> SelectedDeliveryModes { get; set; } = [];
     public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];
@@ -179,6 +181,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             Value = deliveryMode.DeliveryItemChoice.ToString(),
             DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
+            DisplayDescription = deliveryMode.DeliveryItemChoice switch
+            {
+                ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                _ => string.Empty
+            },
             IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
         })
             .ToList() ?? [];
@@ -233,62 +242,9 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var selectedFilters = new Dictionary<FilterType, List<string>>();
 
-        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
-
-        if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
-        {
-            Distance = DistanceService.TEN_MILES.ToString();
-        }
-
-        if (DistanceService.IsValidDistance(Distance))
-        {
-            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
-        }
-
-        if (SelectedDeliveryModes?.Count > 0 && SelectedDeliveryModes.Count > 0)
-        {
-            var deliveryModes = GenerateDeliveryModesFilterItems();
-            var selectedDeliveryNames = deliveryModes
-                .Where(dm => SelectedDeliveryModes.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
-        }
-
-        if (SelectedEmployerApprovalRatings?.Count > 0 && SelectedEmployerApprovalRatings.Count > 0)
-        {
-            var reviews = GenerateEmployerReviewsFilterItems();
-            var selectedReviews = reviews
-                .Where(dm => SelectedEmployerApprovalRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.EmployerProviderRatings, selectedReviews);
-        }
-
-        if (SelectedApprenticeApprovalRatings?.Count > 0 && SelectedApprenticeApprovalRatings.Count > 0)
-        {
-            var reviews = GenerateApprenticeReviewsFilterItems();
-            var selectedReviews = reviews
-                .Where(dm => SelectedApprenticeApprovalRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeProviderRatings, selectedReviews);
-        }
-
-        if (SelectedQarRatings?.Count > 0 && SelectedQarRatings.Count > 0)
-        {
-            var qars = GenerateQarFilterItems();
-            var selectedQars = qars
-                .Where(dm => SelectedQarRatings.Contains(dm.Value.ToString()))
-                .Select(dm => dm.DisplayText)
-                .ToList();
-
-            AddSelectedFilter(selectedFilters, FilterType.QarRatings, selectedQars);
-        }
-
+        AddLocationAndDistanceFilters(selectedFilters);
+        AddDeliveryModesFilter(selectedFilters);
+        AddRatingFilters(selectedFilters);
         AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
 
         if (selectedFilters.Count == 0)
@@ -301,6 +257,63 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                 _valueFunctions,
                 [FilterType.Distance, FilterType.OrderBy]
             );
+    }
+
+    private void AddLocationAndDistanceFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    {
+        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+
+        if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
+        {
+            Distance = DistanceService.TEN_MILES.ToString();
+        }
+
+        if (DistanceService.IsValidDistance(Distance))
+        {
+            AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
+        }
+    }
+
+    private void AddDeliveryModesFilter(Dictionary<FilterType, List<string>> selectedFilters)
+    {
+        if (SelectedDeliveryModes?.Count > 0 && SelectedDeliveryModes.Count > 0)
+        {
+            var deliveryModes = GenerateDeliveryModesFilterItems();
+            var selectedDeliveryNames = deliveryModes
+                .Where(dm => SelectedDeliveryModes.Contains(dm.Value.ToString()))
+                .Select(dm => dm.DisplayText)
+                .ToList();
+
+            if (CourseType == CourseType.ShortCourse)
+            {
+                selectedFilters[FilterType.DeliveryModes] = selectedDeliveryNames;
+            }
+            else
+            {
+                AddSelectedFilter(selectedFilters, FilterType.DeliveryModes, selectedDeliveryNames);
+            }
+        }
+    }
+
+    private void AddRatingFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    {
+        AddRatingFilter(selectedFilters, SelectedEmployerApprovalRatings, GenerateEmployerReviewsFilterItems, FilterType.EmployerProviderRatings);
+        AddRatingFilter(selectedFilters, SelectedApprenticeApprovalRatings, GenerateApprenticeReviewsFilterItems, FilterType.ApprenticeProviderRatings);
+        AddRatingFilter(selectedFilters, SelectedQarRatings, GenerateQarFilterItems, FilterType.QarRatings);
+    }
+
+    private static void AddRatingFilter(Dictionary<FilterType, List<string>> selectedFilters, List<string> selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
+    {
+        if (selectedRatings?.Count > 0)
+        {
+            var filterItems = generateFilterItems();
+            var selectedItems = filterItems
+                .Where(item => selectedRatings.Contains(item.Value.ToString()))
+                .Select(item => item.DisplayText)
+                .ToList();
+
+            AddSelectedFilter(selectedFilters, filterType, selectedItems);
+        }
     }
 
     private readonly string _requestApprenticeshipTrainingUrl;
@@ -348,7 +361,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         List<ValueTuple<string, string>> result = new();
 
-        if (OrderBy != ProviderOrderBy.AchievementRate)
+        var defaultOrderBy = CourseType == CourseType.ShortCourse
+            ? ProviderOrderBy.Distance
+            : ProviderOrderBy.AchievementRate;
+
+        if (OrderBy != defaultOrderBy)
         {
             result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
         }
