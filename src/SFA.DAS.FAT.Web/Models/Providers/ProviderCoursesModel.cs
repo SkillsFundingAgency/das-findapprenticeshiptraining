@@ -31,7 +31,7 @@ public class ProviderCoursesModel
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
         new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
 
-    private static readonly IReadOnlyDictionary<ApprenticeshipType, string> ApprenticeshipDisplayNames = new Dictionary<ApprenticeshipType, string>
+    private static readonly Dictionary<ApprenticeshipType, string> ApprenticeshipDisplayNames = new Dictionary<ApprenticeshipType, string>
     {
         [ApprenticeshipType.ApprenticeshipUnit] = "Apprenticeship unit",
         [ApprenticeshipType.FoundationApprenticeship] = "Foundation apprenticeship",
@@ -56,7 +56,7 @@ public class ProviderCoursesModel
                 var coursesByType = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList();
                 return (apprenticeshipType, coursesByType);
             })
-            .Where(tuple => tuple.coursesByType.Any())
+            .Where(tuple => tuple.coursesByType.Count > 0)
             .Select(tuple =>
             {
                 var baseDisplayName = GetBaseDisplayName(tuple.apprenticeshipType);
