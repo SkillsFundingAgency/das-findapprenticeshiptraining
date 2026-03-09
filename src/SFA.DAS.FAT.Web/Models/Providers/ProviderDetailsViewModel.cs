@@ -14,7 +14,7 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase, ICourseGroupMode
 
     public string ProviderAddress { get; set; }
     public ContactDetailsModel Contact { get; set; }
-    public ProviderCoursesModel ProviderCoursesDetails { get; set; }
+    public ProviderCoursesModel ProviderCoursesDetails { get; set; } = new();
 
     public ProviderQarModel Qar { get; set; }
 
@@ -44,7 +44,11 @@ public class ProviderDetailsViewModel : PageLinksViewModelBase, ICourseGroupMode
             ProviderName = source.ProviderName,
             ProviderAddress = ((GetProviderAddress)source.ProviderAddress).GetComposedAddress(source.ProviderName),
             Contact = source.Contact,
-            ProviderCoursesDetails = orderedCourses,
+            ProviderCoursesDetails = new ProviderCoursesModel
+            {
+                Courses = orderedCourses?.Select(c => (ProviderCourseDetails)c).ToList(),
+                Ukprn = source.Ukprn
+            },
             Qar = source.Qar,
             Reviews = source.Reviews,
             EndpointAssessments = source.EndpointAssessments,

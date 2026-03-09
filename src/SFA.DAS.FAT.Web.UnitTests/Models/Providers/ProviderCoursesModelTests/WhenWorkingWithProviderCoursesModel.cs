@@ -59,22 +59,6 @@ public class WhenWorkingWithProviderCoursesModel
         sut.CoursesDropdownText.Should().Be("View 3 courses delivered by this training provider");
     }
 
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship units")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeships")]
-    [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeships")]
-    public void GetDisplayNamePlural_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
-    {
-        ProviderCoursesModel.GetDisplayNamePlural(type).Should().Be(expected);
-    }
-
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship unit")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeship")]
-    [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeship")]
-    public void GetDisplayNameSingular_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
-    {
-        ProviderCoursesModel.GetDisplayNameSingular(type).Should().Be(expected);
-    }
-
     [Test]
     public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames()
     {
@@ -102,13 +86,13 @@ public class WhenWorkingWithProviderCoursesModel
         groups[1].Count.Should().Be(1);
         groups[2].Count.Should().Be(1);
 
-        groups[0].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
-        groups[1].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[1].ApprenticeshipType));
-        groups[2].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[2].ApprenticeshipType));
+        groups[0].DisplayNameHeader.Should().Be("Apprenticeship units");
+        groups[1].DisplayNameHeader.Should().Be("Foundation apprenticeships");
+        groups[2].DisplayNameHeader.Should().Be("Apprenticeships");
 
-        groups[0].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
-        groups[1].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[1].ApprenticeshipType));
-        groups[2].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[2].ApprenticeshipType));
+        groups[0].DisplayName.Should().Be("Apprenticeship units");
+        groups[1].DisplayName.Should().Be("Foundation apprenticeship");
+        groups[2].DisplayName.Should().Be("Apprenticeship");
     }
 
     [Test]

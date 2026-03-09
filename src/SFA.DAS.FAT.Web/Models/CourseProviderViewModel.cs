@@ -93,7 +93,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             ShortlistId = source.ShortlistId,
             Locations = source.Locations?.ToList() ?? [],
             Courses = orderedCourses,
-            ProviderCoursesDetails = orderedCourses.Select(c => (ProviderCourseDetails)c).ToList()
+            ProviderCoursesDetails = new ProviderCoursesModel
+            {
+                Courses = orderedCourses.Select(c => (ProviderCourseDetails)c).ToList(),
+                Ukprn = source.Ukprn,
+            }
         };
     }
     public ProviderCoursesModel ProviderCoursesDetails { get; set; }
