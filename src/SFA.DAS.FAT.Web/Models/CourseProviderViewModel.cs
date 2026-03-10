@@ -194,7 +194,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         }
         else
         {
-            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
+            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
         }
     }
 
