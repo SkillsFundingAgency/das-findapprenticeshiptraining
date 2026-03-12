@@ -11,6 +11,7 @@ using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
+
 public sealed class WhenFilteringCourseProviders
 {
     private CourseProvidersViewModel _viewModel;
@@ -141,7 +142,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var locationClearLink = sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
-            Assert.That(locationClearLink.Title, Is.EqualTo("Apprentice's work location"));
+            Assert.That(locationClearLink.Title, Is.EqualTo("Learner's work location"));
             Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_viewModel.Location} (within {_viewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.EqualTo(urlWithoutLocation));
         });
