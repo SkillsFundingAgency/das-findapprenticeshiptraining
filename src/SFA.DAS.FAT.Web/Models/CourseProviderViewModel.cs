@@ -188,7 +188,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return "The training provider can travel to you to deliver this course.";
+            return "Training is provided at learner's workplaces across England.";
         }
         else
         {
