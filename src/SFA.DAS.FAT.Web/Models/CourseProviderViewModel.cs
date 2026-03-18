@@ -6,7 +6,6 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
-using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
@@ -191,11 +190,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return TrainingOptionsDisplayMessages.AtApprenticeWorkplaceWithNoLocationNational;
+            return "The training provider can travel to you to deliver this course.";
         }
         else
         {
-            return TrainingOptionsDisplayMessages.AtApprenticeWorkplaceWithNoLocationRegional;
+            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
         }
     }
 
