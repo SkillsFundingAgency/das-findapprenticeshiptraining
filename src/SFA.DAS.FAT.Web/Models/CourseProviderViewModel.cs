@@ -37,9 +37,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string AchievementRateInformation => GetAchievementRateInformation();
     public bool IsShortCourse => CourseType == CourseType.ShortCourse;
     public bool IsApprenticeship => CourseType == CourseType.Apprenticeship;
-    public bool ShowOnlineOption => Locations.Any(a => a.LocationType == LocationType.Online) && IsShortCourse;
     public bool ShowApprenticesWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
-    public bool ShowProviderOption => Locations.Any(a => a.LocationType == LocationType.Provider) && IsShortCourse;
     public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease) && IsApprenticeship;
     public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease) && IsApprenticeship;
     public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();

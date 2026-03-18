@@ -823,40 +823,6 @@ public class WhenCreatingCourseProviderViewModel
         });
     }
 
-    [TestCase(CourseType.ShortCourse, LocationType.Online, true)]
-    [TestCase(CourseType.ShortCourse, LocationType.Provider, false)]
-    [TestCase(CourseType.Apprenticeship, LocationType.Provider, false)]
-    public void ShowOnlineOption_WhenCourseTypeAndOnlineLocation_ReturnsExpected(CourseType courseType, LocationType locationType, bool expected)
-    {
-        var sut = new CourseProviderViewModel
-        {
-            CourseType = courseType,
-            Locations = new List<LocationModel>
-            {
-                new LocationModel { LocationType = locationType }
-            }
-        };
-
-        Assert.That(sut.ShowOnlineOption, Is.EqualTo(expected));
-    }
-
-    [TestCase(CourseType.ShortCourse, LocationType.Provider, true)]
-    [TestCase(CourseType.ShortCourse, LocationType.Online, false)]
-    [TestCase(CourseType.Apprenticeship, LocationType.Provider, false)]
-    public void ShowProviderOption_WhenCourseTypeAndProviderLocation_ReturnsExpected(CourseType courseType, LocationType locationType, bool expected)
-    {
-        var sut = new CourseProviderViewModel
-        {
-            CourseType = courseType,
-            Locations = new List<LocationModel>
-            {
-                new LocationModel { LocationType = locationType }
-            }
-        };
-
-        Assert.That(sut.ShowProviderOption, Is.EqualTo(expected));
-    }
-
     [Test]
     public void ClosestProviderLocation_ReturnsLocationWithSmallestCourseDistance()
     {

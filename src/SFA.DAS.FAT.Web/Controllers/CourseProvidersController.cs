@@ -13,6 +13,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
@@ -133,7 +134,8 @@ public class CourseProvidersController : Controller
             Providers = []
         };
 
-        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
+        var providers = result.Providers?.Select(p => (CoursesProviderViewModel)p).ToList()
+                ?? new List<CoursesProviderViewModel>();
         foreach (var provider in providers)
         {
             provider.Distance = request.Distance;
@@ -148,7 +150,7 @@ public class CourseProvidersController : Controller
             Url, RouteNames.CourseProviders, new List<ValueTuple<string, string>>());
 
 
-        if (result.Providers.Count > 0)
+        if (result.Providers?.Count > 0)
         {
             courseProvidersViewModel.Pagination = new PaginationViewModel(
                 result.Page,
