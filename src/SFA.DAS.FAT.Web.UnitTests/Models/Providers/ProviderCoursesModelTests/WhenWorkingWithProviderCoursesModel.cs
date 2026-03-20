@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using Humanizer;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
@@ -72,8 +71,15 @@ public class WhenWorkingWithProviderCoursesModel
         sut.CoursesDropdownText.Should().Be("View 3 courses delivered by this training provider");
     }
 
-    [Test]
-    public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames()
+    [TestCase(0, ApprenticeshipType.ApprenticeshipUnit, 2, "Apprenticeship units", "Apprenticeship units")]
+    [TestCase(1, ApprenticeshipType.FoundationApprenticeship, 1, "Foundation apprenticeships", "Foundation apprenticeship")]
+    [TestCase(2, ApprenticeshipType.Apprenticeship, 1, "Apprenticeships", "Apprenticeship")]
+    public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames(
+        int groupIndex,
+        ApprenticeshipType expectedType,
+        int expectedCount,
+        string expectedDisplayNameHeader,
+        string expectedDisplayName)
     {
         var courses = new List<ProviderCourseDetails>
         {
@@ -91,25 +97,12 @@ public class WhenWorkingWithProviderCoursesModel
         var groups = sut.GetCourseGroups();
 
         groups.Count.Should().Be(3);
-        groups[0].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[0]);
-        groups[1].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[1]);
-        groups[2].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[2]);
 
-        groups[0].Count.Should().Be(2);
-        groups[1].Count.Should().Be(1);
-        groups[2].Count.Should().Be(1);
-
-        var baseUnit = "Apprenticeship unit";
-        var baseFoundation = "Foundation apprenticeship";
-        var baseApprenticeship = "Apprenticeship";
-
-        groups[0].DisplayNameHeader.Should().Be(baseUnit.Pluralize());
-        groups[1].DisplayNameHeader.Should().Be(baseFoundation.Pluralize());
-        groups[2].DisplayNameHeader.Should().Be(baseApprenticeship.Pluralize());
-
-        groups[0].DisplayName.Should().Be(baseUnit.Pluralize());
-        groups[1].DisplayName.Should().Be(baseFoundation);
-        groups[2].DisplayName.Should().Be(baseApprenticeship);
+        groups[groupIndex].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[groupIndex]);
+        groups[groupIndex].ApprenticeshipType.Should().Be(expectedType);
+        groups[groupIndex].Count.Should().Be(expectedCount);
+        groups[groupIndex].DisplayNameHeader.Should().Be(expectedDisplayNameHeader);
+        groups[groupIndex].DisplayName.Should().Be(expectedDisplayName);
     }
 
     [Test]

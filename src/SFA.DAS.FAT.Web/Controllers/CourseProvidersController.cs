@@ -150,7 +150,7 @@ public class CourseProvidersController : Controller
             Url, RouteNames.CourseProviders, new List<ValueTuple<string, string>>());
 
 
-        if (result.Providers?.Count > 0)
+        if (result.Providers.Count > 0)
         {
             courseProvidersViewModel.Pagination = new PaginationViewModel(
                 result.Page,
