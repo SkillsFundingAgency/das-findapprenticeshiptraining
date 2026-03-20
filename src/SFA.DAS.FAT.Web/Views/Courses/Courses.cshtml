@@ -2,9 +2,10 @@
 @using System.Globalization
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Domain.Extensions
+@using Humanizer
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
-    ViewData["Title"] = "Apprenticeship training courses";
+    ViewData["Title"] = "Training courses";
     ViewData["Description"] = "View all available apprenticeship training courses in England. Search using keywords, different qualification levels and categories.";
 }
 @{
@@ -58,9 +59,10 @@
                         {
 
                             <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
-                                <div id="foundation-tag" asp-show="standard.ApprenticeshipType == ApprenticeshipType.FoundationApprenticeship">
-                                    <strong class="govuk-body govuk-!-margin-bottom-4 govuk-tag govuk-tag--pink">Foundation</strong>
-                                </div>
+                                <strong class="govuk-!-margin-bottom-4 app-apprenticeship-type-tag @standard.ApprenticeshipTypeTagClass">
+                                    @standard.ApprenticeshipType.GetDescription().Singularize()
+                                </strong>
+
                                 <h2 class="govuk-heading-m das-search-results__heading">
                                     <a class="das-search-results__link"
                                        larsCode="standard-@standard.LarsCode"
@@ -79,19 +81,27 @@
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Type</dt>
-                                        <dd class="das-definition-list__definition">@standard.ApprenticeshipType.GetDescription()</dd>
+                                        <dd class="das-definition-list__definition">@standard.ApprenticeshipType.GetDescription().Singularize()</dd>
                                     </dl>
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Job category</dt>
                                         <dd class="das-definition-list__definition">@standard.Route</dd>
                                     </dl>
-
-                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Duration</dt>
-                                        <dd class="das-definition-list__definition">@standard.TypicalDuration months</dd>
-                                    </dl>
-
+                                    @if (@standard.ApprenticeshipType == ApprenticeshipType.ApprenticeshipUnit)
+                                    {
+                                        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                            <dt class="das-definition-list__title">Delivery hours</dt>
+                                            <dd class="das-definition-list__definition">@standard.TypicalDuration hours</dd>
+                                        </dl>
+                                    }
+                                    else
+                                    {
+                                        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+                                            <dt class="das-definition-list__title">Duration</dt>
+                                            <dd class="das-definition-list__definition">@standard.TypicalDuration months</dd>
+                                        </dl>
+                                    }
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Maximum funding from government</dt>
                                         <dd class="das-definition-list__definition">@standard.MaxFunding.ToString("C0", new CultureInfo("en-GB"))</dd>

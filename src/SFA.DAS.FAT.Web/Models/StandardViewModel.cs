@@ -23,6 +23,14 @@ public class StandardViewModel
 
     public ApprenticeshipType ApprenticeshipType { get; set; }
 
+    public string ApprenticeshipTypeTagClass => ApprenticeshipType switch
+    {
+        ApprenticeshipType.Apprenticeship => "app-apprenticeship-type-tag--apprenticeship",
+        ApprenticeshipType.FoundationApprenticeship => "app-apprenticeship-type-tag--foundationApprenticeship",
+        ApprenticeshipType.ApprenticeshipUnit => "app-apprenticeship-type-tag--apprenticeshipUnit",
+        _ => string.Empty
+    };
+
     public static implicit operator StandardViewModel(StandardModel source)
     {
         return new StandardViewModel
