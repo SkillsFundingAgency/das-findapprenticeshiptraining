@@ -45,7 +45,7 @@ public class ProviderCoursesModel
 
     public IList<CourseGroupViewModel> GetCourseGroups()
     {
-        if (Courses == null || Courses.Count == 0)
+        if (Courses.Count == 0)
         {
             return new List<CourseGroupViewModel>();
         }
@@ -92,7 +92,7 @@ public class ProviderCoursesModel
     {
         var model = new ProviderCoursesModel
         {
-            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
+            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList() ?? new List<ProviderCourseDetails>()
         };
 
         return model;
@@ -102,7 +102,7 @@ public class ProviderCoursesModel
     {
         var model = new ProviderCoursesModel
         {
-            Courses = source?.Select(c => c).ToList()
+            Courses = source?.Select(c => c).ToList() ?? new List<ProviderCourseDetails>()
         };
 
         return model;

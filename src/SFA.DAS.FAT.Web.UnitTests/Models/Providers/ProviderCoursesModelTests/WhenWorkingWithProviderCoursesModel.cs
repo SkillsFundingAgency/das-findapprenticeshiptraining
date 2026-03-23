@@ -101,12 +101,9 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
-    public void GetCourseGroups_CoursesNull_ReturnsEmptyList()
+    public void GetCourseGroups_DefaultCourses_ReturnsEmptyList()
     {
-        var sut = new ProviderCoursesModel
-        {
-            Courses = null
-        };
+        var sut = new ProviderCoursesModel();
 
         var groups = sut.GetCourseGroups();
 
@@ -153,16 +150,16 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
-    public void ImplicitOperator_SourceNull_ReturnsModelWithNullCourses()
+    public void ImplicitOperator_SourceNull_ReturnsModelWithEmptyCourses()
     {
         List<GetProviderCourseDetails> source = null;
 
         ProviderCoursesModel sut = source;
 
         sut.Should().NotBeNull();
-        sut.Courses.Should().BeNull();
-        FluentActions.Invoking(() => _ = sut.CourseCount)
-            .Should().Throw<NullReferenceException>();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Should().BeEmpty();
+        sut.CourseCount.Should().Be(0);
     }
 
     [Test]
@@ -182,16 +179,16 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
-    public void ImplicitOperator_FromProviderCourseDetails_SourceNull_ReturnsModelWithNullCourses()
+    public void ImplicitOperator_FromProviderCourseDetails_SourceNull_ReturnsModelWithEmptyCourses()
     {
         List<ProviderCourseDetails> source = null;
 
         ProviderCoursesModel sut = source;
 
         sut.Should().NotBeNull();
-        sut.Courses.Should().BeNull();
-        FluentActions.Invoking(() => _ = sut.CourseCount)
-            .Should().Throw<NullReferenceException>();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Should().BeEmpty();
+        sut.CourseCount.Should().Be(0);
     }
 
     [Test]
