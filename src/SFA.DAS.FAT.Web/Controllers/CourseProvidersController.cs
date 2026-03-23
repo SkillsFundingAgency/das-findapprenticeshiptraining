@@ -134,8 +134,7 @@ public class CourseProvidersController : Controller
             Providers = []
         };
 
-        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList()
-                ?? new List<CoursesProviderViewModel>();
+        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
         foreach (var provider in providers)
         {
             provider.Distance = request.Distance;
