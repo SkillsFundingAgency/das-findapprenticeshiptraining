@@ -13,13 +13,13 @@ public class ProviderCoursesModel
     public int Ukprn { get; set; }
     public string Location { get; set; }
 
-    public int CourseCount => Courses?.Count ?? 0;
+    public int CourseCount => Courses.Count;
 
     public string CoursesDropdownText
     {
         get
         {
-            if (Courses == null)
+            if (Courses.Count == 0)
                 return string.Empty;
 
             return CourseCount == 1

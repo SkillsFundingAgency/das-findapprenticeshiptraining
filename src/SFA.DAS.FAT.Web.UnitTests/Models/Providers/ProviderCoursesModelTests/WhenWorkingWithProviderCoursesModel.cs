@@ -9,23 +9,18 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.Providers.ProviderCoursesModelTests;
 public class WhenWorkingWithProviderCoursesModel
 {
     [Test]
-    public void CourseCount_CoursesNull_ReturnsZero()
+    public void CourseCount_WhenProviderCoursesModelCreated_ReturnsZero()
     {
-        var sut = new ProviderCoursesModel
-        {
-            Courses = null
-        };
+        var sut = new ProviderCoursesModel();
+
 
         sut.CourseCount.Should().Be(0);
     }
 
     [Test]
-    public void CoursesDropdownText_CoursesNull_ReturnsEmptyString()
+    public void CoursesDropdownText_WhenProviderCoursesModelCreated_ReturnsEmptyString()
     {
-        var sut = new ProviderCoursesModel
-        {
-            Courses = null
-        };
+        var sut = new ProviderCoursesModel();
 
         sut.CoursesDropdownText.Should().Be(string.Empty);
     }
@@ -39,7 +34,7 @@ public class WhenWorkingWithProviderCoursesModel
         };
 
         sut.CourseCount.Should().Be(0);
-        sut.CoursesDropdownText.Should().Be("View 0 courses delivered by this training provider");
+        sut.CoursesDropdownText.Should().Be(string.Empty);
     }
 
     [Test]
@@ -166,7 +161,8 @@ public class WhenWorkingWithProviderCoursesModel
 
         sut.Should().NotBeNull();
         sut.Courses.Should().BeNull();
-        sut.CourseCount.Should().Be(0);
+        FluentActions.Invoking(() => _ = sut.CourseCount)
+            .Should().Throw<NullReferenceException>();
     }
 
     [Test]
@@ -194,7 +190,8 @@ public class WhenWorkingWithProviderCoursesModel
 
         sut.Should().NotBeNull();
         sut.Courses.Should().BeNull();
-        sut.CourseCount.Should().Be(0);
+        FluentActions.Invoking(() => _ = sut.CourseCount)
+            .Should().Throw<NullReferenceException>();
     }
 
     [Test]

@@ -19,7 +19,7 @@ public class WhenBuildingProviderDetailsViewModel
     public const string Postcode = "CV1 1VC";
 
     [Test, MoqAutoData]
-    public void Then_The_ViewModel_Is_Built(
+    public void BuildProviderDetailsViewModel_FromQueryResponse_MapsExpectedFields(
         int ukprn,
         GetProviderQueryResponse response)
     {
@@ -44,12 +44,11 @@ public class WhenBuildingProviderDetailsViewModel
         sut.ShowShortListLink.Should().Be(true);
     }
 
-    [TestCase(null, 0, "", false)]
-    [TestCase(0, 0, "View 0 courses delivered by this training provider", false)]
+    [TestCase(0, 0, "", false)]
     [TestCase(1, 1, "View 1 course delivered by this training provider", true)]
     [TestCase(2, 2, "View 2 courses delivered by this training provider", true)]
     [TestCase(500, 500, "View 500 courses delivered by this training provider", true)]
-    public void Then_The_Courses_Are_Set_Up(int? coursesCount, int expectedCount, string dropdownText, bool showCoursesExpected)
+    public void BuildProviderDetailsViewModel_FromCoursesResponse_SetsCourseDetails(int? coursesCount, int expectedCount, string dropdownText, bool showCoursesExpected)
     {
         var ukprn = 12345678;
 
@@ -93,7 +92,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase("10", "", false, 0, 10, "")]
     [TestCase("", "95.3", false, 0, 0, "4.7")]
     [TestCase("200", "95.5", true, 191, 200, "4.5")]
-    public void Then_The_Qar_Is_Set_Up(string leavers, string achievementRate,
+    public void BuildProviderDetailsViewModel_FromQarResponse_SetsQarDetails(string leavers, string achievementRate,
          bool achievementRatePresent, int qarAchievers, int numberOfParticipants,
         string numberWhoDidNotPassPercentage)
     {
@@ -136,7 +135,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase(10000, 2017, "10,000", "apprentices have completed a course and taken their end-point assessment with this provider since 2017.")]
     [TestCase(100000, 2016, "100,000", "apprentices have completed a course and taken their end-point assessment with this provider since 2016.")]
     [TestCase(1000000, 2015, "1,000,000", "apprentices have completed a course and taken their end-point assessment with this provider since 2015.")]
-    public void Then_EndpointAssessments_Are_Set_Up(int? endpointAssessmentCount, int earliestYear, string expectedFormattedCount, string expectedEndpointAssessmentDetails)
+    public void BuildProviderDetailsViewModel_FromEndpointAssessmentsResponse_SetsEndpointAssessmentDetails(int? endpointAssessmentCount, int earliestYear, string expectedFormattedCount, string expectedEndpointAssessmentDetails)
     {
         var ukprn = 12345678;
 
@@ -169,7 +168,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase("2324", "2023", "2024", "1", "2", "", "", 1, 2, 0, 0, "average review from 1 employer when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.", "average review from 0 apprentices when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
     [TestCase("2223", "2022", "2023", "2", "3", "1", "2", 2, 3, 1, 2, "average review from 2 employers when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.", "average review from 1 apprentice when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
     [TestCase("2122", "2021", "2022", "4", "5", "2", "3", 4, 5, 2, 3, "average review from 4 employers when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.", "average review from 2 apprentices when asked to rate this provider as 'Excellent', 'Good', 'Poor' or 'Very poor'.")]
-    public void Then_ReviewDetails_Are_Set_Up(
+    public void BuildProviderDetailsViewModel_FromReviewsResponse_SetsReviewDetails(
         string reviewPeriod, string expectedReviewsStartYear, string expectedReviewsEndYear,
 
         string employerReviews, string employerStars,
@@ -224,7 +223,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase(ProviderRating.VeryPoor, true, ProviderRating.Good, true)]
     [TestCase(ProviderRating.NotYetReviewed, false, ProviderRating.Excellent, true)]
     [TestCase(ProviderRating.NotYetReviewed, false, ProviderRating.NotYetReviewed, false)]
-    public void Then_ReviewRatings_Are_Set_Up(
+    public void BuildProviderDetailsViewModel_FromReviewRatingsResponse_SetsReviewFlags(
         ProviderRating employerProviderRating,
         bool isEmployerReviewed,
         ProviderRating apprenticeProviderRating,
@@ -284,7 +283,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase(ProviderName, Address1, "", "", "", Town, "", $"{ProviderName}, {Address1}, {Town}")]
     [TestCase(ProviderName, Address1, "", "", "", "", Postcode, $"{ProviderName}, {Address1}, {Postcode}")]
     [TestCase(ProviderName, Address1, Address2, Address3, Address4, Town, Postcode, $"{ProviderName}, {Address1}, {Address2}, {Address3}, {Address4}, {Town}, {Postcode}")]
-    public void Then_ComposedAddress_Is_Set(
+    public void BuildProviderDetailsViewModel_FromAddressResponse_ComposesProviderAddress(
        string providerName, string address1, string address2, string address3, string address4, string town, string postcode, string expectedAddress)
     {
         var ukprn = 12345678;
@@ -321,7 +320,7 @@ public class WhenBuildingProviderDetailsViewModel
     [TestCase(true, "www.website.co.uk", "http://www.website.co.uk")]
     [TestCase(true, "http://www.website2.co.uk", "http://www.website2.co.uk")]
     [TestCase(true, "https://www.website3.co.uk", "https://www.website3.co.uk")]
-    public void Then_Composed_Website_Is_Set(bool isContactSetUp, string website, string expectedWebsite)
+    public void BuildProviderDetailsViewModel_FromContactResponse_ComposesWebsite(bool isContactSetUp, string website, string expectedWebsite)
     {
         var ukprn = 12345678;
 

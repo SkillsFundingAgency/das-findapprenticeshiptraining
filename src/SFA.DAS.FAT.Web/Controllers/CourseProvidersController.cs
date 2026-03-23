@@ -134,7 +134,7 @@ public class CourseProvidersController : Controller
             Providers = []
         };
 
-        var providers = result.Providers?.Select(p => (CoursesProviderViewModel)p).ToList()
+        var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList()
                 ?? new List<CoursesProviderViewModel>();
         foreach (var provider in providers)
         {
