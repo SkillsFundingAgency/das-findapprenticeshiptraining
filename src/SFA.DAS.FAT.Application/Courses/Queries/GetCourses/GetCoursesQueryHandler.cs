@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -26,24 +27,27 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var apprenticeshipType = string.Empty;
-
-        if (query.ApprenticeshipTypes.Count == 1)
+        var apprenticeshipTypes = new List<ApprenticeshipType>();
+        foreach (var apprenticeshipType in query.ApprenticeshipTypes)
         {
-            var type = query.ApprenticeshipTypes.First();
-            switch (type)
+            switch (apprenticeshipType)
             {
                 case "Apprenticeships":
-                    apprenticeshipType = ApprenticeshipType.Apprenticeship.ToString();
+                    apprenticeshipTypes.Add(ApprenticeshipType.Apprenticeship);
                     break;
                 case "Foundation apprenticeships":
-                    apprenticeshipType = ApprenticeshipType.FoundationApprenticeship.ToString();
+                    apprenticeshipTypes.Add(ApprenticeshipType.FoundationApprenticeship);
                     break;
                 case "Apprenticeship units":
-                    apprenticeshipType = ApprenticeshipType.ApprenticeshipUnit.ToString();
+                    apprenticeshipTypes.Add(ApprenticeshipType.ApprenticeshipUnit);
                     break;
                 default: break;
             }
+        }
+
+        if (query.ApprenticeshipTypes.Count == 0 || query.ApprenticeshipTypes.Count == 3)
+        {
+            apprenticeshipTypes = [];
         }
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
@@ -54,7 +58,7 @@ public class GetCoursesQueryHandler(
                 Location = query.Location,
                 Distance = query.Distance,
                 RouteIds = routeIds,
-                ApprenticeshipType = apprenticeshipType,
+                ApprenticeshipTypes = apprenticeshipTypes,
                 Levels = query.Levels,
                 Page = query.Page,
                 OrderBy = query.OrderBy

@@ -34,7 +34,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Return_Correct_Response()
+    public async Task Handle_WhenQueryHasFilters_ReturnsCorrectResponse()
     {
         var query = new GetCoursesQuery()
         {
@@ -93,7 +93,7 @@ public class WhenGettingCourses
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
                     r.OrderBy == query.OrderBy &&
-                    r.ApprenticeshipType == String.Empty
+                    r.ApprenticeshipTypes.Count == 0
                 )
             )
         )
@@ -117,7 +117,7 @@ public class WhenGettingCourses
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
                 r.BaseUrl == BASE_URL &&
-                r.ApprenticeshipType == string.Empty
+                r.ApprenticeshipTypes.Count == 0
             )
         ), Times.Once);
 
@@ -139,7 +139,7 @@ public class WhenGettingCourses
     [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
     [MoqInlineAutoData("Apprenticeship units", "", "ApprenticeshipUnit")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
-    public async Task Handle_Should_Call_With_Expected_ApprenticeType_When_Only_One_Selected(
+    public async Task Handle_WhenOnlyOneApprenticeshipTypeSelected_CallsWithExpectedApprenticeshipType(
         string apprenticeshipType1,
         string apprenticeshipType2,
         string requestApprenticeshipType,
@@ -183,18 +183,20 @@ public class WhenGettingCourses
         )
         .ReturnsAsync(coursesResponse);
 
-        var response = await sut.Handle(query, cancellationToken);
+        await sut.Handle(query, cancellationToken);
 
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
-
-                r.ApprenticeshipType == requestApprenticeshipType
+                string.IsNullOrEmpty(requestApprenticeshipType)
+                    ? r.ApprenticeshipTypes.Count == 0
+                    : r.ApprenticeshipTypes.Count == 1 &&
+                      r.ApprenticeshipTypes[0].ToString() == requestApprenticeshipType
             )
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Filter_Multiple_Routes_Correctly(
+    public async Task Handle_WhenMultipleRoutesSelected_FiltersRouteIdsCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -239,7 +241,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Pass_Empty_RouteIds_When_No_Routes_Specified(
+    public async Task Handle_WhenNoRoutesSpecified_PassesEmptyRouteIds(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -282,7 +284,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Pass_Page_Parameter_Correctly(
+    public async Task Handle_WhenPageSpecified_PassesPageParameterCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -319,7 +321,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Pass_Null_Keyword_And_Location_When_Not_Specified(
+    public async Task Handle_WhenKeywordAndLocationNotSpecified_PassesNullKeywordAndLocation(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -353,15 +355,15 @@ public class WhenGettingCourses
         await sut.Handle(query, CancellationToken.None);
 
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
-            It.Is<GetCoursesApiRequest>(r => 
-                r.Keyword == null && 
-                r.Location == null && 
+            It.Is<GetCoursesApiRequest>(r =>
+                r.Keyword == null &&
+                r.Location == null &&
                 r.Distance == null)
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Call_LevelsService_And_RoutesService(
+    public async Task Handle_WhenHandlingQuery_CallsLevelsServiceAndRoutesService(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -397,7 +399,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_Should_Pass_All_Levels_Correctly(
+    public async Task Handle_WhenLevelsSpecified_PassesAllLevelsCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,

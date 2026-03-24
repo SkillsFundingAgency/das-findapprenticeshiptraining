@@ -13,7 +13,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public List<int> Levels { get; init; }
 
-    public string ApprenticeshipType { get; init; }
+    public List<ApprenticeshipType> ApprenticeshipTypes { get; init; }
 
     public OrderBy OrderBy { get; init; }
 
@@ -50,9 +50,12 @@ public class GetCoursesApiRequest : IGetApiRequest
             queryParams.Add($"distance={Distance.Value}");
         }
 
-        if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
+        if (ApprenticeshipTypes != null && ApprenticeshipTypes.Count > 0)
         {
-            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
+            foreach (var apprenticeshipType in ApprenticeshipTypes)
+            {
+                queryParams.Add($"apprenticeshipTypes={apprenticeshipType}");
+            }
         }
 
         if (RouteIds != null && RouteIds.Count > 0)
