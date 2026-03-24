@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
@@ -27,28 +28,7 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var apprenticeshipTypes = new List<ApprenticeshipType>();
-        foreach (var apprenticeshipType in query.ApprenticeshipTypes)
-        {
-            switch (apprenticeshipType)
-            {
-                case "Apprenticeships":
-                    apprenticeshipTypes.Add(ApprenticeshipType.Apprenticeship);
-                    break;
-                case "Foundation apprenticeships":
-                    apprenticeshipTypes.Add(ApprenticeshipType.FoundationApprenticeship);
-                    break;
-                case "Apprenticeship units":
-                    apprenticeshipTypes.Add(ApprenticeshipType.ApprenticeshipUnit);
-                    break;
-                default: break;
-            }
-        }
-
-        if (query.ApprenticeshipTypes.Count == 0 || query.ApprenticeshipTypes.Count == 3)
-        {
-            apprenticeshipTypes = [];
-        }
+        var apprenticeshipTypes = BuildApprenticeshipTypes(query.ApprenticeshipTypes);
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
             new GetCoursesApiRequest
@@ -75,5 +55,33 @@ public class GetCoursesQueryHandler(
             Levels = levels,
             Routes = routes
         };
+    }
+
+    private static List<ApprenticeshipType> BuildApprenticeshipTypes(List<string> selectedApprenticeshipTypes)
+    {
+        if (selectedApprenticeshipTypes.Count == 0 || selectedApprenticeshipTypes.Count == 3)
+        {
+            return [];
+        }
+
+        var mappedApprenticeshipTypes = new List<ApprenticeshipType>(selectedApprenticeshipTypes.Count);
+
+        foreach (var apprenticeshipType in selectedApprenticeshipTypes)
+        {
+            switch (apprenticeshipType)
+            {
+                case var _ when apprenticeshipType == ApprenticeshipType.Apprenticeship.GetDescription():
+                    mappedApprenticeshipTypes.Add(ApprenticeshipType.Apprenticeship);
+                    break;
+                case var _ when apprenticeshipType == ApprenticeshipType.FoundationApprenticeship.GetDescription():
+                    mappedApprenticeshipTypes.Add(ApprenticeshipType.FoundationApprenticeship);
+                    break;
+                case var _ when apprenticeshipType == ApprenticeshipType.ApprenticeshipUnit.GetDescription():
+                    mappedApprenticeshipTypes.Add(ApprenticeshipType.ApprenticeshipUnit);
+                    break;
+                default: break;
+            }
+        }
+        return mappedApprenticeshipTypes;
     }
 }
