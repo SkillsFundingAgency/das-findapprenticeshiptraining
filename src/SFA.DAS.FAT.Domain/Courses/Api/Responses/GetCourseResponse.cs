@@ -20,10 +20,10 @@ public sealed class GetCourseResponse
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
 
-    public List<Ksb> Ksbs { get; set; }
+    public List<Ksb> Ksbs { get; set; } = [];
     public ApprenticeshipType ApprenticeshipType { get; set; }
     public int IncentivePayment { get; set; }
-    public List<RelatedOccupationResponse> RelatedOccupations { get; set; }
+    public List<RelatedOccupationResponse> RelatedOccupations { get; set; } = [];
 }
 
 public class RelatedOccupationResponse

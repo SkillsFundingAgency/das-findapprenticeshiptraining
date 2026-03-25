@@ -52,9 +52,7 @@ public class GetCourseQueryResult
             StandardPageUrl = source.StandardPageUrl,
             IncentivePayment = source.IncentivePayment,
             Ksbs = source.Ksbs,
-            RelatedOccupations = source.RelatedOccupations == null
-                                    ? new List<RelatedOccupation>() :
-                                    source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
+            RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
             ApprenticeshipType = source.ApprenticeshipType,
         };
     }

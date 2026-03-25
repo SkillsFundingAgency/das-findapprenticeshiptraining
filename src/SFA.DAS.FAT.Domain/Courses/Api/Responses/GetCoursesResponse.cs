@@ -9,7 +9,7 @@ public sealed class GetCoursesResponse
     public int PageSize { get; set; } = Constants.DefaultPageSize;
     public int TotalPages { get; set; }
     public int TotalCount { get; set; }
-    public List<StandardModel> Standards { get; set; } = new List<StandardModel>();
+    public List<StandardModel> Standards { get; set; } = [];
 }
 
 public sealed class StandardModel
