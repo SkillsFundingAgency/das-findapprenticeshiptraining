@@ -16,8 +16,8 @@
             <div class="govuk-body govuk-!-margin-bottom-4">You can select a course for more information, including how training takes place with locations, course-specific achievement rates and participation.</div>
 
         <div asp-show="@Model.ShowCourses" class="govuk-!-margin-bottom-8">
-                <div class="govuk-details__text">
-                    @await Html.PartialAsync("_coursesGroup", Model)
+                <div class="govuk-body">
+                    @await Html.PartialAsync("_coursesGroup", Model.ProviderCoursesDetails.GetCourseGroups())
                 </div>
         </div>
         

@@ -282,7 +282,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location."));
+        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location."));
     }
 
     [Test]
@@ -782,29 +782,77 @@ public class WhenCreatingCourseProviderViewModel
         Assert.That(sut.ClosestDayReleaseLocation, Is.Null);
     }
 
-    [Test]
-    public void HasMatchingRegionalLocation_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue()
+    [TestCase(LocationType.Regional, true, true)]
+    [TestCase(LocationType.Regional, false, false)]
+    public void HasMatchingRegionalLocation_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue(LocationType locationType, bool AtEmployer, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
             {
-                new LocationModel { LocationType = LocationType.Regional, AtEmployer = true }
+                new LocationModel { LocationType = locationType, AtEmployer = AtEmployer }
             }
         };
-        Assert.That(sut.HasMatchingRegionalLocation, Is.True);
+        Assert.That(sut.HasMatchingRegionalLocation, Is.EqualTo(expected));
+    }
+
+    [TestCase(LocationType.National, true)]
+    [TestCase(LocationType.Regional, false)]
+    public void HasMatchingRegionalLocation_WhenNationalLocationExists_ReturnsTrue(LocationType locationType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = locationType }
+            }
+        };
+        Assert.That(sut.HasMatchingRegionalLocation, Is.EqualTo(expected));
+    }
+
+    [TestCase(CourseType.ShortCourse, true, false)]
+    [TestCase(CourseType.Apprenticeship, false, true)]
+    public void IsShortCourseAndIsApprenticeship_AreDerivedFromCourseType(CourseType courseType, bool isShortCourse, bool isApprenticeship)
+    {
+        var sut = new CourseProviderViewModel { CourseType = courseType };
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.IsShortCourse, Is.EqualTo(isShortCourse));
+            Assert.That(sut.IsApprenticeship, Is.EqualTo(isApprenticeship));
+        });
     }
 
     [Test]
-    public void HasMatchingRegionalLocation_WhenNationalLocationExists_ReturnsTrue()
+    public void ClosestProviderLocation_ReturnsLocationWithSmallestCourseDistance()
+    {
+        var closest = new LocationModel { LocationType = LocationType.Provider, CourseDistance = 1.2 };
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+                {
+                    new LocationModel { LocationType = LocationType.Provider, CourseDistance = 5.0 },
+                    closest,
+                    new LocationModel { LocationType = LocationType.Provider, CourseDistance = 3.5 }
+                }
+        };
+
+        Assert.That(sut.ClosestProviderLocation, Is.EqualTo(closest));
+    }
+
+    [Test]
+    public void ClosestProviderLocation_WhenNoneAreProvider_ReturnsNull()
     {
         var sut = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
-            {
-                new LocationModel { LocationType = LocationType.National}
-            }
+                {
+                    new LocationModel { LocationType = LocationType.Online, CourseDistance = 1.0 },
+                    new LocationModel { LocationType = LocationType.National, CourseDistance = 2.0 }
+                }
         };
-        Assert.That(sut.HasMatchingRegionalLocation, Is.True);
+
+        Assert.That(sut.ClosestProviderLocation, Is.Null);
     }
 }
+

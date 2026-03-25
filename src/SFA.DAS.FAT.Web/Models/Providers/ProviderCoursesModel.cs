@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Humanizer;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
@@ -7,15 +8,18 @@ namespace SFA.DAS.FAT.Web.Models.Providers;
 
 public class ProviderCoursesModel
 {
-    public List<ProviderCourseDetails> Courses { get; set; }
+    public List<ProviderCourseDetails> Courses { get; set; } = new();
 
-    public int CourseCount => Courses?.Count ?? 0;
+    public int Ukprn { get; set; }
+    public string Location { get; set; }
+
+    public int CourseCount => Courses.Count;
 
     public string CoursesDropdownText
     {
         get
         {
-            if (Courses == null)
+            if (Courses.Count == 0)
                 return string.Empty;
 
             return CourseCount == 1
@@ -27,47 +31,78 @@ public class ProviderCoursesModel
     public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
         new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
 
-    public static string GetDisplayNamePlural(ApprenticeshipType apprenticeshipType) =>
-        apprenticeshipType switch
-        {
-            ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship units",
-            ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeships",
-            _ => "Apprenticeships"
-        };
-
-    public static string GetDisplayNameSingular(ApprenticeshipType apprenticeshipType) =>
-       apprenticeshipType switch
-       {
-           ApprenticeshipType.ApprenticeshipUnit => "Apprenticeship unit",
-           ApprenticeshipType.FoundationApprenticeship => "Foundation apprenticeship",
-           _ => "Apprenticeship"
-       };
-
-    public IList<ProviderCourseGroup> GetCourseGroups()
+    private static readonly Dictionary<ApprenticeshipType, string> ApprenticeshipDisplayNames = new Dictionary<ApprenticeshipType, string>
     {
-        if (Courses == null || Courses.Count == 0)
+        [ApprenticeshipType.ApprenticeshipUnit] = "Apprenticeship unit",
+        [ApprenticeshipType.FoundationApprenticeship] = "Foundation apprenticeship",
+        [ApprenticeshipType.Apprenticeship] = "Apprenticeship"
+    };
+
+    private static string GetApprenticeshipTypeDisplayName(ApprenticeshipType apprenticeshipType) =>
+        ApprenticeshipDisplayNames.TryGetValue(apprenticeshipType, out var displayName)
+            ? displayName
+            : "Apprenticeship";
+
+    public IList<CourseGroupViewModel> GetCourseGroups()
+    {
+        if (Courses.Count == 0)
         {
-            return new List<ProviderCourseGroup>();
+            return new List<CourseGroupViewModel>();
         }
 
-        return ApprenticeshipTypeOrder
-            .Select(apprenticeshipType => new ProviderCourseGroup
+        var groupedCourses = Courses
+            .GroupBy(c => c.ApprenticeshipType)
+            .ToDictionary(group => group.Key, group => group.ToList());
+
+        var courseGroups = new List<CourseGroupViewModel>();
+
+        foreach (var apprenticeshipType in ApprenticeshipTypeOrder)
+        {
+            if (!groupedCourses.TryGetValue(apprenticeshipType, out var coursesByType) || coursesByType.Count == 0)
             {
-                ApprenticeshipType = apprenticeshipType,
-                DisplayNameHeader = GetDisplayNamePlural(apprenticeshipType),
-                DisplayName = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType) > 1 ? GetDisplayNamePlural(apprenticeshipType) : GetDisplayNameSingular(apprenticeshipType),
-                Courses = Courses.Where(c => c.ApprenticeshipType == apprenticeshipType).ToList(),
-                Count = Courses.Count(c => c.ApprenticeshipType == apprenticeshipType)
-            })
-            .Where(g => g.Count > 0)
-            .ToList();
+                continue;
+            }
+
+            courseGroups.Add(CreateCourseGroup(apprenticeshipType, coursesByType));
+        }
+
+        return courseGroups;
+    }
+
+    private CourseGroupViewModel CreateCourseGroup(
+        ApprenticeshipType apprenticeshipType,
+        List<ProviderCourseDetails> coursesByType)
+    {
+        var apprenticeshipTypeDisplayName = GetApprenticeshipTypeDisplayName(apprenticeshipType);
+        var pluralDisplayName = apprenticeshipTypeDisplayName.Pluralize();
+
+        return new CourseGroupViewModel
+        {
+            Ukprn = Ukprn,
+            Location = Location,
+            ApprenticeshipType = apprenticeshipType,
+            DisplayNameHeader = pluralDisplayName,
+            DisplayName = coursesByType.Count > 1 ? pluralDisplayName : apprenticeshipTypeDisplayName,
+            Courses = coursesByType,
+            Count = coursesByType.Count
+        };
     }
 
     public static implicit operator ProviderCoursesModel(List<GetProviderCourseDetails> source)
     {
         var model = new ProviderCoursesModel
         {
-            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList()
+            Courses = source?.Select(c => (ProviderCourseDetails)c).ToList() ?? new List<ProviderCourseDetails>()
+        };
+
+        return model;
+    }
+
+    public static implicit operator ProviderCoursesModel(List<ProviderCourseDetails> source)
+    {
+        var model = new ProviderCoursesModel
+        {
+            Courses = source?.Select(c => c).ToList() ?? new List<ProviderCourseDetails>()
         };
 
         return model;

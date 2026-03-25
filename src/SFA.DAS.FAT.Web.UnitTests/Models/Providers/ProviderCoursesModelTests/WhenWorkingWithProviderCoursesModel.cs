@@ -9,24 +9,31 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.Providers.ProviderCoursesModelTests;
 public class WhenWorkingWithProviderCoursesModel
 {
     [Test]
-    public void CourseCount_CoursesNull_ReturnsZero()
+    public void CourseCount_WhenProviderCoursesModelCreated_ReturnsZero()
     {
-        var sut = new ProviderCoursesModel
-        {
-            Courses = null
-        };
+        var sut = new ProviderCoursesModel();
+
 
         sut.CourseCount.Should().Be(0);
     }
 
     [Test]
-    public void CoursesDropdownText_CoursesNull_ReturnsEmptyString()
+    public void CoursesDropdownText_WhenProviderCoursesModelCreated_ReturnsEmptyString()
+    {
+        var sut = new ProviderCoursesModel();
+
+        sut.CoursesDropdownText.Should().Be(string.Empty);
+    }
+
+    [Test]
+    public void CoursesDropdownText_EmptyCourses_ReturnsZeroPluralMessage()
     {
         var sut = new ProviderCoursesModel
         {
-            Courses = null
+            Courses = new List<ProviderCourseDetails>()
         };
 
+        sut.CourseCount.Should().Be(0);
         sut.CoursesDropdownText.Should().Be(string.Empty);
     }
 
@@ -59,24 +66,15 @@ public class WhenWorkingWithProviderCoursesModel
         sut.CoursesDropdownText.Should().Be("View 3 courses delivered by this training provider");
     }
 
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship units")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeships")]
-    [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeships")]
-    public void GetDisplayNamePlural_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
-    {
-        ProviderCoursesModel.GetDisplayNamePlural(type).Should().Be(expected);
-    }
-
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "Apprenticeship unit")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "Foundation apprenticeship")]
-    [TestCase(ApprenticeshipType.Apprenticeship, "Apprenticeship")]
-    public void GetDisplayNameSingular_ApprenticeshipType_ReturnsExpectedDisplayName(ApprenticeshipType type, string expected)
-    {
-        ProviderCoursesModel.GetDisplayNameSingular(type).Should().Be(expected);
-    }
-
-    [Test]
-    public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames()
+    [TestCase(0, ApprenticeshipType.ApprenticeshipUnit, 2, "Apprenticeship units", "Apprenticeship units")]
+    [TestCase(1, ApprenticeshipType.FoundationApprenticeship, 1, "Foundation apprenticeships", "Foundation apprenticeship")]
+    [TestCase(2, ApprenticeshipType.Apprenticeship, 1, "Apprenticeships", "Apprenticeship")]
+    public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames(
+        int groupIndex,
+        ApprenticeshipType expectedType,
+        int expectedCount,
+        string expectedDisplayNameHeader,
+        string expectedDisplayName)
     {
         var courses = new List<ProviderCourseDetails>
         {
@@ -94,30 +92,18 @@ public class WhenWorkingWithProviderCoursesModel
         var groups = sut.GetCourseGroups();
 
         groups.Count.Should().Be(3);
-        groups[0].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[0]);
-        groups[1].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[1]);
-        groups[2].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[2]);
 
-        groups[0].Count.Should().Be(2);
-        groups[1].Count.Should().Be(1);
-        groups[2].Count.Should().Be(1);
-
-        groups[0].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
-        groups[1].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[1].ApprenticeshipType));
-        groups[2].DisplayNameHeader.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[2].ApprenticeshipType));
-
-        groups[0].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNamePlural(groups[0].ApprenticeshipType));
-        groups[1].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[1].ApprenticeshipType));
-        groups[2].DisplayName.Should().Be(ProviderCoursesModel.GetDisplayNameSingular(groups[2].ApprenticeshipType));
+        groups[groupIndex].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[groupIndex]);
+        groups[groupIndex].ApprenticeshipType.Should().Be(expectedType);
+        groups[groupIndex].Count.Should().Be(expectedCount);
+        groups[groupIndex].DisplayNameHeader.Should().Be(expectedDisplayNameHeader);
+        groups[groupIndex].DisplayName.Should().Be(expectedDisplayName);
     }
 
     [Test]
-    public void GetCourseGroups_CoursesNull_ReturnsEmptyList()
+    public void GetCourseGroups_DefaultCourses_ReturnsEmptyList()
     {
-        var sut = new ProviderCoursesModel
-        {
-            Courses = null
-        };
+        var sut = new ProviderCoursesModel();
 
         var groups = sut.GetCourseGroups();
 
@@ -140,14 +126,39 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
-    public void ImplicitOperator_SourceNull_ReturnsModelWithNullCourses()
+    public void GetCourseGroups_SetsUkprnAndLocationOnGroups()
+    {
+        var courses = new List<ProviderCourseDetails>
+        {
+            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.ApprenticeshipUnit },
+            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship }
+        };
+
+        var sut = new ProviderCoursesModel
+        {
+            Courses = courses,
+            Ukprn = 123456,
+            Location = "TestLocation"
+        };
+
+        var groups = sut.GetCourseGroups();
+
+        groups.Should().NotBeNull();
+        groups.Should().HaveCount(2);
+        groups.All(g => g.Ukprn == 123456).Should().BeTrue();
+        groups.All(g => g.Location == "TestLocation").Should().BeTrue();
+    }
+
+    [Test]
+    public void ImplicitOperator_SourceNull_ReturnsModelWithEmptyCourses()
     {
         List<GetProviderCourseDetails> source = null;
 
         ProviderCoursesModel sut = source;
 
         sut.Should().NotBeNull();
-        sut.Courses.Should().BeNull();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Should().BeEmpty();
         sut.CourseCount.Should().Be(0);
     }
 
@@ -165,5 +176,35 @@ public class WhenWorkingWithProviderCoursesModel
         sut.Should().NotBeNull();
         sut.Courses.Should().NotBeNull();
         sut.Courses.Count.Should().Be(source.Count);
+    }
+
+    [Test]
+    public void ImplicitOperator_FromProviderCourseDetails_SourceNull_ReturnsModelWithEmptyCourses()
+    {
+        List<ProviderCourseDetails> source = null;
+
+        ProviderCoursesModel sut = source;
+
+        sut.Should().NotBeNull();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Should().BeEmpty();
+        sut.CourseCount.Should().Be(0);
+    }
+
+    [Test]
+    public void ImplicitOperator_FromProviderCourseDetails_SourceWithItems_MapsToModelCourses()
+    {
+        var source = new List<ProviderCourseDetails>
+        {
+            new ProviderCourseDetails { CourseName = "X", LarsCode = "10", Level = 3 },
+            new ProviderCourseDetails { CourseName = "Y", LarsCode = "20", Level = 4 }
+        };
+
+        ProviderCoursesModel sut = source;
+
+        sut.Should().NotBeNull();
+        sut.Courses.Should().NotBeNull();
+        sut.Courses.Count.Should().Be(source.Count);
+        sut.Courses.Select(c => c.CourseName).Should().BeEquivalentTo(source.Select(s => s.CourseName));
     }
 }
