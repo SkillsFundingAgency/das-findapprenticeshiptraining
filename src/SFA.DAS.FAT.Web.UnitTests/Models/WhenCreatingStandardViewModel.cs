@@ -9,9 +9,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models;
 
 public class WhenCreatingStandardViewModel
 {
-    [TestCase(ApprenticeshipType.Apprenticeship, "app-apprenticeship-type-tag--apprenticeship")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "app-apprenticeship-type-tag--foundationApprenticeship")]
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "app-apprenticeship-type-tag--apprenticeshipUnit")]
+    [TestCase(ApprenticeshipType.Apprenticeship, "govuk-tag--blue")]
+    [TestCase(ApprenticeshipType.FoundationApprenticeship, "govuk-tag--pink")]
+    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "govuk-tag--purple")]
     public void ApprenticeshipTypeTagClass_ForKnownType_ReturnsExpectedCssClass(
         ApprenticeshipType apprenticeshipType,
         string expectedCssClass)

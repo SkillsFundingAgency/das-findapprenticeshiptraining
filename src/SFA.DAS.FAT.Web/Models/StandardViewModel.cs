@@ -25,9 +25,9 @@ public class StandardViewModel
 
     public string ApprenticeshipTypeTagClass => ApprenticeshipType switch
     {
-        ApprenticeshipType.Apprenticeship => "app-apprenticeship-type-tag--apprenticeship",
-        ApprenticeshipType.FoundationApprenticeship => "app-apprenticeship-type-tag--foundationApprenticeship",
-        ApprenticeshipType.ApprenticeshipUnit => "app-apprenticeship-type-tag--apprenticeshipUnit",
+        ApprenticeshipType.Apprenticeship => "govuk-tag--blue",
+        ApprenticeshipType.FoundationApprenticeship => "govuk-tag--pink",
+        ApprenticeshipType.ApprenticeshipUnit => "govuk-tag--purple",
         _ => string.Empty
     };
 

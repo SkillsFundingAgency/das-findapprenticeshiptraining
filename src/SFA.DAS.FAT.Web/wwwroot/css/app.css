@@ -581,17 +581,3 @@
     text-transform: none;
 }
 
-.app-apprenticeship-type-tag--apprenticeship {
-    color: #0C2D4A;
-    background-color: #BBD4EB;
-}
-
-.app-apprenticeship-type-tag--foundationApprenticeship {
-    color: #80224D;
-    background-color: #F7D7E6;
-}
-
-.app-apprenticeship-type-tag--apprenticeshipUnit {
-    color: #3D2375;
-    background-color: #DBD5E9;
-}
