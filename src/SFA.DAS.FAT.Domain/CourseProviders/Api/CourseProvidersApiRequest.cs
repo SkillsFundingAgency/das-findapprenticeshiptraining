@@ -11,10 +11,10 @@ namespace SFA.DAS.FAT.Domain.CourseProviders.Api;
 public class CourseProvidersApiRequest : IGetApiRequest
 {
     private readonly string _location;
-    private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes;
-    private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes;
-    private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes;
-    private readonly IEnumerable<QarRating> _qarRatings;
+    private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes = [];
+    private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes = [];
+    private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes = [];
+    private readonly IEnumerable<QarRating> _qarRatings = [];
 
     private readonly ProviderOrderBy _orderBy;
     private readonly int? _distance;
@@ -90,7 +90,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
 
     private string AddQarRatingsToUrl(string buildUrl)
     {
-        if (_qarRatings != null && _qarRatings.Any())
+        if (_qarRatings.Any())
         {
             buildUrl += $"&qar={string.Join("&qar=", _qarRatings)}";
         }
@@ -100,13 +100,13 @@ public class CourseProvidersApiRequest : IGetApiRequest
 
     private string AddProviderRatingsToUrl(string buildUrl)
     {
-        if (_employerProviderRatingTypes != null && _employerProviderRatingTypes.Any())
+        if (_employerProviderRatingTypes.Any())
         {
             buildUrl +=
                 $"&employerProviderRatings={string.Join("&employerProviderRatings=", _employerProviderRatingTypes)}";
         }
 
-        if (_apprenticeProviderRatingTypes != null && _apprenticeProviderRatingTypes.Any())
+        if (_apprenticeProviderRatingTypes.Any())
         {
             buildUrl +=
                 $"&apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", _apprenticeProviderRatingTypes)}";
@@ -117,7 +117,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
 
     private string AddDeliveryModesToUrl(string buildUrl)
     {
-        if (_deliveryModeTypes != null && _deliveryModeTypes.Any())
+        if (_deliveryModeTypes.Any())
         {
             buildUrl += $"&deliveryModes={string.Join("&deliveryModes=", _deliveryModeTypes)}";
         }

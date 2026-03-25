@@ -24,7 +24,7 @@ public class GetCourseQueryResult
     public string StandardPageUrl { get; set; }
 
     public int IncentivePayment { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public List<Ksb> Ksbs { get; set; } = [];
 
     public ApprenticeshipType ApprenticeshipType { get; set; }

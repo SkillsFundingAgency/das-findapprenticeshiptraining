@@ -93,11 +93,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
 
-    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT =
-        "Find out more about apprenticeship types (opens in new tab)";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
 
-    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK =
-        "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
@@ -222,11 +220,11 @@ public class CoursesViewModel : PageLinksViewModelBase
                     CreateCheckboxListFilterSection(
                         "types-filter",
                         nameof(FilterType.ApprenticeshipTypes),
-                        APPRENTICESHIP_TYPES_SECTION_HEADING,
+                        TRAINING_TYPES_SECTION_HEADING,
                         null,
                         ApprenticeshipTypesFilterHelper.BuildItems(SelectedTypes),
-                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
-                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
+                        TRAINING_TYPE_FIND_OUT_MORE_TEXT,
+                        TRAINING_TYPE_FIND_OUT_MORE_LINK
                     ),
                     CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
                     CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null, GenerateRouteFilterItems())
@@ -243,7 +241,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             Value = category.Name,
             DisplayText = category.Name,
-            IsSelected = SelectedRoutes?.Contains(category.Name) ?? false
+            IsSelected = SelectedRoutes.Contains(category.Name)
         })
         .ToList() ?? [];
     }
@@ -255,7 +253,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             Value = level.Code.ToString(),
             DisplayText = $"Level {level.Code}",
             DisplayDescription = $"Equal to {level.Name}",
-            IsSelected = SelectedLevels?.Contains(level.Code) ?? false
+            IsSelected = SelectedLevels.Contains(level.Code)
         })
         .ToList() ?? [];
     }
@@ -276,7 +274,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
 
-        if (SelectedLevels?.Count > 0 && Levels.Count > 0)
+        if (SelectedLevels.Count > 0 && Levels.Count > 0)
         {
             var selectedLevelNames = Levels
                 .Where(level => SelectedLevels.Contains(level.Code))
@@ -286,7 +284,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Levels, selectedLevelNames);
         }
 
-        if (SelectedRoutes?.Count > 0 && Routes.Count > 0)
+        if (SelectedRoutes.Count > 0 && Routes.Count > 0)
         {
             var validRoutes = SelectedRoutes
                 .Where(route => Routes.Exists(r => r.Name == route))
@@ -295,7 +293,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
 
-        if (SelectedTypes?.Count > 0)
+        if (SelectedTypes.Count > 0)
         {
             AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTypes.ToList());
         }

@@ -33,7 +33,7 @@ public class WhenGettingCourseProviders
             OrderBy = ProviderOrderBy.Distance,
             Distance = query.Distance,
             Location = query.Location,
-            DeliveryModeTypes = query.DeliveryModes?.ToList(),
+            DeliveryModeTypes = query.DeliveryModes.ToList(),
             EmployerProviderRatingTypes = query.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatingTypes = query.ApprenticeProviderRatings.ToList(),
             QarRatings = query.Qar.ToList(),

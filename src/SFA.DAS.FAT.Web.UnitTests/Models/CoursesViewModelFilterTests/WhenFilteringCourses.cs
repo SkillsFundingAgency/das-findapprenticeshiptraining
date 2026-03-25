@@ -195,10 +195,10 @@ public sealed class WhenFilteringCourses
             var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
             Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(3));
             Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
-            Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
+            Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.TRAINING_TYPES_SECTION_HEADING));
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
-            Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
-            Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
+            Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.TRAINING_TYPE_FIND_OUT_MORE_TEXT));
+            Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.TRAINING_TYPE_FIND_OUT_MORE_LINK));
             Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
