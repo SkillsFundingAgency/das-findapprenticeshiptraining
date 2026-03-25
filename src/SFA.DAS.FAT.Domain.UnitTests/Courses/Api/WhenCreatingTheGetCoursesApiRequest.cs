@@ -64,9 +64,9 @@ public class WhenCreatingTheGetCoursesApiRequest
             Keyword = null,
             Location = null,
             Distance = null,
-            RouteIds = new List<int>(),
-            ApprenticeshipTypes = null,
-            Levels = new List<int>(),
+            RouteIds = [],
+            ApprenticeshipTypes = [],
+            Levels = [],
             Page = 1,
             OrderBy = OrderBy.Title
         };
