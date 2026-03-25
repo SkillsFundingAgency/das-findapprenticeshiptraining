@@ -568,16 +568,7 @@
     padding-bottom: 0px
 }
 
-.app-apprenticeship-type-tag {
-    display: inline-flex;
-    width: fit-content;
-    white-space: nowrap;
-    padding: 4px 8px;
-    line-height: 1.25;
-    font-family: "GDS Transport", arial, sans-serif;
-    font-size: 1.1875rem;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
+.app-tag {
+    max-width: fit-content;
 }
 
