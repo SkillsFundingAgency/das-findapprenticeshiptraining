@@ -38,11 +38,11 @@ public class ProvidersController : Controller
 
         var response = await _mediator.Send(new GetProviderQuery(ukprn));
 
-        var vm = (ProviderDetailsViewModel)response;
-        vm.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
+        var viewModel = (ProviderDetailsViewModel)response;
+        viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
             response.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
-        vm.Location = location;
-        return View(vm);
+        viewModel.Location = location;
+        return View(viewModel);
     }
 }
 

@@ -3,8 +3,10 @@ using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models.Providers;
 
-public class ProviderCourseGroup
+public class CourseGroupViewModel
 {
+    public int Ukprn { get; set; }
+    public string Location { get; set; }
     public ApprenticeshipType ApprenticeshipType { get; set; }
     public string DisplayNameHeader { get; set; }
     public string DisplayName { get; set; }

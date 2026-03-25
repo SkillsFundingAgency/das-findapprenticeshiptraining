@@ -20,4 +20,14 @@ public class ProviderCourseDetails
             LarsCode = source.LarsCode
         };
     }
+    public static implicit operator ProviderCourseDetails(ProviderCourseModel source)
+    {
+        return new ProviderCourseDetails
+        {
+            CourseName = source.CourseName,
+            ApprenticeshipType = source.ApprenticeshipType,
+            Level = source.Level,
+            LarsCode = source.LarsCode
+        };
+    }
 }
