@@ -59,8 +59,8 @@
                         {
 
                             <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
-                                <strong class="govuk-!-margin-bottom-4 govuk-tag @standard.ApprenticeshipTypeTagClass app-tag">
-                                    @standard.ApprenticeshipType.GetDescription().Singularize()
+                                <strong class="govuk-!-margin-bottom-4 govuk-tag @standard.LearningTypeTagClass app-tag">
+                                    @standard.LearningType.GetDescription().Singularize()
                                 </strong>
                                
                                 <h2 class="govuk-heading-m das-search-results__heading">
@@ -81,14 +81,14 @@
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Type</dt>
-                                        <dd class="das-definition-list__definition">@standard.ApprenticeshipType.GetDescription().Singularize()</dd>
+                                        <dd class="das-definition-list__definition">@standard.LearningType.GetDescription().Singularize()</dd>
                                     </dl>
 
                                     <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                         <dt class="das-definition-list__title">Job category</dt>
                                         <dd class="das-definition-list__definition">@standard.Route</dd>
                                     </dl>
-                                    @if (@standard.ApprenticeshipType == ApprenticeshipType.ApprenticeshipUnit)
+                                    @if (@standard.LearningType == LearningType.ApprenticeshipUnit)
                                     {
                                         <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
                                             <dt class="das-definition-list__title">Delivery hours</dt>

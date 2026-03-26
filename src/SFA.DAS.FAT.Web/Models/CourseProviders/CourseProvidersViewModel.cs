@@ -21,7 +21,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
     public CourseType CourseType { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public List<string> SelectedDeliveryModes { get; set; } = [];
     public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];

@@ -27,7 +27,7 @@ public class GetCourseQueryResult
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public List<Ksb> Ksbs { get; set; } = [];
 
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
 
     public List<Level> Levels { get; set; } = [];
 

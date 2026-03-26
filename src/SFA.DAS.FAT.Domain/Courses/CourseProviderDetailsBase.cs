@@ -12,7 +12,7 @@ public abstract class CourseProviderDetailsBase
     public ContactModel Contact { get; set; }
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IFateReferenceNumber { get; set; }

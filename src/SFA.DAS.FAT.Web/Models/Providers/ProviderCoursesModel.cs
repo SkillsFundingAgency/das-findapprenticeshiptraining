@@ -28,17 +28,17 @@ public class ProviderCoursesModel
         }
     }
 
-    public static readonly ApprenticeshipType[] ApprenticeshipTypeOrder =
-        new[] { ApprenticeshipType.ApprenticeshipUnit, ApprenticeshipType.FoundationApprenticeship, ApprenticeshipType.Apprenticeship };
+    public static readonly LearningType[] ApprenticeshipTypeOrder =
+        new[] { LearningType.ApprenticeshipUnit, LearningType.FoundationApprenticeship, LearningType.Apprenticeship };
 
-    private static readonly Dictionary<ApprenticeshipType, string> ApprenticeshipDisplayNames = new Dictionary<ApprenticeshipType, string>
+    private static readonly Dictionary<LearningType, string> ApprenticeshipDisplayNames = new Dictionary<LearningType, string>
     {
-        [ApprenticeshipType.ApprenticeshipUnit] = "Apprenticeship unit",
-        [ApprenticeshipType.FoundationApprenticeship] = "Foundation apprenticeship",
-        [ApprenticeshipType.Apprenticeship] = "Apprenticeship"
+        [LearningType.ApprenticeshipUnit] = "Apprenticeship unit",
+        [LearningType.FoundationApprenticeship] = "Foundation apprenticeship",
+        [LearningType.Apprenticeship] = "Apprenticeship"
     };
 
-    private static string GetApprenticeshipTypeDisplayName(ApprenticeshipType apprenticeshipType) =>
+    private static string GetApprenticeshipTypeDisplayName(LearningType apprenticeshipType) =>
         ApprenticeshipDisplayNames.TryGetValue(apprenticeshipType, out var displayName)
             ? displayName
             : "Apprenticeship";
@@ -70,7 +70,7 @@ public class ProviderCoursesModel
     }
 
     private CourseGroupViewModel CreateCourseGroup(
-        ApprenticeshipType apprenticeshipType,
+        LearningType apprenticeshipType,
         List<ProviderCourseDetails> coursesByType)
     {
         var apprenticeshipTypeDisplayName = GetApprenticeshipTypeDisplayName(apprenticeshipType);

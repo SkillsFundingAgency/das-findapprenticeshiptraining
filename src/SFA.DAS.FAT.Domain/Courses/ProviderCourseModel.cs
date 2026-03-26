@@ -3,7 +3,7 @@
 public sealed class ProviderCourseModel
 {
     public string CourseName { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; init; }
+    public LearningType ApprenticeshipType { get; init; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }

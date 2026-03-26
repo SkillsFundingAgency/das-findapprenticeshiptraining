@@ -66,22 +66,22 @@ public class WhenWorkingWithProviderCoursesModel
         sut.CoursesDropdownText.Should().Be("View 3 courses delivered by this training provider");
     }
 
-    [TestCase(0, ApprenticeshipType.ApprenticeshipUnit, 2, "Apprenticeship units", "Apprenticeship units")]
-    [TestCase(1, ApprenticeshipType.FoundationApprenticeship, 1, "Foundation apprenticeships", "Foundation apprenticeship")]
-    [TestCase(2, ApprenticeshipType.Apprenticeship, 1, "Apprenticeships", "Apprenticeship")]
+    [TestCase(0, LearningType.ApprenticeshipUnit, 2, "Apprenticeship units", "Apprenticeship units")]
+    [TestCase(1, LearningType.FoundationApprenticeship, 1, "Foundation apprenticeships", "Foundation apprenticeship")]
+    [TestCase(2, LearningType.Apprenticeship, 1, "Apprenticeships", "Apprenticeship")]
     public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames(
         int groupIndex,
-        ApprenticeshipType expectedType,
+        LearningType expectedType,
         int expectedCount,
         string expectedDisplayNameHeader,
         string expectedDisplayName)
     {
         var courses = new List<ProviderCourseDetails>
         {
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.Apprenticeship },
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.ApprenticeshipUnit },
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship },
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.ApprenticeshipUnit }
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.Apprenticeship },
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit },
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.FoundationApprenticeship },
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit }
         };
 
         var sut = new ProviderCoursesModel
@@ -130,8 +130,8 @@ public class WhenWorkingWithProviderCoursesModel
     {
         var courses = new List<ProviderCourseDetails>
         {
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.ApprenticeshipUnit },
-            new ProviderCourseDetails { ApprenticeshipType = ApprenticeshipType.FoundationApprenticeship }
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit },
+            new ProviderCourseDetails { ApprenticeshipType = LearningType.FoundationApprenticeship }
         };
 
         var sut = new ProviderCoursesModel

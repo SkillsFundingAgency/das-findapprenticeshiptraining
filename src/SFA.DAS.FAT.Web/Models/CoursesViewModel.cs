@@ -37,8 +37,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     public new string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
-
-    public List<string> SelectedTypes { get; set; } = [];
+    public List<string> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
@@ -219,10 +218,10 @@ public class CoursesViewModel : PageLinksViewModelBase
                 [
                     CreateCheckboxListFilterSection(
                         "types-filter",
-                        nameof(FilterType.ApprenticeshipTypes),
+                        nameof(FilterType.LearningTypes),
                         TRAINING_TYPES_SECTION_HEADING,
                         null,
-                        ApprenticeshipTypesFilterHelper.BuildItems(SelectedTypes),
+                        LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
                         TRAINING_TYPE_FIND_OUT_MORE_TEXT,
                         TRAINING_TYPE_FIND_OUT_MORE_LINK
                     ),
@@ -237,7 +236,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private List<FilterItemViewModel> GenerateRouteFilterItems()
     {
-        return Routes?.Select(category => new FilterItemViewModel
+        return Routes.Select(category => new FilterItemViewModel
         {
             Value = category.Name,
             DisplayText = category.Name,
@@ -248,7 +247,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
     {
-        return Levels?.Select(level => new FilterItemViewModel
+        return Levels.Select(level => new FilterItemViewModel
         {
             Value = level.Code.ToString(),
             DisplayText = $"Level {level.Code}",
@@ -293,9 +292,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
 
-        if (SelectedTypes.Count > 0)
+        if (SelectedTrainingTypes.Count > 0)
         {
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTypes.ToList());
+            var validTrainingTypes = SelectedTrainingTypes
+                .Where(type => Enum.IsDefined(typeof(LearningType), type))
+                .ToList();
+            AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes.ToList());
         }
 
         if (selectedFilters.Count == 0)
@@ -354,11 +356,11 @@ public class CoursesViewModel : PageLinksViewModelBase
                         }
                     }
                     break;
-                case FilterType.ApprenticeshipTypes:
+                case FilterType.LearningTypes:
                     {
-                        foreach (string type in SelectedTypes)
+                        foreach (string type in SelectedTrainingTypes)
                         {
-                            result.Add(ValueTuple.Create(nameof(FilterType.ApprenticeshipTypes), type));
+                            result.Add(ValueTuple.Create(nameof(FilterType.LearningTypes), type));
                         }
                     }
                     break;
@@ -372,7 +374,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         var routeValues = new Dictionary<string, string>
         {
-            { "larsCode", larsCode.ToString() },
+            { "larsCode", larsCode },
         };
 
         if (!string.IsNullOrWhiteSpace(Location))

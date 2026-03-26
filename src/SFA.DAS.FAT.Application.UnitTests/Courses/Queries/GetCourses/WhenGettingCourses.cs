@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            ApprenticeshipTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
+            LearningTypes = new List<string> { LearningType.FoundationApprenticeship.ToString(), LearningType.Apprenticeship.ToString() },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -72,6 +72,12 @@ public class WhenGettingCourses
             }
         };
 
+        var expectedLearningTypes = new List<LearningType>
+        {
+            LearningType.FoundationApprenticeship,
+            LearningType.Apprenticeship
+        };
+
         var coursesResponse = new GetCoursesResponse
         {
             Standards = new List<StandardModel>(),
@@ -93,7 +99,7 @@ public class WhenGettingCourses
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
                     r.OrderBy == query.OrderBy &&
-                    r.ApprenticeshipTypes.Count == 0
+                    r.LearningTypes.SequenceEqual(expectedLearningTypes)
                 )
             )
         )
@@ -117,7 +123,7 @@ public class WhenGettingCourses
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
                 r.BaseUrl == BASE_URL &&
-                r.ApprenticeshipTypes.Count == 0
+                r.LearningTypes.SequenceEqual(expectedLearningTypes)
             )
         ), Times.Once);
 
@@ -135,14 +141,14 @@ public class WhenGettingCourses
 
     [Test]
     [MoqInlineAutoData("", "", "")]
-    [MoqInlineAutoData("Foundation apprenticeships", "", "FoundationApprenticeship")]
-    [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
-    [MoqInlineAutoData("Apprenticeship units", "", "ApprenticeshipUnit")]
+    [MoqInlineAutoData("FoundationApprenticeship", "", "FoundationApprenticeship")]
+    [MoqInlineAutoData("Apprenticeship", "", "Apprenticeship")]
+    [MoqInlineAutoData("ApprenticeshipUnit", "", "ApprenticeshipUnit")]
     [MoqInlineAutoData("Foundation", "Standard", "")]
-    public async Task Handle_WhenOnlyOneApprenticeshipTypeSelected_CallsWithExpectedApprenticeshipType(
-        string apprenticeshipType1,
-        string apprenticeshipType2,
-        string requestApprenticeshipType,
+    public async Task Handle_WhenOnlyOneLearningTypeSelected_CallsWithExpectedLearningType(
+        string learningType1,
+        string learningType2,
+        string requestLearningType,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -155,14 +161,14 @@ public class WhenGettingCourses
             BaseUrl = BASE_URL
         });
 
-        var apprenticeshipTypes = new List<string>();
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType1)) { apprenticeshipTypes.Add(apprenticeshipType1); }
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType2)) { apprenticeshipTypes.Add(apprenticeshipType2); }
+        var learningTypes = new List<string>();
+        if (!string.IsNullOrWhiteSpace(learningType1)) { learningTypes.Add(learningType1); }
+        if (!string.IsNullOrWhiteSpace(learningType2)) { learningTypes.Add(learningType2); }
 
         var query = new GetCoursesQuery()
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = apprenticeshipTypes,
+            LearningTypes = learningTypes,
             OrderBy = OrderBy.Title
         };
 
@@ -187,10 +193,10 @@ public class WhenGettingCourses
 
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
-                string.IsNullOrEmpty(requestApprenticeshipType)
-                    ? r.ApprenticeshipTypes.Count == 0
-                    : r.ApprenticeshipTypes.Count == 1 &&
-                      r.ApprenticeshipTypes[0].ToString() == requestApprenticeshipType
+                string.IsNullOrEmpty(requestLearningType)
+                    ? r.LearningTypes.Count == 0
+                    : r.LearningTypes.Count == 1 &&
+                      r.LearningTypes[0].ToString() == requestLearningType
             )
         ), Times.Once);
     }
@@ -217,7 +223,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string> { "Route1", "Route3" },
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 
@@ -260,7 +266,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 
@@ -298,7 +304,7 @@ public class WhenGettingCourses
         {
             Page = 5,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 
@@ -337,7 +343,7 @@ public class WhenGettingCourses
             Location = null,
             Distance = null,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 
@@ -376,7 +382,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 
@@ -414,7 +420,7 @@ public class WhenGettingCourses
         {
             Levels = expectedLevels,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<string>(),
             OrderBy = OrderBy.Title
         };
 

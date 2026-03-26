@@ -17,7 +17,7 @@ public class SearchCoursesController() : Controller
         {
             ShowSearchCrumb = false,
             ShowShortListLink = true,
-            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems([], true)
+            TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems([], true)
         };
         return View(model);
     }
@@ -37,7 +37,7 @@ public class SearchCoursesController() : Controller
             request.Location = submitModel.Location;
             request.Distance = DistanceService.TEN_MILES.ToString();
         }
-        request.ApprenticeshipTypes = submitModel.SelectedTypes;
+        request.LearningTypes = submitModel.SelectedTypes;
 
         return RedirectToAction("Index", "Courses", request);
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
@@ -34,7 +35,7 @@ public static class FilterService
         EmployerProviderRatings,
         ApprenticeProviderRatings,
         Reviews,
-        ApprenticeshipTypes
+        LearningTypes
     }
 
     public const string KEYWORD_SECTION_HEADING = "Course";
@@ -82,7 +83,7 @@ public static class FilterService
         { FilterType.QarRatings, QAR_SECTION_HEADING },
         { FilterType.EmployerProviderRatings, EMPLOYER_REVIEWS_SECTION_HEADING},
         { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING},
-        { FilterType.ApprenticeshipTypes, TRAINING_TYPES_SECTION_HEADING}
+        { FilterType.LearningTypes, TRAINING_TYPES_SECTION_HEADING}
     };
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
@@ -360,8 +361,16 @@ public static class FilterService
         return key switch
         {
             FilterType.Location => GetWorkLocationDistanceDisplayMessage(queryParams),
+            FilterType.LearningTypes => GetLearningTypeDisplayMessage(displayValue),
             _ => displayValue
         };
+    }
+
+    private static string GetLearningTypeDisplayMessage(string displayValue)
+    {
+        return Enum.TryParse<LearningType>(displayValue, ignoreCase: true, out var learningType)
+            ? learningType.GetDescription()
+            : string.Empty;
     }
 
     private static string GetWorkLocationDistanceDisplayMessage(Dictionary<FilterType, List<string>> queryParams)
