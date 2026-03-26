@@ -567,3 +567,8 @@
 .app-details-bottom {
     padding-bottom: 0px
 }
+
+.app-tag {
+    max-width: fit-content;
+}
+

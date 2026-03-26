@@ -9,11 +9,11 @@ public class GetCoursesApiRequest : IGetApiRequest
 {
     public string Keyword { get; init; }
 
-    public List<int> RouteIds { get; init; }
+    public List<int> RouteIds { get; init; } = [];
 
-    public List<int> Levels { get; init; }
+    public List<int> Levels { get; init; } = [];
 
-    public string ApprenticeshipType { get; init; }
+    public List<ApprenticeshipType> ApprenticeshipTypes { get; init; } = [];
 
     public OrderBy OrderBy { get; init; }
 
@@ -50,25 +50,19 @@ public class GetCoursesApiRequest : IGetApiRequest
             queryParams.Add($"distance={Distance.Value}");
         }
 
-        if (!string.IsNullOrWhiteSpace(ApprenticeshipType))
+        foreach (var apprenticeshipType in ApprenticeshipTypes)
         {
-            queryParams.Add($"apprenticeshipType={ApprenticeshipType}");
+            queryParams.Add($"apprenticeshipTypes={apprenticeshipType}");
         }
 
-        if (RouteIds != null && RouteIds.Count > 0)
+        foreach (int routeId in RouteIds)
         {
-            foreach (int routeId in RouteIds)
-            {
-                queryParams.Add($"routeIds={routeId}");
-            }
+            queryParams.Add($"routeIds={routeId}");
         }
 
-        if (Levels != null && Levels.Count > 0)
+        foreach (int level in Levels)
         {
-            foreach (int level in Levels)
-            {
-                queryParams.Add($"levels={level}");
-            }
+            queryParams.Add($"levels={level}");
         }
 
         queryParams.Add($"Page={Page}");
