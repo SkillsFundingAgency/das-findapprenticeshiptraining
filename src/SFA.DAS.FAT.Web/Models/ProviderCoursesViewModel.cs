@@ -7,8 +7,8 @@ namespace SFA.DAS.FAT.Web.Models
     public class ProviderCoursesViewModel
     {
         public int Total { get; set; }
-        public List<ProviderCourseViewModel> Courses { get; set; }
-        
+        public List<ProviderCourseViewModel> Courses { get; set; } = [];
+
         public static implicit operator ProviderCoursesViewModel(AdditionalCourses additionalCourses)
         {
             if (additionalCourses == null)
