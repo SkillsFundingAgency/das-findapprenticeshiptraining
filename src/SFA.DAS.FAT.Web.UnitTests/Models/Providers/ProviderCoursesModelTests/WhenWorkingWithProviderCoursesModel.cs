@@ -93,7 +93,7 @@ public class WhenWorkingWithProviderCoursesModel
 
         groups.Count.Should().Be(3);
 
-        groups[groupIndex].ApprenticeshipType.Should().Be(ProviderCoursesModel.ApprenticeshipTypeOrder[groupIndex]);
+        groups[groupIndex].ApprenticeshipType.Should().Be(ProviderCoursesModel.LearningTypeOrder[groupIndex]);
         groups[groupIndex].ApprenticeshipType.Should().Be(expectedType);
         groups[groupIndex].Count.Should().Be(expectedCount);
         groups[groupIndex].DisplayNameHeader.Should().Be(expectedDisplayNameHeader);

@@ -28,18 +28,18 @@ public class ProviderCoursesModel
         }
     }
 
-    public static readonly LearningType[] ApprenticeshipTypeOrder =
+    public static readonly LearningType[] LearningTypeOrder =
         new[] { LearningType.ApprenticeshipUnit, LearningType.FoundationApprenticeship, LearningType.Apprenticeship };
 
-    private static readonly Dictionary<LearningType, string> ApprenticeshipDisplayNames = new Dictionary<LearningType, string>
+    private static readonly Dictionary<LearningType, string> LearningTypeDisplayNames = new Dictionary<LearningType, string>
     {
         [LearningType.ApprenticeshipUnit] = "Apprenticeship unit",
         [LearningType.FoundationApprenticeship] = "Foundation apprenticeship",
         [LearningType.Apprenticeship] = "Apprenticeship"
     };
 
-    private static string GetApprenticeshipTypeDisplayName(LearningType apprenticeshipType) =>
-        ApprenticeshipDisplayNames.TryGetValue(apprenticeshipType, out var displayName)
+    private static string GetLearningTypeDisplayName(LearningType learningType) =>
+        LearningTypeDisplayNames.TryGetValue(learningType, out var displayName)
             ? displayName
             : "Apprenticeship";
 
@@ -56,33 +56,32 @@ public class ProviderCoursesModel
 
         var courseGroups = new List<CourseGroupViewModel>();
 
-        foreach (var apprenticeshipType in ApprenticeshipTypeOrder)
+        foreach (var learningType in LearningTypeOrder)
         {
-            if (!groupedCourses.TryGetValue(apprenticeshipType, out var coursesByType) || coursesByType.Count == 0)
+            if (!groupedCourses.TryGetValue(learningType, out var coursesByType) || coursesByType.Count == 0)
             {
                 continue;
             }
 
-            courseGroups.Add(CreateCourseGroup(apprenticeshipType, coursesByType));
+            courseGroups.Add(CreateCourseGroup(learningType, coursesByType));
         }
 
         return courseGroups;
     }
 
     private CourseGroupViewModel CreateCourseGroup(
-        LearningType apprenticeshipType,
+        LearningType learningType,
         List<ProviderCourseDetails> coursesByType)
     {
-        var apprenticeshipTypeDisplayName = GetApprenticeshipTypeDisplayName(apprenticeshipType);
-        var pluralDisplayName = apprenticeshipTypeDisplayName.Pluralize();
-
+        var learningTypeDisplayName = GetLearningTypeDisplayName(learningType);
+        var pluralDisplayName = learningTypeDisplayName.Pluralize();
         return new CourseGroupViewModel
         {
             Ukprn = Ukprn,
             Location = Location,
-            ApprenticeshipType = apprenticeshipType,
+            ApprenticeshipType = learningType,
             DisplayNameHeader = pluralDisplayName,
-            DisplayName = coursesByType.Count > 1 ? pluralDisplayName : apprenticeshipTypeDisplayName,
+            DisplayName = coursesByType.Count > 1 ? pluralDisplayName : learningTypeDisplayName,
             Courses = coursesByType,
             Count = coursesByType.Count
         };
