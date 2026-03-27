@@ -276,7 +276,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     private void AddDeliveryModesFilter(Dictionary<FilterType, List<string>> selectedFilters)
     {
-        if (SelectedDeliveryModes.Count > 0 && SelectedDeliveryModes.Count > 0)
+        if (SelectedDeliveryModes.Count > 0)
         {
             var deliveryModes = GenerateDeliveryModesFilterItems();
             var selectedDeliveryNames = deliveryModes

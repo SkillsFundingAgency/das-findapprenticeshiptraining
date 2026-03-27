@@ -242,7 +242,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             DisplayText = category.Name,
             IsSelected = SelectedRoutes.Contains(category.Name)
         })
-        .ToList() ?? [];
+        .ToList();
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
@@ -254,7 +254,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             DisplayDescription = $"Equal to {level.Name}",
             IsSelected = SelectedLevels.Contains(level.Code)
         })
-        .ToList() ?? [];
+        .ToList();
     }
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()

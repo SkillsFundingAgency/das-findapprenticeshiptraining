@@ -11,10 +11,10 @@ namespace SFA.DAS.FAT.Domain.CourseProviders.Api;
 public class CourseProvidersApiRequest : IGetApiRequest
 {
     private readonly string _location;
-    private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes = [];
-    private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes = [];
-    private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes = [];
-    private readonly IEnumerable<QarRating> _qarRatings = [];
+    private readonly IEnumerable<ProviderDeliveryMode> _deliveryModeTypes;
+    private readonly IEnumerable<ProviderRating> _employerProviderRatingTypes;
+    private readonly IEnumerable<ProviderRating> _apprenticeProviderRatingTypes;
+    private readonly IEnumerable<QarRating> _qarRatings;
 
     private readonly ProviderOrderBy _orderBy;
     private readonly int? _distance;
