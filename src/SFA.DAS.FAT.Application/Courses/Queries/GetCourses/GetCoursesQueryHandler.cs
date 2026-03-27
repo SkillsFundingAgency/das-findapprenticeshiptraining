@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;

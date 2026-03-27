@@ -31,6 +31,14 @@ public class StandardViewModel
         _ => string.Empty
     };
 
+    public string ApprenticeshipTypeTagClass => ApprenticeshipType switch
+    {
+        ApprenticeshipType.Apprenticeship => "govuk-tag--blue",
+        ApprenticeshipType.FoundationApprenticeship => "govuk-tag--pink",
+        ApprenticeshipType.ApprenticeshipUnit => "govuk-tag--purple",
+        _ => string.Empty
+    };
+
     public static implicit operator StandardViewModel(StandardModel source)
     {
         return new StandardViewModel
