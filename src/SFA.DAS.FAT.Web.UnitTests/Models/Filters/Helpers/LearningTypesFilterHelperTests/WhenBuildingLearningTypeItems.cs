@@ -11,7 +11,7 @@ public sealed class WhenBuildingLearningTypeItems
     [Test]
     public void BuildItems_WithEmptySelectedTypes_ReturnsAllUnselectedTypes()
     {
-        var items = LearningTypesFilterHelper.BuildItems(new List<string>());
+        var items = LearningTypesFilterHelper.BuildItems(new List<LearningType>());
 
         items.Should().NotBeNull();
         items.Should().HaveCount(3);
@@ -22,7 +22,7 @@ public sealed class WhenBuildingLearningTypeItems
     [TestCase(false, false)]
     public void BuildItems_WithBoldDisplayText_FlagsAllItems(bool isLearningTypeEmphasised, bool expectedBold)
     {
-        var items = LearningTypesFilterHelper.BuildItems(new List<string>(), isLearningTypeEmphasised);
+        var items = LearningTypesFilterHelper.BuildItems(new List<LearningType>(), isLearningTypeEmphasised);
 
         items.Should().HaveCount(3);
         items.All(i => i.IsLearningTypeEmphasised == expectedBold).Should().BeTrue();
@@ -31,9 +31,9 @@ public sealed class WhenBuildingLearningTypeItems
     [Test]
     public void BuildItems_WithSelectedTypes_MapsDescriptionsForAllTypes()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            LearningType.FoundationApprenticeship.GetDescription()
+            LearningType.FoundationApprenticeship
         };
 
         var items = LearningTypesFilterHelper.BuildItems(selectedTypes);
@@ -55,10 +55,10 @@ public sealed class WhenBuildingLearningTypeItems
     [Test]
     public void BuildItems_WithSelectedTypes_SetsSelectionBasedOnMatch()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            LearningType.ApprenticeshipUnit.ToString(),
-            LearningType.Apprenticeship.ToString()
+            LearningType.ApprenticeshipUnit,
+            LearningType.Apprenticeship
         };
 
         var items = LearningTypesFilterHelper.BuildItems(selectedTypes);

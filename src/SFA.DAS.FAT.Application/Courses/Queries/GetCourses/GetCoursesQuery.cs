@@ -14,6 +14,6 @@ public class GetCoursesQuery : IRequest<GetCoursesQueryResult>
     public List<string> Routes { get; set; } = [];
     public List<int> Levels { get; set; } = [];
     public OrderBy OrderBy { get; set; }
-    public List<string> LearningTypes { get; set; } = [];
+    public List<LearningType> LearningTypes { get; set; } = [];
     public Guid? ShortlistUserId { get; set; }
 }

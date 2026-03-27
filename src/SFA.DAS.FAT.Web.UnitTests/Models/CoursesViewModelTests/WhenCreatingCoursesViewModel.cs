@@ -54,7 +54,7 @@ public class WhenCreatingCoursesViewModel
             Keyword = "test",
             Location = "SW1",
             Distance = "10",
-            SelectedTrainingTypes = ["Standard"],
+            SelectedTrainingTypes = [LearningType.Apprenticeship],
             Levels = [new LevelViewModel(new Level { Code = 2, Name = "GCSE" }, [])],
             Routes = [new RouteViewModel(new Route { Id = 1, Name = "Construction" }, [])]
         };
@@ -469,7 +469,7 @@ public class WhenCreatingCoursesViewModel
     [Test]
     public void ToQueryString_WithSelectedTypes_IncludesLearningTypes()
     {
-        var selectedTypes = new List<string> { "Apprenticeship" };
+        var selectedTypes = new List<LearningType> { LearningType.Apprenticeship };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
             SelectedTrainingTypes = selectedTypes

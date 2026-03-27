@@ -12,9 +12,9 @@ public sealed class WhenBuildingTrainingTypesFilter
     [Test]
     public void TrainingTypesCheckboxListItems_WithSelectedTypes_ConfiguredCorrectly()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            LearningType.FoundationApprenticeship.ToString()
+            LearningType.FoundationApprenticeship
         };
 
         var sut = new SearchCoursesViewModel
@@ -59,9 +59,9 @@ public sealed class WhenBuildingTrainingTypesFilter
     [Test]
     public void TrainingTypesCheckboxListItems_WithSelectedTypes_ReflectsSelection()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            LearningType.Apprenticeship.ToString()
+            LearningType.Apprenticeship
         };
 
         var sut = new SearchCoursesViewModel

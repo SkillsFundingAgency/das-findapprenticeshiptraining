@@ -37,7 +37,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     public new string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
-    public List<string> SelectedTrainingTypes { get; set; } = [];
+    public List<LearningType> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
@@ -296,8 +296,9 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             var validTrainingTypes = SelectedTrainingTypes
                 .Where(type => Enum.IsDefined(typeof(LearningType), type))
+                .Select(type => type.ToString())
                 .ToList();
-            AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes.ToList());
+            AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes);
         }
 
         if (selectedFilters.Count == 0)
@@ -358,9 +359,9 @@ public class CoursesViewModel : PageLinksViewModelBase
                     break;
                 case FilterType.LearningTypes:
                     {
-                        foreach (string type in SelectedTrainingTypes)
+                        foreach (var type in SelectedTrainingTypes)
                         {
-                            result.Add(ValueTuple.Create(nameof(FilterType.LearningTypes), type));
+                            result.Add(ValueTuple.Create(nameof(FilterType.LearningTypes), type.ToString()));
                         }
                     }
                     break;

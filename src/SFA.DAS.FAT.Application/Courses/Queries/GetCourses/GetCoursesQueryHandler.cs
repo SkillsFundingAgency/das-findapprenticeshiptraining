@@ -56,7 +56,7 @@ public class GetCoursesQueryHandler(
         };
     }
 
-    private static List<LearningType> BuildLearningTypes(List<string> selectedLearningTypes)
+    private static List<LearningType> BuildLearningTypes(List<LearningType> selectedLearningTypes)
     {
         if (selectedLearningTypes.Count == 0 || selectedLearningTypes.Count == 3)
         {
@@ -69,13 +69,13 @@ public class GetCoursesQueryHandler(
         {
             switch (learningType)
             {
-                case var _ when learningType == LearningType.Apprenticeship.ToString():
+                case var _ when learningType == LearningType.Apprenticeship:
                     mappedLearningTypes.Add(LearningType.Apprenticeship);
                     break;
-                case var _ when learningType == LearningType.FoundationApprenticeship.ToString():
+                case var _ when learningType == LearningType.FoundationApprenticeship:
                     mappedLearningTypes.Add(LearningType.FoundationApprenticeship);
                     break;
-                case var _ when learningType == LearningType.ApprenticeshipUnit.ToString():
+                case var _ when learningType == LearningType.ApprenticeshipUnit:
                     mappedLearningTypes.Add(LearningType.ApprenticeshipUnit);
                     break;
                 default: break;

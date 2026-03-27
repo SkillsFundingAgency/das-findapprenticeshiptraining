@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            LearningTypes = new List<string> { LearningType.FoundationApprenticeship.ToString(), LearningType.Apprenticeship.ToString() },
+            LearningTypes = new List<LearningType> { LearningType.FoundationApprenticeship, LearningType.Apprenticeship },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -140,39 +140,38 @@ public class WhenGettingCourses
     }
 
     [Test]
-    [MoqInlineAutoData("", "", "")]
-    [MoqInlineAutoData("FoundationApprenticeship", "", "FoundationApprenticeship")]
-    [MoqInlineAutoData("Apprenticeship", "", "Apprenticeship")]
-    [MoqInlineAutoData("ApprenticeshipUnit", "", "ApprenticeshipUnit")]
-    [MoqInlineAutoData("Foundation", "Standard", "")]
+    [MoqInlineAutoData(LearningType.FoundationApprenticeship, LearningType.FoundationApprenticeship)]
+    [MoqInlineAutoData(LearningType.Apprenticeship, LearningType.Apprenticeship)]
+    [MoqInlineAutoData(LearningType.ApprenticeshipUnit, LearningType.ApprenticeshipUnit)]
     public async Task Handle_WhenOnlyOneLearningTypeSelected_CallsWithExpectedLearningType(
-        string learningType1,
-        string learningType2,
-        string requestLearningType,
-        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
-        [Frozen] Mock<IApiClient> mockApiClient,
-        [Frozen] Mock<ILevelsService> mockLevelsService,
-        [Frozen] Mock<IRoutesService> mockRoutesService,
-        [Greedy] GetCoursesQueryHandler sut
-        )
+     LearningType selectedLearningType,
+     LearningType requestLearningType,
+     [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+     [Frozen] Mock<IApiClient> mockApiClient,
+     [Frozen] Mock<ILevelsService> mockLevelsService,
+     [Frozen] Mock<IRoutesService> mockRoutesService,
+     [Greedy] GetCoursesQueryHandler sut
+     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi()
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi
         {
             BaseUrl = BASE_URL
         });
 
-        var learningTypes = new List<string>();
-        if (!string.IsNullOrWhiteSpace(learningType1)) { learningTypes.Add(learningType1); }
-        if (!string.IsNullOrWhiteSpace(learningType2)) { learningTypes.Add(learningType2); }
+        mockLevelsService
+            .Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Level>());
 
-        var query = new GetCoursesQuery()
+        mockRoutesService
+            .Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Route>());
+
+        var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            LearningTypes = learningTypes,
+            LearningTypes = new List<LearningType> { selectedLearningType },
             OrderBy = OrderBy.Title
         };
-
-        var cancellationToken = new CancellationToken();
 
         var coursesResponse = new GetCoursesResponse
         {
@@ -183,20 +182,16 @@ public class WhenGettingCourses
             TotalCount = Constants.DefaultPageSize
         };
 
-        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(
-                It.IsAny<GetCoursesApiRequest>()
-            )
-        )
-        .ReturnsAsync(coursesResponse);
+        mockApiClient
+            .Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>()))
+            .ReturnsAsync(coursesResponse);
 
-        await sut.Handle(query, cancellationToken);
+        await sut.Handle(query, CancellationToken.None);
 
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
-                string.IsNullOrEmpty(requestLearningType)
-                    ? r.LearningTypes.Count == 0
-                    : r.LearningTypes.Count == 1 &&
-                      r.LearningTypes[0].ToString() == requestLearningType
+                r.LearningTypes.Count == 1 &&
+                r.LearningTypes[0] == requestLearningType
             )
         ), Times.Once);
     }
@@ -223,7 +218,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string> { "Route1", "Route3" },
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -266,7 +261,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -304,7 +299,7 @@ public class WhenGettingCourses
         {
             Page = 5,
             Routes = new List<string>(),
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -343,7 +338,7 @@ public class WhenGettingCourses
             Location = null,
             Distance = null,
             Routes = new List<string>(),
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -382,7 +377,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -420,7 +415,7 @@ public class WhenGettingCourses
         {
             Levels = expectedLevels,
             Routes = new List<string>(),
-            LearningTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 

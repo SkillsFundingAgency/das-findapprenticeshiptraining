@@ -31,9 +31,9 @@ public sealed class WhenFilteringCourses
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            LearningType.FoundationApprenticeship.ToString()
+            LearningType.FoundationApprenticeship
         };
 
         _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
