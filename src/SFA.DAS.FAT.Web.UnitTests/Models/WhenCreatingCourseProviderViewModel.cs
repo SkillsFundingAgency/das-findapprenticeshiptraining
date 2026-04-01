@@ -854,5 +854,138 @@ public class WhenCreatingCourseProviderViewModel
 
         Assert.That(sut.ClosestProviderLocation, Is.Null);
     }
+
+    [TestCase(CourseType.ShortCourse, true)]
+    [TestCase(CourseType.Apprenticeship, false)]
+    public void ShowOnlineOption_WhenOnlineLocationAndCourseTypeVaries_ReturnsExpectedValue(CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.ShowOnlineOption, Is.EqualTo(expected));
+    }
+
+    [TestCase(CourseType.ShortCourse, true)]
+    [TestCase(CourseType.Apprenticeship, false)]
+    public void ShowProviderOption_ProviderLocationAndCourseTypeVaries_ReturnsExpectedValue(CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider }
+            }
+        };
+
+        Assert.That(sut.ShowProviderOption, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void HasMultipleProviderLocations_WhenMoreThanOneProviderLocation_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.HasMultipleProviderLocations, Is.True);
+    }
+
+    [Test]
+    public void HasMultipleProviderLocations_WhenOneProviderLocationOrLess_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.HasMultipleProviderLocations, Is.False);
+    }
+
+    [Test]
+    public void ProviderLocations_WhenProviderAndNonProviderLocationsExist_ReturnsOnlyProviderLocations()
+    {
+        var providerLocation1 = new LocationModel { LocationType = LocationType.Provider };
+        var providerLocation2 = new LocationModel { LocationType = LocationType.Provider };
+
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                providerLocation1,
+                new LocationModel { LocationType = LocationType.Online },
+                providerLocation2
+            }
+        };
+
+        Assert.That(sut.ProviderLocations, Is.EqualTo(new[] { providerLocation1, providerLocation2 }));
+    }
+
+    [Test]
+    public void ShowBlockReleaseOption_WhenBlockReleaseLocationAndNotApprenticeship_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = true }
+            }
+        };
+
+        Assert.That(sut.ShowBlockReleaseOption, Is.False);
+    }
+
+    [Test]
+    public void ShowDayReleaseOption_WhenDayReleaseLocationAndNotApprenticeship_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true }
+            }
+        };
+
+        Assert.That(sut.ShowDayReleaseOption, Is.False);
+    }
+
+    [Test]
+    public void ImplicitOperator_WhenCoursesAndLocationsAreNull_ReturnsEmptyCollections()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = null,
+            Locations = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Courses, Is.Not.Null);
+            Assert.That(sut.Courses, Is.Empty);
+            Assert.That(sut.Locations, Is.Not.Null);
+            Assert.That(sut.Locations, Is.Empty);
+            Assert.That(sut.ProviderCoursesDetails.Courses, Is.Empty);
+        });
+    }
 }
 
