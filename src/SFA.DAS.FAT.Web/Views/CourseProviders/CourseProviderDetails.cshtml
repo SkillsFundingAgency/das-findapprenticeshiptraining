@@ -49,20 +49,23 @@
                     You can
 
                     <a class="govuk-link govuk-link--no-visited-state"
-                       asp-route="@RouteNames.CourseProviderDetails"
-                       asp-route-larsCode="@Model.LarsCode"
-                       asp-route-providerId="@Model.Ukprn">
+                           asp-route="@RouteNames.CourseProviderDetails"
+                           asp-route-larsCode="@Model.LarsCode"
+                           asp-route-providerId="@Model.Ukprn">
                         remove or change your location
                     </a>.
 
                     This may change what options are available.
                 </p>
 
-                <p class="govuk-body">
-                    If there are multiple training options, the apprentice may do a combination of these.
+                <p class="govuk-body">You will need to contact the provider to confirm:</p>
 
-                    You'll need to contact the provider to confirm what training they offer.
-                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>what training they offer</li>
+                    <li>your chosen delivery method.</li>
+                </ul>
+
+                <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
             }
 
             @* Search courses by location *@
@@ -99,7 +102,23 @@
 
                 <tbody class="govuk-table__body">
 
-                    @if (Model.ShowApprenticesWorkplaceOption)
+                    @if (Model.ShowOnlineOption)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                                    Online
+                                </p>
+                            </th>
+                            <td class="govuk-table__cell">
+                                <p class="govuk-body govuk-!-margin-top-2">
+                                    @TrainingOptionsDisplayMessages.OnlineTraining
+                                </p>
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.ShowLearnerWorkplaceOption)
                     {
                         <tr class="govuk-table__row">
                             <th scope="row" class="govuk-table__header">
@@ -111,22 +130,95 @@
                                 @if (string.IsNullOrWhiteSpace(Model.Location))
                                 {
                                     <p class="govuk-body govuk-!-margin-top-2">
-                                        @Model.AtApprenticesWorkplaceWithNoLocationDisplayMessage
+                                        @Model.AtLearnerWorkplaceWithNoLocationDisplayMessage
                                     </p>
                                 }
                                 else
                                 {
-                                    @if (Model.HasMatchingRegionalLocation)
+                                    @if (Model.HasMatchingRegionalLocationOrNational)
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>0.0 miles</strong> to learner's work location
+                                            @TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
                                         </p>
                                     }
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            This provider has said they do not deliver training at learner's workplaces in your region.
+                                            @TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithLocationNotMatchingRegional
                                         </p>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+
+                    @if (Model.ShowProviderOption)
+                    {
+                        <tr class="govuk-table__row">
+                            <th scope="row" class="govuk-table__header">
+                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                                    At training provider’s location
+                                </p>
+                            </th>
+                            <td class="govuk-table__cell">
+                                @if (string.IsNullOrWhiteSpace(Model.Location))
+                                {
+                                    @if (Model.HasMultipleProviderLocations)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithNoLocationMultipleLocations</p>
+                                        <details class="govuk-details">
+                                            <summary class="govuk-details__summary">
+                                                <span class="govuk-details__summary-text">
+                                                    @TrainingOptionsDisplayMessages.ViewAllProviderLocations
+                                                </span>
+                                            </summary>
+                                            <div class="govuk-details__text">
+                                                <ul class="govuk-list govuk-list--bullet">
+                                                    @foreach (LocationModel location in Model.ProviderLocations)
+                                                    {
+                                                        <li>
+                                                            @location.FormatAddress()
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </details>
+                                    }
+                                    else
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">
+                                            @Model.ProviderLocations[0].FormatAddress()
+                                        </p>
+                                    }
+                                }
+                                else
+                                {
+                                    <p class="govuk-body govuk-!-margin-top-2">
+                                        @Html.Raw(string.Format(
+                                            TrainingOptionsDisplayMessages.ProviderClosestLocationWithLocation,
+                                            Model.ClosestProviderLocation.CourseDistance.ToString("0.0"),
+                                            Model.ClosestProviderLocation.FormatAddress()))
+                                    </p>
+                                    if (Model.HasMultipleProviderLocations)
+                                    {
+                                        <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithNoLocationMultipleLocations</p>
+                                        <details class="govuk-details">
+                                            <summary class="govuk-details__summary">
+                                                <span class="govuk-details__summary-text">
+                                                    @TrainingOptionsDisplayMessages.ViewAllProviderLocations
+                                                </span>
+                                            </summary>
+                                            <div class="govuk-details__text">
+                                                <ul class="govuk-list govuk-list--bullet">
+                                                    @foreach (LocationModel location in Model.ProviderLocations)
+                                                    {
+                                                        @Html.Raw(string.Format(TrainingOptionsDisplayMessages.ProviderClosestLocationWithLocation,
+                                                                 location.CourseDistance.ToString("0.0"),
+                                                                 location.FormatAddress()))
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </details>
                                     }
                                 }
                             </td>
@@ -141,7 +233,7 @@
                                     Block release
                                 </p>
                                 <p class="govuk-body-m das-hint-colour">
-                                    Training in blocks of a week or more at the provider's location.
+                                    @TrainingOptionsDisplayMessages.BlockReleaseHint
                                 </p>
                             </th>
 
@@ -150,19 +242,22 @@
                                 {
                                     if (string.IsNullOrWhiteSpace(Model.Location))
                                     {
-                                        <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
+                                        <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.BlockReleaseMultipleLocations</p>
                                     }
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                            @Html.Raw(string.Format(
+                                            TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                                Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
+                                                Model.ClosestBlockReleaseLocation.FormatAddress()))
                                         </p>
                                     }
 
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
-                                                View all block release locations
+                                                @TrainingOptionsDisplayMessages.ViewAllBlockReleaseLocations
                                             </span>
                                         </summary>
                                         <div class="govuk-details__text">
@@ -195,7 +290,10 @@
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                            @Html.Raw(string.Format(
+                                            TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                                Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
+                                                Model.ClosestBlockReleaseLocation.FormatAddress()))
                                         </p>
                                     }
                                 }
@@ -211,7 +309,7 @@
                                     Day release
                                 </p>
                                 <p class="govuk-body-m das-hint-colour">
-                                    One day a week at the provider's location.
+                                    @TrainingOptionsDisplayMessages.DayReleaseHint
                                 </p>
                             </th>
 
@@ -220,19 +318,22 @@
                                 {
                                     if (string.IsNullOrWhiteSpace(Model.Location))
                                     {
-                                        <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
+                                        <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.DayReleaseMultipleLocations</p>
                                     }
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                            @Html.Raw(string.Format(
+                                            TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                                Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
+                                                Model.ClosestDayReleaseLocation.FormatAddress()))
                                         </p>
                                     }
 
                                     <details class="govuk-details">
                                         <summary class="govuk-details__summary">
                                             <span class="govuk-details__summary-text">
-                                                View all day release locations
+                                                @TrainingOptionsDisplayMessages.ViewAllDayReleaseLocations
                                             </span>
                                         </summary>
                                         <div class="govuk-details__text">
@@ -265,7 +366,10 @@
                                     else
                                     {
                                         <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
+                                            @Html.Raw(string.Format(
+                                            TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                                Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
+                                                Model.ClosestDayReleaseLocation.FormatAddress()))
                                         </p>
                                     }
                                 }
@@ -549,8 +653,8 @@
             <p class="govuk-body">
                 Find overall participation rates and reviews from employers and apprentices by visiting their
                 <a class="govuk-link govuk-link--no-visited-state"
-                   asp-route="@RouteNames.Provider"
-                   asp-route-ukprn="@Model.Ukprn">
+                       asp-route="@RouteNames.Provider"
+                       asp-route-ukprn="@Model.Ukprn">
                     training provider details page
                 </a>.
             </p>
