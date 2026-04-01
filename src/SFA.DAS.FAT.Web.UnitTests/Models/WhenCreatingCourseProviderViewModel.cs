@@ -782,31 +782,20 @@ public class WhenCreatingCourseProviderViewModel
         Assert.That(sut.ClosestDayReleaseLocation, Is.Null);
     }
 
+    [TestCase(LocationType.National, false, true)]
     [TestCase(LocationType.Regional, true, true)]
     [TestCase(LocationType.Regional, false, false)]
-    public void HasMatchingRegionalLocationOrNational_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue(LocationType locationType, bool AtEmployer, bool expected)
+    [TestCase(LocationType.Provider, true, false)]
+    public void HasMatchingRegionalLocationOrNational_LocationTypeAndAtEmployerVaries_ReturnsExpected(LocationType locationType, bool atEmployer, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
             {
-                new LocationModel { LocationType = locationType, AtEmployer = AtEmployer }
+                new LocationModel { LocationType = locationType, AtEmployer = atEmployer }
             }
         };
-        Assert.That(sut.HasMatchingRegionalLocationOrNational, Is.EqualTo(expected));
-    }
 
-    [TestCase(LocationType.National, true)]
-    [TestCase(LocationType.Regional, false)]
-    public void HasMatchingRegionalLocationOrNational_WhenNationalLocationExists_ReturnsTrue(LocationType locationType, bool expected)
-    {
-        var sut = new CourseProviderViewModel
-        {
-            Locations = new List<LocationModel>
-            {
-                new LocationModel { LocationType = locationType }
-            }
-        };
         Assert.That(sut.HasMatchingRegionalLocationOrNational, Is.EqualTo(expected));
     }
 
@@ -855,32 +844,34 @@ public class WhenCreatingCourseProviderViewModel
         Assert.That(sut.ClosestProviderLocation, Is.Null);
     }
 
-    [TestCase(CourseType.ShortCourse, true)]
-    [TestCase(CourseType.Apprenticeship, false)]
-    public void ShowOnlineOption_WhenOnlineLocationAndCourseTypeVaries_ReturnsExpectedValue(CourseType courseType, bool expected)
+    [TestCase(LocationType.Online, CourseType.ShortCourse, true)]
+    [TestCase(LocationType.Online, CourseType.Apprenticeship, false)]
+    [TestCase(LocationType.Provider, CourseType.ShortCourse, false)]
+    public void ShowOnlineOption_LocationTypeAndCourseTypeVaries_ReturnsExpected(LocationType locationType, CourseType courseType, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
             CourseType = courseType,
             Locations = new List<LocationModel>
             {
-                new LocationModel { LocationType = LocationType.Online }
+                new LocationModel { LocationType = locationType }
             }
         };
 
         Assert.That(sut.ShowOnlineOption, Is.EqualTo(expected));
     }
 
-    [TestCase(CourseType.ShortCourse, true)]
-    [TestCase(CourseType.Apprenticeship, false)]
-    public void ShowProviderOption_ProviderLocationAndCourseTypeVaries_ReturnsExpectedValue(CourseType courseType, bool expected)
+    [TestCase(LocationType.Provider, CourseType.ShortCourse, true)]
+    [TestCase(LocationType.Provider, CourseType.Apprenticeship, false)]
+    [TestCase(LocationType.Online, CourseType.ShortCourse, false)]
+    public void ShowProviderOption_LocationTypeAndCourseTypeVaries_ReturnsExpected(LocationType locationType, CourseType courseType, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
             CourseType = courseType,
             Locations = new List<LocationModel>
             {
-                new LocationModel { LocationType = LocationType.Provider }
+                new LocationModel { LocationType = locationType }
             }
         };
 
