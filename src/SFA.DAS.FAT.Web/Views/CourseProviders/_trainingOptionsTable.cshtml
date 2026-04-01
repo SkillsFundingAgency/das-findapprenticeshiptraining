@@ -76,7 +76,7 @@
                     {
                         @if (Model.HasMultipleProviderLocations)
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithNoLocationMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithMultipleLocations</p>
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
@@ -112,7 +112,6 @@
                         </p>
                         if (Model.HasMultipleProviderLocations)
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithNoLocationMultipleLocations</p>
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
@@ -123,9 +122,11 @@
                                     <ul class="govuk-list govuk-list--bullet">
                                         @foreach (LocationModel location in Model.ProviderLocations)
                                         {
-                                            @Html.Raw(string.Format(TrainingOptionsDisplayMessages.ProviderClosestLocationWithLocation,
-                                                     location.CourseDistance.ToString("0.0"),
-                                                     location.FormatAddress()))
+                                            <li>
+                                                @Html.Raw(string.Format(TrainingOptionsDisplayMessages.AtProviderPlaceWithLocationHasMultipleLocations,
+                                                         location.CourseDistance.ToString("0.0"),
+                                                         location.FormatAddress()))
+                                            </li>
                                         }
                                     </ul>
                                 </div>

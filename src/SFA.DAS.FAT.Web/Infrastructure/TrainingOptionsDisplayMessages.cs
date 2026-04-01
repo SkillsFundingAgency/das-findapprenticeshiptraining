@@ -12,9 +12,11 @@ public static class TrainingOptionsDisplayMessages
     public const string AtLearnerWorkplaceWithLocationMatchingRegionalOrNational = "The training provider can travel to you to deliver this course.";
     public const string AtLearnerWorkplaceWithLocationNotMatchingRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
 
-    public const string AtProviderPlaceWithNoLocationMultipleLocations = "Training provider has multiple locations.";
+    public const string AtProviderPlaceWithMultipleLocations = "Training provider has multiple locations.";
     public const string ProviderClosestLocationWithLocation = "Training provider’s closest location is <strong>{0} miles away:</strong> {1}";
     public const string ViewAllProviderLocations = "View all training provider locations";
+    public const string AtProviderPlaceWithLocationHasMultipleLocations = "<strong>{0} miles away:</strong> {1}";
+
 
     public const string BlockReleaseHint = "Training in blocks of a week or more at the provider's location.";
     public const string BlockReleaseMultipleLocations = "Block release at multiple locations.";
