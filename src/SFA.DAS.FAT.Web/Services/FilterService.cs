@@ -50,7 +50,7 @@ public static class FilterService
     public const string LEVELS_SECTION_HEADING = "Training level";
     public const string CATEGORIES_SECTION_HEADING = "Job categories";
 
-    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What training levels mean (opens in new tab or window)";
+    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "Find out more about training levels (opens in new tab)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
     public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
