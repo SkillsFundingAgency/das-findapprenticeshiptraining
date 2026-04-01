@@ -267,7 +267,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("The training provider can travel to you to deliver this course."));
     }
 
     [Test]
@@ -297,7 +297,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("The training provider can travel to you to deliver this course."));
     }
 
     [Test]
@@ -784,7 +784,7 @@ public class WhenCreatingCourseProviderViewModel
 
     [TestCase(LocationType.Regional, true, true)]
     [TestCase(LocationType.Regional, false, false)]
-    public void HasMatchingRegionalLocation_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue(LocationType locationType, bool AtEmployer, bool expected)
+    public void HasMatchingRegionalLocationOrNational_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue(LocationType locationType, bool AtEmployer, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
@@ -798,7 +798,7 @@ public class WhenCreatingCourseProviderViewModel
 
     [TestCase(LocationType.National, true)]
     [TestCase(LocationType.Regional, false)]
-    public void HasMatchingRegionalLocation_WhenNationalLocationExists_ReturnsTrue(LocationType locationType, bool expected)
+    public void HasMatchingRegionalLocationOrNational_WhenNationalLocationExists_ReturnsTrue(LocationType locationType, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
