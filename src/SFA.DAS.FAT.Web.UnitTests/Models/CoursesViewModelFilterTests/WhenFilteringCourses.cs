@@ -31,9 +31,9 @@ public sealed class WhenFilteringCourses
             RequestApprenticeshipTrainingUrl = "https://localhost"
         };
 
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            ApprenticeshipType.FoundationApprenticeship.GetDescription()
+            LearningType.FoundationApprenticeship
         };
 
         _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
@@ -43,7 +43,7 @@ public sealed class WhenFilteringCourses
             Distance = "20",
             SelectedLevels = new List<int> { 3, 4 },
             SelectedRoutes = new List<string> { "Construction" },
-            SelectedTypes = selectedTypes,
+            SelectedTrainingTypes = selectedTypes,
             Levels = new List<LevelViewModel>
             {
                 new LevelViewModel { Code = 3, Name = "Level 3" },
@@ -176,7 +176,7 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void Filters_AccordionWithApprenticeshipTypes_IsPresent()
+    public void Filters_AccordionWithLearningTypes_IsPresent()
     {
         var _sut = _coursesViewModel.Filters.FilterSections;
 
@@ -187,24 +187,26 @@ public sealed class WhenFilteringCourses
             Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
             Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
 
-            var typeFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(FilterService.FilterType.ApprenticeshipTypes));
+            var typeFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(FilterService.FilterType.LearningTypes));
             Assert.That(typeFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
             Assert.That(typeFilterSection.Id, Is.EqualTo("types-filter"));
             Assert.That(typeFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
 
             var typesCheckBoxList = ((CheckboxListFilterSectionViewModel)typeFilterSection);
             Assert.That(typesCheckBoxList.Items, Has.Count.EqualTo(3));
-            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTypes.Count));
-            Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.APPRENTICESHIP_TYPES_SECTION_HEADING));
+            Assert.That(typesCheckBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_coursesViewModel.SelectedTrainingTypes.Count));
+            Assert.That(typesCheckBoxList.Heading, Is.EqualTo(FilterService.TRAINING_TYPES_SECTION_HEADING));
             Assert.That(typesCheckBoxList.Link, Is.Not.Null);
-            Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT));
-            Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK));
-            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Link.DisplayText, Is.EqualTo(CoursesViewModel.TRAINING_TYPE_FIND_OUT_MORE_TEXT));
+            Assert.That(typesCheckBoxList.Link.Url, Is.EqualTo(CoursesViewModel.TRAINING_TYPE_FIND_OUT_MORE_LINK));
+
+            Assert.That(typesCheckBoxList.Items[0].DisplayText, Is.EqualTo(LearningType.ApprenticeshipUnit.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(LearningType.FoundationApprenticeship.GetDescription()));
+            Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(LearningType.Apprenticeship.GetDescription()));
+
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_DESCRIPTION));
         });
     }
 
@@ -236,11 +238,11 @@ public sealed class WhenFilteringCourses
 
             var levelThreeLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 3");
             Assert.That(levelThreeLink, Is.Not.Null);
-            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
+            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
 
             var levelFourLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 4");
             Assert.That(levelFourLink, Is.Not.Null);
-            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
+            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&learningtypes=FoundationApprenticeship"));
         });
     }
 
@@ -255,7 +257,7 @@ public sealed class WhenFilteringCourses
             Assert.That(keywordClearLink, Is.Not.Null);
             Assert.That(keywordClearLink.Items, Has.Count.EqualTo(1));
             Assert.That(keywordClearLink.Items[0].DisplayText, Is.EqualTo("Construction"));
-            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&apprenticeshiptypes=Foundation apprenticeships"));
+            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
         });
     }
 
@@ -272,7 +274,7 @@ public sealed class WhenFilteringCourses
 
             var constructionCategoryClearLink = categoryClearLinks.Items.First(a => a.DisplayText == "Construction");
             Assert.That(constructionCategoryClearLink, Is.Not.Null);
-            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&apprenticeshiptypes=Foundation apprenticeships"));
+            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&learningtypes=FoundationApprenticeship"));
         });
     }
 
@@ -497,8 +499,8 @@ public sealed class WhenFilteringCourses
             Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Categories)), Is.EqualTo(1));
             Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Categories) && kv.Item2 == "Construction"), Is.True);
 
-            Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes)), Is.EqualTo(1));
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.ApprenticeshipTypes) && kv.Item2 == ApprenticeshipType.FoundationApprenticeship.GetDescription()), Is.True);
+            Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.LearningTypes)), Is.EqualTo(1));
+            Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.LearningTypes) && kv.Item2 == LearningType.FoundationApprenticeship.ToString()), Is.True);
         });
     }
 }

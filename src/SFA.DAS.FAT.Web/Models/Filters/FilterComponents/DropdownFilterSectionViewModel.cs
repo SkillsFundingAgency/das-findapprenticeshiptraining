@@ -6,7 +6,7 @@ namespace SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 
 public sealed class DropdownFilterSectionViewModel : FilterSection
 {
-    public List<FilterItemViewModel> Items { get; set; } = new List<FilterItemViewModel>();
+    public List<FilterItemViewModel> Items { get; set; } = [];
 
     public DropdownFilterSectionViewModel()
     {

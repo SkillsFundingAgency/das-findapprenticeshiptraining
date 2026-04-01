@@ -21,13 +21,13 @@ public class StandardViewModel
     public int MaxFunding { get; set; }
     public int TypicalDuration { get; set; }
 
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
 
-    public string ApprenticeshipTypeTagClass => ApprenticeshipType switch
+    public string LearningTypeTagClass => LearningType switch
     {
-        ApprenticeshipType.Apprenticeship => "govuk-tag--blue",
-        ApprenticeshipType.FoundationApprenticeship => "govuk-tag--pink",
-        ApprenticeshipType.ApprenticeshipUnit => "govuk-tag--purple",
+        LearningType.Apprenticeship => "govuk-tag--blue",
+        LearningType.FoundationApprenticeship => "govuk-tag--pink",
+        LearningType.ApprenticeshipUnit => "govuk-tag--purple",
         _ => string.Empty
     };
 
@@ -50,7 +50,7 @@ public class StandardViewModel
             RouteCode = source.RouteCode,
             MaxFunding = source.MaxFunding,
             TypicalDuration = source.TypicalDuration,
-            ApprenticeshipType = source.ApprenticeshipType
+            LearningType = source.LearningType
         };
     }
 }

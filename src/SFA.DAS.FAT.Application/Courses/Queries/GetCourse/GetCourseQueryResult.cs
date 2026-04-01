@@ -24,10 +24,10 @@ public class GetCourseQueryResult
     public string StandardPageUrl { get; set; }
 
     public int IncentivePayment { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public List<Ksb> Ksbs { get; set; } = [];
 
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
 
     public List<Level> Levels { get; set; } = [];
 
@@ -52,9 +52,7 @@ public class GetCourseQueryResult
             StandardPageUrl = source.StandardPageUrl,
             IncentivePayment = source.IncentivePayment,
             Ksbs = source.Ksbs,
-            RelatedOccupations = source.RelatedOccupations == null
-                                    ? new List<RelatedOccupation>() :
-                                    source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
+            RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
             ApprenticeshipType = source.ApprenticeshipType,
         };
     }

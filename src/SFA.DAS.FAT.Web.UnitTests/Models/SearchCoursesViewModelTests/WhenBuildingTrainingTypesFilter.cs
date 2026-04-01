@@ -12,23 +12,23 @@ public sealed class WhenBuildingTrainingTypesFilter
     [Test]
     public void TrainingTypesCheckboxListItems_WithSelectedTypes_ConfiguredCorrectly()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            ApprenticeshipType.FoundationApprenticeship.GetDescription()
+            LearningType.FoundationApprenticeship
         };
 
         var sut = new SearchCoursesViewModel
         {
             CourseTerm = "engineering",
             SelectedTypes = selectedTypes,
-            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes)
+            TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems(selectedTypes)
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
 
-        var unit = filter.Items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
-        var foundation = filter.Items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
-        var apprenticeship = filter.Items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
+        var apprenticeshipUnit = filter.Items.First(i => i.DisplayText == LearningType.ApprenticeshipUnit.GetDescription());
+        var foundationApprenticeship = filter.Items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
+        var apprenticeship = filter.Items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
         Assert.Multiple(() =>
         {
@@ -40,18 +40,18 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(filter.Link, Is.Null);
 
             Assert.That(filter.Items, Has.Count.EqualTo(3));
-            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
+            Assert.That(filter.Items.All(i => i.IsLearningTypeEmphasised), Is.False);
 
-            Assert.That(unit.DisplayText, Is.EqualTo(ApprenticeshipType.ApprenticeshipUnit.GetDescription()));
-            Assert.That(foundation.DisplayText, Is.EqualTo(ApprenticeshipType.FoundationApprenticeship.GetDescription()));
-            Assert.That(apprenticeship.DisplayText, Is.EqualTo(ApprenticeshipType.Apprenticeship.GetDescription()));
+            Assert.That(apprenticeshipUnit.DisplayText, Is.EqualTo(LearningType.ApprenticeshipUnit.GetDescription()));
+            Assert.That(foundationApprenticeship.DisplayText, Is.EqualTo(LearningType.FoundationApprenticeship.GetDescription()));
+            Assert.That(apprenticeship.DisplayText, Is.EqualTo(LearningType.Apprenticeship.GetDescription()));
 
-            Assert.That(unit.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(ApprenticeshipTypesFilterHelper.APPRENTICESHIP_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(apprenticeshipUnit.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
+            Assert.That(foundationApprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_DESCRIPTION));
 
-            Assert.That(unit.IsSelected, Is.False);
-            Assert.That(foundation.IsSelected, Is.True);
+            Assert.That(apprenticeshipUnit.IsSelected, Is.False);
+            Assert.That(foundationApprenticeship.IsSelected, Is.True);
             Assert.That(apprenticeship.IsSelected, Is.False);
         });
     }
@@ -59,27 +59,27 @@ public sealed class WhenBuildingTrainingTypesFilter
     [Test]
     public void TrainingTypesCheckboxListItems_WithSelectedTypes_ReflectsSelection()
     {
-        var selectedTypes = new List<string>
+        var selectedTypes = new List<LearningType>
         {
-            ApprenticeshipType.Apprenticeship.GetDescription()
+            LearningType.Apprenticeship
         };
 
         var sut = new SearchCoursesViewModel
         {
             SelectedTypes = selectedTypes,
-            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems(selectedTypes)
+            TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems(selectedTypes)
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
 
-        var unit = filter.Items.First(i => i.DisplayText == ApprenticeshipType.ApprenticeshipUnit.GetDescription());
-        var foundation = filter.Items.First(i => i.DisplayText == ApprenticeshipType.FoundationApprenticeship.GetDescription());
-        var apprenticeship = filter.Items.First(i => i.DisplayText == ApprenticeshipType.Apprenticeship.GetDescription());
+        var apprenticeshipUnit = filter.Items.First(i => i.DisplayText == LearningType.ApprenticeshipUnit.GetDescription());
+        var foundationApprenticeship = filter.Items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
+        var apprenticeship = filter.Items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
         Assert.Multiple(() =>
         {
-            Assert.That(unit.IsSelected, Is.False);
-            Assert.That(foundation.IsSelected, Is.False);
+            Assert.That(apprenticeshipUnit.IsSelected, Is.False);
+            Assert.That(foundationApprenticeship.IsSelected, Is.False);
             Assert.That(apprenticeship.IsSelected, Is.True);
         });
     }
@@ -89,7 +89,7 @@ public sealed class WhenBuildingTrainingTypesFilter
     {
         var sut = new SearchCoursesViewModel
         {
-            TrainingTypesFilterItems = ApprenticeshipTypesFilterHelper.BuildItems([])
+            TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems([])
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
@@ -97,7 +97,7 @@ public sealed class WhenBuildingTrainingTypesFilter
         {
             Assert.That(filter.Items, Has.Count.EqualTo(3));
             Assert.That(filter.Items.All(i => i.IsSelected), Is.False);
-            Assert.That(filter.Items.All(i => i.IsApprenticeshipTypeEmphasised), Is.False);
+            Assert.That(filter.Items.All(i => i.IsLearningTypeEmphasised), Is.False);
         });
     }
 }

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -21,7 +21,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
     public CourseType CourseType { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public List<string> SelectedDeliveryModes { get; set; } = [];
     public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];
@@ -34,7 +34,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public string ReviewPeriodEndYear { get => $"20{ReviewPeriod.AsSpan(2, 2)}"; }
     public string ProviderReviewsHeading { get => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"; }
     public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
-    public List<CoursesProviderViewModel> Providers { get; set; }
+    public List<CoursesProviderViewModel> Providers { get; set; } = [];
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get; set; } = [];
     public PaginationViewModel Pagination { get; set; }
     public int TotalCount { get; set; }
@@ -276,7 +276,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     private void AddDeliveryModesFilter(Dictionary<FilterType, List<string>> selectedFilters)
     {
-        if (SelectedDeliveryModes?.Count > 0 && SelectedDeliveryModes.Count > 0)
+        if (SelectedDeliveryModes.Count > 0)
         {
             var deliveryModes = GenerateDeliveryModesFilterItems();
             var selectedDeliveryNames = deliveryModes

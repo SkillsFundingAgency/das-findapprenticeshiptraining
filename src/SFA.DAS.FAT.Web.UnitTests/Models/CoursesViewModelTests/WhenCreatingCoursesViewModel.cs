@@ -54,7 +54,7 @@ public class WhenCreatingCoursesViewModel
             Keyword = "test",
             Location = "SW1",
             Distance = "10",
-            SelectedTypes = ["Standard"],
+            SelectedTrainingTypes = [LearningType.Apprenticeship],
             Levels = [new LevelViewModel(new Level { Code = 2, Name = "GCSE" }, [])],
             Routes = [new RouteViewModel(new Route { Id = 1, Name = "Construction" }, [])]
         };
@@ -467,17 +467,17 @@ public class WhenCreatingCoursesViewModel
 
 
     [Test]
-    public void ToQueryString_WithSelectedTypes_IncludesApprenticeshipTypes()
+    public void ToQueryString_WithSelectedTypes_IncludesLearningTypes()
     {
-        var selectedTypes = new List<string> { "Standard" };
+        var selectedTypes = new List<LearningType> { LearningType.Apprenticeship };
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            SelectedTypes = selectedTypes
+            SelectedTrainingTypes = selectedTypes
         };
 
         var _sut = viewModel.ToQueryString();
 
-        Assert.That(_sut.FindIndex(a => a.Item1 == "ApprenticeshipTypes"), Is.AtLeast(0));
+        Assert.That(_sut.FindIndex(a => a.Item1 == "LearningTypes"), Is.AtLeast(0));
     }
 
     [Test]
@@ -640,11 +640,11 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void CategoriesItems_WithNullRoutes_IsEmpty()
+    public void CreateFilterSections_WithEmptyRoutes_ReturnsEmptyCategoriesItems()
     {
         var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
         {
-            Routes = null
+            Routes = []
         };
 
         var accordion = vm.Filters.FilterSections.First(s => s.Id == "multi-select");

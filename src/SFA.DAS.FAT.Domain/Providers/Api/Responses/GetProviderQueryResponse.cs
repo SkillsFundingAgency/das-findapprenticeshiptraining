@@ -58,7 +58,7 @@ public class GetProviderQarModel
 public class GetProviderCourseDetails
 {
     public string CourseName { get; set; }
-    public ApprenticeshipType ApprenticeshipType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public int Level { get; set; }
     public string LarsCode { get; set; }
     public string IfateReferenceNumber { get; set; }

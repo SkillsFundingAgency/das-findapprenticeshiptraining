@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Web.Models.Filters.Abstract;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
@@ -34,7 +35,7 @@ public static class FilterService
         EmployerProviderRatings,
         ApprenticeProviderRatings,
         Reviews,
-        ApprenticeshipTypes
+        LearningTypes
     }
 
     public const string KEYWORD_SECTION_HEADING = "Course";
@@ -46,10 +47,10 @@ public static class FilterService
     public const string DISTANCE_SECTION_HEADING = "Learner can travel";
     public const string DISTANCE_SECTION_SUB_HEADING = "Distance learner can travel";
 
-    public const string LEVELS_SECTION_HEADING = "Apprenticeship level";
+    public const string LEVELS_SECTION_HEADING = "Training level";
     public const string CATEGORIES_SECTION_HEADING = "Job categories";
 
-    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "What apprenticeship levels mean (opens in new tab or window)";
+    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "Find out more about training levels (opens in new tab)";
     public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
     public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
@@ -61,7 +62,7 @@ public static class FilterService
     public const string DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION = "The training provider will travel to you to deliver this course.";
     public const string DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION = "Your learner will travel to the training provider to complete this course.";
 
-    public const string APPRENTICESHIP_TYPES_SECTION_HEADING = "Training type";
+    public const string TRAINING_TYPES_SECTION_HEADING = "Training type";
 
     public const string QAR_SECTION_HEADING = "Achievement rate";
 
@@ -82,7 +83,7 @@ public static class FilterService
         { FilterType.QarRatings, QAR_SECTION_HEADING },
         { FilterType.EmployerProviderRatings, EMPLOYER_REVIEWS_SECTION_HEADING},
         { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING},
-        { FilterType.ApprenticeshipTypes, APPRENTICESHIP_TYPES_SECTION_HEADING}
+        { FilterType.LearningTypes, TRAINING_TYPES_SECTION_HEADING}
     };
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
@@ -360,8 +361,16 @@ public static class FilterService
         return key switch
         {
             FilterType.Location => GetWorkLocationDistanceDisplayMessage(queryParams),
+            FilterType.LearningTypes => GetLearningTypeDisplayMessage(displayValue),
             _ => displayValue
         };
+    }
+
+    private static string GetLearningTypeDisplayMessage(string displayValue)
+    {
+        return Enum.TryParse<LearningType>(displayValue, ignoreCase: true, out var learningType)
+            ? learningType.GetDescription()
+            : string.Empty;
     }
 
     private static string GetWorkLocationDistanceDisplayMessage(Dictionary<FilterType, List<string>> queryParams)

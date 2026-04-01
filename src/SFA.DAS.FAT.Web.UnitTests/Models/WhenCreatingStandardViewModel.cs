@@ -9,11 +9,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models;
 
 public class WhenCreatingStandardViewModel
 {
-    [TestCase(ApprenticeshipType.Apprenticeship, "govuk-tag--blue")]
-    [TestCase(ApprenticeshipType.FoundationApprenticeship, "govuk-tag--pink")]
-    [TestCase(ApprenticeshipType.ApprenticeshipUnit, "govuk-tag--purple")]
-    public void ApprenticeshipTypeTagClass_ForKnownType_ReturnsExpectedCssClass(
-        ApprenticeshipType apprenticeshipType,
+    [TestCase(LearningType.Apprenticeship, "govuk-tag--blue")]
+    [TestCase(LearningType.FoundationApprenticeship, "govuk-tag--pink")]
+    [TestCase(LearningType.ApprenticeshipUnit, "govuk-tag--purple")]
+    public void LearningTypeTagClass_ForKnownType_ReturnsExpectedCssClass(
+        LearningType learningType,
         string expectedCssClass)
     {
         var sut = new StandardViewModel
@@ -24,19 +24,19 @@ public class WhenCreatingStandardViewModel
             OverviewOfRole = "Overview",
             Keywords = "Keywords",
             Route = "Route",
-            ApprenticeshipType = apprenticeshipType
+            LearningType = learningType
         };
 
-        sut.ApprenticeshipTypeTagClass.Should().Be(expectedCssClass);
+        sut.LearningTypeTagClass.Should().Be(expectedCssClass);
     }
 
     [Test, AutoData]
-    public void ApprenticeshipTypeTagClass_ForUnknownType_ReturnsEmptyString(StandardViewModel model)
+    public void LearningTypeTagClass_ForUnknownType_ReturnsEmptyString(StandardViewModel model)
     {
-        model.ApprenticeshipType = (ApprenticeshipType)999;
+        model.LearningType = (LearningType)999;
 
 
-        model.ApprenticeshipTypeTagClass.Should().Be(string.Empty);
+        model.LearningTypeTagClass.Should().Be(string.Empty);
     }
 
     [Test, AutoData]

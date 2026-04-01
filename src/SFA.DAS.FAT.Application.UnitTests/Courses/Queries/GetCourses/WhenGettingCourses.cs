@@ -42,7 +42,7 @@ public class WhenGettingCourses
             Location = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
-            ApprenticeshipTypes = new List<string> { ApprenticeshipType.FoundationApprenticeship.ToString(), ApprenticeshipType.Apprenticeship.ToString() },
+            LearningTypes = new List<LearningType> { LearningType.FoundationApprenticeship, LearningType.Apprenticeship },
             Levels = new List<int> { 3 },
             OrderBy = OrderBy.Title
         };
@@ -72,6 +72,12 @@ public class WhenGettingCourses
             }
         };
 
+        var expectedLearningTypes = new List<LearningType>
+        {
+            LearningType.FoundationApprenticeship,
+            LearningType.Apprenticeship
+        };
+
         var coursesResponse = new GetCoursesResponse
         {
             Standards = new List<StandardModel>(),
@@ -93,7 +99,7 @@ public class WhenGettingCourses
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
                     r.OrderBy == query.OrderBy &&
-                    r.ApprenticeshipTypes.Count == 0
+                    r.LearningTypes.SequenceEqual(expectedLearningTypes)
                 )
             )
         )
@@ -117,7 +123,7 @@ public class WhenGettingCourses
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
                 r.BaseUrl == BASE_URL &&
-                r.ApprenticeshipTypes.Count == 0
+                r.LearningTypes.SequenceEqual(expectedLearningTypes)
             )
         ), Times.Once);
 
@@ -134,39 +140,38 @@ public class WhenGettingCourses
     }
 
     [Test]
-    [MoqInlineAutoData("", "", "")]
-    [MoqInlineAutoData("Foundation apprenticeships", "", "FoundationApprenticeship")]
-    [MoqInlineAutoData("Apprenticeships", "", "Apprenticeship")]
-    [MoqInlineAutoData("Apprenticeship units", "", "ApprenticeshipUnit")]
-    [MoqInlineAutoData("Foundation", "Standard", "")]
-    public async Task Handle_WhenOnlyOneApprenticeshipTypeSelected_CallsWithExpectedApprenticeshipType(
-        string apprenticeshipType1,
-        string apprenticeshipType2,
-        string requestApprenticeshipType,
-        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
-        [Frozen] Mock<IApiClient> mockApiClient,
-        [Frozen] Mock<ILevelsService> mockLevelsService,
-        [Frozen] Mock<IRoutesService> mockRoutesService,
-        [Greedy] GetCoursesQueryHandler sut
-        )
+    [MoqInlineAutoData(LearningType.FoundationApprenticeship, LearningType.FoundationApprenticeship)]
+    [MoqInlineAutoData(LearningType.Apprenticeship, LearningType.Apprenticeship)]
+    [MoqInlineAutoData(LearningType.ApprenticeshipUnit, LearningType.ApprenticeshipUnit)]
+    public async Task Handle_WhenOnlyOneLearningTypeSelected_CallsWithExpectedLearningType(
+     LearningType selectedLearningType,
+     LearningType requestLearningType,
+     [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
+     [Frozen] Mock<IApiClient> mockApiClient,
+     [Frozen] Mock<ILevelsService> mockLevelsService,
+     [Frozen] Mock<IRoutesService> mockRoutesService,
+     [Greedy] GetCoursesQueryHandler sut
+     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi()
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi
         {
             BaseUrl = BASE_URL
         });
 
-        var apprenticeshipTypes = new List<string>();
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType1)) { apprenticeshipTypes.Add(apprenticeshipType1); }
-        if (!string.IsNullOrWhiteSpace(apprenticeshipType2)) { apprenticeshipTypes.Add(apprenticeshipType2); }
+        mockLevelsService
+            .Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Level>());
 
-        var query = new GetCoursesQuery()
+        mockRoutesService
+            .Setup(x => x.GetRoutesAsync(It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new List<Route>());
+
+        var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = apprenticeshipTypes,
+            LearningTypes = new List<LearningType> { selectedLearningType },
             OrderBy = OrderBy.Title
         };
-
-        var cancellationToken = new CancellationToken();
 
         var coursesResponse = new GetCoursesResponse
         {
@@ -177,20 +182,16 @@ public class WhenGettingCourses
             TotalCount = Constants.DefaultPageSize
         };
 
-        mockApiClient.Setup(x => x.Get<GetCoursesResponse>(
-                It.IsAny<GetCoursesApiRequest>()
-            )
-        )
-        .ReturnsAsync(coursesResponse);
+        mockApiClient
+            .Setup(x => x.Get<GetCoursesResponse>(It.IsAny<GetCoursesApiRequest>()))
+            .ReturnsAsync(coursesResponse);
 
-        await sut.Handle(query, cancellationToken);
+        await sut.Handle(query, CancellationToken.None);
 
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
-                string.IsNullOrEmpty(requestApprenticeshipType)
-                    ? r.ApprenticeshipTypes.Count == 0
-                    : r.ApprenticeshipTypes.Count == 1 &&
-                      r.ApprenticeshipTypes[0].ToString() == requestApprenticeshipType
+                r.LearningTypes.Count == 1 &&
+                r.LearningTypes[0] == requestLearningType
             )
         ), Times.Once);
     }
@@ -217,7 +218,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string> { "Route1", "Route3" },
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -260,7 +261,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -298,7 +299,7 @@ public class WhenGettingCourses
         {
             Page = 5,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -337,7 +338,7 @@ public class WhenGettingCourses
             Location = null,
             Distance = null,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -376,7 +377,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 
@@ -414,7 +415,7 @@ public class WhenGettingCourses
         {
             Levels = expectedLevels,
             Routes = new List<string>(),
-            ApprenticeshipTypes = new List<string>(),
+            LearningTypes = new List<LearningType>(),
             OrderBy = OrderBy.Title
         };
 

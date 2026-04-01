@@ -8,7 +8,6 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
-using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 
 namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
@@ -28,7 +27,7 @@ public class GetCoursesQueryHandler(
 
         var routeIds = routes.Where(a => query.Routes.Contains(a.Name)).Select(t => t.Id).ToList();
 
-        var apprenticeshipTypes = BuildApprenticeshipTypes(query.ApprenticeshipTypes);
+        var learningTypes = BuildLearningTypes(query.LearningTypes);
 
         var coursesResponse = await _apiClient.Get<GetCoursesResponse>(
             new GetCoursesApiRequest
@@ -38,7 +37,7 @@ public class GetCoursesQueryHandler(
                 Location = query.Location,
                 Distance = query.Distance,
                 RouteIds = routeIds,
-                ApprenticeshipTypes = apprenticeshipTypes,
+                LearningTypes = learningTypes,
                 Levels = query.Levels,
                 Page = query.Page,
                 OrderBy = query.OrderBy
@@ -57,31 +56,31 @@ public class GetCoursesQueryHandler(
         };
     }
 
-    private static List<ApprenticeshipType> BuildApprenticeshipTypes(List<string> selectedApprenticeshipTypes)
+    private static List<LearningType> BuildLearningTypes(List<LearningType> selectedLearningTypes)
     {
-        if (selectedApprenticeshipTypes.Count == 0 || selectedApprenticeshipTypes.Count == 3)
+        if (selectedLearningTypes.Count == 0 || selectedLearningTypes.Count == 3)
         {
             return [];
         }
 
-        var mappedApprenticeshipTypes = new List<ApprenticeshipType>(selectedApprenticeshipTypes.Count);
+        var mappedLearningTypes = new List<LearningType>(selectedLearningTypes.Count);
 
-        foreach (var apprenticeshipType in selectedApprenticeshipTypes)
+        foreach (var learningType in selectedLearningTypes)
         {
-            switch (apprenticeshipType)
+            switch (learningType)
             {
-                case var _ when apprenticeshipType == ApprenticeshipType.Apprenticeship.GetDescription():
-                    mappedApprenticeshipTypes.Add(ApprenticeshipType.Apprenticeship);
+                case var _ when learningType == LearningType.Apprenticeship:
+                    mappedLearningTypes.Add(LearningType.Apprenticeship);
                     break;
-                case var _ when apprenticeshipType == ApprenticeshipType.FoundationApprenticeship.GetDescription():
-                    mappedApprenticeshipTypes.Add(ApprenticeshipType.FoundationApprenticeship);
+                case var _ when learningType == LearningType.FoundationApprenticeship:
+                    mappedLearningTypes.Add(LearningType.FoundationApprenticeship);
                     break;
-                case var _ when apprenticeshipType == ApprenticeshipType.ApprenticeshipUnit.GetDescription():
-                    mappedApprenticeshipTypes.Add(ApprenticeshipType.ApprenticeshipUnit);
+                case var _ when learningType == LearningType.ApprenticeshipUnit:
+                    mappedLearningTypes.Add(LearningType.ApprenticeshipUnit);
                     break;
                 default: break;
             }
         }
-        return mappedApprenticeshipTypes;
+        return mappedLearningTypes;
     }
 }

@@ -37,8 +37,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     public new string Distance { get; set; } = "All";
 
     public List<string> SelectedRoutes { get; set; } = [];
-
-    public List<string> SelectedTypes { get; set; } = [];
+    public List<LearningType> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
 
     public int Total { get; set; }
@@ -93,11 +92,9 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
 
-    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT =
-        "Find out more about apprenticeship types (opens in new tab)";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
 
-    public const string APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK =
-        "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
@@ -221,12 +218,12 @@ public class CoursesViewModel : PageLinksViewModelBase
                 [
                     CreateCheckboxListFilterSection(
                         "types-filter",
-                        nameof(FilterType.ApprenticeshipTypes),
-                        APPRENTICESHIP_TYPES_SECTION_HEADING,
+                        nameof(FilterType.LearningTypes),
+                        TRAINING_TYPES_SECTION_HEADING,
                         null,
-                        ApprenticeshipTypesFilterHelper.BuildItems(SelectedTypes),
-                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_TEXT,
-                        APPRENTICESHIP_TYPE_FIND_OUT_MORE_LINK
+                        LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
+                        TRAINING_TYPE_FIND_OUT_MORE_TEXT,
+                        TRAINING_TYPE_FIND_OUT_MORE_LINK
                     ),
                     CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
                     CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null, GenerateRouteFilterItems())
@@ -239,25 +236,25 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private List<FilterItemViewModel> GenerateRouteFilterItems()
     {
-        return Routes?.Select(category => new FilterItemViewModel
+        return Routes.Select(category => new FilterItemViewModel
         {
             Value = category.Name,
             DisplayText = category.Name,
-            IsSelected = SelectedRoutes?.Contains(category.Name) ?? false
+            IsSelected = SelectedRoutes.Contains(category.Name)
         })
-        .ToList() ?? [];
+        .ToList();
     }
 
     private List<FilterItemViewModel> GenerateLevelFilterItems()
     {
-        return Levels?.Select(level => new FilterItemViewModel
+        return Levels.Select(level => new FilterItemViewModel
         {
             Value = level.Code.ToString(),
             DisplayText = $"Level {level.Code}",
             DisplayDescription = $"Equal to {level.Name}",
-            IsSelected = SelectedLevels?.Contains(level.Code) ?? false
+            IsSelected = SelectedLevels.Contains(level.Code)
         })
-        .ToList() ?? [];
+        .ToList();
     }
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
@@ -276,7 +273,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Distance, Distance);
         }
 
-        if (SelectedLevels?.Count > 0 && Levels.Count > 0)
+        if (SelectedLevels.Count > 0 && Levels.Count > 0)
         {
             var selectedLevelNames = Levels
                 .Where(level => SelectedLevels.Contains(level.Code))
@@ -286,7 +283,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Levels, selectedLevelNames);
         }
 
-        if (SelectedRoutes?.Count > 0 && Routes.Count > 0)
+        if (SelectedRoutes.Count > 0 && Routes.Count > 0)
         {
             var validRoutes = SelectedRoutes
                 .Where(route => Routes.Exists(r => r.Name == route))
@@ -295,9 +292,13 @@ public class CoursesViewModel : PageLinksViewModelBase
             AddSelectedFilter(selectedFilters, FilterType.Categories, validRoutes);
         }
 
-        if (SelectedTypes?.Count > 0)
+        if (SelectedTrainingTypes.Count > 0)
         {
-            AddSelectedFilter(selectedFilters, FilterType.ApprenticeshipTypes, SelectedTypes.ToList());
+            var validTrainingTypes = SelectedTrainingTypes
+                .Where(type => Enum.IsDefined(typeof(LearningType), type))
+                .Select(type => type.ToString())
+                .ToList();
+            AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes);
         }
 
         if (selectedFilters.Count == 0)
@@ -356,11 +357,11 @@ public class CoursesViewModel : PageLinksViewModelBase
                         }
                     }
                     break;
-                case FilterType.ApprenticeshipTypes:
+                case FilterType.LearningTypes:
                     {
-                        foreach (string type in SelectedTypes)
+                        foreach (var type in SelectedTrainingTypes)
                         {
-                            result.Add(ValueTuple.Create(nameof(FilterType.ApprenticeshipTypes), type));
+                            result.Add(ValueTuple.Create(nameof(FilterType.LearningTypes), type.ToString()));
                         }
                     }
                     break;
@@ -374,7 +375,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         var routeValues = new Dictionary<string, string>
         {
-            { "larsCode", larsCode.ToString() },
+            { "larsCode", larsCode },
         };
 
         if (!string.IsNullOrWhiteSpace(Location))
