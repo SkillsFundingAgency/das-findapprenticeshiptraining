@@ -6,6 +6,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
@@ -37,12 +38,16 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string AchievementRateInformation => GetAchievementRateInformation();
     public bool IsShortCourse => CourseType == CourseType.ShortCourse;
     public bool IsApprenticeship => CourseType == CourseType.Apprenticeship;
-    public bool ShowApprenticesWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
+    public bool ShowOnlineOption => Locations.Any(a => a.LocationType == LocationType.Online) && IsShortCourse;
+    public bool ShowLearnerWorkplaceOption => Locations.Any(a => a.LocationType == LocationType.National || a.LocationType == LocationType.Regional);
+    public bool ShowProviderOption => Locations.Any(a => a.LocationType == LocationType.Provider) && IsShortCourse;
     public bool ShowBlockReleaseOption => Locations.Any(a => a.BlockRelease) && IsApprenticeship;
     public bool ShowDayReleaseOption => Locations.Any(a => a.DayRelease) && IsApprenticeship;
+    public List<LocationModel> ProviderLocations => GetProviderLocations();
     public List<LocationModel> BlockReleaseLocations => GetBlockReleaseLocations();
     public List<LocationModel> DayReleaseLocations => GetDayReleaseLocations();
-    public string AtApprenticesWorkplaceWithNoLocationDisplayMessage => GetAtApprenticeWorkplaceWithNoLocationDisplayMessage();
+    public string AtLearnerWorkplaceWithNoLocationDisplayMessage => GetAtLearnerWorkplaceWithNoLocationDisplayMessage();
+    public bool HasMultipleProviderLocations => ProviderLocations.Count(a => a.LocationType == LocationType.Provider) > 1;
     public bool HasMultipleBlockReleaseLocations => BlockReleaseLocations.Count(a => a.BlockRelease) > 1;
     public bool HasMultipleDayReleaseLocations => DayReleaseLocations.Count(a => a.DayRelease) > 1;
     public LocationModel ClosestProviderLocation => GetClosestProviderLocation();
@@ -59,7 +64,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string ContactAddress => FormatContactAddress();
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
-    public bool HasMatchingRegionalLocation => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
+    public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
@@ -111,7 +116,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             return "app-provider-shortlist-added";
         }
     }
-
+    private List<LocationModel> GetProviderLocations()
+    {
+        return Locations.Where(a => a.LocationType == LocationType.Provider).ToList();
+    }
     private List<LocationModel> GetBlockReleaseLocations()
     {
         return Locations.Where(a => a.BlockRelease).ToList();
@@ -184,15 +192,15 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         return builder.ToString();
     }
 
-    private string GetAtApprenticeWorkplaceWithNoLocationDisplayMessage()
+    private string GetAtLearnerWorkplaceWithNoLocationDisplayMessage()
     {
         if (Locations.Any(l => l.LocationType == LocationType.National))
         {
-            return "Training is provided at learner's workplaces across England.";
+            return TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationNational;
         }
         else
         {
-            return "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
+            return TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationRegional;
         }
     }
 

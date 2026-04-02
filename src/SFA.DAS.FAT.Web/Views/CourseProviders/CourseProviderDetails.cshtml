@@ -49,20 +49,23 @@
                     You can
 
                     <a class="govuk-link govuk-link--no-visited-state"
-                       asp-route="@RouteNames.CourseProviderDetails"
-                       asp-route-larsCode="@Model.LarsCode"
-                       asp-route-providerId="@Model.Ukprn">
+                           asp-route="@RouteNames.CourseProviderDetails"
+                           asp-route-larsCode="@Model.LarsCode"
+                           asp-route-providerId="@Model.Ukprn">
                         remove or change your location
                     </a>.
 
                     This may change what options are available.
                 </p>
 
-                <p class="govuk-body">
-                    If there are multiple training options, the apprentice may do a combination of these.
+                <p class="govuk-body">You will need to contact the provider to confirm:</p>
 
-                    You'll need to contact the provider to confirm what training they offer.
-                </p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li>what training they offer</li>
+                    <li>your chosen delivery method.</li>
+                </ul>
+
+                <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
             }
 
             @* Search courses by location *@
@@ -89,362 +92,14 @@
 
             @* Training Options *@
 
-            <table class="govuk-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header das-table-cell-width-35">Training option</th>
-                        <th scope="col" class="govuk-table__header das-table-cell-width-65">Location</th>
-                    </tr>
-                </thead>
-
-                <tbody class="govuk-table__body">
-
-                    @if (Model.ShowApprenticesWorkplaceOption)
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header">
-                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                                    At learner's workplace
-                                </p>
-                            </th>
-                            <td class="govuk-table__cell">
-                                @if (string.IsNullOrWhiteSpace(Model.Location))
-                                {
-                                    <p class="govuk-body govuk-!-margin-top-2">
-                                        @Model.AtApprenticesWorkplaceWithNoLocationDisplayMessage
-                                    </p>
-                                }
-                                else
-                                {
-                                    @if (Model.HasMatchingRegionalLocation)
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>0.0 miles</strong> to learner's work location
-                                        </p>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            This provider has said they do not deliver training at learner's workplaces in your region.
-                                        </p>
-                                    }
-                                }
-                            </td>
-                        </tr>
-                    }
-
-                    @if (Model.ShowBlockReleaseOption)
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
-                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                                    Block release
-                                </p>
-                                <p class="govuk-body-m das-hint-colour">
-                                    Training in blocks of a week or more at the provider's location.
-                                </p>
-                            </th>
-
-                            <td class="govuk-table__cell">
-                                @if (Model.HasMultipleBlockReleaseLocations)
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.Location))
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">Block release at multiple locations.</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
-                                        </p>
-                                    }
-
-                                    <details class="govuk-details">
-                                        <summary class="govuk-details__summary">
-                                            <span class="govuk-details__summary-text">
-                                                View all block release locations
-                                            </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
-                                            <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (LocationModel location in Model.BlockReleaseLocations)
-                                                {
-                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
-                                                    {
-                                                        <li>
-                                                            @location.FormatAddress()
-                                                        </li>
-                                                    }
-                                                    else
-                                                    {
-                                                        <li>
-                                                            <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
-                                                        </li>
-                                                    }
-                                                }
-                                            </ul>
-                                        </div>
-                                    </details>
-                                }
-                                else
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.Location))
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0].FormatAddress()</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestBlockReleaseLocation.FormatAddress()
-                                        </p>
-                                    }
-                                }
-                            </td>
-                        </tr>
-                    }
-
-                    @if (Model.ShowDayReleaseOption)
-                    {
-                        <tr class="govuk-table__row">
-                            <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
-                                <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                                    Day release
-                                </p>
-                                <p class="govuk-body-m das-hint-colour">
-                                    One day a week at the provider's location.
-                                </p>
-                            </th>
-
-                            <td class="govuk-table__cell">
-                                @if (Model.HasMultipleDayReleaseLocations)
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.Location))
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">Day release at multiple locations.</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
-                                        </p>
-                                    }
-
-                                    <details class="govuk-details">
-                                        <summary class="govuk-details__summary">
-                                            <span class="govuk-details__summary-text">
-                                                View all day release locations
-                                            </span>
-                                        </summary>
-                                        <div class="govuk-details__text">
-                                            <ul class="govuk-list govuk-list--bullet">
-                                                @foreach (LocationModel location in Model.DayReleaseLocations)
-                                                {
-                                                    @if (string.IsNullOrWhiteSpace(Model.Location))
-                                                    {
-                                                        <li>
-                                                            @location.FormatAddress()
-                                                        </li>
-                                                    }
-                                                    else
-                                                    {
-                                                        <li>
-                                                            <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
-                                                        </li>
-                                                    }
-                                                }
-                                            </ul>
-                                        </div>
-                                    </details>
-                                }
-                                else
-                                {
-                                    if (string.IsNullOrWhiteSpace(Model.Location))
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
-                                    }
-                                    else
-                                    {
-                                        <p class="govuk-body govuk-!-margin-top-2">
-                                            <strong>@Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0") miles</strong> to closest location: @Model.ClosestDayReleaseLocation.FormatAddress()
-                                        </p>
-                                    }
-                                }
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            @await Html.PartialAsync("_trainingOptionsTable", Model)
 
             @* Training Options *@
 
             @if (Model.IsApprenticeship)
             {
-                <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-                    Course achievements and participation
-                </h3>
-
-                @* Achievements Container *@
-
-                <div class="das-reviews">
-                    <div class="govuk-grid-column-one-half das-reviews-container">
-                        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
-                            Achievements
-                        </h3>
-
-                        @if (Model.Qar.ConvertedAchievementRate is not null)
-                        {
-                            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                                @Model.Qar.AchievementRate%
-                            </h2>
-
-                            <p class="govuk-body-s">
-                                @Model.AchievementRateInformation
-                            </p>
-
-                            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
-                                @Model.Qar.NationalAchievementRate% national achievement rate
-                            </p>
-
-                        }
-                        else
-                        {
-                            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                                No data
-                            </h2>
-
-                            <p class="govuk-body-s">
-                                There is not enough data to show the achievement rate for this course.
-                                This may be because a small number of apprentices completed this course,
-                                or this is a new course for this provider.
-                            </p>
-                        }
-                    </div>
-
-                    @* Achievements Container *@
-
-                    @* Participation Container *@
-
-                    <div class="govuk-grid-column-one-half das-reviews-container">
-
-                        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
-                            Participation
-                        </h3>
-
-                        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
-                            @Model.EndpointAssessmentsCountDisplay
-                        </h2>
-
-                        <p class="govuk-body-s">
-                            @Model.EndpointAssessmentDisplayMessage
-                        </p>
-                    </div>
-
-                    @* Participation Container *@
-
-                </div>
-
-                <div class="govuk-inset-text govuk-!-margin-top-3">
-                    Course-level data collected by the Department for Education.
-                </div>
-
-                <hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">
-
-                <h2 class="govuk-heading-l govuk-!-margin-bottom-5">
-
-                    Training provider information
-
-                </h2>
-
-                <h3 class="govuk-heading-m govuk-!-margin-bottom-5">
-
-                    Employer and apprentice reviews for this training provider
-
-                </h3>
-
-                <div class="das-reviews">
-
-                    @* Employers Container *@
-
-                    <div class="govuk-grid-column-one-half das-reviews-container">
-
-                        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                            Employers
-                        </h3>
-
-                        @if (Model.Reviews.EmployerRating != ProviderRating.NotYetReviewed)
-                        {
-                            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                                <span class="das-rating-large das-rating--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedEmployerStars out of 4 stars">
-                                    <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 2 ? "--empty" : "")"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 3 ? "--empty" : "")"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedEmployerStars < 4 ? "--empty" : "")"></span>
-                                </span>
-                                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")">@Model.Reviews.EmployerRating.ToString()</span>
-                            </p>
-
-                            <p class="govuk-body-s govuk-!-margin-bottom-2">
-                                @Model.EmployerReviewsDisplayMessage
-                            </p>
-                        }
-                        else
-                        {
-                            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                                No reviews
-                            </h2>
-                            <p class="govuk-body-s">
-                                Not enough employers have reviewed this provider.
-                            </p>
-                        }
-
-                    </div>
-
-                    @* Employers Container *@
-
-                    @* Apprentices Container *@
-
-                    <div class="govuk-grid-column-one-half das-reviews-container">
-
-                        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
-                            Apprentices
-                        </h3>
-
-                        @if (Model.Reviews.ApprenticeRating != ProviderRating.NotYetReviewed)
-                        {
-                            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
-                                <span class="das-rating das-rating--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedApprenticeStars out of 4 stars">
-                                    <span aria-hidden="true" class="das-rating__icon-star"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 2 ? "--empty" : "")"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 3 ? "--empty" : "")"></span>
-                                    <span aria-hidden="true" class="das-rating__icon-star@(Model.Reviews.ConvertedApprenticeStars < 4 ? "--empty" : "")"></span>
-                                </span>
-                                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")">@Model.Reviews.ApprenticeRating.ToString()</span>
-                            </p>
-
-                            <p class="govuk-body-s govuk-!-margin-bottom-2">
-                                @Model.ApprenticeReviewsDisplayMessage
-                            </p>
-                        }
-                        else
-                        {
-                            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
-                                No reviews
-                            </h2>
-
-                            <p class="govuk-body-s">
-                                Not enough apprentices have reviewed this provider.
-                            </p>
-                        }
-                    </div>
-
-                    @* Apprentices Container *@
-
-                </div>
-
-                <div class="govuk-inset-text govuk-!-margin-top-3">
-                    Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.AcademicPeriod).
-                    Data collected by Department for Education.
-                </div>
+                @await Html.PartialAsync("_achievementsAndParticipation", Model)
+                @await Html.PartialAsync("_providerReviews", Model)
             }
         </div>
     </div>
@@ -466,77 +121,7 @@
             </div>
         </div>
     }
-    @*  Contact this training provider *@
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
-                Contact this training provider
-            </h3>
-            <dl class="govuk-summary-list">
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Registered address
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @if (!string.IsNullOrEmpty(@Model.ContactAddress))
-                        {
-                            @Model.ContactAddress
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Email
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @if (!string.IsNullOrEmpty(Model.Contact?.Email))
-                        {
-                            <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Telephone
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
-                        {
-                            @Model.Contact.PhoneNumber
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </dd>
-                </div>
-                <div class="govuk-summary-list__row">
-                    <dt class="govuk-summary-list__key">
-                        Website
-                    </dt>
-                    <dd class="govuk-summary-list__value">
-                        @if (!string.IsNullOrEmpty(Model.Contact?.Website))
-                        {
-                            <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
-                        }
-                        else
-                        {
-                            <span>-</span>
-                        }
-                    </dd>
-                </div>
-            </dl>
-        </div>
-    </div>
+    @await Html.PartialAsync("_contactDetails", Model)
 
     @* Training provider overview*@
     <div class="govuk-grid-row">
@@ -549,8 +134,8 @@
             <p class="govuk-body">
                 Find overall participation rates and reviews from employers and apprentices by visiting their
                 <a class="govuk-link govuk-link--no-visited-state"
-                   asp-route="@RouteNames.Provider"
-                   asp-route-ukprn="@Model.Ukprn">
+                       asp-route="@RouteNames.Provider"
+                       asp-route-ukprn="@Model.Ukprn">
                     training provider details page
                 </a>.
             </p>
@@ -569,55 +154,6 @@
     </div>
     @* Courses offered by this training provider *@
 
-    @* Shortlist *@
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-            <div class="app-course-provider">
-                <div class="das-highlight govuk-!-margin-bottom-5">
-                    <div class="app-provider-shortlist-control app-provider-shortlist-control--inline @Model.ShortlistClass">
-                        <div class="app-provider-shortlist-add">
-                            <form method="post" asp-route="@RouteNames.CreateShortlistItem">
-                                <input type="hidden" name="larsCode" value="@Model.LarsCode" />
-                                <input type="hidden" name="ukprn" value="@Model.Ukprn" />
-                                <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
-                                <input type="hidden" name="locationName" value="@Model.Location" />
-                                <button id="add-to-shortlist-@(Model.Ukprn)" class="govuk-button govuk-!-margin-bottom-0" type="submit">Add to shortlist</button>
-                            </form>
-                        </div>
-                        <div class="app-provider-shortlist-manage">
-                            <span class="govuk-body das-text--warning govuk-!-font-weight-regular">Shortlist full.</span>
-                            <a asp-route="@RouteNames.ShortLists" class="govuk-body govuk-link govuk-link--no-visited-state">
-                                Manage shortlist
-                            </a>
-                        </div>
-                        <div class="app-provider-shortlist-remove govuk-body govuk-!-margin-bottom-0">
-                            <strong class="govuk-tag app-provider-shortlist-tag govuk-!-margin-bottom-2 @(Model.ShortlistId == null ? "app-provider-not-shortlisted" : "app-provider-shortlisted")">Shortlisted</strong>
-                            <form method="post" asp-route="@RouteNames.DeleteShortlistItem" asp-route-id="@(Model.ShortlistId ?? Guid.Empty)">
-                                <input type="hidden" name="ukprn" value="@Model.Ukprn" />
-                                <input type="hidden" name="providerName" value="@Model.ProviderName" />
-                                <input type="hidden" name="larsCode" value="@Model.LarsCode" />
-                                <input type="hidden" name="routeName" value="@RouteNames.CourseProviderDetails" />
-                                <button id="remove-from-shortlist-@(Model.Ukprn)" class="das-button--inline-link das-no-wrap" type="submit">Remove from shortlist</button>
-                            </form>
-                        </div>
-                    </div>
-
-                    @if (Model.TotalProvidersCount > 1)
-                    {
-                        <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is 1 of @Model.TotalProvidersCount training providers for @Model.CourseNameAndLevel.</p>
-                        <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">View training providers for this course</a></p>
-                    }
-
-                    @if (Model.TotalProvidersCount == 1)
-                    {
-                        <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is the only training provider for @Model.CourseNameAndLevel.</p>
-                    }
-
-                </div>
-            </div>
-        </div>
-        <partial name="_surveyLink" />
-    </div>
+    @await Html.PartialAsync("_shortlistPanel", Model)
 
 </main>
