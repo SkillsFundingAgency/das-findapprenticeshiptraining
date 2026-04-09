@@ -24,15 +24,15 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public const string AtLearnerWorkplaceWithLocationNotMatchingRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
 
     public const string AtProviderPlaceWithMultipleLocations = "Training provider has multiple locations.";
-    public const string ProviderClosestLocationWithLocation = "Training provider’s closest location is <strong>{0} miles away:</strong> {1}";
+    public const string ProviderClosestLocationWithLocation = "Training provider’s closest location is";
     public const string ViewAllProviderLocations = "View all training provider locations";
-    public const string AtProviderPlaceWithLocationHasMultipleLocations = "<strong>{0} miles away:</strong> {1}";
+    public const string MilesAway = "miles away:";
 
     public const string BlockReleaseHint = "Training in blocks of a week or more at the provider's location.";
     public const string BlockReleaseMultipleLocations = "Block release at multiple locations.";
     public const string ViewAllBlockReleaseLocations = "View all block release locations";
 
-    public const string ClosestLocationWithDistance = "<strong>{0} miles away:</strong> to closest location: {1}";
+    public const string ToClosestLocation = "to closest location:";
 
     public const string DayReleaseHint = "One day a week at the provider's location.";
     public const string DayReleaseMultipleLocations = "Day release at multiple locations.";
@@ -74,6 +74,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public LocationModel ClosestProviderLocation => GetClosestProviderLocation();
     public LocationModel ClosestBlockReleaseLocation => GetClosestBlockReleaseLocation();
     public LocationModel ClosestDayReleaseLocation => GetClosestDayReleaseLocation();
+    public string ClosestProviderLocationDistanceDisplay => FormatDistance(ClosestProviderLocation);
+    public string ClosestBlockReleaseLocationDistanceDisplay => FormatDistance(ClosestBlockReleaseLocation);
+    public string ClosestDayReleaseLocationDistanceDisplay => FormatDistance(ClosestDayReleaseLocation);
     public string EmployerReviewsDisplayMessage => GetEmployerReviewsDisplayMessage();
     public string ApprenticeReviewsDisplayMessage => GetApprenticeReviewsDisplayMessage();
     public string EndpointAssessmentDisplayMessage => GetEndpointAssessmentDisplayMessage();
@@ -186,6 +189,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     private LocationModel GetClosestDayReleaseLocation()
     {
         return Locations.Where(a => a.DayRelease).OrderBy(a => a.CourseDistance).FirstOrDefault();
+    }
+
+    private static string FormatDistance(LocationModel location)
+    {
+        return location?.CourseDistance.ToString("0.0") ?? string.Empty;
     }
 
     private string FormatContactAddress()

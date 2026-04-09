@@ -96,10 +96,7 @@
                     else
                     {
                         <p class="govuk-body govuk-!-margin-top-2">
-                            @Html.Raw(string.Format(
-                                CourseProviderViewModel.ProviderClosestLocationWithLocation,
-                                Model.ClosestProviderLocation.CourseDistance.ToString("0.0"),
-                                Model.ClosestProviderLocation.FormatAddress()))
+                            @CourseProviderViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @Model.ClosestProviderLocation.FormatAddress()
                         </p>
                         if (Model.HasMultipleProviderLocations)
                         {
@@ -114,9 +111,7 @@
                                         @foreach (LocationModel location in Model.ProviderLocations)
                                         {
                                             <li>
-                                                @Html.Raw(string.Format(CourseProviderViewModel.AtProviderPlaceWithLocationHasMultipleLocations,
-                                                         location.CourseDistance.ToString("0.0"),
-                                                         location.FormatAddress()))
+                                                <strong>@location.CourseDistance.ToString("0.0") @CourseProviderViewModel.MilesAway</strong> @location.FormatAddress()
                                             </li>
                                         }
                                     </ul>
@@ -147,10 +142,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @Html.Raw(string.Format(
-                                CourseProviderViewModel.ClosestLocationWithDistance,
-                                    Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
-                                    Model.ClosestBlockReleaseLocation.FormatAddress()))
+                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
                             </p>
                         }
 
@@ -190,10 +182,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @Html.Raw(string.Format(
-                                CourseProviderViewModel.ClosestLocationWithDistance,
-                                    Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
-                                    Model.ClosestBlockReleaseLocation.FormatAddress()))
+                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
                             </p>
                         }
                     }
@@ -220,10 +209,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @Html.Raw(string.Format(
-                                CourseProviderViewModel.ClosestLocationWithDistance,
-                                    Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
-                                    Model.ClosestDayReleaseLocation.FormatAddress()))
+                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
                             </p>
                         }
 
@@ -263,10 +249,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @Html.Raw(string.Format(
-                                CourseProviderViewModel.ClosestLocationWithDistance,
-                                    Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
-                                    Model.ClosestDayReleaseLocation.FormatAddress()))
+                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
                             </p>
                         }
                     }
