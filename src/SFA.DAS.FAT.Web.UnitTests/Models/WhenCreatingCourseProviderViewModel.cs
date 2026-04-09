@@ -1095,6 +1095,49 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
+    public void TrainingOptions_WhenProviderHasMultipleLocations_MapsProviderLocationSummaryValues()
+    {
+        var closestProviderLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            CourseDistance = 0.95,
+            AddressLine1 = "1 Closest Street",
+            Town = "Leeds",
+            Postcode = "LS1 1AA"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel
+                {
+                    LocationType = LocationType.Provider,
+                    CourseDistance = 2.5,
+                    AddressLine1 = "2 Other Street",
+                    Town = "Leeds",
+                    Postcode = "LS1 2BB"
+                },
+                closestProviderLocation,
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShowProviderOption, Is.True);
+            Assert.That(result.ProviderLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleProviderLocations, Is.True);
+            Assert.That(result.ClosestProviderLocation, Is.EqualTo(closestProviderLocation));
+            Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.0"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Closest Street, Leeds, LS1 1AA"));
+        });
+    }
+
+    [Test]
     public void AchievementsAndParticipation_WhenAccessed_MapsExpectedValues()
     {
         var endpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc), 12);
