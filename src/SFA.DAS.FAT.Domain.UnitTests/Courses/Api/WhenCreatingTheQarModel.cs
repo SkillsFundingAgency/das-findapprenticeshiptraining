@@ -57,10 +57,12 @@ public sealed class WhenCreatingTheQarModel
         Assert.That(sut.FailureRate, Is.EqualTo(expected));
     }
 
-    [Test]
-    public void Failure_Rate_Should_Return_Zero_When_Achievement_Rate_Is_Null()
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("invalid")]
+    public void FailureRate_AchievementRateCannotBeParsed_ReturnsZero(string rate)
     {
-        var sut = new QarModel { AchievementRate = null };
+        var sut = new QarModel { AchievementRate = rate };
 
         Assert.That(sut.FailureRate, Is.EqualTo(0));
     }
