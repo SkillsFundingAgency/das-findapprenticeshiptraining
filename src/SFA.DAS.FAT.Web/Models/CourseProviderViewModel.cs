@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
@@ -16,27 +17,8 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 {
-    public const string OnlineTraining = "Your learner can complete this training remotely.";
-
     public const string AtLearnerWorkplaceWithNoLocationNational = "The training provider can travel to you to deliver this course.";
     public const string AtLearnerWorkplaceWithNoLocationRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
-    public const string AtLearnerWorkplaceWithLocationMatchingRegionalOrNational = "The training provider can travel to you to deliver this course.";
-    public const string AtLearnerWorkplaceWithLocationNotMatchingRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
-
-    public const string AtProviderPlaceWithMultipleLocations = "Training provider has multiple locations.";
-    public const string ProviderClosestLocationWithLocation = "Training provider’s closest location is";
-    public const string ViewAllProviderLocations = "View all training provider locations";
-    public const string MilesAway = "miles away:";
-
-    public const string BlockReleaseHint = "Training in blocks of a week or more at the provider's location.";
-    public const string BlockReleaseMultipleLocations = "Block release at multiple locations.";
-    public const string ViewAllBlockReleaseLocations = "View all block release locations";
-
-    public const string ToClosestLocation = "to closest location:";
-
-    public const string DayReleaseHint = "One day a week at the provider's location.";
-    public const string DayReleaseMultipleLocations = "Day release at multiple locations.";
-    public const string ViewAllDayReleaseLocations = "View all day release locations";
 
     public int ShortlistCount { get; set; }
     public int Ukprn { get; set; }
@@ -90,6 +72,60 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string ShortlistClass => GetShortlistClass();
     public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
     public bool ShowMultipleProvidersForCourse => TotalProvidersCount > 1;
+    public TrainingOptionsTableViewModel TrainingOptions => new()
+    {
+        Location = Location,
+        ShowOnlineOption = ShowOnlineOption,
+        ShowLearnerWorkplaceOption = ShowLearnerWorkplaceOption,
+        AtLearnerWorkplaceWithNoLocationDisplayMessage = AtLearnerWorkplaceWithNoLocationDisplayMessage,
+        HasMatchingRegionalLocationOrNational = HasMatchingRegionalLocationOrNational,
+        ShowProviderOption = ShowProviderOption,
+        ProviderLocations = ProviderLocations,
+        HasMultipleProviderLocations = HasMultipleProviderLocations,
+        ClosestProviderLocation = ClosestProviderLocation,
+        ClosestProviderLocationDistanceDisplay = ClosestProviderLocationDistanceDisplay,
+        ClosestProviderLocationAddress = ClosestProviderLocation?.FormatAddress() ?? string.Empty,
+        ShowBlockReleaseOption = ShowBlockReleaseOption,
+        BlockReleaseLocations = BlockReleaseLocations,
+        HasMultipleBlockReleaseLocations = HasMultipleBlockReleaseLocations,
+        ClosestBlockReleaseLocation = ClosestBlockReleaseLocation,
+        ClosestBlockReleaseLocationDistanceDisplay = ClosestBlockReleaseLocationDistanceDisplay,
+        ShowDayReleaseOption = ShowDayReleaseOption,
+        DayReleaseLocations = DayReleaseLocations,
+        HasMultipleDayReleaseLocations = HasMultipleDayReleaseLocations,
+        ClosestDayReleaseLocation = ClosestDayReleaseLocation,
+        ClosestDayReleaseLocationDistanceDisplay = ClosestDayReleaseLocationDistanceDisplay
+    };
+    public AchievementsAndParticipationViewModel AchievementsAndParticipation => new()
+    {
+        Qar = Qar,
+        AchievementRateInformation = AchievementRateInformation,
+        EndpointAssessmentsCountDisplay = EndpointAssessmentsCountDisplay,
+        EndpointAssessmentDisplayMessage = EndpointAssessmentDisplayMessage
+    };
+    public ProviderReviewsViewModel ProviderReviews => new()
+    {
+        Reviews = Reviews,
+        EmployerReviewsDisplayMessage = EmployerReviewsDisplayMessage,
+        ApprenticeReviewsDisplayMessage = ApprenticeReviewsDisplayMessage
+    };
+    public ContactDetailsViewModel ContactDetails => new()
+    {
+        ContactAddress = ContactAddress,
+        Contact = Contact
+    };
+    public ShortlistPanelViewModel ShortlistPanel => new()
+    {
+        ShortlistClass = ShortlistClass,
+        LarsCode = LarsCode,
+        Ukprn = Ukprn,
+        ProviderName = ProviderName,
+        Location = Location,
+        ShortlistId = ShortlistId,
+        ShowMultipleProvidersForCourse = ShowMultipleProvidersForCourse,
+        TotalProvidersCount = TotalProvidersCount,
+        CourseNameAndLevel = CourseNameAndLevel
+    };
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 

@@ -92,14 +92,14 @@
 
             @* Training Options *@
 
-            @await Html.PartialAsync("_trainingOptionsTable", Model)
+            @await Html.PartialAsync("_trainingOptionsTable", Model.TrainingOptions)
 
             @* Training Options *@
 
             @if (Model.IsApprenticeship)
             {
-                @await Html.PartialAsync("_achievementsAndParticipation", Model)
-                @await Html.PartialAsync("_providerReviews", Model)
+                @await Html.PartialAsync("_achievementsAndParticipation", Model.AchievementsAndParticipation)
+                @await Html.PartialAsync("_providerReviews", Model.ProviderReviews)
             }
         </div>
     </div>
@@ -121,7 +121,7 @@
             </div>
         </div>
     }
-    @await Html.PartialAsync("_contactDetails", Model)
+    @await Html.PartialAsync("_contactDetails", Model.ContactDetails)
 
     @* Training provider overview*@
     <div class="govuk-grid-row">
@@ -154,7 +154,7 @@
     </div>
     @* Courses offered by this training provider *@
 
-    @await Html.PartialAsync("_shortlistPanel", Model)
+    @await Html.PartialAsync("_shortlistPanel", Model.ShortlistPanel)
 
     <div class="govuk-grid-row">
         <partial name="_surveyLink" />

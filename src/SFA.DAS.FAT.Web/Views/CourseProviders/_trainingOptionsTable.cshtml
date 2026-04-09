@@ -1,6 +1,7 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models
-@model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
+@using TrainingOptionsTableViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
+@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
 
 <table class="govuk-table">
     <thead class="govuk-table__head">
@@ -20,7 +21,7 @@
                 </th>
                 <td class="govuk-table__cell">
                     <p class="govuk-body govuk-!-margin-top-2">
-                        @CourseProviderViewModel.OnlineTraining
+                        @TrainingOptionsTableViewModel.OnlineTraining
                     </p>
                 </td>
             </tr>
@@ -43,13 +44,13 @@
                         @if (Model.HasMatchingRegionalLocationOrNational)
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @CourseProviderViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
+                                @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
                             </p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @CourseProviderViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
+                                @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
                             </p>
                         }
                     }
@@ -67,11 +68,11 @@
                     {
                         @if (Model.HasMultipleProviderLocations)
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.AtProviderPlaceWithMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
-                                        @CourseProviderViewModel.ViewAllProviderLocations
+                                        @TrainingOptionsTableViewModel.ViewAllProviderLocations
                                     </span>
                                 </summary>
                                 <div class="govuk-details__text">
@@ -96,14 +97,14 @@
                     else
                     {
                         <p class="govuk-body govuk-!-margin-top-2">
-                            @CourseProviderViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @Model.ClosestProviderLocation.FormatAddress()
+                            @TrainingOptionsTableViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @Model.ClosestProviderLocationAddress
                         </p>
                         if (Model.HasMultipleProviderLocations)
                         {
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
-                                        @CourseProviderViewModel.ViewAllProviderLocations
+                                        @TrainingOptionsTableViewModel.ViewAllProviderLocations
                                     </span>
                                 </summary>
                                 <div class="govuk-details__text">
@@ -111,7 +112,7 @@
                                         @foreach (LocationModel location in Model.ProviderLocations)
                                         {
                                             <li>
-                                                <strong>@location.CourseDistance.ToString("0.0") @CourseProviderViewModel.MilesAway</strong> @location.FormatAddress()
+                                                <strong>@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong> @location.FormatAddress()
                                             </li>
                                         }
                                     </ul>
@@ -128,7 +129,7 @@
                         Block release
                     </p>
                     <p class="govuk-body-m das-hint-colour">
-                        @CourseProviderViewModel.BlockReleaseHint
+                        @TrainingOptionsTableViewModel.BlockReleaseHint
                     </p>
                 </th>
 
@@ -137,19 +138,19 @@
                     {
                         if (string.IsNullOrWhiteSpace(Model.Location))
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.BlockReleaseMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.BlockReleaseMultipleLocations</p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
                             </p>
                         }
 
                         <details class="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    @CourseProviderViewModel.ViewAllBlockReleaseLocations
+                                    @TrainingOptionsTableViewModel.ViewAllBlockReleaseLocations
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -182,7 +183,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
+                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
                             </p>
                         }
                     }
@@ -195,7 +196,7 @@
                         Day release
                     </p>
                     <p class="govuk-body-m das-hint-colour">
-                        @CourseProviderViewModel.DayReleaseHint
+                        @TrainingOptionsTableViewModel.DayReleaseHint
                     </p>
                 </th>
 
@@ -204,19 +205,19 @@
                     {
                         if (string.IsNullOrWhiteSpace(Model.Location))
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.DayReleaseMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.DayReleaseMultipleLocations</p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
+                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
                             </p>
                         }
 
                         <details class="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    @CourseProviderViewModel.ViewAllDayReleaseLocations
+                                    @TrainingOptionsTableViewModel.ViewAllDayReleaseLocations
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -249,7 +250,7 @@
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @CourseProviderViewModel.MilesAway</strong> @CourseProviderViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
+                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
                             </p>
                         }
                     }
