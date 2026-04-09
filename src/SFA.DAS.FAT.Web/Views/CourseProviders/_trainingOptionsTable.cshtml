@@ -1,5 +1,5 @@
 @using SFA.DAS.FAT.Domain.Courses
-@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
 
 <table class="govuk-table">
@@ -20,7 +20,7 @@
                 </th>
                 <td class="govuk-table__cell">
                     <p class="govuk-body govuk-!-margin-top-2">
-                        @TrainingOptionsDisplayMessages.OnlineTraining
+                        @CourseProviderViewModel.OnlineTraining
                     </p>
                 </td>
             </tr>
@@ -43,13 +43,13 @@
                         @if (Model.HasMatchingRegionalLocationOrNational)
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
+                                @CourseProviderViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
                             </p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
-                                @TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithLocationNotMatchingRegional
+                                @CourseProviderViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
                             </p>
                         }
                     }
@@ -67,11 +67,11 @@
                     {
                         @if (Model.HasMultipleProviderLocations)
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.AtProviderPlaceWithMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.AtProviderPlaceWithMultipleLocations</p>
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
-                                        @TrainingOptionsDisplayMessages.ViewAllProviderLocations
+                                        @CourseProviderViewModel.ViewAllProviderLocations
                                     </span>
                                 </summary>
                                 <div class="govuk-details__text">
@@ -97,7 +97,7 @@
                     {
                         <p class="govuk-body govuk-!-margin-top-2">
                             @Html.Raw(string.Format(
-                                TrainingOptionsDisplayMessages.ProviderClosestLocationWithLocation,
+                                CourseProviderViewModel.ProviderClosestLocationWithLocation,
                                 Model.ClosestProviderLocation.CourseDistance.ToString("0.0"),
                                 Model.ClosestProviderLocation.FormatAddress()))
                         </p>
@@ -106,7 +106,7 @@
                             <details class="govuk-details">
                                 <summary class="govuk-details__summary">
                                     <span class="govuk-details__summary-text">
-                                        @TrainingOptionsDisplayMessages.ViewAllProviderLocations
+                                        @CourseProviderViewModel.ViewAllProviderLocations
                                     </span>
                                 </summary>
                                 <div class="govuk-details__text">
@@ -114,7 +114,7 @@
                                         @foreach (LocationModel location in Model.ProviderLocations)
                                         {
                                             <li>
-                                                @Html.Raw(string.Format(TrainingOptionsDisplayMessages.AtProviderPlaceWithLocationHasMultipleLocations,
+                                                @Html.Raw(string.Format(CourseProviderViewModel.AtProviderPlaceWithLocationHasMultipleLocations,
                                                          location.CourseDistance.ToString("0.0"),
                                                          location.FormatAddress()))
                                             </li>
@@ -133,7 +133,7 @@
                         Block release
                     </p>
                     <p class="govuk-body-m das-hint-colour">
-                        @TrainingOptionsDisplayMessages.BlockReleaseHint
+                        @CourseProviderViewModel.BlockReleaseHint
                     </p>
                 </th>
 
@@ -142,13 +142,13 @@
                     {
                         if (string.IsNullOrWhiteSpace(Model.Location))
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.BlockReleaseMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.BlockReleaseMultipleLocations</p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
                                 @Html.Raw(string.Format(
-                                TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                CourseProviderViewModel.ClosestLocationWithDistance,
                                     Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
                                     Model.ClosestBlockReleaseLocation.FormatAddress()))
                             </p>
@@ -157,7 +157,7 @@
                         <details class="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    @TrainingOptionsDisplayMessages.ViewAllBlockReleaseLocations
+                                    @CourseProviderViewModel.ViewAllBlockReleaseLocations
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -191,7 +191,7 @@
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
                                 @Html.Raw(string.Format(
-                                TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                CourseProviderViewModel.ClosestLocationWithDistance,
                                     Model.ClosestBlockReleaseLocation.CourseDistance.ToString("0.0"),
                                     Model.ClosestBlockReleaseLocation.FormatAddress()))
                             </p>
@@ -206,7 +206,7 @@
                         Day release
                     </p>
                     <p class="govuk-body-m das-hint-colour">
-                        @TrainingOptionsDisplayMessages.DayReleaseHint
+                        @CourseProviderViewModel.DayReleaseHint
                     </p>
                 </th>
 
@@ -215,13 +215,13 @@
                     {
                         if (string.IsNullOrWhiteSpace(Model.Location))
                         {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsDisplayMessages.DayReleaseMultipleLocations</p>
+                            <p class="govuk-body govuk-!-margin-top-2">@CourseProviderViewModel.DayReleaseMultipleLocations</p>
                         }
                         else
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
                                 @Html.Raw(string.Format(
-                                TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                CourseProviderViewModel.ClosestLocationWithDistance,
                                     Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
                                     Model.ClosestDayReleaseLocation.FormatAddress()))
                             </p>
@@ -230,7 +230,7 @@
                         <details class="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    @TrainingOptionsDisplayMessages.ViewAllDayReleaseLocations
+                                    @CourseProviderViewModel.ViewAllDayReleaseLocations
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -264,7 +264,7 @@
                         {
                             <p class="govuk-body govuk-!-margin-top-2">
                                 @Html.Raw(string.Format(
-                                TrainingOptionsDisplayMessages.ClosestLocationWithDistance,
+                                CourseProviderViewModel.ClosestLocationWithDistance,
                                     Model.ClosestDayReleaseLocation.CourseDistance.ToString("0.0"),
                                     Model.ClosestDayReleaseLocation.FormatAddress()))
                             </p>

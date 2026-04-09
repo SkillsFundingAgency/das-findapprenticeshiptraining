@@ -4,7 +4,6 @@ using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
-using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -290,7 +289,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationNational));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
@@ -305,7 +304,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationRegional));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationRegional));
     }
 
     [Test]
@@ -320,7 +319,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationNational));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
