@@ -4,6 +4,7 @@ using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
+using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -289,7 +290,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("The training provider can travel to you to deliver this course."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
@@ -304,7 +305,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationRegional));
     }
 
     [Test]
@@ -319,7 +320,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("The training provider can travel to you to deliver this course."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(TrainingOptionsDisplayMessages.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
