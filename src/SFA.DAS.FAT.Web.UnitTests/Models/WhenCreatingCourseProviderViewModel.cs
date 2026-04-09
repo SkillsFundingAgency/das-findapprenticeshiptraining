@@ -1000,5 +1000,160 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(sut.ProviderCoursesDetails.Courses, Is.Empty);
         });
     }
+
+    [Test]
+    public void TrainingOptions_WhenAccessed_MapsExpectedValues()
+    {
+        var providerLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            CourseDistance = 1.25,
+            AddressLine1 = "1 Provider Street",
+            Town = "Leeds",
+            Postcode = "LS1 1AA"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Location = "Leeds",
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Online },
+                new LocationModel { LocationType = LocationType.National },
+                providerLocation
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.ShowOnlineOption, Is.True);
+            Assert.That(result.ShowLearnerWorkplaceOption, Is.True);
+            Assert.That(result.HasMatchingRegionalLocationOrNational, Is.True);
+            Assert.That(result.ShowProviderOption, Is.True);
+            Assert.That(result.ProviderLocations, Is.EqualTo(new[] { providerLocation }));
+            Assert.That(result.ClosestProviderLocation, Is.EqualTo(providerLocation));
+            Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.3"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Provider Street, Leeds, LS1 1AA"));
+        });
+    }
+
+    [Test]
+    public void AchievementsAndParticipation_WhenAccessed_MapsExpectedValues()
+    {
+        var endpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc), 12);
+        var qar = new QarModel
+        {
+            AchievementRate = "90",
+            Leavers = "100",
+            Period = "2122",
+            NationalLeavers = "100",
+            NationalAchievementRate = "80"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            Qar = qar,
+            EndpointAssessments = endpointAssessments
+        };
+
+        var result = sut.AchievementsAndParticipation;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Qar, Is.EqualTo(qar));
+            Assert.That(result.AchievementRateInformation, Is.EqualTo(sut.AchievementRateInformation));
+            Assert.That(result.EndpointAssessmentsCountDisplay, Is.EqualTo("12"));
+            Assert.That(result.EndpointAssessmentDisplayMessage, Is.EqualTo(sut.EndpointAssessmentDisplayMessage));
+        });
+    }
+
+    [Test]
+    public void ContactDetails_WhenAccessed_MapsExpectedValues()
+    {
+        var contact = new ContactModel
+        {
+            Email = "provider@test.com",
+            PhoneNumber = "01234567890"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel
+            {
+                AddressLine1 = "1 High Street",
+                Town = "Leeds",
+                Postcode = "LS1 2AB"
+            },
+            Contact = contact
+        };
+
+        var result = sut.ContactDetails;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContactAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Contact, Is.EqualTo(contact));
+        });
+    }
+
+    [Test]
+    public void ProviderReviews_WhenAccessed_MapsExpectedValues()
+    {
+        var reviews = new ReviewsModel
+        {
+            EmployerReviews = "2",
+            ApprenticeReviews = "1"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            Reviews = reviews
+        };
+
+        var result = sut.ProviderReviews;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Reviews, Is.EqualTo(reviews));
+            Assert.That(result.EmployerReviewsDisplayMessage, Is.EqualTo(sut.EmployerReviewsDisplayMessage));
+            Assert.That(result.ApprenticeReviewsDisplayMessage, Is.EqualTo(sut.ApprenticeReviewsDisplayMessage));
+        });
+    }
+
+    [Test]
+    public void ShortlistPanel_WhenAccessed_MapsExpectedValues()
+    {
+        var shortlistId = Guid.NewGuid();
+        var sut = new CourseProviderViewModel
+        {
+            LarsCode = "123",
+            Ukprn = 10000001,
+            ProviderName = "Provider A",
+            Location = "Leeds",
+            ShortlistId = shortlistId,
+            TotalProvidersCount = 2,
+            CourseName = "Software developer",
+            Level = 4
+        };
+
+        var result = sut.ShortlistPanel;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShortlistClass, Is.EqualTo("app-provider-shortlist-added"));
+            Assert.That(result.LarsCode, Is.EqualTo("123"));
+            Assert.That(result.Ukprn, Is.EqualTo(10000001));
+            Assert.That(result.ProviderName, Is.EqualTo("Provider A"));
+            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.ShortlistId, Is.EqualTo(shortlistId));
+            Assert.That(result.ShowMultipleProvidersForCourse, Is.True);
+            Assert.That(result.TotalProvidersCount, Is.EqualTo(2));
+            Assert.That(result.CourseNameAndLevel, Is.EqualTo("Software developer (level 4)"));
+        });
+    }
 }
 
