@@ -12,9 +12,7 @@
 
     <tbody class="govuk-table__body">
 
-        @if (Model.ShowOnlineOption)
-        {
-            <tr class="govuk-table__row">
+        <tr asp-show="@Model.ShowOnlineOption" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
                     <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
                         Online
@@ -26,11 +24,8 @@
                     </p>
                 </td>
             </tr>
-        }
 
-        @if (Model.ShowLearnerWorkplaceOption)
-        {
-            <tr class="govuk-table__row">
+        <tr asp-show="@Model.ShowLearnerWorkplaceOption" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
                     <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
                         At learner's workplace
@@ -60,11 +55,8 @@
                     }
                 </td>
             </tr>
-        }
 
-        @if (Model.ShowProviderOption)
-        {
-            <tr class="govuk-table__row">
+        <tr asp-show="@Model.ShowProviderOption" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header">
                     <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
                         At training provider’s location
@@ -134,11 +126,8 @@
                     }
                 </td>
             </tr>
-        }
 
-        @if (Model.ShowBlockReleaseOption)
-        {
-            <tr class="govuk-table__row">
+        <tr asp-show="@Model.ShowBlockReleaseOption" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
                     <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
                         Block release
@@ -210,11 +199,8 @@
                     }
                 </td>
             </tr>
-        }
 
-        @if (Model.ShowDayReleaseOption)
-        {
-            <tr class="govuk-table__row">
+        <tr asp-show="@Model.ShowDayReleaseOption" class="govuk-table__row">
                 <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
                     <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
                         Day release
@@ -286,7 +272,6 @@
                     }
                 </td>
             </tr>
-        }
     
     </tbody>
 </table>

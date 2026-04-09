@@ -41,6 +41,28 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
+    public void ShowMultipleProvidersForCourse_WhenTotalProvidersCountIsGreaterThanOne_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            TotalProvidersCount = 2
+        };
+
+        Assert.That(sut.ShowMultipleProvidersForCourse, Is.True);
+    }
+
+    [Test]
+    public void ShowMultipleProvidersForCourse_WhenTotalProvidersCountIsOne_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            TotalProvidersCount = 1
+        };
+
+        Assert.That(sut.ShowMultipleProvidersForCourse, Is.False);
+    }
+
+    [Test]
     public void EndpointAssessmentDisplayMessage_WhenEndpointAssessmentsIsNull_ReturnsNotEnoughApprenticesMessage()
     {
         var sut = new CourseProviderViewModel

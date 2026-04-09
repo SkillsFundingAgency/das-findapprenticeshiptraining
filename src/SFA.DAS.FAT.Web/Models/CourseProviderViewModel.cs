@@ -65,6 +65,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
     public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
+    public bool ShowMultipleProvidersForCourse => TotalProvidersCount > 1;
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
