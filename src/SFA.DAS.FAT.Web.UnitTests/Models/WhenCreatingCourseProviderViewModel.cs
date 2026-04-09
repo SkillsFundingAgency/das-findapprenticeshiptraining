@@ -41,6 +41,59 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
+    public void TrainingOptions_WhenAccessedForApprenticeship_MapsReleaseAndLearnerWorkplaceValues()
+    {
+        var closestBlockReleaseLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            BlockRelease = true,
+            CourseDistance = 1.44
+        };
+
+        var closestDayReleaseLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            DayRelease = true,
+            CourseDistance = 2.55
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.Apprenticeship,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Regional, AtEmployer = true },
+                closestBlockReleaseLocation,
+                new LocationModel { LocationType = LocationType.Provider, BlockRelease = true, CourseDistance = 5.1 },
+                closestDayReleaseLocation,
+                new LocationModel { LocationType = LocationType.Provider, DayRelease = true, CourseDistance = 7.7 }
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShowOnlineOption, Is.False);
+            Assert.That(result.ShowProviderOption, Is.False);
+            Assert.That(result.ShowLearnerWorkplaceOption, Is.True);
+            Assert.That(result.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationRegional));
+            Assert.That(result.HasMatchingRegionalLocationOrNational, Is.True);
+            Assert.That(result.ShowBlockReleaseOption, Is.True);
+            Assert.That(result.BlockReleaseLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleBlockReleaseLocations, Is.True);
+            Assert.That(result.ClosestBlockReleaseLocation, Is.EqualTo(closestBlockReleaseLocation));
+            Assert.That(result.ClosestBlockReleaseLocationDistanceDisplay, Is.EqualTo("1.4"));
+            Assert.That(result.ShowDayReleaseOption, Is.True);
+            Assert.That(result.DayReleaseLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleDayReleaseLocations, Is.True);
+            Assert.That(result.ClosestDayReleaseLocation, Is.EqualTo(closestDayReleaseLocation));
+            Assert.That(result.ClosestDayReleaseLocationDistanceDisplay, Is.EqualTo("2.6"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.Empty);
+        });
+    }
+
+    [Test]
     public void ShowMultipleProvidersForCourse_WhenTotalProvidersCountIsGreaterThanOne_ReturnsTrue()
     {
         var sut = new CourseProviderViewModel
