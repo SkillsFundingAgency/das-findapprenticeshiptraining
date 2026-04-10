@@ -26,6 +26,7 @@ public class TrainingOptionsTableViewModel
     public const string ViewAllDayReleaseLocations = "View all day release locations";
 
     public string Location { get; set; }
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
     public bool ShowOnlineOption { get; set; }
     public bool ShowLearnerWorkplaceOption { get; set; }
     public string AtLearnerWorkplaceWithNoLocationDisplayMessage { get; set; }

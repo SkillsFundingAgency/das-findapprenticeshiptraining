@@ -1,5 +1,6 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models
+@using ReleaseLocationsTableRowViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.ReleaseLocationsTableRowViewModel
 @using TrainingOptionsTableViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
 @model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
 
@@ -33,27 +34,15 @@
                     </p>
                 </th>
                 <td class="govuk-table__cell">
-                    @if (string.IsNullOrWhiteSpace(Model.Location))
-                    {
-                        <p class="govuk-body govuk-!-margin-top-2">
-                            @Model.AtLearnerWorkplaceWithNoLocationDisplayMessage
-                        </p>
-                    }
-                    else
-                    {
-                        @if (Model.HasMatchingRegionalLocationOrNational)
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
-                            </p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
-                            </p>
-                        }
-                    }
+                    <p asp-show="@(Model.HasLocation is false)" class="govuk-body govuk-!-margin-top-2">
+                        @Model.AtLearnerWorkplaceWithNoLocationDisplayMessage
+                    </p>
+                    <p asp-show="@(Model.HasLocation && Model.HasMatchingRegionalLocationOrNational)" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
+                    </p>
+                    <p asp-show="@(Model.HasLocation && Model.HasMatchingRegionalLocationOrNational is false)" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
+                    </p>
                 </td>
             </tr>
 
@@ -64,198 +53,67 @@
                     </p>
                 </th>
                 <td class="govuk-table__cell">
-                    @if (string.IsNullOrWhiteSpace(Model.Location))
-                    {
-                        @if (Model.HasMultipleProviderLocations)
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
-                            <details class="govuk-details">
-                                <summary class="govuk-details__summary">
-                                    <span class="govuk-details__summary-text">
-                                        @TrainingOptionsTableViewModel.ViewAllProviderLocations
-                                    </span>
-                                </summary>
-                                <div class="govuk-details__text">
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (LocationModel location in Model.ProviderLocations)
+                    <p asp-show="@(Model.HasLocation is false && Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
+
+                    <p asp-show="@(Model.HasLocation is false && Model.HasMultipleProviderLocations is false)" class="govuk-body govuk-!-margin-top-2">
+                        @Model.ProviderLocations[0].FormatAddress()
+                    </p>
+
+                    <p asp-show="@Model.HasLocation" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @Model.ClosestProviderLocationAddress
+                    </p>
+
+                    <details asp-show="@Model.HasMultipleProviderLocations" class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @TrainingOptionsTableViewModel.ViewAllProviderLocations
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <ul class="govuk-list govuk-list--bullet">
+                                @foreach (LocationModel location in Model.ProviderLocations)
+                                {
+                                    <li>
+                                        @if (Model.HasLocation)
                                         {
-                                            <li>
-                                                @location.FormatAddress()
-                                            </li>
+                                            <strong>@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong>
                                         }
-                                    </ul>
-                                </div>
-                            </details>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                @Model.ProviderLocations[0].FormatAddress()
-                            </p>
-                        }
-                    }
-                    else
-                    {
-                        <p class="govuk-body govuk-!-margin-top-2">
-                            @TrainingOptionsTableViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @Model.ClosestProviderLocationAddress
-                        </p>
-                        if (Model.HasMultipleProviderLocations)
-                        {
-                            <details class="govuk-details">
-                                <summary class="govuk-details__summary">
-                                    <span class="govuk-details__summary-text">
-                                        @TrainingOptionsTableViewModel.ViewAllProviderLocations
-                                    </span>
-                                </summary>
-                                <div class="govuk-details__text">
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (LocationModel location in Model.ProviderLocations)
-                                        {
-                                            <li>
-                                                <strong>@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong> @location.FormatAddress()
-                                            </li>
-                                        }
-                                    </ul>
-                                </div>
-                            </details>
-                        }
-                    }
+                                        @location.FormatAddress()
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </details>
                 </td>
             </tr>
 
-        <tr asp-show="@Model.ShowBlockReleaseOption" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
-                    <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                        Block release
-                    </p>
-                    <p class="govuk-body-m das-hint-colour">
-                        @TrainingOptionsTableViewModel.BlockReleaseHint
-                    </p>
-                </th>
+        @await Html.PartialAsync("_releaseLocationsTableRow", new ReleaseLocationsTableRowViewModel
+        {
+            ShowReleaseLocationsOption = Model.ShowBlockReleaseOption,
+            TrainingOptionTitle = "Block release",
+            Hint = TrainingOptionsTableViewModel.BlockReleaseHint,
+            HasLocation = Model.HasLocation,
+            HasMultipleLocations = Model.HasMultipleBlockReleaseLocations,
+            MultipleLocationsMessage = TrainingOptionsTableViewModel.BlockReleaseMultipleLocations,
+            ViewAllLocationsText = TrainingOptionsTableViewModel.ViewAllBlockReleaseLocations,
+            ClosestLocationDistanceDisplay = Model.ClosestBlockReleaseLocationDistanceDisplay,
+            ClosestLocation = Model.ClosestBlockReleaseLocation,
+            Locations = Model.BlockReleaseLocations,
+        })
 
-                <td class="govuk-table__cell">
-                    @if (Model.HasMultipleBlockReleaseLocations)
-                    {
-                        if (string.IsNullOrWhiteSpace(Model.Location))
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.BlockReleaseMultipleLocations</p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
-                            </p>
-                        }
-
-                        <details class="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    @TrainingOptionsTableViewModel.ViewAllBlockReleaseLocations
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <ul class="govuk-list govuk-list--bullet">
-                                    @foreach (LocationModel location in Model.BlockReleaseLocations)
-                                    {
-                                        @if (string.IsNullOrWhiteSpace(Model.Location))
-                                        {
-                                            <li>
-                                                @location.FormatAddress()
-                                            </li>
-                                        }
-                                        else
-                                        {
-                                            <li>
-                                                <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                        </details>
-                    }
-                    else
-                    {
-                        if (string.IsNullOrWhiteSpace(Model.Location))
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">@Model.BlockReleaseLocations[0].FormatAddress()</p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestBlockReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestBlockReleaseLocation.FormatAddress()
-                            </p>
-                        }
-                    }
-                </td>
-            </tr>
-
-        <tr asp-show="@Model.ShowDayReleaseOption" class="govuk-table__row">
-                <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
-                    <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
-                        Day release
-                    </p>
-                    <p class="govuk-body-m das-hint-colour">
-                        @TrainingOptionsTableViewModel.DayReleaseHint
-                    </p>
-                </th>
-
-                <td class="govuk-table__cell">
-                    @if (Model.HasMultipleDayReleaseLocations)
-                    {
-                        if (string.IsNullOrWhiteSpace(Model.Location))
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.DayReleaseMultipleLocations</p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
-                            </p>
-                        }
-
-                        <details class="govuk-details">
-                            <summary class="govuk-details__summary">
-                                <span class="govuk-details__summary-text">
-                                    @TrainingOptionsTableViewModel.ViewAllDayReleaseLocations
-                                </span>
-                            </summary>
-                            <div class="govuk-details__text">
-                                <ul class="govuk-list govuk-list--bullet">
-                                    @foreach (LocationModel location in Model.DayReleaseLocations)
-                                    {
-                                        @if (string.IsNullOrWhiteSpace(Model.Location))
-                                        {
-                                            <li>
-                                                @location.FormatAddress()
-                                            </li>
-                                        }
-                                        else
-                                        {
-                                            <li>
-                                                <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
-                                            </li>
-                                        }
-                                    }
-                                </ul>
-                            </div>
-                        </details>
-                    }
-                    else
-                    {
-                        if (string.IsNullOrWhiteSpace(Model.Location))
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">@Model.DayReleaseLocations[0].FormatAddress()</p>
-                        }
-                        else
-                        {
-                            <p class="govuk-body govuk-!-margin-top-2">
-                                <strong>@Model.ClosestDayReleaseLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestDayReleaseLocation.FormatAddress()
-                            </p>
-                        }
-                    }
-                </td>
-            </tr>
+        @await Html.PartialAsync("_releaseLocationsTableRow", new ReleaseLocationsTableRowViewModel
+        {
+            ShowReleaseLocationsOption = Model.ShowDayReleaseOption,
+            TrainingOptionTitle = "Day release",
+            Hint = TrainingOptionsTableViewModel.DayReleaseHint,
+            HasLocation = Model.HasLocation,
+            HasMultipleLocations = Model.HasMultipleDayReleaseLocations,
+            MultipleLocationsMessage = TrainingOptionsTableViewModel.DayReleaseMultipleLocations,
+            ViewAllLocationsText = TrainingOptionsTableViewModel.ViewAllDayReleaseLocations,
+            ClosestLocationDistanceDisplay = Model.ClosestDayReleaseLocationDistanceDisplay,
+            ClosestLocation = Model.ClosestDayReleaseLocation,
+            Locations = Model.DayReleaseLocations,
+        })
     
     </tbody>
 </table>

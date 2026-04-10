@@ -13,14 +13,8 @@
                     Registered address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.ContactAddress))
-                    {
-                        @Model.ContactAddress
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
+                    <span asp-show="@(!string.IsNullOrEmpty(Model.ContactAddress))">@Model.ContactAddress</span>
+                    <span asp-show="@(string.IsNullOrEmpty(Model.ContactAddress))">-</span>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -28,14 +22,7 @@
                     Email
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.Contact?.Email))
-                    {
-                        <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
+                    <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -43,14 +30,7 @@
                     Telephone
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.Contact?.PhoneNumber))
-                    {
-                        @Model.Contact.PhoneNumber
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
+                    @Model.Contact.PhoneNumber
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -58,14 +38,7 @@
                     Website
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    @if (!string.IsNullOrEmpty(Model.Contact?.Website))
-                    {
-                        <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
-                    }
-                    else
-                    {
-                        <span>-</span>
-                    }
+                    <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
                 </dd>
             </div>
         </dl>
