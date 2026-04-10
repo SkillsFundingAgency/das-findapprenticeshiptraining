@@ -74,7 +74,7 @@
                                 {
                                     <li>
                                         <strong asp-show="@Model.HasLocation">@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong>
-                                        <span asp-show="@(!Model.HasLocation)">@location.FormatAddress()</span>
+                                        @location.FormatAddress()
                                     </li>
                                 }
                             </ul>
