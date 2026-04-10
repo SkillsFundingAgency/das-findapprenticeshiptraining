@@ -40,10 +40,9 @@
                     <p class="govuk-body govuk-!-margin-bottom-0"><a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">View training providers for this course</a></p>
                 </div>
 
-                @if (Model.TotalProvidersCount == 1)
-                {
+                <div asp-show="@(Model.TotalProvidersCount == 1)">
                     <p class="govuk-body govuk-!-margin-top-4">@Model.ProviderName is the only training provider for @Model.CourseNameAndLevel.</p>
-                }
+                </div>
 
             </div>
         </div>
