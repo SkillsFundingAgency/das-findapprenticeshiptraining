@@ -12,8 +12,7 @@
             Achievements
         </h3>
 
-        @if (Model.Qar.ConvertedAchievementRate is not null)
-        {
+        <div asp-show="@(Model.Qar.ConvertedAchievementRate is not null)">
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
                 @Model.Qar.AchievementRate%
             </h2>
@@ -25,10 +24,9 @@
             <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
                 @Model.Qar.NationalAchievementRate% national achievement rate
             </p>
+        </div>
 
-        }
-        else
-        {
+        <div asp-show="@(Model.Qar.ConvertedAchievementRate is null)">
             <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
                 No data
             </h2>
@@ -38,7 +36,7 @@
                 This may be because a small number of apprentices completed this course,
                 or this is a new course for this provider.
             </p>
-        }
+        </div>
     </div>
 
     @* Achievements Container *@

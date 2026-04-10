@@ -23,8 +23,7 @@
             Employers
         </h3>
 
-        @if (Model.Reviews.EmployerRating != ProviderRating.NotYetReviewed)
-        {
+        <div asp-show="@(Model.Reviews.EmployerRating != ProviderRating.NotYetReviewed)">
             <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
                 <span class="das-rating-large das-rating--@(Model.Reviews.ConvertedEmployerStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedEmployerStars out of 4 stars">
                     <span aria-hidden="true" class="das-rating__icon-star"></span>
@@ -38,16 +37,16 @@
             <p class="govuk-body-s govuk-!-margin-bottom-2">
                 @Model.EmployerReviewsDisplayMessage
             </p>
-        }
-        else
-        {
+        </div>
+
+        <div asp-show="@(Model.Reviews.EmployerRating == ProviderRating.NotYetReviewed)">
             <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
                 No reviews
             </h2>
             <p class="govuk-body-s">
                 Not enough employers have reviewed this provider.
             </p>
-        }
+        </div>
 
     </div>
 
@@ -61,8 +60,7 @@
             Apprentices
         </h3>
 
-        @if (Model.Reviews.ApprenticeRating != ProviderRating.NotYetReviewed)
-        {
+        <div asp-show="@(Model.Reviews.ApprenticeRating != ProviderRating.NotYetReviewed)">
             <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
                 <span class="das-rating das-rating--@(Model.Reviews.ConvertedApprenticeStars > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.Reviews.ConvertedApprenticeStars out of 4 stars">
                     <span aria-hidden="true" class="das-rating__icon-star"></span>
@@ -76,9 +74,9 @@
             <p class="govuk-body-s govuk-!-margin-bottom-2">
                 @Model.ApprenticeReviewsDisplayMessage
             </p>
-        }
-        else
-        {
+        </div>
+
+        <div asp-show="@(Model.Reviews.ApprenticeRating == ProviderRating.NotYetReviewed)">
             <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
                 No reviews
             </h2>
@@ -86,7 +84,7 @@
             <p class="govuk-body-s">
                 Not enough apprentices have reviewed this provider.
             </p>
-        }
+        </div>
     </div>
 
     @* Apprentices Container *@
