@@ -47,4 +47,32 @@ public class TrainingOptionsTableViewModel
     public bool HasMultipleDayReleaseLocations { get; set; }
     public string ClosestDayReleaseLocationDistanceDisplay { get; set; }
     public LocationModel ClosestDayReleaseLocation { get; set; }
+
+    public ReleaseLocationsTableRowViewModel BlockReleaseRow => new()
+    {
+        ShowReleaseLocationsOption = ShowBlockReleaseOption,
+        TrainingOptionTitle = "Block release",
+        Hint = BlockReleaseHint,
+        HasLocation = HasLocation,
+        HasMultipleLocations = HasMultipleBlockReleaseLocations,
+        MultipleLocationsMessage = BlockReleaseMultipleLocations,
+        ViewAllLocationsText = ViewAllBlockReleaseLocations,
+        ClosestLocationDistanceDisplay = ClosestBlockReleaseLocationDistanceDisplay,
+        ClosestLocation = ClosestBlockReleaseLocation,
+        Locations = BlockReleaseLocations,
+    };
+
+    public ReleaseLocationsTableRowViewModel DayReleaseRow => new()
+    {
+        ShowReleaseLocationsOption = ShowDayReleaseOption,
+        TrainingOptionTitle = "Day release",
+        Hint = DayReleaseHint,
+        HasLocation = HasLocation,
+        HasMultipleLocations = HasMultipleDayReleaseLocations,
+        MultipleLocationsMessage = DayReleaseMultipleLocations,
+        ViewAllLocationsText = ViewAllDayReleaseLocations,
+        ClosestLocationDistanceDisplay = ClosestDayReleaseLocationDistanceDisplay,
+        ClosestLocation = ClosestDayReleaseLocation,
+        Locations = DayReleaseLocations,
+    };
 }

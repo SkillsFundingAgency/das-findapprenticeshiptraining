@@ -14,7 +14,7 @@
     </th>
 
     <td class="govuk-table__cell">
-        <p asp-show="@(Model.HasMultipleLocations && Model.HasLocation is false)" class="govuk-body govuk-!-margin-top-2">@Model.MultipleLocationsMessage</p>
+        <p asp-show="@(Model.HasMultipleLocations && !Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">@Model.MultipleLocationsMessage</p>
 
         <p asp-show="@Model.HasLocation" class="govuk-body govuk-!-margin-top-2">
             <strong>@Model.ClosestLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestLocation.FormatAddress()
@@ -30,7 +30,7 @@
                 <ul class="govuk-list govuk-list--bullet">
                     @foreach (LocationModel location in Model.Locations)
                     {
-                        <li asp-show="@(Model.HasLocation is false)">
+                        <li asp-show="@(!Model.HasLocation)">
                             @location.FormatAddress()
                         </li>
                         <li asp-show="@Model.HasLocation">
@@ -41,6 +41,6 @@
             </div>
         </details>
 
-        <p asp-show="@(Model.HasMultipleLocations is false && Model.HasLocation is false)" class="govuk-body govuk-!-margin-top-2">@Model.Locations[0].FormatAddress()</p>
+        <p asp-show="@(!Model.HasMultipleLocations && !Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">@Model.Locations[0].FormatAddress()</p>
     </td>
 </tr>

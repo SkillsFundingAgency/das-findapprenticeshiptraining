@@ -1,6 +1,5 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Web.Models
-@using ReleaseLocationsTableRowViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.ReleaseLocationsTableRowViewModel
 @using TrainingOptionsTableViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
 @model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
 
@@ -34,13 +33,13 @@
                     </p>
                 </th>
                 <td class="govuk-table__cell">
-                    <p asp-show="@(Model.HasLocation is false)" class="govuk-body govuk-!-margin-top-2">
+                    <p asp-show="@(!Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">
                         @Model.AtLearnerWorkplaceWithNoLocationDisplayMessage
                     </p>
                     <p asp-show="@(Model.HasLocation && Model.HasMatchingRegionalLocationOrNational)" class="govuk-body govuk-!-margin-top-2">
                         @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
                     </p>
-                    <p asp-show="@(Model.HasLocation && Model.HasMatchingRegionalLocationOrNational is false)" class="govuk-body govuk-!-margin-top-2">
+                    <p asp-show="@(Model.HasLocation && !Model.HasMatchingRegionalLocationOrNational)" class="govuk-body govuk-!-margin-top-2">
                         @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
                     </p>
                 </td>
@@ -53,9 +52,9 @@
                     </p>
                 </th>
                 <td class="govuk-table__cell">
-                    <p asp-show="@(Model.HasLocation is false && Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
+                    <p asp-show="@(!Model.HasLocation && Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
 
-                    <p asp-show="@(Model.HasLocation is false && Model.HasMultipleProviderLocations is false)" class="govuk-body govuk-!-margin-top-2">
+                    <p asp-show="@(!Model.HasLocation && !Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">
                         @Model.ProviderLocations[0].FormatAddress()
                     </p>
 
@@ -74,11 +73,8 @@
                                 @foreach (LocationModel location in Model.ProviderLocations)
                                 {
                                     <li>
-                                        @if (Model.HasLocation)
-                                        {
-                                            <strong>@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong>
-                                        }
-                                        @location.FormatAddress()
+                                        <strong asp-show="@Model.HasLocation">@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong>
+                                        <span asp-show="@(!Model.HasLocation)">@location.FormatAddress()</span>
                                     </li>
                                 }
                             </ul>
@@ -87,33 +83,9 @@
                 </td>
             </tr>
 
-        @await Html.PartialAsync("_releaseLocationsTableRow", new ReleaseLocationsTableRowViewModel
-        {
-            ShowReleaseLocationsOption = Model.ShowBlockReleaseOption,
-            TrainingOptionTitle = "Block release",
-            Hint = TrainingOptionsTableViewModel.BlockReleaseHint,
-            HasLocation = Model.HasLocation,
-            HasMultipleLocations = Model.HasMultipleBlockReleaseLocations,
-            MultipleLocationsMessage = TrainingOptionsTableViewModel.BlockReleaseMultipleLocations,
-            ViewAllLocationsText = TrainingOptionsTableViewModel.ViewAllBlockReleaseLocations,
-            ClosestLocationDistanceDisplay = Model.ClosestBlockReleaseLocationDistanceDisplay,
-            ClosestLocation = Model.ClosestBlockReleaseLocation,
-            Locations = Model.BlockReleaseLocations,
-        })
+        <partial asp-show="@Model.ShowBlockReleaseOption" name="_releaseLocationsTableRow" model="Model.BlockReleaseRow" />
 
-        @await Html.PartialAsync("_releaseLocationsTableRow", new ReleaseLocationsTableRowViewModel
-        {
-            ShowReleaseLocationsOption = Model.ShowDayReleaseOption,
-            TrainingOptionTitle = "Day release",
-            Hint = TrainingOptionsTableViewModel.DayReleaseHint,
-            HasLocation = Model.HasLocation,
-            HasMultipleLocations = Model.HasMultipleDayReleaseLocations,
-            MultipleLocationsMessage = TrainingOptionsTableViewModel.DayReleaseMultipleLocations,
-            ViewAllLocationsText = TrainingOptionsTableViewModel.ViewAllDayReleaseLocations,
-            ClosestLocationDistanceDisplay = Model.ClosestDayReleaseLocationDistanceDisplay,
-            ClosestLocation = Model.ClosestDayReleaseLocation,
-            Locations = Model.DayReleaseLocations,
-        })
+        <partial asp-show="@Model.ShowDayReleaseOption" name="_releaseLocationsTableRow" model="Model.DayReleaseRow" />
     
     </tbody>
 </table>
