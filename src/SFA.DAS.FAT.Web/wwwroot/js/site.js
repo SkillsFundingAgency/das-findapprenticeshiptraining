@@ -429,36 +429,44 @@ nodeListForEach(feedbackGraphs, function (feedbackGraph) {
 });
 
 
-let courseProvidersOrderBy = document.getElementById('course-providers-orderby');
+const courseProvidersOrderBy = document.getElementById('course-providers-orderby');
 
-courseProvidersOrderBy.addEventListener('change', function() {
-   document.getElementById("course-providers-order-form").submit();
-});
+if (courseProvidersOrderBy) {
+    courseProvidersOrderBy.addEventListener('change', function() {
+       document.getElementById("course-providers-order-form").submit();
+    });
+}
 
 
-let buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
-let buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
-let buttonDeliveryModeBlockRelease = document.getElementById('filteritem-modes-filter-BlockRelease')
+const buttonDeliveryModeProvider = document.getElementById('filteritem-modes-filter-Provider')
+const buttonDeliveryModeDayRelease = document.getElementById('filteritem-modes-filter-DayRelease')
+const buttonDeliveryModeBlockRelease = document.getElementById('filteritem-modes-filter-BlockRelease')
 
-buttonDeliveryModeProvider.addEventListener('click', e => {
-    if (buttonDeliveryModeProvider.checked) {
-        buttonDeliveryModeDayRelease.checked = true;
-        buttonDeliveryModeBlockRelease.checked = true;
-    }
+if (buttonDeliveryModeProvider) {
+    buttonDeliveryModeProvider.addEventListener('click', e => {
+        if (buttonDeliveryModeProvider.checked) {
+            buttonDeliveryModeDayRelease.checked = true;
+            buttonDeliveryModeBlockRelease.checked = true;
+        }
+    
+        if (!buttonDeliveryModeProvider.checked) {
+            buttonDeliveryModeDayRelease.checked = false;
+            buttonDeliveryModeBlockRelease.checked = false;
+        }
+    });
+}
 
-    if (!buttonDeliveryModeProvider.checked) {
-        buttonDeliveryModeDayRelease.checked = false;
-        buttonDeliveryModeBlockRelease.checked = false;
-    }
-});
+if (buttonDeliveryModeDayRelease) {
+    buttonDeliveryModeDayRelease.addEventListener('click', e => {
+        toggleDeliveryModeParent();
+    });
+}
 
-buttonDeliveryModeDayRelease.addEventListener('click', e => {
-    toggleDeliveryModeParent();
-});
-
-buttonDeliveryModeBlockRelease.addEventListener('click', e => {
-    toggleDeliveryModeParent();
-});
+if (buttonDeliveryModeBlockRelease) {
+    buttonDeliveryModeBlockRelease.addEventListener('click', e => {
+        toggleDeliveryModeParent();
+    });
+}
 
 function toggleDeliveryModeParent() {
     if (!buttonDeliveryModeDayRelease.checked || !buttonDeliveryModeBlockRelease.checked) {
