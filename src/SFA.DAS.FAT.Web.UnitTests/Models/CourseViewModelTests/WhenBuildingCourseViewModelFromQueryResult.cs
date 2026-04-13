@@ -42,7 +42,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.ApprenticeshipType));
+            Assert.That(sut.LearningType, Is.EqualTo(source.ApprenticeshipType));
         });
     }
 

@@ -26,8 +26,17 @@ public class CourseViewModel : PageLinksViewModelBase
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
+    public string LearningTypeTagClass => LearningType switch
+    {
+        LearningType.Apprenticeship => "govuk-tag--blue",
+        LearningType.FoundationApprenticeship => "govuk-tag--pink",
+        LearningType.ApprenticeshipUnit => "govuk-tag--purple",
+        _ => string.Empty
+    };
+    public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
+    public bool IsApprenticeshipUnit { get; set; }
 
     public int IncentivePayment { get; set; }
 
@@ -60,8 +69,10 @@ public class CourseViewModel : PageLinksViewModelBase
             Levels = source.Levels,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
+            IsApprenticeship = source.ApprenticeshipType == LearningType.Apprenticeship,
             IsFoundationApprenticeship = source.ApprenticeshipType == LearningType.FoundationApprenticeship,
-            ApprenticeshipType = source.ApprenticeshipType == LearningType.FoundationApprenticeship ? LearningType.FoundationApprenticeship : LearningType.Apprenticeship,
+            IsApprenticeshipUnit = source.ApprenticeshipType == LearningType.ApprenticeshipUnit,
+            LearningType = source.ApprenticeshipType,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations
         };
@@ -77,6 +88,19 @@ public class CourseViewModel : PageLinksViewModelBase
         Level EquivalentLevel = Levels.Find(a => a.Code == Level);
 
         return EquivalentLevel is null ? string.Empty : $"Equal to {EquivalentLevel.Name}";
+    }
+
+    public string GetKnowledgeSkillsHeaderTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? "Knowledge and skills learners will gain" : "Knowledge, skills and behaviours";
+    }
+    public string GetKnowledgeSkillsLinkTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? "View knowledge and skills" : "View knowledge, skills and behaviours";
+    }
+    public string GetMaximumFundingTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? "apprenticeship unit training and assessment costs." : "apprenticeship training and assessment costs.";
     }
 
     public string[] GetTypicalJobTitles()
