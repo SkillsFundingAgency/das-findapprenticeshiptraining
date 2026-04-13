@@ -9,6 +9,20 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 
 public sealed class WhenCreatingCourseViewModel
 {
+    [TestCase(LearningType.Apprenticeship, "govuk-tag--blue")]
+    [TestCase(LearningType.FoundationApprenticeship, "govuk-tag--pink")]
+    [TestCase(LearningType.ApprenticeshipUnit, "govuk-tag--purple")]
+    [TestCase((LearningType)999, "")]
+    public void LearningTypeTagClass_LearningTypeSet_ReturnsExpectedTagClass(LearningType learningType, string expected)
+    {
+        var sut = new CourseViewModel
+        {
+            LearningType = learningType
+        };
+
+        Assert.That(sut.LearningTypeTagClass, Is.EqualTo(expected));
+    }
+
     [Test]
     public void GetLevelEquivalentToDisplayText_WithLevelsCountLessThanOne_ReturnsEmpty()
     {
@@ -129,6 +143,94 @@ public sealed class WhenCreatingCourseViewModel
         var sut = model.GetProviderCountDisplayMessage();
 
         Assert.That(sut, Is.EqualTo(CourseViewModel.MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", model.TotalProvidersCount.ToString())));
+    }
+
+    [Test]
+    public void GetKnowledgeSkillsHeaderTextToDisplay_IsApprenticeshipUnit_ReturnsKnowledgeAndSkillsLearnersWillGain()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = true
+        };
+
+        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT));
+    }
+
+    [Test]
+    public void GetKnowledgeSkillsHeaderTextToDisplay_IsNotApprenticeshipUnit_ReturnsKnowledgeSkillsAndBehaviours()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = false
+        };
+
+        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT));
+    }
+
+    [Test]
+    public void GetKnowledgeSkillsLinkTextToDisplay_IsApprenticeshipUnit_ReturnsViewKnowledgeAndSkills()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = true
+        };
+
+        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT));
+    }
+
+    [Test]
+    public void GetKnowledgeSkillsLinkTextToDisplay_IsNotApprenticeshipUnit_ReturnsViewKnowledgeSkillsAndBehaviours()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = false
+        };
+
+        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT));
+    }
+
+    [Test]
+    public void GetMaximumFundingTextToDisplay_IsApprenticeshipUnit_ReturnsUnitFundingText()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = true
+        };
+
+        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT));
+    }
+
+    [Test]
+    public void GetMaximumFundingTextToDisplay_IsNotApprenticeshipUnit_ReturnsApprenticeshipFundingText()
+    {
+        var sut = new CourseViewModel
+        {
+            IsApprenticeshipUnit = false
+        };
+
+        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT));
+    }
+
+    [Test]
+    public void HasLocation_LocationIsWhiteSpace_ReturnsFalse()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = "   "
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsSet_ReturnsTrue()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = "SW1"
+        };
+
+        Assert.That(sut.HasLocation, Is.True);
     }
 
     [Test]

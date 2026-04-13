@@ -11,6 +11,13 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
+    public const string KNOWLEDGE_SKILLS_HEADER_TEXT = "Knowledge, skills and behaviours";
+    public const string KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT = "Knowledge and skills learners will gain";
+    public const string KNOWLEDGE_SKILLS_LINK_TEXT = "View knowledge, skills and behaviours";
+    public const string KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT = "View knowledge and skills";
+    public const string MAXIMUM_FUNDING_TEXT = "apprenticeship training and assessment costs.";
+    public const string MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT = "apprenticeship unit training and assessment costs.";
+
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -42,8 +49,8 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public List<Level> Levels { get; set; } = [];
 
-    public IEnumerable<KsbGroup> KsbDetails { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
@@ -92,15 +99,15 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public string GetKnowledgeSkillsHeaderTextToDisplay()
     {
-        return IsApprenticeshipUnit ? "Knowledge and skills learners will gain" : "Knowledge, skills and behaviours";
+        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_HEADER_TEXT;
     }
     public string GetKnowledgeSkillsLinkTextToDisplay()
     {
-        return IsApprenticeshipUnit ? "View knowledge and skills" : "View knowledge, skills and behaviours";
+        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_LINK_TEXT;
     }
     public string GetMaximumFundingTextToDisplay()
     {
-        return IsApprenticeshipUnit ? "apprenticeship unit training and assessment costs." : "apprenticeship training and assessment costs.";
+        return IsApprenticeshipUnit ? MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT : MAXIMUM_FUNDING_TEXT;
     }
 
     public string[] GetTypicalJobTitles()
