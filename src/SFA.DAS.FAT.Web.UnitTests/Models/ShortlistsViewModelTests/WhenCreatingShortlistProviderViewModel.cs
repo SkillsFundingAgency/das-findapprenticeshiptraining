@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistsViewModelTests;
@@ -64,6 +65,56 @@ public class WhenCreatingShortlistProviderViewModel
         };
         sut.HasLocation.Should().Be(expected);
     }
+
+    [TestCase(true, false, false, false, false, 1)]
+    [TestCase(false, true, false, false, false, 1)]
+    [TestCase(false, false, true, false, false, 1)]
+    [TestCase(false, false, false, true, false, 1)]
+    [TestCase(false, false, false, false, true, 1)]
+    [TestCase(true, true, true, true, true, 5)]
+    public void NoOfDeliveryOptions_DeliveryOptionsVary_ReturnsExpectedCount(bool atEmployer, bool hasDayRelease, bool hasBlockRelease, bool atProviderLocation, bool hasOnlineDeliveryOption, int expected)
+    {
+        ShortlistProviderViewModel sut = new()
+        {
+            AtEmployer = atEmployer,
+            HasDayRelease = hasDayRelease,
+            HasBlockRelease = hasBlockRelease,
+            AtProviderLocation = atProviderLocation,
+            HasOnlineDeliveryOption = hasOnlineDeliveryOption
+        };
+
+        sut.NoOfDeliveryOptions.Should().Be(expected);
+    }
+
+    [TestCase(false, false, false, true, false)]
+    [TestCase(false, false, false, false, true)]
+    [TestCase(true, false, false, false, true)]
+    public void HasMultipleDeliveryOptions_DeliveryOptionsVary_ReturnsExpectedValue(bool atEmployer, bool hasDayRelease, bool hasBlockRelease, bool atProviderLocation, bool hasOnlineDeliveryOption)
+    {
+        ShortlistProviderViewModel sut = new()
+        {
+            AtEmployer = atEmployer,
+            HasDayRelease = hasDayRelease,
+            HasBlockRelease = hasBlockRelease,
+            AtProviderLocation = atProviderLocation,
+            HasOnlineDeliveryOption = hasOnlineDeliveryOption
+        };
+
+        sut.HasMultipleDeliveryOptions.Should().Be(sut.NoOfDeliveryOptions > 1);
+    }
+
+    [TestCase(CourseType.ShortCourse, true)]
+    [TestCase(CourseType.Apprenticeship, false)]
+    public void IsShortCourseType_CourseTypeVaries_ReturnsExpectedValue(CourseType courseType, bool expected)
+    {
+        ShortlistProviderViewModel sut = new()
+        {
+            CourseType = courseType
+        };
+
+        sut.IsShortCourseType.Should().Be(expected);
+    }
+
 }
 
 

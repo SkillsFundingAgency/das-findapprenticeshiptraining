@@ -683,4 +683,48 @@ public class WhenCreatingCoursesViewModel
         var clear = vm.Filters.ClearFilterSections;
         Assert.That(clear, Is.Empty);
     }
+
+    [Test, MoqAutoData]
+    public void GetProvidersLinkDisplayMessage_NoProvidersForApprenticeshipUnit_ReturnsEmptyMessage(StandardViewModel standardViewModel)
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object);
+
+        standardViewModel.ProvidersCount = 0;
+        standardViewModel.LearningType = LearningType.ApprenticeshipUnit;
+
+        var result = viewModel.GetProvidersLinkDisplayMessage(standardViewModel);
+
+        Assert.That(result, Is.EqualTo(string.Empty));
+    }
+
+    [Test]
+    public void ToQueryString_LocationSelectedAndDistanceIsWhitespace_DoesNotIncludeDistance()
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            Location = "SW1A 1AA",
+            Distance = " "
+        };
+
+        var result = viewModel.ToQueryString();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.True);
+            Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.False);
+        });
+    }
+
+    [Test]
+    public void Filters_SelectedTrainingTypesContainUndefinedValue_ClearFiltersExcludeTrainingType()
+    {
+        var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object)
+        {
+            SelectedTrainingTypes = [(LearningType)999]
+        };
+
+        var clearFilters = viewModel.Filters.ClearFilterSections;
+
+        Assert.That(clearFilters.Any(x => x.FilterType == FilterService.FilterType.LearningTypes), Is.False);
+    }
 }
