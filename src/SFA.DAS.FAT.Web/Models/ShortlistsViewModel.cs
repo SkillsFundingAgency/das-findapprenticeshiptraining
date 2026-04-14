@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.Shared;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -22,13 +23,7 @@ public class ShortlistCourseViewModel
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
     public List<ShortlistLocationViewModel> Locations { get; set; } = [];
-    public string LearningTypeTagClass => LearningType switch
-    {
-        LearningType.Apprenticeship => "govuk-tag--blue",
-        LearningType.FoundationApprenticeship => "govuk-tag--pink",
-        LearningType.ApprenticeshipUnit => "govuk-tag--purple",
-        _ => string.Empty
-    };
+    public string LearningTypeTagClass => LearningType.GetTagClass();
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;
 }
 
