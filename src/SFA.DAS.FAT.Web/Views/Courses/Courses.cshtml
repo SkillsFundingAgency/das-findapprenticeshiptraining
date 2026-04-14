@@ -109,10 +109,7 @@
                                 </div>
 
                                 <div class="govuk-body das-inline-container">
-                                    @if (standard.ProvidersCount == 0)
-                                    {
-                                        <p class="das-inline-text">No providers run this course yet.</p>
-                                    }
+                                    <p asp-show="standard.ProvidersCount == 0 && standard.LearningType != LearningType.ApprenticeshipUnit" class="das-inline-text">No providers run this course yet.</p>
 
                                     <a class="das-search-results__link"
                                        larsCode="standard-@standard.LarsCode"

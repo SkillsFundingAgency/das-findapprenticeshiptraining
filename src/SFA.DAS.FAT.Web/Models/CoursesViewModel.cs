@@ -132,7 +132,10 @@ public class CoursesViewModel : PageLinksViewModelBase
     {
         if (standard.ProvidersCount < 1)
         {
-            return ASK_TRAINING_PROVIDER;
+            if (standard.LearningType != LearningType.ApprenticeshipUnit)
+                return ASK_TRAINING_PROVIDER;
+            else
+                return string.Empty;
         }
 
         bool isNationalSearch =
