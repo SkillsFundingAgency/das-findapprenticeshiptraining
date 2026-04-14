@@ -28,7 +28,7 @@
         <div class="govuk-grid-column-two-thirds">
             <div class="das-highlight govuk-!-margin-bottom-6">
 
-                <div asp-show="Model.TotalProvidersCount == 0">
+                <div asp-show="Model.TotalProvidersCount == 0 && !Model.IsApprenticeshipUnit">
                     <h2 class="govuk-heading-m govuk-!-margin-bottom-6">No training providers available for this course yet</h2>
 
                     <p class="govuk-body govuk-!-margin-bottom-6">
