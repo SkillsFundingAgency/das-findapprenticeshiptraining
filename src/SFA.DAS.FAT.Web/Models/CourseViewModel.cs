@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Services;
 
@@ -34,13 +35,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public LearningType LearningType { get; set; }
-    public string LearningTypeTagClass => LearningType switch
-    {
-        LearningType.Apprenticeship => "govuk-tag--blue",
-        LearningType.FoundationApprenticeship => "govuk-tag--pink",
-        LearningType.ApprenticeshipUnit => "govuk-tag--purple",
-        _ => string.Empty
-    };
+    public string LearningTypeTagClass => LearningType.GetTagClass();
     public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
     public bool IsApprenticeshipUnit { get; set; }
