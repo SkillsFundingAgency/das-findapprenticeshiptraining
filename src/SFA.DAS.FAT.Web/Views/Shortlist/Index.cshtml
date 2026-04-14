@@ -1,3 +1,6 @@
+@using Humanizer
+@using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
 @using System.Web
 @model SFA.DAS.FAT.Web.Models.ShortlistsViewModel
@@ -42,6 +45,9 @@
     {
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
+                <strong class="govuk-!-margin-bottom-4 govuk-tag @course.LearningTypeTagClass app-tag">
+                    @course.LearningType.GetDescription().Singularize()
+                </strong>
                 <h2 class="govuk-heading-m govuk-!-margin-bottom-4">@course.CourseTitle</h2>
 
                 @foreach (var location in course.Locations)
@@ -68,7 +74,9 @@
                                     class="govuk-link govuk-link--no-visited-state">View other training providers for this course</a>
                             </p>
 
-                            <partial name="_ShortlistGetHelpFindingCourse" model="@location.RequestApprenticeshipTraining" />
+                            <div asp-show="!course.IsShortCourseType">
+                                <partial name="_ShortlistGetHelpFindingCourse" model="@location.RequestApprenticeshipTraining" />
+                            </div>
                         </div>
                     </details>
                 }

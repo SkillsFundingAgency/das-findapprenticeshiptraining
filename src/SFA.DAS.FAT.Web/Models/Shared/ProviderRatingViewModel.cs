@@ -6,6 +6,11 @@ namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public class ProviderRatingViewModel
 {
+    private const string ReviewsLabel = "reviews";
+    private const string PluralSuffix = "s";
+    private const string GoodRatingGroup = "good";
+    private const string PoorRatingGroup = "poor";
+
     public required string Stars { get; set; }
     public required string Reviews { get; set; }
     public required ProviderRating ProviderRating { get; set; }
@@ -17,10 +22,10 @@ public class ProviderRatingViewModel
         {
             if (!int.TryParse(Reviews, out int reviews))
             {
-                return $"0 {ProviderRatingType.GetDescription()} reviews";
+                return $"0 {ProviderRatingType.GetDescription()} {ReviewsLabel}";
             }
 
-            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} review{(reviews != 1 ? "s" : "")}";
+            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} review{(reviews != 1 ? PluralSuffix : string.Empty)}";
             return totalMessage;
         }
     }
@@ -40,8 +45,8 @@ public class ProviderRatingViewModel
         get
         {
             return StarsValue > 2 ?
-            "good" :
-            "poor";
+            GoodRatingGroup :
+            PoorRatingGroup;
         }
     }
 }

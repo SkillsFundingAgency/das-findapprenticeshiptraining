@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Shortlist;
 
@@ -17,6 +18,8 @@ public class ShortlistCourseModel
 {
     public int Ordering { get; set; }
     public string LarsCode { get; set; }
+    public CourseType CourseType { get; set; }
+    public LearningType ApprenticeshipType { get; set; }
     public string StandardName { get; set; }
     public List<ShortlistLocationModel> Locations { get; set; } = [];
 }
@@ -43,6 +46,7 @@ public class ShortlistProviderModel
     public bool HasDayRelease { get; set; }
     public decimal? DayReleaseDistance { get; set; }
     public int DayReleaseCount { get; set; }
+    public bool HasOnlineDeliveryOption { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Website { get; set; }

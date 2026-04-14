@@ -79,7 +79,9 @@ public class ShortlistController : Controller
             ShortlistCourseViewModel courseModel = new()
             {
                 LarsCode = course.LarsCode,
-                CourseTitle = course.StandardName
+                CourseTitle = course.StandardName,
+                CourseType = course.CourseType,
+                LearningType = course.ApprenticeshipType
             };
             foreach (var location in course.Locations)
             {
@@ -99,6 +101,8 @@ public class ShortlistController : Controller
                     ShortlistProviderViewModel providerModel = new()
                     {
                         LarsCode = course.LarsCode,
+                        CourseType = course.CourseType,
+                        LearningType = course.ApprenticeshipType,
                         LocationDescription = location.LocationDescription,
                         ShortlistId = provider.ShortlistId,
                         Ukprn = provider.Ukprn,
@@ -110,6 +114,8 @@ public class ShortlistController : Controller
                         HasDayRelease = provider.HasDayRelease,
                         DayReleaseDistance = provider.DayReleaseDistance,
                         HasMultipleDayRelease = provider.DayReleaseCount > 1,
+                        AtProviderLocation = provider.HasBlockRelease || provider.HasDayRelease,
+                        HasOnlineDeliveryOption = provider.HasOnlineDeliveryOption,
                         Email = provider.Email,
                         Phone = provider.Phone,
                         Website = provider.Website,

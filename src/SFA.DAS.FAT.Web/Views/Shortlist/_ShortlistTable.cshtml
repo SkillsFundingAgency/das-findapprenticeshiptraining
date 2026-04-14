@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.ShortlistLocationViewModel
 
 
@@ -46,10 +47,16 @@
                 </th>
                 <td class="govuk-table__cell app-shortlist-table__cell">
                     <ul class="govuk-list @(shortlistItem.HasMultipleDeliveryOptions ? "govuk-list--bullet" : "") das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
-                        <li asp-show="@shortlistItem.AtEmployer">
-                            At learner's workplace
+                        <li asp-show="@shortlistItem.HasOnlineDeliveryOption && @shortlistItem.IsShortCourseType">
+                            @ShortlistProviderViewModel.OnlineTrainingOptionLabel
                         </li>
-                        <li asp-show="@shortlistItem.HasBlockRelease">
+                        <li asp-show="@shortlistItem.AtEmployer">
+                            @ShortlistProviderViewModel.AtLearnerWorkplaceTrainingOptionLabel
+                        </li>
+                        <li asp-show="@shortlistItem.AtProviderLocation && @shortlistItem.IsShortCourseType">
+                            @ShortlistProviderViewModel.AtTrainingProviderLocationTrainingOptionLabel
+                        </li>
+                        <li asp-show="@shortlistItem.HasBlockRelease && !@shortlistItem.IsShortCourseType">
                             @if (!shortlistItem.HasLocation)
                             {
                                 <span asp-show="!@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release</span>
@@ -62,7 +69,7 @@
                                 <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</span>
                             }
                         </li>
-                        <li asp-show="@shortlistItem.HasDayRelease">
+                        <li asp-show="@shortlistItem.HasDayRelease && !@shortlistItem.IsShortCourseType">
                             @if (!shortlistItem.HasLocation)
                             {
                                 <span asp-show="!@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release</span>
@@ -78,16 +85,26 @@
                     </ul>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell">
-                    @await Html.PartialAsync("_providerRating", shortlistItem.EmployerReviews)
-                    @await Html.PartialAsync("_providerRating", shortlistItem.ApprenticeReviews)
+                    <div asp-show="!shortlistItem.IsShortCourseType">
+                        @await Html.PartialAsync("_providerRating", shortlistItem.EmployerReviews)
+                        @await Html.PartialAsync("_providerRating", shortlistItem.ApprenticeReviews)
+                    </div>
+                    <div asp-show="shortlistItem.IsShortCourseType">
+                        <p class="govuk-body  govuk-!-font-size-16">
+                            @ShortlistProviderViewModel.EmployerShortCourseRatingDescription
+                        </p>
+                    </div>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell">
-                    <p asp-show="shortlistItem.HasAchievementRate" class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                    <p asp-show="shortlistItem.HasAchievementRate && !shortlistItem.IsShortCourseType" class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         @($"{shortlistItem.AchievementRate}%") <span class="app-!-hide--tablet">pass rate</span>
                         <span class="das-text--muted">(out of @shortlistItem.Leavers apprentices)</span>
                     </p>
-                    <p asp-show="!shortlistItem.HasAchievementRate" class="govuk-body  govuk-!-font-size-16">
-                        No achievement rate - not enough data
+                    <p asp-show="!shortlistItem.HasAchievementRate && !shortlistItem.IsShortCourseType" class="govuk-body  govuk-!-font-size-16">
+                        @ShortlistProviderViewModel.ApprenticeNoRatingDescription
+                    </p>
+                    <p asp-show="shortlistItem.IsShortCourseType" class="govuk-body  govuk-!-font-size-16">
+                        @ShortlistProviderViewModel.ApprenticeShortCourseRatingDescription
                     </p>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell app-shortlist-table__cell">
