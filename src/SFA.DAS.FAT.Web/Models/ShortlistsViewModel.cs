@@ -73,7 +73,7 @@ public class ShortlistProviderViewModel
     public ProviderRatingViewModel ApprenticeReviews { get; set; }
     public string LocationDescription { get; set; }
 
-    public int NoOfDeliveryOptions => Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease);
+    public int NoOfDeliveryOptions => Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease) + Convert.ToInt32(AtProviderLocation) + Convert.ToInt32(HasOnlineDeliveryOption);
     public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions > 1;
     public bool HasAchievementRate => decimal.TryParse(AchievementRate, out var _);
     public bool HasLocation => !string.IsNullOrEmpty(LocationDescription);
