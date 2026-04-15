@@ -41,6 +41,81 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
+    public void TrainingOptions_WhenAccessedForApprenticeship_MapsReleaseAndLearnerWorkplaceValues()
+    {
+        var closestBlockReleaseLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            BlockRelease = true,
+            CourseDistance = 1.44
+        };
+
+        var closestDayReleaseLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            DayRelease = true,
+            CourseDistance = 2.55
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.Apprenticeship,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Regional, AtEmployer = true },
+                closestBlockReleaseLocation,
+                new LocationModel { LocationType = LocationType.Provider, BlockRelease = true, CourseDistance = 5.1 },
+                closestDayReleaseLocation,
+                new LocationModel { LocationType = LocationType.Provider, DayRelease = true, CourseDistance = 7.7 }
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShowOnlineOption, Is.False);
+            Assert.That(result.ShowProviderOption, Is.False);
+            Assert.That(result.ShowLearnerWorkplaceOption, Is.True);
+            Assert.That(result.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationRegional));
+            Assert.That(result.HasMatchingRegionalLocationOrNational, Is.True);
+            Assert.That(result.ShowBlockReleaseOption, Is.True);
+            Assert.That(result.BlockReleaseLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleBlockReleaseLocations, Is.True);
+            Assert.That(result.ClosestBlockReleaseLocation, Is.EqualTo(closestBlockReleaseLocation));
+            Assert.That(result.ClosestBlockReleaseLocationDistanceDisplay, Is.EqualTo("1.4"));
+            Assert.That(result.ShowDayReleaseOption, Is.True);
+            Assert.That(result.DayReleaseLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleDayReleaseLocations, Is.True);
+            Assert.That(result.ClosestDayReleaseLocation, Is.EqualTo(closestDayReleaseLocation));
+            Assert.That(result.ClosestDayReleaseLocationDistanceDisplay, Is.EqualTo("2.6"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void ShowMultipleProvidersForCourse_WhenTotalProvidersCountIsGreaterThanOne_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            TotalProvidersCount = 2
+        };
+
+        Assert.That(sut.ShowMultipleProvidersForCourse, Is.True);
+    }
+
+    [Test]
+    public void ShowMultipleProvidersForCourse_WhenTotalProvidersCountIsOne_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            TotalProvidersCount = 1
+        };
+
+        Assert.That(sut.ShowMultipleProvidersForCourse, Is.False);
+    }
+
+    [Test]
     public void EndpointAssessmentDisplayMessage_WhenEndpointAssessmentsIsNull_ReturnsNotEnoughApprenticesMessage()
     {
         var sut = new CourseProviderViewModel
@@ -256,7 +331,7 @@ public class WhenCreatingCourseProviderViewModel
     }
 
     [Test]
-    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsNational_ReturnsNationalMessage()
+    public void AtLearnerWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsNational_ReturnsNationalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -267,11 +342,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
-    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsRegional_ReturnsRegionalMessage()
+    public void AtLearnerWorkplaceWithNoLocationDisplayMessage_WhenLocationTypeIsRegional_ReturnsRegionalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -282,11 +357,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationRegional));
     }
 
     [Test]
-    public void AtApprenticesWorkplaceWithNoLocationDisplayMessage_WhenNoLocationIsFound_ReturnsNationalMessage()
+    public void AtLearnerWorkplaceWithNoLocationDisplayMessage_WhenNoLocationIsFound_ReturnsNationalMessage()
     {
         var sut = new CourseProviderViewModel
         {
@@ -297,7 +372,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(sut.AtApprenticesWorkplaceWithNoLocationDisplayMessage, Is.EqualTo("Training is provided at learner's workplaces across England."));
+        Assert.That(sut.AtLearnerWorkplaceWithNoLocationDisplayMessage, Is.EqualTo(CourseProviderViewModel.AtLearnerWorkplaceWithNoLocationNational));
     }
 
     [Test]
@@ -538,11 +613,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.True);
+        Assert.That(viewModel.ShowLearnerWorkplaceOption, Is.True);
     }
 
     [Test]
-    public void ShowApprenticesWorkplaceOption_WhenAnyLocationTypeRegionalExists_ReturnsTrue()
+    public void ShowLearnerWorkplaceOption_WhenAnyLocationTypeRegionalExists_ReturnsTrue()
     {
         var viewModel = new CourseProviderViewModel
         {
@@ -553,11 +628,11 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.True);
+        Assert.That(viewModel.ShowLearnerWorkplaceOption, Is.True);
     }
 
     [Test]
-    public void ShowApprenticesWorkplaceOption_WhenNoNationalOrRegionalLocations_ReturnsFalse()
+    public void ShowLearnerWorkplaceOption_WhenNoNationalOrRegionalLocations_ReturnsFalse()
     {
         var viewModel = new CourseProviderViewModel
         {
@@ -567,7 +642,7 @@ public class WhenCreatingCourseProviderViewModel
             }
         };
 
-        Assert.That(viewModel.ShowApprenticesWorkplaceOption, Is.False);
+        Assert.That(viewModel.ShowLearnerWorkplaceOption, Is.False);
     }
 
     [Test]
@@ -782,32 +857,21 @@ public class WhenCreatingCourseProviderViewModel
         Assert.That(sut.ClosestDayReleaseLocation, Is.Null);
     }
 
+    [TestCase(LocationType.National, false, true)]
     [TestCase(LocationType.Regional, true, true)]
     [TestCase(LocationType.Regional, false, false)]
-    public void HasMatchingRegionalLocation_WhenRegionalLocationAndAtEmployerIsTrue_ReturnsTrue(LocationType locationType, bool AtEmployer, bool expected)
+    [TestCase(LocationType.Provider, true, false)]
+    public void HasMatchingRegionalLocationOrNational_LocationTypeAndAtEmployerVaries_ReturnsExpected(LocationType locationType, bool atEmployer, bool expected)
     {
         var sut = new CourseProviderViewModel
         {
             Locations = new List<LocationModel>
             {
-                new LocationModel { LocationType = locationType, AtEmployer = AtEmployer }
+                new LocationModel { LocationType = locationType, AtEmployer = atEmployer }
             }
         };
-        Assert.That(sut.HasMatchingRegionalLocation, Is.EqualTo(expected));
-    }
 
-    [TestCase(LocationType.National, true)]
-    [TestCase(LocationType.Regional, false)]
-    public void HasMatchingRegionalLocation_WhenNationalLocationExists_ReturnsTrue(LocationType locationType, bool expected)
-    {
-        var sut = new CourseProviderViewModel
-        {
-            Locations = new List<LocationModel>
-            {
-                new LocationModel { LocationType = locationType }
-            }
-        };
-        Assert.That(sut.HasMatchingRegionalLocation, Is.EqualTo(expected));
+        Assert.That(sut.HasMatchingRegionalLocationOrNational, Is.EqualTo(expected));
     }
 
     [TestCase(CourseType.ShortCourse, true, false)]
@@ -853,6 +917,339 @@ public class WhenCreatingCourseProviderViewModel
         };
 
         Assert.That(sut.ClosestProviderLocation, Is.Null);
+    }
+
+    [TestCase(LocationType.Online, CourseType.ShortCourse, true)]
+    [TestCase(LocationType.Online, CourseType.Apprenticeship, false)]
+    [TestCase(LocationType.Provider, CourseType.ShortCourse, false)]
+    public void ShowOnlineOption_LocationTypeAndCourseTypeVaries_ReturnsExpected(LocationType locationType, CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = locationType }
+            }
+        };
+
+        Assert.That(sut.ShowOnlineOption, Is.EqualTo(expected));
+    }
+
+    [TestCase(LocationType.Provider, CourseType.ShortCourse, true)]
+    [TestCase(LocationType.Provider, CourseType.Apprenticeship, false)]
+    [TestCase(LocationType.Online, CourseType.ShortCourse, false)]
+    public void ShowProviderOption_LocationTypeAndCourseTypeVaries_ReturnsExpected(LocationType locationType, CourseType courseType, bool expected)
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = courseType,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = locationType }
+            }
+        };
+
+        Assert.That(sut.ShowProviderOption, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void HasMultipleProviderLocations_WhenMoreThanOneProviderLocation_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.HasMultipleProviderLocations, Is.True);
+    }
+
+    [Test]
+    public void HasMultipleProviderLocations_WhenOneProviderLocationOrLess_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Provider },
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        Assert.That(sut.HasMultipleProviderLocations, Is.False);
+    }
+
+    [Test]
+    public void ProviderLocations_WhenProviderAndNonProviderLocationsExist_ReturnsOnlyProviderLocations()
+    {
+        var providerLocation1 = new LocationModel { LocationType = LocationType.Provider };
+        var providerLocation2 = new LocationModel { LocationType = LocationType.Provider };
+
+        var sut = new CourseProviderViewModel
+        {
+            Locations = new List<LocationModel>
+            {
+                providerLocation1,
+                new LocationModel { LocationType = LocationType.Online },
+                providerLocation2
+            }
+        };
+
+        Assert.That(sut.ProviderLocations, Is.EqualTo(new[] { providerLocation1, providerLocation2 }));
+    }
+
+    [Test]
+    public void ShowBlockReleaseOption_WhenBlockReleaseLocationAndNotApprenticeship_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { BlockRelease = true }
+            }
+        };
+
+        Assert.That(sut.ShowBlockReleaseOption, Is.False);
+    }
+
+    [Test]
+    public void ShowDayReleaseOption_WhenDayReleaseLocationAndNotApprenticeship_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { DayRelease = true }
+            }
+        };
+
+        Assert.That(sut.ShowDayReleaseOption, Is.False);
+    }
+
+    [Test]
+    public void ImplicitOperator_WhenCoursesAndLocationsAreNull_ReturnsEmptyCollections()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = null,
+            Locations = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.Courses, Is.Not.Null);
+            Assert.That(sut.Courses, Is.Empty);
+            Assert.That(sut.Locations, Is.Not.Null);
+            Assert.That(sut.Locations, Is.Empty);
+            Assert.That(sut.ProviderCoursesDetails.Courses, Is.Empty);
+        });
+    }
+
+    [Test]
+    public void TrainingOptions_WhenAccessed_MapsExpectedValues()
+    {
+        var providerLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            CourseDistance = 1.25,
+            AddressLine1 = "1 Provider Street",
+            Town = "Leeds",
+            Postcode = "LS1 1AA"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Location = "Leeds",
+            Locations = new List<LocationModel>
+            {
+                new LocationModel { LocationType = LocationType.Online },
+                new LocationModel { LocationType = LocationType.National },
+                providerLocation
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.ShowOnlineOption, Is.True);
+            Assert.That(result.ShowLearnerWorkplaceOption, Is.True);
+            Assert.That(result.HasMatchingRegionalLocationOrNational, Is.True);
+            Assert.That(result.ShowProviderOption, Is.True);
+            Assert.That(result.ProviderLocations, Is.EqualTo(new[] { providerLocation }));
+            Assert.That(result.ClosestProviderLocation, Is.EqualTo(providerLocation));
+            Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.3"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Provider Street, Leeds, LS1 1AA"));
+        });
+    }
+
+    [Test]
+    public void TrainingOptions_WhenProviderHasMultipleLocations_MapsProviderLocationSummaryValues()
+    {
+        var closestProviderLocation = new LocationModel
+        {
+            LocationType = LocationType.Provider,
+            CourseDistance = 0.95,
+            AddressLine1 = "1 Closest Street",
+            Town = "Leeds",
+            Postcode = "LS1 1AA"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            CourseType = CourseType.ShortCourse,
+            Locations = new List<LocationModel>
+            {
+                new LocationModel
+                {
+                    LocationType = LocationType.Provider,
+                    CourseDistance = 2.5,
+                    AddressLine1 = "2 Other Street",
+                    Town = "Leeds",
+                    Postcode = "LS1 2BB"
+                },
+                closestProviderLocation,
+                new LocationModel { LocationType = LocationType.Online }
+            }
+        };
+
+        var result = sut.TrainingOptions;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShowProviderOption, Is.True);
+            Assert.That(result.ProviderLocations, Has.Count.EqualTo(2));
+            Assert.That(result.HasMultipleProviderLocations, Is.True);
+            Assert.That(result.ClosestProviderLocation, Is.EqualTo(closestProviderLocation));
+            Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.0"));
+            Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Closest Street, Leeds, LS1 1AA"));
+        });
+    }
+
+    [Test]
+    public void AchievementsAndParticipation_WhenAccessed_MapsExpectedValues()
+    {
+        var endpointAssessments = new EndpointAssessmentModel(new DateTime(2022, 1, 1, 0, 0, 0, DateTimeKind.Utc), 12);
+        var qar = new QarModel
+        {
+            AchievementRate = "90",
+            Leavers = "100",
+            Period = "2122",
+            NationalLeavers = "100",
+            NationalAchievementRate = "80"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            Qar = qar,
+            EndpointAssessments = endpointAssessments
+        };
+
+        var result = sut.AchievementsAndParticipation;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Qar, Is.EqualTo(qar));
+            Assert.That(result.AchievementRateInformation, Is.EqualTo(sut.AchievementRateInformation));
+            Assert.That(result.EndpointAssessmentsCountDisplay, Is.EqualTo("12"));
+            Assert.That(result.EndpointAssessmentDisplayMessage, Is.EqualTo(sut.EndpointAssessmentDisplayMessage));
+        });
+    }
+
+    [Test]
+    public void ContactDetails_WhenAccessed_MapsExpectedValues()
+    {
+        var contact = new ContactModel
+        {
+            Email = "provider@test.com",
+            PhoneNumber = "01234567890"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel
+            {
+                AddressLine1 = "1 High Street",
+                Town = "Leeds",
+                Postcode = "LS1 2AB"
+            },
+            Contact = contact
+        };
+
+        var result = sut.ContactDetails;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ContactAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Contact, Is.EqualTo(contact));
+        });
+    }
+
+    [Test]
+    public void ProviderReviews_WhenAccessed_MapsExpectedValues()
+    {
+        var reviews = new ReviewsModel
+        {
+            EmployerReviews = "2",
+            ApprenticeReviews = "1"
+        };
+
+        var sut = new CourseProviderViewModel
+        {
+            Reviews = reviews
+        };
+
+        var result = sut.ProviderReviews;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Reviews, Is.EqualTo(reviews));
+            Assert.That(result.EmployerReviewsDisplayMessage, Is.EqualTo(sut.EmployerReviewsDisplayMessage));
+            Assert.That(result.ApprenticeReviewsDisplayMessage, Is.EqualTo(sut.ApprenticeReviewsDisplayMessage));
+        });
+    }
+
+    [Test]
+    public void ShortlistPanel_WhenAccessed_MapsExpectedValues()
+    {
+        var shortlistId = Guid.NewGuid();
+        var sut = new CourseProviderViewModel
+        {
+            LarsCode = "123",
+            Ukprn = 10000001,
+            ProviderName = "Provider A",
+            Location = "Leeds",
+            ShortlistId = shortlistId,
+            TotalProvidersCount = 2,
+            CourseName = "Software developer",
+            Level = 4
+        };
+
+        var result = sut.ShortlistPanel;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.ShortlistClass, Is.EqualTo("app-provider-shortlist-added"));
+            Assert.That(result.LarsCode, Is.EqualTo("123"));
+            Assert.That(result.Ukprn, Is.EqualTo(10000001));
+            Assert.That(result.ProviderName, Is.EqualTo("Provider A"));
+            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.ShortlistId, Is.EqualTo(shortlistId));
+            Assert.That(result.ShowMultipleProvidersForCourse, Is.True);
+            Assert.That(result.TotalProvidersCount, Is.EqualTo(2));
+            Assert.That(result.CourseNameAndLevel, Is.EqualTo("Software developer (level 4)"));
+        });
     }
 }
 

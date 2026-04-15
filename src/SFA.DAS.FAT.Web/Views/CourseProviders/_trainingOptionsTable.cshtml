@@ -1,0 +1,91 @@
+@using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Web.Models
+@using TrainingOptionsTableViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
+@model SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
+
+<table class="govuk-table">
+    <thead class="govuk-table__head">
+        <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header das-table-cell-width-35">Training option</th>
+            <th scope="col" class="govuk-table__header das-table-cell-width-65">Location</th>
+        </tr>
+    </thead>
+
+    <tbody class="govuk-table__body">
+
+        <tr asp-show="@Model.ShowOnlineOption" class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                    <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                        Online
+                    </p>
+                </th>
+                <td class="govuk-table__cell">
+                    <p class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.OnlineTraining
+                    </p>
+                </td>
+            </tr>
+
+        <tr asp-show="@Model.ShowLearnerWorkplaceOption" class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                    <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                        At learner's workplace
+                    </p>
+                </th>
+                <td class="govuk-table__cell">
+                    <p asp-show="@(!Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">
+                        @Model.AtLearnerWorkplaceWithNoLocationDisplayMessage
+                    </p>
+                    <p asp-show="@(Model.HasLocation && Model.HasMatchingRegionalLocationOrNational)" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationMatchingRegionalOrNational
+                    </p>
+                    <p asp-show="@(Model.HasLocation && !Model.HasMatchingRegionalLocationOrNational)" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.AtLearnerWorkplaceWithLocationNotMatchingRegional
+                    </p>
+                </td>
+            </tr>
+
+        <tr asp-show="@Model.ShowProviderOption" class="govuk-table__row">
+                <th scope="row" class="govuk-table__header">
+                    <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+                        At training provider’s location
+                    </p>
+                </th>
+                <td class="govuk-table__cell">
+                    <p asp-show="@(!Model.HasLocation && Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">@TrainingOptionsTableViewModel.AtProviderPlaceWithMultipleLocations</p>
+
+                    <p asp-show="@(!Model.HasLocation && !Model.HasMultipleProviderLocations)" class="govuk-body govuk-!-margin-top-2">
+                        @Model.ProviderLocations[0].FormatAddress()
+                    </p>
+
+                    <p asp-show="@Model.HasLocation" class="govuk-body govuk-!-margin-top-2">
+                        @TrainingOptionsTableViewModel.ProviderClosestLocationWithLocation <strong>@Model.ClosestProviderLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @Model.ClosestProviderLocationAddress
+                    </p>
+
+                    <details asp-show="@Model.HasMultipleProviderLocations" class="govuk-details">
+                        <summary class="govuk-details__summary">
+                            <span class="govuk-details__summary-text">
+                                @TrainingOptionsTableViewModel.ViewAllProviderLocations
+                            </span>
+                        </summary>
+                        <div class="govuk-details__text">
+                            <ul class="govuk-list govuk-list--bullet">
+                                @foreach (LocationModel location in Model.ProviderLocations)
+                                {
+                                    <li>
+                                        <strong asp-show="@Model.HasLocation">@location.CourseDistance.ToString("0.0") @TrainingOptionsTableViewModel.MilesAway</strong>
+                                        @location.FormatAddress()
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </details>
+                </td>
+            </tr>
+
+        <partial asp-show="@Model.ShowBlockReleaseOption" name="_releaseLocationsTableRow" model="Model.BlockReleaseRow" />
+
+        <partial asp-show="@Model.ShowDayReleaseOption" name="_releaseLocationsTableRow" model="Model.DayReleaseRow" />
+    
+    </tbody>
+</table>
