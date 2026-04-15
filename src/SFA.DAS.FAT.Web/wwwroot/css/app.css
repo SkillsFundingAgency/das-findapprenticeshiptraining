@@ -564,6 +564,10 @@
     border-left-color: #f9e1ec
 }
 
+.app-inset-text--highlight--purple {
+    border-left-color: #DBD5E9
+}
+
 .app-details-bottom {
     padding-bottom: 0px
 }
