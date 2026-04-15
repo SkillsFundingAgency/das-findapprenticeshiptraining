@@ -8,7 +8,7 @@ public class TrainingOptionsTableViewModel
     public const string OnlineTraining = "Your learner can complete this training remotely.";
 
     public const string AtLearnerWorkplaceWithLocationMatchingRegionalOrNational = "The training provider can travel to you to deliver this course.";
-    public const string AtLearnerWorkplaceWithLocationNotMatchingRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the apprentice's workplace in your location.";
+    public const string AtLearnerWorkplaceWithLocationNotMatchingRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
 
     public const string AtProviderPlaceWithMultipleLocations = "Training provider has multiple locations.";
     public const string ProviderClosestLocationWithLocation = "Training provider’s closest location is";
