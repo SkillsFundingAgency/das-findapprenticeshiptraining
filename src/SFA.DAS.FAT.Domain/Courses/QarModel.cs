@@ -59,7 +59,7 @@ public sealed class QarModel
 
     private decimal GetFailureRate()
     {
-        if (AchievementRate is null)
+        if (!ConvertedAchievementRate.HasValue)
         {
             return 0;
         }
