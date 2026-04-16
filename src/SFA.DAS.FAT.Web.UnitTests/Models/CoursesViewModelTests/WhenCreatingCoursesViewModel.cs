@@ -685,7 +685,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_NoProvidersForApprenticeshipUnit_ReturnsEmptyMessage(StandardViewModel standardViewModel)
+    public void GetProvidersLinkDisplayMessage_NoProvidersForApprenticeshipUnit_ReturnsAskTrainingProviderMessage(StandardViewModel standardViewModel)
     {
         var viewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration.Object, _urlHelper.Object);
 
@@ -694,7 +694,7 @@ public class WhenCreatingCoursesViewModel
 
         var result = viewModel.GetProvidersLinkDisplayMessage(standardViewModel);
 
-        Assert.That(result, Is.EqualTo(string.Empty));
+        Assert.That(result, Is.EqualTo(CoursesViewModel.ASK_TRAINING_PROVIDER));
     }
 
     [Test]
