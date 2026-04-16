@@ -57,8 +57,9 @@ public class ShortlistProviderViewModel
     public bool HasDayRelease { get; set; }
     public decimal? DayReleaseDistance { get; set; }
     public bool HasMultipleDayRelease { get; set; }
-    public bool AtProviderLocation { get; set; }
     public bool HasOnlineDeliveryOption { get; set; }
+    public bool AtProvider { get; set; }
+    public decimal? ProviderDistance { get; set; }
     public string Email { get; set; }
     public string Phone { get; set; }
     public string Website { get; set; }
@@ -68,8 +69,13 @@ public class ShortlistProviderViewModel
     public ProviderRatingViewModel ApprenticeReviews { get; set; }
     public string LocationDescription { get; set; }
 
-    public int NoOfDeliveryOptions => Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease) + Convert.ToInt32(AtProviderLocation) + Convert.ToInt32(HasOnlineDeliveryOption);
-    public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions > 1;
+    public int NoOfDeliveryOptions()
+    {
+        if (IsShortCourseType)
+            return Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasOnlineDeliveryOption) + Convert.ToInt32(AtProvider);
+        else return Convert.ToInt32(AtEmployer) + Convert.ToInt32(HasDayRelease) + Convert.ToInt32(HasBlockRelease);
+    }
+    public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions() > 1;
     public bool HasAchievementRate => decimal.TryParse(AchievementRate, out var _);
     public bool HasLocation => !string.IsNullOrEmpty(LocationDescription);
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;

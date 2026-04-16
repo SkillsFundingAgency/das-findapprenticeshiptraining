@@ -21,7 +21,7 @@ public class WhenCreatingShortlistProviderViewModel
             HasBlockRelease = hasBlockRelease,
             HasDayRelease = hasDayRelease
         };
-        sut.NoOfDeliveryOptions.Should().Be(expected);
+        sut.NoOfDeliveryOptions().Should().Be(expected);
     }
 
     [TestCase(true, true, true, true)]
@@ -66,24 +66,31 @@ public class WhenCreatingShortlistProviderViewModel
         sut.HasLocation.Should().Be(expected);
     }
 
-    [TestCase(true, false, false, false, false, 1)]
-    [TestCase(false, true, false, false, false, 1)]
-    [TestCase(false, false, true, false, false, 1)]
-    [TestCase(false, false, false, true, false, 1)]
-    [TestCase(false, false, false, false, true, 1)]
-    [TestCase(true, true, true, true, true, 5)]
-    public void NoOfDeliveryOptions_DeliveryOptionsVary_ReturnsExpectedCount(bool atEmployer, bool hasDayRelease, bool hasBlockRelease, bool atProviderLocation, bool hasOnlineDeliveryOption, int expected)
+    [TestCase(CourseType.Apprenticeship, true, false, false, false, false, 1)]
+    [TestCase(CourseType.Apprenticeship, false, true, false, false, false, 1)]
+    [TestCase(CourseType.Apprenticeship, false, false, true, false, false, 1)]
+    [TestCase(CourseType.Apprenticeship, false, false, false, true, false, 0)]
+    [TestCase(CourseType.Apprenticeship, false, false, false, false, true, 0)]
+    [TestCase(CourseType.Apprenticeship, true, true, true, true, true, 3)]
+    [TestCase(CourseType.ShortCourse, true, false, false, false, false, 1)]
+    [TestCase(CourseType.ShortCourse, false, true, false, false, false, 0)]
+    [TestCase(CourseType.ShortCourse, false, false, true, false, false, 0)]
+    [TestCase(CourseType.ShortCourse, false, false, false, true, false, 1)]
+    [TestCase(CourseType.ShortCourse, false, false, false, false, true, 1)]
+    [TestCase(CourseType.ShortCourse, true, true, true, true, true, 3)]
+    public void NoOfDeliveryOptions_CourseTypeAndDeliveryOptionsVary_ReturnsExpectedCount(CourseType courseType, bool atEmployer, bool hasDayRelease, bool hasBlockRelease, bool atProviderLocation, bool hasOnlineDeliveryOption, int expected)
     {
         ShortlistProviderViewModel sut = new()
         {
+            CourseType = courseType,
             AtEmployer = atEmployer,
             HasDayRelease = hasDayRelease,
             HasBlockRelease = hasBlockRelease,
-            AtProviderLocation = atProviderLocation,
+            AtProvider = atProviderLocation,
             HasOnlineDeliveryOption = hasOnlineDeliveryOption
         };
 
-        sut.NoOfDeliveryOptions.Should().Be(expected);
+        sut.NoOfDeliveryOptions().Should().Be(expected);
     }
 
     [TestCase(false, false, false, true, false)]
@@ -96,11 +103,11 @@ public class WhenCreatingShortlistProviderViewModel
             AtEmployer = atEmployer,
             HasDayRelease = hasDayRelease,
             HasBlockRelease = hasBlockRelease,
-            AtProviderLocation = atProviderLocation,
+            AtProvider = atProviderLocation,
             HasOnlineDeliveryOption = hasOnlineDeliveryOption
         };
 
-        sut.HasMultipleDeliveryOptions.Should().Be(sut.NoOfDeliveryOptions > 1);
+        sut.HasMultipleDeliveryOptions.Should().Be(sut.NoOfDeliveryOptions() > 1);
     }
 
     [TestCase(CourseType.ShortCourse, true)]
