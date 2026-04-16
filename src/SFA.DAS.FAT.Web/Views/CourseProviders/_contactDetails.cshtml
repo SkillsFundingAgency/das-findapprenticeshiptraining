@@ -1,0 +1,46 @@
+@model SFA.DAS.FAT.Web.Models.CourseProviders.ContactDetailsViewModel
+
+@*  Contact this training provider *@
+<div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
+            Contact this training provider
+        </h3>
+        <dl class="govuk-summary-list">
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Registered address
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <span asp-show="@(!string.IsNullOrEmpty(Model.ContactAddress))">@Model.ContactAddress</span>
+                    <span asp-show="@(string.IsNullOrEmpty(Model.ContactAddress))">-</span>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Email
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="mailto:@Model.Contact.Email" class="govuk-link">@Model.Contact.Email</a>
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Telephone
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    @Model.Contact.PhoneNumber
+                </dd>
+            </div>
+            <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                    Website
+                </dt>
+                <dd class="govuk-summary-list__value">
+                    <a href="@Model.Contact.Website" target="_blank" class="govuk-link">@Model.Contact.Website</a>
+                </dd>
+            </div>
+        </dl>
+    </div>
+</div>

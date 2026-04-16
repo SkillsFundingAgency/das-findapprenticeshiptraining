@@ -1,0 +1,69 @@
+@model SFA.DAS.FAT.Web.Models.CourseProviders.AchievementsAndParticipationViewModel
+
+<h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+    Course achievements and participation
+</h3>
+
+@* Achievements Container *@
+
+<div class="das-reviews">
+    <div class="govuk-grid-column-one-half das-reviews-container">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+            Achievements
+        </h3>
+
+        <div asp-show="@(Model.Qar.ConvertedAchievementRate is not null)">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                @Model.Qar.AchievementRate%
+            </h2>
+
+            <p class="govuk-body-s">
+                @Model.AchievementRateInformation
+            </p>
+
+            <p class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                @Model.Qar.NationalAchievementRate% national achievement rate
+            </p>
+        </div>
+
+        <div asp-show="@(Model.Qar.ConvertedAchievementRate is null)">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                No data
+            </h2>
+
+            <p class="govuk-body-s">
+                There is not enough data to show the achievement rate for this course.
+                This may be because a small number of apprentices completed this course,
+                or this is a new course for this provider.
+            </p>
+        </div>
+    </div>
+
+    @* Achievements Container *@
+
+    @* Participation Container *@
+
+    <div class="govuk-grid-column-one-half das-reviews-container">
+
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+            Participation
+        </h3>
+
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+            @Model.EndpointAssessmentsCountDisplay
+        </h2>
+
+        <p class="govuk-body-s">
+            @Model.EndpointAssessmentDisplayMessage
+        </p>
+    </div>
+
+    @* Participation Container *@
+
+</div>
+
+<div class="govuk-inset-text govuk-!-margin-top-3">
+    Course-level data collected by the Department for Education.
+</div>
+
+<hr class="govuk-section-break govuk-section-break--l govuk-section-break--visible">

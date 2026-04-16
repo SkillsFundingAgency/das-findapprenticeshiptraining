@@ -1,0 +1,46 @@
+@using SFA.DAS.FAT.Domain.Courses
+@using ReleaseLocationsTableRowViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.ReleaseLocationsTableRowViewModel
+@using TrainingOptionsTableViewModel = SFA.DAS.FAT.Web.Models.CourseProviders.TrainingOptionsTableViewModel
+@model ReleaseLocationsTableRowViewModel
+
+<tr asp-show="@Model.ShowReleaseLocationsOption" class="govuk-table__row">
+    <th scope="row" class="govuk-table__header govuk-!-padding-right-3">
+        <p class="govuk-!-font-weight-bold govuk-body govuk-!-margin-bottom-1 govuk-!-margin-top-2">
+            @Model.TrainingOptionTitle
+        </p>
+        <p class="govuk-body-m das-hint-colour">
+            @Model.Hint
+        </p>
+    </th>
+
+    <td class="govuk-table__cell">
+        <p asp-show="@(Model.HasMultipleLocations && !Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">@Model.MultipleLocationsMessage</p>
+
+        <p asp-show="@Model.HasLocation" class="govuk-body govuk-!-margin-top-2">
+            <strong>@Model.ClosestLocationDistanceDisplay @TrainingOptionsTableViewModel.MilesAway</strong> @TrainingOptionsTableViewModel.ToClosestLocation @Model.ClosestLocation.FormatAddress()
+        </p>
+
+        <details asp-show="@Model.HasMultipleLocations" class="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @Model.ViewAllLocationsText
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                <ul class="govuk-list govuk-list--bullet">
+                    @foreach (LocationModel location in Model.Locations)
+                    {
+                        <li asp-show="@(!Model.HasLocation)">
+                            @location.FormatAddress()
+                        </li>
+                        <li asp-show="@Model.HasLocation">
+                            <strong>@location.CourseDistance.ToString("0.0") miles</strong> to @location.FormatAddress()
+                        </li>
+                    }
+                </ul>
+            </div>
+        </details>
+
+        <p asp-show="@(!Model.HasMultipleLocations && !Model.HasLocation)" class="govuk-body govuk-!-margin-top-2">@Model.Locations[0].FormatAddress()</p>
+    </td>
+</tr>
