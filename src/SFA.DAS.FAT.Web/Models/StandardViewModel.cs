@@ -1,5 +1,6 @@
 ﻿using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
+using SFA.DAS.FAT.Web.Extensions;
 
 namespace SFA.DAS.FAT.Web.Models;
 
@@ -23,13 +24,7 @@ public class StandardViewModel
 
     public LearningType LearningType { get; set; }
 
-    public string LearningTypeTagClass => LearningType switch
-    {
-        LearningType.Apprenticeship => "govuk-tag--blue",
-        LearningType.FoundationApprenticeship => "govuk-tag--pink",
-        LearningType.ApprenticeshipUnit => "govuk-tag--purple",
-        _ => string.Empty
-    };
+    public string LearningTypeTagClass => LearningType.GetTagClass();
 
     public static implicit operator StandardViewModel(StandardModel source)
     {

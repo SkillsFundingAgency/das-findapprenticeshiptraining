@@ -269,3 +269,4 @@ App.Debug.config
 
 src/SFA.DAS.FAT.Web/appsettings.Development.json
 *.ncrunchsolution
+/src/.github/copilot-instructions.md

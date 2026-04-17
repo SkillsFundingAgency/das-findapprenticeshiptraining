@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 public class WhenBuildingCourseViewModelFromQueryResult
 {
     [Test, MoqAutoData]
-    public void Then_The_Model_Is_Converted_From_Result_Correctly(GetCourseQueryResult source, LearningType apprenticeshipType)
+    public void ExplicitCastOperator_QueryResultProvided_MapsModelCorrectly(GetCourseQueryResult source, LearningType apprenticeshipType)
     {
         source.ApprenticeshipType = apprenticeshipType;
         var isFoundationApprenticeship = apprenticeshipType == LearningType.FoundationApprenticeship;
@@ -42,12 +42,12 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.ApprenticeshipType, Is.EqualTo(source.ApprenticeshipType));
+            Assert.That(sut.LearningType, Is.EqualTo(source.ApprenticeshipType));
         });
     }
 
     [Test, MoqAutoData]
-    public void Then_The_Model_Has_No_KsbDetails_When_Query_Result_Has_None(GetCourseQueryResult source)
+    public void ExplicitCastOperator_QueryResultHasNoKsbs_ReturnsNoKsbDetails(GetCourseQueryResult source)
     {
         source.Ksbs = new List<Ksb>();
 
@@ -57,7 +57,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
     }
 
     [Test, AutoData]
-    public void Then_The_Model_Has_Ksbs_Grouped_By_Type()
+    public void ExplicitCastOperator_QueryResultHasKsbs_GroupsKsbDetailsByType()
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
@@ -85,7 +85,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
     }
 
     [Test, AutoData]
-    public void Then_The_Model_Has_Empty_Ksbs()
+    public void ExplicitCastOperator_QueryResultHasEmptyKsbs_ReturnsEmptyKsbDetails()
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
@@ -97,7 +97,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
     }
 
     [Test]
-    public void Then_The_Model_Has_KsbDetails_Ordered_As_Expected()
+    public void ExplicitCastOperator_QueryResultHasMixedKsbTypes_OrdersKsbDetailsAsExpected()
     {
         GetCourseQueryResult source = new GetCourseQueryResult();
 
@@ -131,5 +131,45 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
         var sut = (CourseViewModel)source;
         sut.KsbDetails.Should().BeEquivalentTo(expectedKsbs);
+    }
+
+    [TestCase(LearningType.Apprenticeship, true, false, false)]
+    [TestCase(LearningType.FoundationApprenticeship, false, true, false)]
+    [TestCase(LearningType.ApprenticeshipUnit, false, false, true)]
+    public void ExplicitCastOperator_ApprenticeshipTypeSet_MapsApprenticeshipFlags(
+        LearningType apprenticeshipType,
+        bool expectedIsApprenticeship,
+        bool expectedIsFoundationApprenticeship,
+        bool expectedIsApprenticeshipUnit)
+    {
+        var source = new GetCourseQueryResult
+        {
+            ApprenticeshipType = apprenticeshipType,
+            Ksbs = []
+        };
+
+        var sut = (CourseViewModel)source;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.IsApprenticeship, Is.EqualTo(expectedIsApprenticeship));
+            Assert.That(sut.IsFoundationApprenticeship, Is.EqualTo(expectedIsFoundationApprenticeship));
+            Assert.That(sut.IsApprenticeshipUnit, Is.EqualTo(expectedIsApprenticeshipUnit));
+        });
+    }
+
+    [Test, MoqAutoData]
+    public void ExplicitCastOperator_QueryResultHasAdditionalFields_MapsAdditionalFields(
+        GetCourseQueryResult source)
+    {
+        source.Ksbs = [];
+
+        var sut = (CourseViewModel)source;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sut.IncentivePayment, Is.EqualTo(source.IncentivePayment));
+            Assert.That(sut.RelatedOccupations, Is.EqualTo(source.RelatedOccupations));
+        });
     }
 }

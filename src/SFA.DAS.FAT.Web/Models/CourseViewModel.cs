@@ -4,6 +4,7 @@ using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Services;
 
@@ -11,6 +12,13 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
+    public const string KNOWLEDGE_SKILLS_HEADER_TEXT = "Knowledge, skills and behaviours";
+    public const string KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT = "Knowledge and skills learners will gain";
+    public const string KNOWLEDGE_SKILLS_LINK_TEXT = "View knowledge, skills and behaviours";
+    public const string KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT = "View knowledge and skills";
+    public const string MAXIMUM_FUNDING_TEXT = "apprenticeship training and assessment costs.";
+    public const string MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT = "apprenticeship unit training and assessment costs.";
+
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -26,15 +34,18 @@ public class CourseViewModel : PageLinksViewModelBase
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
+    public string LearningTypeTagClass => LearningType.GetTagClass();
+    public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
+    public bool IsApprenticeshipUnit { get; set; }
 
     public int IncentivePayment { get; set; }
 
     public List<Level> Levels { get; set; } = [];
 
-    public IEnumerable<KsbGroup> KsbDetails { get; set; }
-    public List<RelatedOccupation> RelatedOccupations { get; set; }
+    public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
+    public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
@@ -60,8 +71,10 @@ public class CourseViewModel : PageLinksViewModelBase
             Levels = source.Levels,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
+            IsApprenticeship = source.ApprenticeshipType == LearningType.Apprenticeship,
             IsFoundationApprenticeship = source.ApprenticeshipType == LearningType.FoundationApprenticeship,
-            ApprenticeshipType = source.ApprenticeshipType == LearningType.FoundationApprenticeship ? LearningType.FoundationApprenticeship : LearningType.Apprenticeship,
+            IsApprenticeshipUnit = source.ApprenticeshipType == LearningType.ApprenticeshipUnit,
+            LearningType = source.ApprenticeshipType,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations
         };
@@ -77,6 +90,19 @@ public class CourseViewModel : PageLinksViewModelBase
         Level EquivalentLevel = Levels.Find(a => a.Code == Level);
 
         return EquivalentLevel is null ? string.Empty : $"Equal to {EquivalentLevel.Name}";
+    }
+
+    public string GetKnowledgeSkillsHeaderTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_HEADER_TEXT;
+    }
+    public string GetKnowledgeSkillsLinkTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_LINK_TEXT;
+    }
+    public string GetMaximumFundingTextToDisplay()
+    {
+        return IsApprenticeshipUnit ? MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT : MAXIMUM_FUNDING_TEXT;
     }
 
     public string[] GetTypicalJobTitles()
