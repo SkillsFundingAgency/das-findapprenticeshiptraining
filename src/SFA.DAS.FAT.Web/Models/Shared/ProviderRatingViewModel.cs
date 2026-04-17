@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Humanizer;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 
@@ -6,6 +7,9 @@ namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public class ProviderRatingViewModel
 {
+    private const string GoodRatingGroup = "good";
+    private const string PoorRatingGroup = "poor";
+
     public required string Stars { get; set; }
     public required string Reviews { get; set; }
     public required ProviderRating ProviderRating { get; set; }
@@ -17,10 +21,10 @@ public class ProviderRatingViewModel
         {
             if (!int.TryParse(Reviews, out int reviews))
             {
-                return $"0 {ProviderRatingType.GetDescription()} reviews";
+                reviews = 0;
             }
 
-            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} review{(reviews != 1 ? "s" : "")}";
+            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} {"review".ToQuantity(reviews, ShowQuantityAs.None)}";
             return totalMessage;
         }
     }
@@ -40,8 +44,8 @@ public class ProviderRatingViewModel
         get
         {
             return StarsValue > 2 ?
-            "good" :
-            "poor";
+            GoodRatingGroup :
+            PoorRatingGroup;
         }
     }
 }

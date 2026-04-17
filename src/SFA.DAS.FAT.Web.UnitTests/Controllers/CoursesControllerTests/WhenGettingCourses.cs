@@ -20,7 +20,7 @@ public class WhenGettingCourses
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_The_Query_Is_Sent_And_Data_Retrieved_And_View_Shown(
+    public async Task Courses_RequestIsValid_QueryIsSentAndViewIsReturned(
         GetCoursesViewModel request,
         GetCoursesQueryResult response,
         ShortlistCookieItem cookieItem,
@@ -66,7 +66,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Should_Add_Keyword_Categories_Levels_And_Location_To_Query_And_Return_View(
+    public async Task Courses_RequestContainsSearchFilters_ModelContainsMappedResults(
         GetCoursesViewModel request,
         GetCoursesQueryResult response,
         Guid shortlistUrl,
@@ -129,7 +129,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Should_Add_Pagination_Object_And_Return_View_When_Courses_Exist(
+    public async Task Courses_ResultContainsStandards_PaginationIsPopulated(
         GetCoursesViewModel request,
         GetCoursesQueryResult response,
         [Frozen] Mock<IMediator> mediator,
@@ -168,7 +168,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Should_Not_Add_Pagination_When_Courses_Are_Empty(
+    public async Task Courses_ResultContainsNoStandards_PaginationIsNull(
         GetCoursesViewModel request,
         GetCoursesQueryResult response,
         [Frozen] Mock<IMediator> mediator,
