@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using Humanizer;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 
@@ -6,8 +7,6 @@ namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public class ProviderRatingViewModel
 {
-    private const string ReviewsLabel = "reviews";
-    private const string PluralSuffix = "s";
     private const string GoodRatingGroup = "good";
     private const string PoorRatingGroup = "poor";
 
@@ -22,10 +21,10 @@ public class ProviderRatingViewModel
         {
             if (!int.TryParse(Reviews, out int reviews))
             {
-                return $"0 {ProviderRatingType.GetDescription()} {ReviewsLabel}";
+                reviews = 0;
             }
 
-            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} review{(reviews != 1 ? PluralSuffix : string.Empty)}";
+            var totalMessage = $"{reviews} {ProviderRatingType.GetDescription()} {"review".ToQuantity(reviews, ShowQuantityAs.None)}";
             return totalMessage;
         }
     }
