@@ -1,4 +1,5 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
+@using SFA.DAS.FAT.Web.Models
 @model SFA.DAS.FAT.Web.Models.ShortlistLocationViewModel
 
 
@@ -46,48 +47,55 @@
                 </th>
                 <td class="govuk-table__cell app-shortlist-table__cell">
                     <ul class="govuk-list @(shortlistItem.HasMultipleDeliveryOptions ? "govuk-list--bullet" : "") das-icon-list das-icon-list--large govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                        <li asp-show="@shortlistItem.HasOnlineDeliveryOption && @shortlistItem.IsShortCourseType">
+                            @ShortlistProviderViewModel.OnlineTrainingOptionLabel
+                        </li>
                         <li asp-show="@shortlistItem.AtEmployer">
-                            At learner's workplace
+                            @ShortlistProviderViewModel.AtLearnerWorkplaceTrainingOptionLabel
                         </li>
-                        <li asp-show="@shortlistItem.HasBlockRelease">
-                            @if (!shortlistItem.HasLocation)
-                            {
-                                <span asp-show="!@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release</span>
-                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations</span>
-                            }
-                            else
-                            {
-                                <div asp-show="!@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release: <span class="govuk-!-font-weight-bold">@shortlistItem.BlockReleaseDistance miles</span></div>
-                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations:</span>
-                                <span asp-show="@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</span>
-                            }
+                        <li asp-show="@shortlistItem.AtProvider && @shortlistItem.IsShortCourseType">
+                            <span asp-show="!@shortlistItem.HasLocation" class="das-no-wrap">@ShortlistProviderViewModel.AtTrainingProviderLocationTrainingOptionLabel</span>
+                            <span asp-show="@shortlistItem.HasLocation" class="das-no-wrap">@ShortlistProviderViewModel.AtTrainingProviderLocationTrainingOptionLabel: <span class="govuk-!-font-weight-bold">@shortlistItem.ProviderDistance miles</span></span>
                         </li>
-                        <li asp-show="@shortlistItem.HasDayRelease">
-                            @if (!shortlistItem.HasLocation)
-                            {
-                                <span asp-show="!@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release</span>
-                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations</span>
-                            }
-                            else
-                            {
-                                <div asp-show="!@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release: <span class="govuk-!-font-weight-bold">@shortlistItem.DayReleaseDistance miles</span></div>
-                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations:</span>
-                                <span asp-show="@shortlistItem.HasMultipleDayRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.DayReleaseDistance miles</span>
-                            }
+                        <li asp-show="@shortlistItem.HasBlockRelease && !@shortlistItem.IsShortCourseType">
+                            <span asp-show="!@shortlistItem.HasLocation && !@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release</span>
+                            <span asp-show="!@shortlistItem.HasLocation && @shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations</span>
+
+                            <div asp-show="@shortlistItem.HasLocation && !@shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release: <span class="govuk-!-font-weight-bold">@shortlistItem.BlockReleaseDistance miles</span></div>
+                            <span asp-show="@shortlistItem.HasLocation && @shortlistItem.HasMultipleBlockRelease" class="das-no-wrap">Block release at multiple locations:</span>
+                            <span asp-show="@shortlistItem.HasLocation && @shortlistItem.HasMultipleBlockRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.BlockReleaseDistance miles</span>
+                        </li>
+                        <li asp-show="@shortlistItem.HasDayRelease && !@shortlistItem.IsShortCourseType">
+                            <span asp-show="!@shortlistItem.HasLocation && !@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release</span>
+                            <span asp-show="!@shortlistItem.HasLocation && @shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations</span>
+
+                            <div asp-show="@shortlistItem.HasLocation && !@shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release: <span class="govuk-!-font-weight-bold">@shortlistItem.DayReleaseDistance miles</span></div>
+                            <span asp-show="@shortlistItem.HasLocation && @shortlistItem.HasMultipleDayRelease" class="das-no-wrap">Day release at multiple locations:</span>
+                            <span asp-show="@shortlistItem.HasLocation && @shortlistItem.HasMultipleDayRelease" class="das-no-wrap govuk-!-font-weight-bold">closest @shortlistItem.DayReleaseDistance miles</span>
                         </li>
                     </ul>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell">
-                    @await Html.PartialAsync("_providerRating", shortlistItem.EmployerReviews)
-                    @await Html.PartialAsync("_providerRating", shortlistItem.ApprenticeReviews)
+                    <div asp-show="!shortlistItem.IsShortCourseType">
+                        @await Html.PartialAsync("_providerRating", shortlistItem.EmployerReviews)
+                        @await Html.PartialAsync("_providerRating", shortlistItem.ApprenticeReviews)
+                    </div>
+                    <div asp-show="shortlistItem.IsShortCourseType">
+                        <p class="govuk-body  govuk-!-font-size-16">
+                            @ShortlistProviderViewModel.EmployerShortCourseRatingDescription
+                        </p>
+                    </div>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell">
-                    <p asp-show="shortlistItem.HasAchievementRate" class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
+                    <p asp-show="shortlistItem.HasAchievementRate && !shortlistItem.IsShortCourseType" class="govuk-body govuk-!-font-size-16 govuk-!-margin-bottom-2">
                         @($"{shortlistItem.AchievementRate}%") <span class="app-!-hide--tablet">pass rate</span>
                         <span class="das-text--muted">(out of @shortlistItem.Leavers apprentices)</span>
                     </p>
-                    <p asp-show="!shortlistItem.HasAchievementRate" class="govuk-body  govuk-!-font-size-16">
-                        No achievement rate - not enough data
+                    <p asp-show="!shortlistItem.HasAchievementRate && !shortlistItem.IsShortCourseType" class="govuk-body  govuk-!-font-size-16">
+                        @ShortlistProviderViewModel.ApprenticeNoRatingDescription
+                    </p>
+                    <p asp-show="shortlistItem.IsShortCourseType" class="govuk-body  govuk-!-font-size-16">
+                        @ShortlistProviderViewModel.ApprenticeShortCourseRatingDescription
                     </p>
                 </td>
                 <td class="govuk-table__cell app-shortlist-table__cell app-shortlist-table__cell">

@@ -23,7 +23,6 @@ public class StandardViewModel
     public int TypicalDuration { get; set; }
 
     public LearningType LearningType { get; set; }
-
     public string LearningTypeTagClass => LearningType.GetTagClass();
 
     public static implicit operator StandardViewModel(StandardModel source)
