@@ -12,6 +12,9 @@
     ViewData["Title"] = $"Training providers for {Model.CourseTitleAndLevel}";
     ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.CourseTitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
 }
+<div asp-show="@(!Model.IsActiveAvailable)">
+    <partial name="_standardNoLongerAcceptingNewApprenticesBanner" />
+</div>
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
