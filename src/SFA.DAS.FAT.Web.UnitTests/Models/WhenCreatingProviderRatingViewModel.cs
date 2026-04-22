@@ -16,7 +16,7 @@ public class WhenCreatingProviderRatingViewModel
     [TestCase("3", "3", ProviderRating.Good, ProviderRatingType.Employer, "3 employer reviews", 3, "good")]
     [TestCase("4", "5", ProviderRating.Excellent, ProviderRatingType.Apprentice, "5 apprentice reviews", 4, "good")]
     [TestCase("4", "5", ProviderRating.Excellent, ProviderRatingType.Employer, "5 employer reviews", 4, "good")]
-    public void Then_The_Fields_Are_Correctly_Mapped(string stars, string reviews, ProviderRating providerRating, ProviderRatingType providerRatingType, string totalMessage, int starsValue, string ratingGroup)
+    public void ProviderRatingViewModel_ValidInputs_FieldsAreCorrectlyMapped(string stars, string reviews, ProviderRating providerRating, ProviderRatingType providerRatingType, string totalMessage, int starsValue, string ratingGroup)
     {
         var sut = new ProviderRatingViewModel { Stars = stars, Reviews = reviews, ProviderRating = providerRating, ProviderRatingType = providerRatingType };
 
