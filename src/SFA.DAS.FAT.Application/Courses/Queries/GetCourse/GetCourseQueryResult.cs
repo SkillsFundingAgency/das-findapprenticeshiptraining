@@ -28,6 +28,7 @@ public class GetCourseQueryResult
     public List<Ksb> Ksbs { get; set; } = [];
 
     public LearningType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
 
     public List<Level> Levels { get; set; } = [];
 
@@ -54,6 +55,7 @@ public class GetCourseQueryResult
             Ksbs = source.Ksbs,
             RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
             ApprenticeshipType = source.ApprenticeshipType,
+            IsActiveAvailable = source.IsActiveAvailable,
         };
     }
 }
