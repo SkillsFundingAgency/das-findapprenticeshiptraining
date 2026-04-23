@@ -19,9 +19,9 @@ public sealed class GetCourseResponse
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
-
     public List<Ksb> Ksbs { get; set; } = [];
     public LearningType ApprenticeshipType { get; set; }
+    public CourseType CourseType { get; set; }
     public int IncentivePayment { get; set; }
     public List<RelatedOccupationResponse> RelatedOccupations { get; set; } = [];
 }

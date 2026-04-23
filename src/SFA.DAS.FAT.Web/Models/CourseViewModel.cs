@@ -39,6 +39,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
     public bool IsApprenticeshipUnit { get; set; }
+    public bool IsShortCourseType { get; set; }
 
     public int IncentivePayment { get; set; }
 
@@ -76,7 +77,8 @@ public class CourseViewModel : PageLinksViewModelBase
             IsApprenticeshipUnit = source.ApprenticeshipType == LearningType.ApprenticeshipUnit,
             LearningType = source.ApprenticeshipType,
             IncentivePayment = source.IncentivePayment,
-            RelatedOccupations = source.RelatedOccupations
+            RelatedOccupations = source.RelatedOccupations,
+            IsShortCourseType = source.CourseType == CourseType.ShortCourse
         };
     }
 

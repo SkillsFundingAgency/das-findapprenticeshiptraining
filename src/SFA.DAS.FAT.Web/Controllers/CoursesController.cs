@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -22,18 +21,15 @@ public class CoursesController : Controller
 {
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
-    private readonly IValidator<GetCourseQuery> _courseValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
 
     public CoursesController(
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
-        IValidator<GetCourseQuery> courseValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
-        _courseValidator = courseValidator;
         _config = config.Value;
     }
 
@@ -98,6 +94,8 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, [FromQuery] string location, [FromQuery] string distance)
     {
+        if (string.IsNullOrEmpty(larsCode)) return NotFound();
+
         int? convertedDistance = null;
         if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
         {
@@ -119,13 +117,6 @@ public class CoursesController : Controller
             Location = location,
             Distance = convertedDistance
         };
-
-        var validationResult = await _courseValidator.ValidateAsync(query);
-
-        if (!validationResult.IsValid)
-        {
-            return NotFound();
-        }
 
         GetCourseQueryResult result = await _mediator.Send(query);
 
