@@ -1,0 +1,56 @@
+﻿@using Humanizer
+@using SFA.DAS.FAT.Domain.Extensions
+@using SFA.DAS.FAT.Web.Infrastructure
+@model SFA.DAS.FAT.Web.Models.StandardViewModel
+
+<li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
+    <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
+        @Model.LearningType.GetDescription().Singularize()
+    </strong>
+                               
+    <h2 class="govuk-heading-m das-search-results__heading">
+        <a class="das-search-results__link"
+               larsCode="standard-@Model.LarsCode"
+               asp-route="@RouteNames.CourseDetails"
+               asp-all-route-data="Model.CourseDetailsRouteValues">
+            @Model.Title <span class="das-no-wrap">(level @Model.Level)</span>
+        </a>
+    </h2>
+    <p class="govuk-body das-search-results__body govuk-!-margin-bottom-3">@Model.OverviewOfRole</p>
+    <div class="das-search-results__meta govuk-!-margin-bottom-4">
+        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Level</dt>
+            <dd class="das-definition-list__definition">@Model.LevelName</dd>
+        </dl>
+
+        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Type</dt>
+            <dd class="das-definition-list__definition">@Model.LearningType.GetDescription().Singularize()</dd>
+        </dl>
+
+        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Job category</dt>
+            <dd class="das-definition-list__definition">@Model.Route</dd>
+        </dl>
+        <dl asp-show="Model.IsShortCourseType" class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Delivery hours</dt>
+            <dd class="das-definition-list__definition">@Model.TypicalDuration hours</dd>
+        </dl>
+        <dl asp-show="Model.IsApprenticeshipType" class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Duration</dt>
+            <dd class="das-definition-list__definition">@Model.TypicalDuration months</dd>
+        </dl>
+        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
+            <dt class="das-definition-list__title">Maximum funding from government</dt>
+            <dd class="das-definition-list__definition">@Model.MaxFunding</dd>
+        </dl>
+    </div>
+
+    <div class="govuk-body das-inline-container">
+        <p asp-show="!Model.HasProviders" class="das-inline-text">
+            No providers run this course yet. <a class="das-search-results__link" asp-show="Model.IsApprenticeshipType" href="@Model.RequestApprenticeshipTrainingUrl">Ask if training providers can run this course</a>
+        </p>
+
+        <a class="das-search-results__link" asp-show="Model.HasProviders" href="@Model.FindProvidersUrl">@Model.FindProvidersUrlDescription</a>
+    </div>
+</li>

@@ -1,8 +1,4 @@
 ﻿@using SFA.DAS.FAT.Web.Infrastructure
-@using System.Globalization
-@using SFA.DAS.FAT.Domain.Courses
-@using SFA.DAS.FAT.Domain.Extensions
-@using Humanizer
 @model SFA.DAS.FAT.Web.Models.CoursesViewModel
 @{
     ViewData["Title"] = "Training courses";
@@ -57,67 +53,7 @@
                     <ol class="das-search-results__list">
                         @foreach (var standard in Model.Standards)
                         {
-
-                            <li class="das-search-results__list-item govuk-!-margin-top-1 govuk-!-padding-bottom-4">
-                                <strong class="govuk-!-margin-bottom-4 govuk-tag @standard.LearningTypeTagClass app-tag">
-                                    @standard.LearningType.GetDescription().Singularize()
-                                </strong>
-                               
-                                <h2 class="govuk-heading-m das-search-results__heading">
-                                    <a class="das-search-results__link"
-                                       larsCode="standard-@standard.LarsCode"
-                                       asp-route="@RouteNames.CourseDetails"
-                                       asp-all-route-data="Model.GenerateStandardRouteValues(standard.LarsCode)">
-                                        @standard.Title <span class="das-no-wrap">(level @standard.Level)</span>
-                                    </a>
-                                </h2>
-                                <p class="govuk-body das-search-results__body govuk-!-margin-bottom-3">@standard.OverviewOfRole</p>
-
-                                <div class="das-search-results__meta govuk-!-margin-bottom-4">
-                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Level</dt>
-                                        <dd class="das-definition-list__definition">@Model.GetLevelName(standard.Level)</dd>
-                                    </dl>
-
-                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Type</dt>
-                                        <dd class="das-definition-list__definition">@standard.LearningType.GetDescription().Singularize()</dd>
-                                    </dl>
-
-                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Job category</dt>
-                                        <dd class="das-definition-list__definition">@standard.Route</dd>
-                                    </dl>
-                                    @if (@standard.LearningType == LearningType.ApprenticeshipUnit)
-                                    {
-                                        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                            <dt class="das-definition-list__title">Delivery hours</dt>
-                                            <dd class="das-definition-list__definition">@standard.TypicalDuration hours</dd>
-                                        </dl>
-                                    }
-                                    else
-                                    {
-                                        <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                            <dt class="das-definition-list__title">Duration</dt>
-                                            <dd class="das-definition-list__definition">@standard.TypicalDuration months</dd>
-                                        </dl>
-                                    }
-                                    <dl class="das-definition-list das-definition-list--meta govuk-!-margin-bottom-1">
-                                        <dt class="das-definition-list__title">Maximum funding from government</dt>
-                                        <dd class="das-definition-list__definition">@standard.MaxFunding.ToString("C0", new CultureInfo("en-GB"))</dd>
-                                    </dl>
-                                </div>
-
-                                <div class="govuk-body das-inline-container">
-                                    <p asp-show="standard.ProvidersCount == 0" class="das-inline-text">No providers run this course yet.</p>
-
-                                    <a class="das-search-results__link"
-                                       larsCode="standard-@standard.LarsCode"
-                                       href="@Model.GetProvidersLink(standard)">
-                                        @Model.GetProvidersLinkDisplayMessage(standard)<span class="govuk-visually-hidden"> - @standard.Title (level @standard.Level)</span>
-                                    </a>
-                                </div>
-                            </li>
+                            @await Html.PartialAsync("_courseResultCard", standard)
                         }
                     </ol>
                 </div>

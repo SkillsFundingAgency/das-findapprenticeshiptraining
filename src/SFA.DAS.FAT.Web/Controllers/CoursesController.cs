@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
@@ -61,16 +62,17 @@ public class CoursesController : Controller
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
         });
 
-        var viewModel = new CoursesViewModel(_config, Url)
+        List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, model.Levels))];
+        var viewModel = new CoursesViewModel()
         {
-            Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
-            Routes = result.Routes.Select(route => new RouteViewModel(route, model.Categories)).ToList(),
+            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, model.Location, model.Distance, _config, Url, levels))],
+            Routes = [.. result.Routes.Select(route => new RouteViewModel(route, model.Categories))],
             Total = result.TotalCount,
             TotalFiltered = result.TotalCount,
             Keyword = model.Keyword,
             SelectedRoutes = model.Categories,
             SelectedLevels = model.Levels,
-            Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
+            Levels = levels,
             Location = model.Location ?? string.Empty,
             Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
             SelectedTrainingTypes = model.LearningTypes,

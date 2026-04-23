@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -17,6 +15,23 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
+    public const string BEST_MATCH_TO_COURSE = "Best match to course";
+    public const string NAME_OF_COURSE = "Name of course";
+    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
+    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+
+    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+
+    public CoursesViewModel()
+    {
+        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
+        };
+    }
+
     public List<StandardViewModel> Standards { get; set; } = [];
 
     public List<LevelViewModel> Levels { get; set; } = [];
@@ -79,94 +94,6 @@ public class CoursesViewModel : PageLinksViewModelBase
     public string TotalMessage => GetTotalMessage();
 
     public string CoursesSubHeader => PopulateCoursesSubHeader();
-
-    public const string BEST_MATCH_TO_COURSE = "Best match to course";
-
-    public const string NAME_OF_COURSE = "Name of course";
-
-    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
-
-    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
-
-    public const string ONE_TRAINING_PROVIDER_MESSAGE = "1 training provider";
-
-    public const string ASK_TRAINING_PROVIDER = "Ask if training providers can run this course";
-
-    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
-
-    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
-
-
-    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
-
-    private readonly IUrlHelper _urlHelper;
-
-    private readonly string _requestApprenticeshipTrainingUrl;
-
-    private readonly string _employerAccountsUrl;
-
-    public CoursesViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper)
-    {
-        _urlHelper = urlHelper;
-        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
-        {
-            { FilterType.Levels, filterValue => GetLevelCodeValue(filterValue) }
-        };
-        _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
-        _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
-    }
-
-    public string GetLevelName(int levelCode)
-    {
-        LevelViewModel level = Levels.Find(a => a.Code == levelCode);
-
-        if (level is null)
-        {
-            return string.Empty;
-        }
-
-        return $"{levelCode} - equal to {level.Name}";
-    }
-
-    public string GetProvidersLinkDisplayMessage(StandardViewModel standard)
-    {
-        if (standard.ProvidersCount < 1)
-        {
-            return ASK_TRAINING_PROVIDER;
-        }
-
-        bool isNationalSearch =
-            string.IsNullOrWhiteSpace(Location) ||
-            Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
-
-        string providerText =
-            standard.ProvidersCount == 1 ?
-                ONE_TRAINING_PROVIDER_MESSAGE :
-                $"{standard.ProvidersCount} training providers";
-
-        return isNationalSearch
-            ? $"View {providerText} for this course"
-            : $"View {providerText} within {Distance} miles";
-    }
-
-    public string GetProvidersLink(StandardViewModel standard)
-    {
-        if (standard.ProvidersCount > 0)
-        {
-            return _urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = standard.LarsCode, Location, distance = Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? "" : Distance })!;
-        }
-
-        return GetHelpFindingCourseUrl(standard.LarsCode);
-    }
-
-    private string GetHelpFindingCourseUrl(string larsCode)
-    {
-        string redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
-
-        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
-
-        return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
-    }
 
     private string PopulateCoursesSubHeader()
     {
@@ -369,21 +296,5 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
 
         return result;
-    }
-
-    public Dictionary<string, string> GenerateStandardRouteValues(string larsCode)
-    {
-        var routeValues = new Dictionary<string, string>
-        {
-            { "larsCode", larsCode },
-        };
-
-        if (!string.IsNullOrWhiteSpace(Location))
-        {
-            routeValues.Add("location", Location);
-            routeValues.Add("distance", Distance.ToString());
-        }
-
-        return routeValues;
     }
 }

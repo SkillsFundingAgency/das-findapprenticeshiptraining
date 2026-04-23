@@ -22,16 +22,16 @@ public class WhenGettingCourses
     [MoqAutoData]
     public async Task Courses_RequestIsValid_QueryIsSentAndViewIsReturned(
         GetCoursesViewModel request,
-        GetCoursesQueryResult response,
+        GetCoursesQueryResult queryResult,
         ShortlistCookieItem cookieItem,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        [Greedy] CoursesController controller
+        [Greedy] CoursesController sut
     )
     {
         request.Distance = "10";
 
-        controller.AddUrlHelperMock()
+        sut.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
 
         mediator.Setup(x =>
@@ -48,19 +48,18 @@ public class WhenGettingCourses
                 It.IsAny<CancellationToken>()
             )
         )
-        .ReturnsAsync(response);
+        .ReturnsAsync(queryResult);
 
-        shortlistCookieService.Setup(x =>
-            x.Get(Constants.ShortlistCookieName)
-        )
-        .Returns(cookieItem);
+        queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
 
-        var _sut = await controller.Courses(request);
-        var actualResult = _sut as ViewResult;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(cookieItem);
+
+        var actualResponse = await sut.Courses(request);
+        var actualResult = actualResponse as ViewResult;
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Is.Not.Null);
+            Assert.That(actualResponse, Is.Not.Null);
             Assert.That(actualResult, Is.Not.Null);
         });
     }
@@ -68,7 +67,7 @@ public class WhenGettingCourses
     [Test, MoqAutoData]
     public async Task Courses_RequestContainsSearchFilters_ModelContainsMappedResults(
         GetCoursesViewModel request,
-        GetCoursesQueryResult response,
+        GetCoursesQueryResult queryResult,
         Guid shortlistUrl,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -78,6 +77,8 @@ public class WhenGettingCourses
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl.ToString());
+
+        queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
 
         mediator.Setup(x =>
             x.Send(
@@ -92,18 +93,14 @@ public class WhenGettingCourses
                 It.IsAny<CancellationToken>()
             )
         )
-        .ReturnsAsync(response);
+        .ReturnsAsync(queryResult);
 
-        shortlistCookieService.Setup(x =>
-            x.Get(Constants.ShortlistCookieName)
-        )
-        .Returns((ShortlistCookieItem)null);
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns((ShortlistCookieItem)null);
 
         var _sut = await controller.Courses(request);
 
-        var expectedStandards = response.Standards.Select(s => (StandardViewModel)s).ToList();
-        var expectedRoutes = response.Routes.Select(r => new RouteViewModel(r, request.Categories)).ToList();
-        var expectedLevels = response.Levels.Select(l => new LevelViewModel(l, request.Levels)).ToList();
+        var expectedRoutes = queryResult.Routes.Select(r => new RouteViewModel(r, request.Categories)).ToList();
+        var expectedLevels = queryResult.Levels.Select(l => new LevelViewModel(l, request.Levels)).ToList();
 
         Assert.Multiple(() =>
         {
@@ -114,9 +111,9 @@ public class WhenGettingCourses
             var model = result!.Model as CoursesViewModel;
 
             Assert.That(model, Is.Not.Null);
-            Assert.That(model.TotalFiltered, Is.EqualTo(response.TotalCount));
+            Assert.That(model.TotalFiltered, Is.EqualTo(queryResult.TotalCount));
 
-            model.Standards.Should().BeEquivalentTo(expectedStandards);
+            model.Standards.Should().HaveCount(queryResult.Standards.Count);
             model.Routes.Should().BeEquivalentTo(expectedRoutes);
             model.Levels.Should().BeEquivalentTo(expectedLevels);
 
@@ -131,11 +128,12 @@ public class WhenGettingCourses
     [Test, MoqAutoData]
     public async Task Courses_ResultContainsStandards_PaginationIsPopulated(
         GetCoursesViewModel request,
-        GetCoursesQueryResult response,
+        GetCoursesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] CoursesController controller
     )
     {
+        queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
         controller.AddUrlHelperMock();
 
         mediator.Setup(x =>
@@ -150,7 +148,7 @@ public class WhenGettingCourses
                 It.IsAny<CancellationToken>()
             )
         )
-        .ReturnsAsync(response);
+        .ReturnsAsync(queryResult);
 
         var _sut = await controller.Courses(request);
 

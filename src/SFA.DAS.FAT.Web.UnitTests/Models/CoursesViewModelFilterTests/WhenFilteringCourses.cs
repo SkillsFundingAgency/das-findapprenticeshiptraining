@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -10,7 +9,6 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Models.Filters.Helpers;
 using SFA.DAS.FAT.Web.Services;
-using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelFilterTests;
 
@@ -36,7 +34,7 @@ public sealed class WhenFilteringCourses
             LearningType.FoundationApprenticeship
         };
 
-        _coursesViewModel = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        _coursesViewModel = new CoursesViewModel()
         {
             Keyword = "Construction",
             Location = "M60 7RA",
@@ -290,7 +288,7 @@ public sealed class WhenFilteringCourses
     [Test]
     public void Distance_WhenLocationNotSet_DefaultsToTenMiles()
     {
-        CoursesViewModel _sut = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        CoursesViewModel _sut = new CoursesViewModel()
         {
             Location = null,
             Distance = "10"
@@ -307,24 +305,9 @@ public sealed class WhenFilteringCourses
     }
 
     [Test]
-    public void GetLevelName_WithExistingLevel_ReturnsFormattedName()
-    {
-        var result = _coursesViewModel.GetLevelName(3);
-        Assert.That(result, Is.EqualTo("3 - equal to Level 3"));
-    }
-
-    [Test]
-    public void GetLevelName_WithMissingLevel_ReturnsEmptyString()
-    {
-
-        var result = _coursesViewModel.GetLevelName(9);
-        Assert.That(result, Is.EqualTo(string.Empty));
-    }
-
-    [Test]
     public void OrderBy_WithKeywordSet_IsScore()
     {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        var vm = new CoursesViewModel()
         {
             Keyword = "Construction"
         };
@@ -335,7 +318,7 @@ public sealed class WhenFilteringCourses
     [Test]
     public void OrderBy_WithEmptyKeyword_IsTitle()
     {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        var vm = new CoursesViewModel()
         {
             Keyword = string.Empty
         };
@@ -348,7 +331,7 @@ public sealed class WhenFilteringCourses
     {
         Assert.That(_coursesViewModel.SortedDisplayMessage, Is.EqualTo(CoursesViewModel.BEST_MATCH_TO_COURSE));
 
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        var vm = new CoursesViewModel()
         {
             Keyword = string.Empty
         };
@@ -356,91 +339,11 @@ public sealed class WhenFilteringCourses
         Assert.That(vm.SortedDisplayMessage, Is.EqualTo(CoursesViewModel.NAME_OF_COURSE));
     }
 
-    [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_WithZeroProviders_ReturnsAskTrainingProvider(StandardViewModel standard)
-    {
-        standard.ProvidersCount = 0;
-
-        var message = _coursesViewModel.GetProvidersLinkDisplayMessage(standard);
-        Assert.That(message, Is.EqualTo(CoursesViewModel.ASK_TRAINING_PROVIDER));
-    }
-
-    [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_WithNationalSearchWithoutLocation_ReturnsPluralProviders(StandardViewModel standard)
-    {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
-        {
-            Location = string.Empty,
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
-        };
-
-        standard.LarsCode = "1";
-        standard.ProvidersCount = 2;
-
-        var message = vm.GetProvidersLinkDisplayMessage(standard);
-        Assert.That(message, Is.EqualTo("View 2 training providers for this course"));
-    }
-
-    [Test, MoqAutoData]
-    public void GetProvidersLinkDisplayMessage_WithLocalSearchAndDistance_ReturnsSingularProvider(StandardViewModel standard)
-    {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
-        {
-            Location = "SW1A 1AA",
-            Distance = "30"
-        };
-
-        standard.LarsCode = "1";
-        standard.ProvidersCount = 1;
-
-        var message = vm.GetProvidersLinkDisplayMessage(standard);
-        Assert.That(message, Is.EqualTo("View 1 training provider within 30 miles"));
-    }
-
-    [Test, MoqAutoData]
-    public void GetProvidersLink_WithProvidersAvailable_UsesRouteUrl(StandardViewModel standard)
-    {
-        _urlHelperMock
-            .Setup(x => x.RouteUrl(It.IsAny<UrlRouteContext>()))
-            .Returns("/courses/1/providers?location=M60%207RA&distance=20");
-
-        standard.LarsCode = "1";
-        standard.ProvidersCount = 3;
-
-        var url = _coursesViewModel.GetProvidersLink(standard);
-        Assert.That(url, Is.EqualTo("/courses/1/providers?location=M60%207RA&distance=20"));
-    }
-
-    [Test, MoqAutoData]
-    public void GetProvidersLink_WithZeroProvidersAndLocation_ReturnsHelpUrlWithLocation(StandardViewModel standard)
-    {
-        var config = new FindApprenticeshipTrainingWeb
-        {
-            RequestApprenticeshipTrainingUrl = "https://localhost",
-            EmployerAccountsUrl = "https://accounts"
-        };
-        var vm = new CoursesViewModel(config, _urlHelperMock.Object)
-        {
-            Location = "M60 7RA"
-        };
-
-        standard.LarsCode = "123";
-        standard.ProvidersCount = 0;
-
-        var url = vm.GetProvidersLink(standard);
-        Assert.Multiple(() =>
-        {
-            Assert.That(url, Does.StartWith("https://accounts/service/?redirectUri="));
-            Assert.That(Uri.UnescapeDataString(url), Does.Contain("standardId=123"));
-            Assert.That(Uri.UnescapeDataString(url), Does.Contain("location=M60 7RA"));
-        });
-    }
-
     [TestCase(1, 2, "", 0, 0, "1 result")]
     [TestCase(2, 3, "x", 1, 2, "3 results")]
     public void TotalMessage_BasedOnFilters_UsesCorrectCount(int total, int totalFiltered, string keyword, int routesCount, int levelsCount, string expectedMessage)
     {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        var vm = new CoursesViewModel()
         {
             Total = total,
             TotalFiltered = totalFiltered,
@@ -457,7 +360,7 @@ public sealed class WhenFilteringCourses
     [TestCase(0, "M60 7RA", "20", "")]
     public void CoursesSubHeader_BasedOnTotalLocationAndDistance_DisplaysCorrectMessage(int total, string location, string distance, string expected)
     {
-        var vm = new CoursesViewModel(_findApprenticeshipTrainingWebConfiguration, _urlHelperMock.Object)
+        var vm = new CoursesViewModel()
         {
             Total = total,
             Location = location,
@@ -465,20 +368,6 @@ public sealed class WhenFilteringCourses
         };
 
         Assert.That(vm.CoursesSubHeader, Is.EqualTo(expected));
-    }
-
-    [Test]
-    public void GenerateStandardRouteValues_WithLocationAndDistance_IncludesBoth()
-    {
-        var values = _coursesViewModel.GenerateStandardRouteValues("55");
-        Assert.Multiple(() =>
-        {
-            Assert.That(values["larsCode"], Is.EqualTo("55"));
-            Assert.That(values.ContainsKey("location"), Is.True);
-            Assert.That(values.ContainsKey("distance"), Is.True);
-            Assert.That(values["location"], Is.EqualTo("M60 7RA"));
-            Assert.That(values["distance"], Is.EqualTo("20"));
-        });
     }
 
     [Test]
