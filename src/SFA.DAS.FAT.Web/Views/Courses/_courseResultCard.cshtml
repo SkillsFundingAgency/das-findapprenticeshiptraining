@@ -51,6 +51,6 @@
             No providers run this course yet. <a class="das-search-results__link" asp-show="Model.IsApprenticeshipType" href="@Model.RequestApprenticeshipTrainingUrl">Ask if training providers can run this course</a>
         </p>
 
-        <a class="das-search-results__link" asp-show="Model.HasProviders" href="@Model.FindProvidersUrl">@Model.FindProvidersUrlDescription</a>
+        <a class="das-search-results__link" asp-show="Model.HasProviders" larscode="standard-@Model.LarsCode" href="@Model.FindProvidersUrl">@Model.FindProvidersUrlDescription</a>
     </div>
 </li>
