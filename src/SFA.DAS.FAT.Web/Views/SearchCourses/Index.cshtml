@@ -57,7 +57,9 @@
                             Select all training types that apply (optional). If you’re not sure which is right for your business, find out more about the training we offer 
                             <a class="govuk-link" href="@Constants.ApprenticeshipBusinessGuidanceUrl" target="_blank" rel="noopener noreferrer">find out more about the training we offer</a>.
                         </p>
-                        @await Html.PartialAsync("_checkboxList", Model.TrainingTypesCheckboxListItems)
+                        <div class="app-search-courses-training-types">
+                            @await Html.PartialAsync("_checkboxList", Model.TrainingTypesCheckboxListItems)
+                        </div>
                     </div>
                 </div>
             </div>

@@ -568,3 +568,7 @@
     max-width: fit-content;
 }
 
+.app-search-courses-training-types .govuk-checkboxes__input + .govuk-checkboxes__label::before {
+    background-color: #fff;
+}
+
