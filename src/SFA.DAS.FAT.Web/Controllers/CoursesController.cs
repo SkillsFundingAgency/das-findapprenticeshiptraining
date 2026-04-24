@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,18 +21,15 @@ public class CoursesController : Controller
 {
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
-    private readonly IValidator<GetCourseQuery> _courseValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
 
     public CoursesController(
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
-        IValidator<GetCourseQuery> courseValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
-        _courseValidator = courseValidator;
         _config = config.Value;
     }
 
@@ -61,16 +58,17 @@ public class CoursesController : Controller
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
         });
 
-        var viewModel = new CoursesViewModel(_config, Url)
+        List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, model.Levels))];
+        var viewModel = new CoursesViewModel()
         {
-            Standards = result.Standards.Select(c => (StandardViewModel)c).ToList(),
-            Routes = result.Routes.Select(route => new RouteViewModel(route, model.Categories)).ToList(),
+            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, model.Location, model.Distance, _config, Url, levels))],
+            Routes = [.. result.Routes.Select(route => new RouteViewModel(route, model.Categories))],
             Total = result.TotalCount,
             TotalFiltered = result.TotalCount,
             Keyword = model.Keyword,
             SelectedRoutes = model.Categories,
             SelectedLevels = model.Levels,
-            Levels = result.Levels.Select(level => new LevelViewModel(level, model.Levels)).ToList(),
+            Levels = levels,
             Location = model.Location ?? string.Empty,
             Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
             SelectedTrainingTypes = model.LearningTypes,
@@ -96,6 +94,8 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, [FromQuery] string location, [FromQuery] string distance)
     {
+        if (string.IsNullOrEmpty(larsCode)) return NotFound();
+
         int? convertedDistance = null;
         if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
         {
@@ -117,13 +117,6 @@ public class CoursesController : Controller
             Location = location,
             Distance = convertedDistance
         };
-
-        var validationResult = await _courseValidator.ValidateAsync(query);
-
-        if (!validationResult.IsValid)
-        {
-            return NotFound();
-        }
 
         GetCourseQueryResult result = await _mediator.Send(query);
 

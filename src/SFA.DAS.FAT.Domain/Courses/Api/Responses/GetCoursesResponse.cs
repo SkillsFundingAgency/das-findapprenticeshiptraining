@@ -19,8 +19,8 @@ public sealed class StandardModel
     public string IfateReferenceNumber { get; set; }
     public string LarsCode { get; set; }
     public float? SearchScore { get; set; }
-    public int ProvidersCount { get; set; } = 0;
-    public int TotalProvidersCount { get; set; } = 0;
+    public int ProvidersCount { get; set; }
+    public int TotalProvidersCount { get; set; }
     public string Title { get; set; }
     public int Level { get; set; }
     public string OverviewOfRole { get; set; }
@@ -31,4 +31,5 @@ public sealed class StandardModel
     public int TypicalDuration { get; set; }
 
     public LearningType LearningType { get; set; }
+    public CourseType CourseType { get; set; }
 }
