@@ -46,7 +46,16 @@ public class WhenBuildingCourseViewModelFromQueryResult
         });
     }
 
-    [Test, MoqAutoData]
+    [InlineAutoData(CourseType.Apprenticeship, false)]
+    [InlineAutoData(CourseType.ShortCourse, true)]
+    public void IsShortCourseType_IsSetCorrectly(CourseType courseType, bool expectedValue, GetCourseQueryResult result)
+    {
+        result.CourseType = courseType;
+        var sut = (CourseViewModel)result;
+        Assert.That(sut.IsShortCourseType, Is.EqualTo(expectedValue));
+    }
+
+    [Test, AutoData]
     public void ExplicitCastOperator_QueryResultHasNoKsbs_ReturnsNoKsbDetails(GetCourseQueryResult source)
     {
         source.Ksbs = new List<Ksb>();

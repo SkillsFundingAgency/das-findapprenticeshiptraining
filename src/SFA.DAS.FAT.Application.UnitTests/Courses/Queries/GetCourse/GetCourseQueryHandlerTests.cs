@@ -9,7 +9,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourse;
 
-public sealed class WhenGettingCourse
+public sealed class GetCourseQueryHandlerTests
 {
     private Mock<ICourseService> _courseServiceMock;
     private Mock<ILevelsService> _levelsServiceMock;

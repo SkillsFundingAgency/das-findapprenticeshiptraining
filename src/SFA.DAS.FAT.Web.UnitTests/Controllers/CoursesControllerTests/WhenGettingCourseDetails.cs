@@ -175,59 +175,39 @@ public class WhenGettingCourseDetails
         );
     }
 
-    [Test]
-    [MoqAutoData]
-    public void When_Lars_Code_Is_Invalid_Then_Throws_Validation_Exception(
-        GetCourseQueryResult queryResult,
-        [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+    [Test, MoqAutoData]
+    public async Task When_Lars_Code_Is_Empty_Then_Redirects_To_Shutter_Page(
+        string location,
+        [Frozen] Mock<IMediator> mediator,
         [Greedy] CoursesController sut
     )
     {
-        string courseId = "789";
-        string location = "SW1";
-        string distance = "30";
+        var larsCode = string.Empty;
+        var distance = 10;
 
-        validator
-            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult(new List<ValidationFailure>
-            {
-                new ValidationFailure("Distance", "Invalid distance provided")
-            }));
+        var result = await sut.CourseDetails(larsCode, location, distance.ToString());
 
-        Func<Task> act = async () => await sut.CourseDetails(courseId, location, distance);
-
-        act
-            .Should()
-            .ThrowAsync<ValidationException>()
-            .WithMessage("Invalid distance provided");
+        result.Should().BeOfType<NotFoundResult>();
+        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode && q.Location == location && q.Distance == distance), It.IsAny<CancellationToken>()), Times.Never);
     }
 
-    [Test]
-    [MoqAutoData]
+    [Test, MoqAutoData]
     public async Task When_Lars_Code_Is_Invalid_Then_Redirects_To_Shutter_Page(
-        GetCourseQueryResult queryResult,
+        string larsCode,
+        string location,
         [Frozen] Mock<IMediator> mediator,
-        [Frozen] Mock<IValidator<GetCourseQuery>> validator,
         [Greedy] CoursesController sut
     )
     {
-        string courseId = "999";
-        string location = "SW1";
-        string distance = "20";
-
-        validator
-            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(new ValidationResult());
-
+        var distance = 10;
         mediator
             .Setup(m => m.Send(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseQueryResult)null);
 
-        var result = await sut.CourseDetails(courseId, location, distance);
-
-        result.Should().NotBeNull();
+        var result = await sut.CourseDetails(larsCode, location, distance.ToString());
 
         result.Should().BeOfType<NotFoundResult>();
+        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode && q.Location == location && q.Distance == distance), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
