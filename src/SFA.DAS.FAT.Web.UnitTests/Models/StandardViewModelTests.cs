@@ -161,7 +161,7 @@ public class StandardViewModelTests
         urlHelperMock.Verify(x => x.RouteUrl(It.IsAny<UrlRouteContext>()), Times.Never);
     }
 
-    [InlineAutoData(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "")]
+    [InlineAutoData(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, DistanceService.ACROSS_ENGLAND_FILTER_VALUE)]
     [InlineAutoData("10", "10")]
     public void FindProvidersUrl_GeneratesUrl(string distance, string expectedValue, StandardModel standard, FindApprenticeshipTrainingWeb config)
     {
