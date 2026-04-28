@@ -64,7 +64,7 @@ public sealed class WhenCreatingTheQarModel
     {
         var sut = new QarModel { AchievementRate = rate };
 
-        Assert.That(sut.FailureRate, Is.EqualTo(0));
+        Assert.That(sut.FailureRate, Is.Zero);
     }
 
     [TestCase("1819", "2018", "2019", "2018 to 2019")]
