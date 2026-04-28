@@ -51,7 +51,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.Any(a => a.For == nameof(_viewModel.Location)), Is.True);
 
@@ -63,7 +63,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(((SearchFilterSectionViewModel)locationFilterSection).InputValue, Is.EqualTo(_viewModel.Location));
             Assert.That(locationFilterSection.Heading, Is.EqualTo(FilterService.LOCATION_SECTION_HEADING));
             Assert.That(locationFilterSection.SubHeading, Is.EqualTo(FilterService.LOCATION_SECTION_SUB_HEADING));
-        });
+        }
     }
 
     [Test]
@@ -90,7 +90,7 @@ public sealed class WhenFilteringCourseProviders
 
         var sut = viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(viewModel.Distance, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
             Assert.That(sut.Any(a => a.For == nameof(_viewModel.Distance)), Is.True);
@@ -99,7 +99,7 @@ public sealed class WhenFilteringCourseProviders
             var dropdownFilter = ((DropdownFilterSectionViewModel)distanceFilterSection);
             var selectedDistanceValue = dropdownFilter.Items.First(a => a.IsSelected);
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
-        });
+        }
     }
 
     [Test]
@@ -107,7 +107,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.Any(a => a.For == nameof(_viewModel.Distance)), Is.True);
 
@@ -128,7 +128,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(selectedDistanceValue.Value, Is.EqualTo(_viewModel.Distance));
             Assert.That(distanceFilterSection.Heading, Is.EqualTo(FilterService.DISTANCE_SECTION_HEADING));
             Assert.That(distanceFilterSection.SubHeading, Is.EqualTo(FilterService.DISTANCE_SECTION_SUB_HEADING));
-        });
+        }
     }
 
     [Test]
@@ -138,14 +138,14 @@ public sealed class WhenFilteringCourseProviders
 
         var urlWithoutLocation = _fullQueryString.Replace($"location={_viewModel.Location}&distance={_viewModel.Distance}&", "");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var locationClearLink = sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
             Assert.That(locationClearLink.Title, Is.EqualTo("Learner's work location"));
             Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_viewModel.Location} (within {_viewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.EqualTo(urlWithoutLocation));
-        });
+        }
     }
 
     [Test]
@@ -159,7 +159,7 @@ public sealed class WhenFilteringCourseProviders
         var deliveryModesFilterSection = sut.First(a => a.For == focus);
         var checkboxList = ((CheckboxListFilterSectionViewModel)deliveryModesFilterSection);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(deliveryModesFilterSection.Id, Is.EqualTo("modes-filter"));
             Assert.That(deliveryModesFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
@@ -171,7 +171,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(checkboxList.Heading, Is.EqualTo(FilterService.DELIVERYMODES_SECTION_HEADING));
             Assert.That(checkboxList.SubHeading, Is.EqualTo(FilterService.DELIVERYMODES_SECTION_SUB_HEADING));
             Assert.That(checkboxList.Link, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -179,7 +179,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.DeliveryModes);
             Assert.That(clearLinks, Is.Not.Null);
@@ -189,7 +189,7 @@ public sealed class WhenFilteringCourseProviders
             var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("&deliverymodes=DayRelease", "");
             var urlWithoutDeliveryModeBlockRelease = _fullQueryString.Replace("&deliverymodes=BlockRelease", "");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 var workPlaceLinkPresent =
                     clearLinks.Items.Any(a => a.DisplayText == ProviderDeliveryMode.Provider.GetDescription());
@@ -205,8 +205,8 @@ public sealed class WhenFilteringCourseProviders
                     a.DisplayText == ProviderDeliveryMode.BlockRelease.GetDescription());
                 Assert.That(blockReleaseLink, Is.Not.Null);
                 Assert.That(blockReleaseLink.ClearLink, Is.EqualTo(urlWithoutDeliveryModeBlockRelease));
-            });
-        });
+            }
+        }
     }
 
     [Test]
@@ -215,7 +215,7 @@ public sealed class WhenFilteringCourseProviders
         var focus = "Reviews";
         var sut = _viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var accordionFilterSection = sut.First(a => a.Id == "ratings-select");
             Assert.That(accordionFilterSection, Is.TypeOf<AccordionGroupFilterSectionViewModel>());
@@ -237,7 +237,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.EMPLOYER_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -245,7 +245,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.EmployerProviderRatings);
             Assert.That(clearLinks, Is.Not.Null);
@@ -254,7 +254,7 @@ public sealed class WhenFilteringCourseProviders
             var urlWithoutEmployerProviderReviewsGood = _fullQueryString.Replace("&employerproviderratings=Good", "");
             var urlWithoutEmployerProviderReviewsExcellent = _fullQueryString.Replace("&employerproviderratings=Excellent", "");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 var employerProviderReviewsGoodLink =
                     clearLinks.Items.First(a => a.DisplayText == ProviderRating.Good.GetDescription());
@@ -265,8 +265,8 @@ public sealed class WhenFilteringCourseProviders
                     clearLinks.Items.First(a => a.DisplayText == ProviderRating.Excellent.GetDescription());
                 Assert.That(employerProviderReviewsExcellentLink, Is.Not.Null);
                 Assert.That(employerProviderReviewsExcellentLink.ClearLink, Is.EqualTo(urlWithoutEmployerProviderReviewsExcellent));
-            });
-        });
+            }
+        }
     }
 
     [Test]
@@ -274,7 +274,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var accordionFilterSection = sut.First(a => a.Id == "ratings-select");
             var apprenticeProviderRatingsFilterSection = accordionFilterSection.Children.First(a => a.For == "ApprenticeProviderRatings");
@@ -289,7 +289,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.APPRENTICE_REVIEWS_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -297,7 +297,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.ApprenticeProviderRatings);
             Assert.That(clearLinks, Is.Not.Null);
@@ -306,7 +306,7 @@ public sealed class WhenFilteringCourseProviders
             var urlWithoutApprenticeProviderReviewsVeryPoor = _fullQueryString.Replace("&apprenticeproviderratings=VeryPoor", "");
             var urlWithoutApprenticeProviderReviewsPoor = _fullQueryString.Replace("&apprenticeproviderratings=Poor", "");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 var apprenticeProviderReviewsVeryPoorLink =
                     clearLinks.Items.First(a => a.DisplayText == ProviderRating.VeryPoor.GetDescription());
@@ -317,8 +317,8 @@ public sealed class WhenFilteringCourseProviders
                     clearLinks.Items.First(a => a.DisplayText == ProviderRating.Poor.GetDescription());
                 Assert.That(apprenticeProviderReviewsPoorLink, Is.Not.Null);
                 Assert.That(apprenticeProviderReviewsPoorLink.ClearLink, Is.EqualTo(urlWithoutApprenticeProviderReviewsPoor));
-            });
-        });
+            }
+        }
     }
 
     [Test]
@@ -326,7 +326,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.FilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var accordionFilterSection = sut.First(a => a.Id == "qar-select");
             var qarRatingsFilterSection = accordionFilterSection.Children.First(a => a.For == "QarRatings");
@@ -341,7 +341,7 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.QAR_SECTION_HEADING));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.EqualTo(ExpectedQarSubHeading));
-        });
+        }
     }
 
     [Test]
@@ -349,7 +349,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.QarRatings);
             Assert.That(clearLinks, Is.Not.Null);
@@ -358,7 +358,7 @@ public sealed class WhenFilteringCourseProviders
             var urlWithoutQarRatingsExcellent = _fullQueryString.Replace("&qarratings=Excellent", "");
             var urlWithoutQarRatingsVeryPoor = _fullQueryString.Replace("&qarratings=VeryPoor", "");
 
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 var qarRatingsExcellentLink =
                     clearLinks.Items.First(a => a.DisplayText == QarRating.Excellent.GetDescription());
@@ -369,7 +369,7 @@ public sealed class WhenFilteringCourseProviders
                     clearLinks.Items.First(a => a.DisplayText == QarRating.VeryPoor.GetDescription());
                 Assert.That(qarRatingsVeryPoorLink, Is.Not.Null);
                 Assert.That(qarRatingsVeryPoorLink.ClearLink, Is.EqualTo(urlWithoutQarRatingsVeryPoor));
-            });
-        });
+            }
+        }
     }
 }

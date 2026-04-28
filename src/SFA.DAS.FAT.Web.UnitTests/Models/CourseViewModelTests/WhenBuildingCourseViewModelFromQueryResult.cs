@@ -19,7 +19,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
         var sut = (CourseViewModel)source;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.StandardUId, Is.EqualTo(source.StandardUId));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(source.IFateReferenceNumber));
@@ -43,7 +43,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
             Assert.That(sut.LearningType, Is.EqualTo(source.ApprenticeshipType));
-        });
+        }
     }
 
     [InlineAutoData(CourseType.Apprenticeship, false)]
@@ -159,12 +159,12 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
         var sut = (CourseViewModel)source;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.IsApprenticeship, Is.EqualTo(expectedIsApprenticeship));
             Assert.That(sut.IsFoundationApprenticeship, Is.EqualTo(expectedIsFoundationApprenticeship));
             Assert.That(sut.IsApprenticeshipUnit, Is.EqualTo(expectedIsApprenticeshipUnit));
-        });
+        }
     }
 
     [Test, MoqAutoData]
@@ -175,10 +175,10 @@ public class WhenBuildingCourseViewModelFromQueryResult
 
         var sut = (CourseViewModel)source;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.IncentivePayment, Is.EqualTo(source.IncentivePayment));
             Assert.That(sut.RelatedOccupations, Is.EqualTo(source.RelatedOccupations));
-        });
+        }
     }
 }

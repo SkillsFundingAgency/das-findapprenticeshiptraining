@@ -57,11 +57,11 @@ public class WhenGettingCourses
         var actualResponse = await sut.Courses(request);
         var actualResult = actualResponse as ViewResult;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actualResponse, Is.Not.Null);
             Assert.That(actualResult, Is.Not.Null);
-        });
+        }
     }
 
     [Test, MoqAutoData]
@@ -102,7 +102,7 @@ public class WhenGettingCourses
         var expectedRoutes = queryResult.Routes.Select(r => new RouteViewModel(r, request.Categories)).ToList();
         var expectedLevels = queryResult.Levels.Select(l => new LevelViewModel(l, request.Levels)).ToList();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut, Is.Not.Null);
             var result = _sut as ViewResult;
@@ -122,7 +122,7 @@ public class WhenGettingCourses
             Assert.That(model.SelectedRoutes, Is.EquivalentTo(request.Categories));
             Assert.That(model.ShowShortListLink, Is.True);
             Assert.That(model.ShowSearchCrumb, Is.True);
-        });
+        }
     }
 
     [Test, MoqAutoData]
@@ -152,7 +152,7 @@ public class WhenGettingCourses
 
         var _sut = await controller.Courses(request);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut, Is.Not.Null);
             var result = _sut as ViewResult;
@@ -162,7 +162,7 @@ public class WhenGettingCourses
 
             Assert.That(model.Standards, Has.Count.AtLeast(1));
             Assert.That(model.Pagination, Is.Not.Null);
-        });
+        }
     }
 
     [Test, MoqAutoData]
@@ -193,7 +193,7 @@ public class WhenGettingCourses
 
         var _sut = await controller.Courses(request);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut, Is.Not.Null);
             var result = _sut as ViewResult;
@@ -203,6 +203,6 @@ public class WhenGettingCourses
 
             Assert.That(model.Standards, Has.Count.EqualTo(0));
             Assert.That(model.Pagination, Is.Null);
-        });
+        }
     }
 }

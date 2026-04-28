@@ -46,7 +46,7 @@ public class WhenGettingCourseDetails
 
         var result = await sut.CourseDetails(courseId, location, distance) as ViewResult;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Is.Not.Null);
 
@@ -55,7 +55,7 @@ public class WhenGettingCourseDetails
             Assert.That(viewModel.Title, Is.EqualTo(queryResult.Title));
             Assert.That(viewModel.Location, Is.EqualTo(location));
             Assert.That(viewModel.Distance, Is.EqualTo(distance));
-        });
+        }
     }
 
     [Test]

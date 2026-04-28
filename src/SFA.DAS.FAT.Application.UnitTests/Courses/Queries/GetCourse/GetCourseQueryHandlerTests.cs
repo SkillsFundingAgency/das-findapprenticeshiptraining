@@ -48,7 +48,7 @@ public sealed class GetCourseQueryHandlerTests
 
         var sut = await _handler.Handle(query, CancellationToken.None);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.StandardUId, Is.EqualTo(courseResponse.StandardUId));
             Assert.That(sut.IFateReferenceNumber, Is.EqualTo(courseResponse.IFateReferenceNumber));
@@ -66,7 +66,7 @@ public sealed class GetCourseQueryHandlerTests
             Assert.That(sut.TypicalJobTitles, Is.EqualTo(courseResponse.TypicalJobTitles));
             Assert.That(sut.StandardPageUrl, Is.EqualTo(courseResponse.StandardPageUrl));
             Assert.That(sut.Levels, Is.EqualTo(levels.ToList()));
-        });
+        }
 
         _courseServiceMock.Verify(cs =>
             cs.GetCourse(

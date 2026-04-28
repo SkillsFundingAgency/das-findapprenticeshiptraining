@@ -47,7 +47,7 @@ public class WhenGettingCourseProviderDetails
             shortlistUserId
         );
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Ukprn, Is.EqualTo(CourseProviderDetailsResponse.Ukprn));
             Assert.That(result.ProviderName, Is.EqualTo(CourseProviderDetailsResponse.ProviderName));
@@ -66,7 +66,7 @@ public class WhenGettingCourseProviderDetails
             Assert.That(result.Courses, Is.EqualTo(CourseProviderDetailsResponse.Courses));
             Assert.That(result.AnnualEmployerFeedbackDetails, Is.EqualTo(CourseProviderDetailsResponse.AnnualEmployerFeedbackDetails));
             Assert.That(result.AnnualApprenticeFeedbackDetails, Is.EqualTo(CourseProviderDetailsResponse.AnnualApprenticeFeedbackDetails));
-        });
+        }
     }
 
     [Test]
