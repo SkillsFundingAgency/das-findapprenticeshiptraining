@@ -11,10 +11,10 @@
     <None Remove="shortlist.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="StackExchange.Redis" Version="2.8.22" />
+    <PackageReference Include="StackExchange.Redis" Version="2.12.14" />
     <PackageReference Include="System.Text.Json" Version="10.0.7" />
-    <PackageReference Include="WireMock.Net.StandAlone" Version="1.6.10" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
+    <PackageReference Include="WireMock.Net.StandAlone" Version="2.4.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="5.3.0" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="course-providers-0-results.json">
