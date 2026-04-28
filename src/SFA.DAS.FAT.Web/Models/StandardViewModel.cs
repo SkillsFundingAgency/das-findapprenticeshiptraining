@@ -101,7 +101,7 @@ public class StandardViewModel
     private string GetFindProvidersUrl(IUrlHelper urlHelper, string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? "" : distance })!;
+        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? DistanceService.ACROSS_ENGLAND_FILTER_VALUE : distance })!;
     }
 
     private string GetFindProvidersUrlDescription(string location, string distance)
