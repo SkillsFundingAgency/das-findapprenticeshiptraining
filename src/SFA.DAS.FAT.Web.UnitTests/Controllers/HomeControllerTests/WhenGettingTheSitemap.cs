@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Xml;
 using System.Xml.Linq;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
