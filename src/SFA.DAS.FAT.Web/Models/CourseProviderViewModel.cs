@@ -35,7 +35,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public EndpointAssessmentModel EndpointAssessments { get; set; }
     public int TotalProvidersCount { get; set; }
     public Guid? ShortlistId { get; set; }
-    public IReadOnlyCollection<LocationModel> Locations { get; set; }
+    public IReadOnlyCollection<LocationModel> Locations { get; set; } = [];
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
