@@ -28,98 +28,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<string> SelectedQarRatings { get; set; } = [];
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
-    public string QarPeriodStartYear { get => $"20{QarPeriod.AsSpan(0, 2)}"; }
-    public string QarPeriodEndYear { get => $"20{QarPeriod.AsSpan(2, 2)}"; }
-    public string ReviewPeriodStartYear { get => $"20{ReviewPeriod.AsSpan(0, 2)}"; }
-    public string ReviewPeriodEndYear { get => $"20{ReviewPeriod.AsSpan(2, 2)}"; }
-    public string ProviderReviewsHeading { get => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"; }
-    public string CourseAchievementRateHeading { get => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}"; }
+    public string QarPeriodStartYear => $"20{QarPeriod.AsSpan(0, 2)}";
+    public string QarPeriodEndYear => $"20{QarPeriod.AsSpan(2, 2)}";
+    public string ReviewPeriodStartYear => $"20{ReviewPeriod.AsSpan(0, 2)}";
+    public string ReviewPeriodEndYear => $"20{ReviewPeriod.AsSpan(2, 2)}";
+    public string ProviderReviewsHeading => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}";
+    public string CourseAchievementRateHeading => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}";
     public List<CoursesProviderViewModel> Providers { get; set; } = [];
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get; set; } = [];
     public PaginationViewModel Pagination { get; set; }
     public int TotalCount { get; set; }
     public string TotalMessage => GetTotalMessage();
-
-    private string GetTotalMessage()
-    {
-        var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
-
-        var totalMessage = $"{totalToUse} result{(totalToUse != "1" ? "s" : "")}";
-
-        if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
-            Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
-        {
-            totalMessage = $"{totalMessage} within {Distance} miles";
-        }
-
-        return totalMessage;
-    }
-
-    private static List<DeliveryModeOptionViewModel> BuildDeliveryModeOptionViewModel()
-    {
-        var deliveryModeOptionViewModels = new List<DeliveryModeOptionViewModel>();
-
-        foreach (ProviderDeliveryMode deliveryModeChoice in Enum.GetValues(typeof(ProviderDeliveryMode)))
-        {
-            deliveryModeOptionViewModels.Add(new DeliveryModeOptionViewModel
-            {
-                DeliveryItemChoice = deliveryModeChoice,
-                Description = deliveryModeChoice.GetDescription(),
-                Selected = false
-            });
-        }
-        return deliveryModeOptionViewModels;
-    }
-
-    private static List<QarOptionViewModel> BuildQarRatingsViewModel()
-    {
-        var qarOptionViewModels = new List<QarOptionViewModel>();
-
-        foreach (QarRating rating in Enum.GetValues(typeof(QarRating)))
-        {
-            qarOptionViewModels.Add(new QarOptionViewModel()
-            {
-                QarRatingType = rating,
-                Description = rating.GetDescription(),
-                Selected = false
-            });
-        }
-        return qarOptionViewModels;
-    }
-
-    private static List<EmployerProviderRatingOptionViewModel> BuildEmployerProviderRatingsViewModel()
-    {
-        var ratingViewModels = new List<EmployerProviderRatingOptionViewModel>();
-
-        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
-        {
-            ratingViewModels.Add(new EmployerProviderRatingOptionViewModel()
-            {
-                ProviderRatingType = rating,
-                Description = rating.GetDescription(),
-                Selected = false
-            });
-        }
-        return ratingViewModels;
-    }
-
-    private static List<ApprenticeProviderRatingOptionViewModel> BuildApprenticeProviderRatingsViewModel()
-    {
-        var ratingViewModels = new List<ApprenticeProviderRatingOptionViewModel>();
-
-        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
-        {
-            ratingViewModels.Add(new ApprenticeProviderRatingOptionViewModel()
-            {
-                ProviderRatingType = rating,
-                Description = rating.GetDescription(),
-                Selected = false
-            });
-        }
-        return ratingViewModels;
-    }
-
-    private FiltersViewModel _filters;
 
     public FiltersViewModel Filters
     {
@@ -132,6 +51,19 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
             return _filters;
         }
+    }
+
+    public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration)
+    {
+        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
+        {
+            { FilterType.DeliveryModes, GetDeliveryModeValue },
+            { FilterType.QarRatings, GetQarRatingsValue },
+            { FilterType.EmployerProviderRatings, GetProviderRatingsValue },
+            { FilterType.ApprenticeProviderRatings, GetProviderRatingsValue }
+        };
+        _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
+        _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
     }
 
     public FiltersViewModel CreateFilterSections()
@@ -173,69 +105,200 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         };
     }
 
+    public string GetHelpFindingCourseUrl(string larsCode)
+    {
+        var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
+
+        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+
+        return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+    }
+
+    public List<ValueTuple<string, string>> ToQueryString()
+    {
+        List<ValueTuple<string, string>> result = new();
+
+        var defaultOrderBy = CourseType == CourseType.ShortCourse
+            ? ProviderOrderBy.Distance
+            : ProviderOrderBy.AchievementRate;
+
+        if (OrderBy != defaultOrderBy)
+        {
+            result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
+        }
+
+        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
+        {
+            switch (clearFilterSection.FilterType)
+            {
+
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        result.Add(!string.IsNullOrWhiteSpace(Distance)
+                            ? ValueTuple.Create(nameof(Distance), Distance)
+                            : ValueTuple.Create(nameof(Distance), DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
+                    }
+                    break;
+
+
+                case FilterType.DeliveryModes:
+                    {
+                        result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));
+                    }
+                    break;
+                case FilterType.EmployerProviderRatings:
+                    {
+                        result.AddRange(SelectedEmployerApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.EmployerProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.ApprenticeProviderRatings:
+                    {
+                        result.AddRange(SelectedApprenticeApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.ApprenticeProviderRatings), ratings)));
+                    }
+                    break;
+                case FilterType.QarRatings:
+                    {
+                        result.AddRange(SelectedQarRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.QarRatings), ratings)));
+                    }
+                    break;
+            }
+        }
+
+        return result;
+    }
+
+    private readonly string _requestApprenticeshipTrainingUrl;
+    private readonly string _employerAccountsUrl;
+    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+    private FiltersViewModel _filters;
+
+    private string GetTotalMessage()
+    {
+        var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
+        var totalMessage = $"{totalToUse} result{(TotalCount == 1 ? string.Empty : "s")}";
+
+        if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
+            Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        {
+            totalMessage = $"{totalMessage} within {Distance} miles";
+        }
+
+        return totalMessage;
+    }
+
+    private static List<DeliveryModeOptionViewModel> BuildDeliveryModeOptionViewModel()
+    {
+        return Enum.GetValues<ProviderDeliveryMode>()
+            .Select(deliveryModeChoice => new DeliveryModeOptionViewModel
+            {
+                DeliveryItemChoice = deliveryModeChoice,
+                Description = deliveryModeChoice.GetDescription(),
+                Selected = false
+            })
+            .ToList();
+    }
+
+    private static List<QarOptionViewModel> BuildQarRatingsViewModel()
+    {
+        return Enum.GetValues<QarRating>()
+            .Select(rating => new QarOptionViewModel
+            {
+                QarRatingType = rating,
+                Description = rating.GetDescription(),
+                Selected = false
+            })
+            .ToList();
+    }
+
+    private static List<EmployerProviderRatingOptionViewModel> BuildEmployerProviderRatingsViewModel()
+    {
+        return Enum.GetValues<ProviderRating>()
+            .Select(rating => new EmployerProviderRatingOptionViewModel
+            {
+                ProviderRatingType = rating,
+                Description = rating.GetDescription(),
+                Selected = false
+            })
+            .ToList();
+    }
+
+    private static List<ApprenticeProviderRatingOptionViewModel> BuildApprenticeProviderRatingsViewModel()
+    {
+        return Enum.GetValues<ProviderRating>()
+            .Select(rating => new ApprenticeProviderRatingOptionViewModel
+            {
+                ProviderRatingType = rating,
+                Description = rating.GetDescription(),
+                Selected = false
+            })
+            .ToList();
+    }
+
     private List<FilterItemViewModel> GenerateDeliveryModesFilterItems()
     {
         var deliveryModes = BuildDeliveryModeOptionViewModel();
 
-        return deliveryModes?.Select(deliveryMode => new FilterItemViewModel
-        {
-            Value = deliveryMode.DeliveryItemChoice.ToString(),
-            DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
-            DisplayDescription = deliveryMode.DeliveryItemChoice switch
+        return deliveryModes.Select(deliveryMode => new FilterItemViewModel
             {
-                ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
-                ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
-                ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
-                _ => string.Empty
-            },
-            IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
-        })
-            .ToList() ?? [];
+                Value = deliveryMode.DeliveryItemChoice.ToString(),
+                DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
+                DisplayDescription = deliveryMode.DeliveryItemChoice switch
+                {
+                    ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
+                    ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
+                    ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
+                    _ => string.Empty
+                },
+                IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
+            })
+            .ToList();
     }
 
     private List<FilterItemViewModel> GenerateQarFilterItems()
     {
         var qarRatings = BuildQarRatingsViewModel();
 
-        return qarRatings?.Select(qarRating => new FilterItemViewModel
-        {
-            Value = qarRating.QarRatingType.ToString(),
-            DisplayText = qarRating.QarRatingType.GetDescription(),
-            IsSelected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
-        })
-            .ToList() ?? [];
+        return qarRatings.Select(qarRating => new FilterItemViewModel
+            {
+                Value = qarRating.QarRatingType.ToString(),
+                DisplayText = qarRating.QarRatingType.GetDescription(),
+                IsSelected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
+            })
+            .ToList();
     }
 
     private List<FilterItemViewModel> GenerateEmployerReviewsFilterItems()
     {
         var ratings = BuildEmployerProviderRatingsViewModel();
 
-        return ratings?.Select(rating => new FilterItemViewModel
-        {
-            Value = rating.ProviderRatingType.ToString(),
-            DisplayText =
-                rating.ProviderRatingType == ProviderRating.NotYetReviewed
-                ? "No employer reviews"
-                : rating.ProviderRatingType.GetDescription(),
-            IsSelected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
-        })
-            .ToList() ?? [];
+        return ratings.Select(rating => new FilterItemViewModel
+            {
+                Value = rating.ProviderRatingType.ToString(),
+                DisplayText =
+                    rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                    ? "No employer reviews"
+                    : rating.ProviderRatingType.GetDescription(),
+                IsSelected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+            })
+            .ToList();
     }
 
     private List<FilterItemViewModel> GenerateApprenticeReviewsFilterItems()
     {
         var ratings = BuildApprenticeProviderRatingsViewModel();
 
-        return ratings?.Select(rating => new FilterItemViewModel
-        {
-            Value = rating.ProviderRatingType.ToString(),
-            DisplayText =
-                rating.ProviderRatingType == ProviderRating.NotYetReviewed
-                    ? "No apprentice reviews"
-                    : rating.ProviderRatingType.GetDescription(),
-            IsSelected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
-        })
-            .ToList() ?? [];
+        return ratings.Select(rating => new FilterItemViewModel
+            {
+                Value = rating.ProviderRatingType.ToString(),
+                DisplayText =
+                    rating.ProviderRatingType == ProviderRating.NotYetReviewed
+                        ? "No apprentice reviews"
+                        : rating.ProviderRatingType.GetDescription(),
+                IsSelected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+            })
+            .ToList();
     }
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
@@ -316,127 +379,27 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
     }
 
-    private readonly string _requestApprenticeshipTrainingUrl;
-    private readonly string _employerAccountsUrl;
-
-    public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration)
-    {
-        _valueFunctions = new Dictionary<FilterType, Func<string, string>>
-        {
-            { FilterType.DeliveryModes, GetDeliveryModeValue },
-            { FilterType.QarRatings, GetQarRatingsValue },
-            { FilterType.EmployerProviderRatings, GetProviderRatingsValue },
-            { FilterType.ApprenticeProviderRatings, GetProviderRatingsValue }
-        };
-        _requestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl;
-        _employerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl;
-    }
-
-    public string GetHelpFindingCourseUrl(string larsCode)
-    {
-        var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
-
-        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
-
-        return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
-    }
-
-    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
-
     private static string GetDeliveryModeValue(string filterValue)
     {
-        var deliveryModes = BuildDeliveryModeOptionViewModel();
-        foreach (var dm in deliveryModes)
-        {
-            if (dm.Description == filterValue)
-            {
-                return dm.DeliveryItemChoice.ToString();
-            }
-        }
-
-        return filterValue;
-    }
-
-    public List<ValueTuple<string, string>> ToQueryString()
-    {
-        List<ValueTuple<string, string>> result = new();
-
-        var defaultOrderBy = CourseType == CourseType.ShortCourse
-            ? ProviderOrderBy.Distance
-            : ProviderOrderBy.AchievementRate;
-
-        if (OrderBy != defaultOrderBy)
-        {
-            result.Add(ValueTuple.Create(nameof(OrderBy), OrderBy.ToString()));
-        }
-
-        foreach (ClearFilterSectionViewModel clearFilterSection in Filters.ClearFilterSections)
-        {
-            switch (clearFilterSection.FilterType)
-            {
-
-                case FilterType.Location:
-                    {
-                        result.Add(ValueTuple.Create(nameof(Location), Location));
-
-                        result.Add(!string.IsNullOrWhiteSpace(Distance)
-                            ? ValueTuple.Create(nameof(Distance), Distance)
-                            : ValueTuple.Create(nameof(Distance), DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
-                    }
-                    break;
-
-
-                case FilterType.DeliveryModes:
-                    {
-                        result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));
-                    }
-                    break;
-                case FilterType.EmployerProviderRatings:
-                    {
-                        result.AddRange(SelectedEmployerApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.EmployerProviderRatings), ratings)));
-                    }
-                    break;
-                case FilterType.ApprenticeProviderRatings:
-                    {
-                        result.AddRange(SelectedApprenticeApprovalRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.ApprenticeProviderRatings), ratings)));
-                    }
-                    break;
-                case FilterType.QarRatings:
-                    {
-                        result.AddRange(SelectedQarRatings.Select(ratings => ValueTuple.Create(nameof(FilterType.QarRatings), ratings)));
-                    }
-                    break;
-            }
-        }
-
-        return result;
+        return BuildDeliveryModeOptionViewModel()
+            .Where(dm => dm.Description == filterValue)
+            .Select(dm => dm.DeliveryItemChoice.ToString())
+            .FirstOrDefault(filterValue);
     }
 
     private static string GetQarRatingsValue(string filterValue)
     {
-        var qars = BuildQarRatingsViewModel();
-        foreach (var qar in qars)
-        {
-            if (qar.Description == filterValue)
-            {
-                return qar.QarRatingType.ToString();
-            }
-        }
-
-        return filterValue;
+        return BuildQarRatingsViewModel()
+            .Where(qar => qar.Description == filterValue)
+            .Select(qar => qar.QarRatingType.ToString())
+            .FirstOrDefault(filterValue);
     }
 
     private static string GetProviderRatingsValue(string filterValue)
     {
-        var ratings = BuildEmployerProviderRatingsViewModel();
-        foreach (var rating in ratings)
-        {
-            if (rating.Description == filterValue)
-            {
-                return rating.ProviderRatingType.ToString();
-            }
-        }
-
-        return filterValue;
+        return BuildEmployerProviderRatingsViewModel()
+            .Where(rating => rating.Description == filterValue)
+            .Select(rating => rating.ProviderRatingType.ToString())
+            .FirstOrDefault(filterValue);
     }
 }

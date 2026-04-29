@@ -487,4 +487,47 @@ public class WhenCreatingCourseProvidersViewModel
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Provider");
         }
     }
+
+    [Test]
+    public void Filters_PropertyAccessedTwice_ReturnsSameInstance()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var first = sut.Filters;
+        var second = sut.Filters;
+
+        first.Should().BeSameAs(second);
+    }
+
+    [Test]
+    public void TotalMessage_LocationMissing_DoesNotIncludeWithinDistanceText()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            TotalCount = 3,
+            Location = string.Empty,
+            Distance = "10"
+        };
+
+        sut.TotalMessage.Should().Be("3 results");
+    }
+
+    [Test]
+    public void GetHelpFindingCourseUrl_WhitespaceLocation_IncludesEncodedLocationParameter()
+    {
+        const string larsCode = "123";
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            Location = "   "
+        };
+
+        var result = sut.GetHelpFindingCourseUrl(larsCode);
+        var decodedResult = Uri.UnescapeDataString(result);
+
+        decodedResult.Should().Contain("location=   ");
+    }
 }

@@ -223,6 +223,17 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
+    public void HasLocation_LocationIsNull_ReturnsFalse()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = null
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
     public void HasLocation_LocationIsSet_ReturnsTrue()
     {
         var sut = new CourseViewModel
@@ -281,5 +292,33 @@ public sealed class WhenCreatingCourseViewModel
 
         var result = _sut.GetHelpFindingCourseUrl(findApprenticeshipTrainingWebConfiguration);
         Assert.That(expectedLink, Is.EqualTo(result));
+    }
+
+    [Test, MoqAutoData]
+    public void GetHelpFindingCourseUrl_LocationIsWhitespace_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
+        FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
+    )
+    {
+        var sut = new CourseViewModel() { LarsCode = "1", Location = "   " };
+
+        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+
+        var result = sut.GetHelpFindingCourseUrl(findApprenticeshipTrainingWebConfiguration);
+        Assert.That(expectedLink, Is.EqualTo(result));
+    }
+
+    [Test]
+    public void GetProviderCountDisplayMessage_LocationIsWhitespace_ReturnsMultipleProvidersOutsideDistanceMessage()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = "   ",
+            TotalProvidersCount = 3
+        };
+
+        var result = sut.GetProviderCountDisplayMessage();
+
+        Assert.That(result, Is.EqualTo(CourseViewModel.MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", "3")));
     }
 }

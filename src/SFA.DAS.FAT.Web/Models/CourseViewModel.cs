@@ -19,6 +19,12 @@ public class CourseViewModel : PageLinksViewModelBase
     public const string MAXIMUM_FUNDING_TEXT = "apprenticeship training and assessment costs.";
     public const string MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT = "apprenticeship unit training and assessment costs.";
 
+    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
+    public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
+    public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
+    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
+    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
+
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -50,6 +56,8 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
+        var learningType = source.ApprenticeshipType;
+
         return new CourseViewModel
         {
             StandardUId = source.StandardUId,
@@ -72,10 +80,10 @@ public class CourseViewModel : PageLinksViewModelBase
             Levels = source.Levels,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
-            IsApprenticeship = source.ApprenticeshipType == LearningType.Apprenticeship,
-            IsFoundationApprenticeship = source.ApprenticeshipType == LearningType.FoundationApprenticeship,
-            IsApprenticeshipUnit = source.ApprenticeshipType == LearningType.ApprenticeshipUnit,
-            LearningType = source.ApprenticeshipType,
+            IsApprenticeship = learningType == LearningType.Apprenticeship,
+            IsFoundationApprenticeship = learningType == LearningType.FoundationApprenticeship,
+            IsApprenticeshipUnit = learningType == LearningType.ApprenticeshipUnit,
+            LearningType = learningType,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
             IsShortCourseType = source.CourseType == CourseType.ShortCourse
@@ -84,14 +92,14 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public string GetLevelEquivalentToDisplayText()
     {
-        if (Levels.Count < 1)
+        if (Levels.Count == 0)
         {
             return string.Empty;
         }
 
-        Level EquivalentLevel = Levels.Find(a => a.Code == Level);
+        var equivalentLevel = Levels.Find(a => a.Code == Level);
 
-        return EquivalentLevel is null ? string.Empty : $"Equal to {EquivalentLevel.Name}";
+        return equivalentLevel is null ? string.Empty : $"Equal to {equivalentLevel.Name}";
     }
 
     public string GetKnowledgeSkillsHeaderTextToDisplay()
@@ -119,38 +127,28 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
     {
-        string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
-
-        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+        var redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+        var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
 
         return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
-
-    public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
-
-    public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
-
-    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
-
-    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
 
     public string GetProviderCountDisplayMessage()
     {
-        if (HasLocation)
+        if (!HasLocation)
         {
-            return ProvidersCountWithinDistance switch
-            {
-                0 => ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE,
-                1 => SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE,
-                _ => MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
-            };
+            return TotalProvidersCount == 1
+                ? SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE
+                : MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
         }
 
-        return TotalProvidersCount == 1
-            ? SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE
-            : MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
+        return ProvidersCountWithinDistance switch
+        {
+            0 => ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE,
+            1 => SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE,
+            _ => MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
+        };
     }
 
     public string GetApprenticeCanTravelDisplayMessage()
@@ -167,17 +165,26 @@ public class CourseViewModel : PageLinksViewModelBase
 
     private static List<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
     {
-        List<KsbGroup> ksbsOrdered = new List<KsbGroup>();
+        var ksbsOrdered = new List<KsbGroup>();
 
         var ksbGroups = ksbs.GroupBy(x => x.Type)
             .Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail).ToList() }).ToList();
 
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Knowledge));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalKnowledge));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Skill));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalSkill));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Behaviour));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour));
+        var orderedTypes = new[]
+        {
+            KsbType.Knowledge,
+            KsbType.TechnicalKnowledge,
+            KsbType.Skill,
+            KsbType.TechnicalSkill,
+            KsbType.Behaviour,
+            KsbType.EmployabilitySkillsAndBehaviour
+        };
+
+        foreach (var ksbType in orderedTypes)
+        {
+            ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == ksbType));
+        }
+
         return ksbsOrdered;
     }
 }
