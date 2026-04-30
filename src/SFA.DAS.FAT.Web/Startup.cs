@@ -86,8 +86,7 @@ public class Startup
 
         services
             .AddLogging()
-            .AddTelemetryRegistration(_configuration)
-            .AddApplicationInsightsTelemetry();
+            .AddTelemetryRegistration(_configuration);
 
         if (!_environment.IsDevelopment())
         {

@@ -20,7 +20,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var expectedCoursesAlphabetically = source.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.Ukprn, Is.EqualTo(source.Ukprn));
             Assert.That(sut.ProviderName, Is.EqualTo(source.ProviderName));
@@ -37,7 +37,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(sut.ShortlistId, Is.EqualTo(source.ShortlistId));
             Assert.That(sut.Locations, Is.EqualTo(source.Locations));
             Assert.That(sut.Courses, Is.EqualTo(expectedCoursesAlphabetically));
-        });
+        }
     }
 
     [Test]
@@ -72,7 +72,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.TrainingOptions;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.ShowOnlineOption, Is.False);
             Assert.That(result.ShowProviderOption, Is.False);
@@ -90,7 +90,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.ClosestDayReleaseLocation, Is.EqualTo(closestDayReleaseLocation));
             Assert.That(result.ClosestDayReleaseLocationDistanceDisplay, Is.EqualTo("2.6"));
             Assert.That(result.ClosestProviderLocationAddress, Is.Empty);
-        });
+        }
     }
 
     [Test]
@@ -260,12 +260,12 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.BlockReleaseLocations;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Has.Count.EqualTo(2));
             Assert.That(result[0].FormatAddress(), Is.EqualTo("123 Main St, Building 4, Belfast, Antrim, BT1 1AA"));
             Assert.That(result[1].FormatAddress(), Is.EqualTo("456 Side St, Derry, BT2 2BB"));
-        });
+        }
     }
 
     [Test]
@@ -295,11 +295,11 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.DayReleaseLocations;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Has.Count.EqualTo(1));
             Assert.That(result[0].FormatAddress(), Is.EqualTo("Day Site 1, Newry, BT3 3CC"));
-        });
+        }
     }
 
     [Test]
@@ -880,11 +880,11 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel { CourseType = courseType };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.IsShortCourse, Is.EqualTo(isShortCourse));
             Assert.That(sut.IsApprenticeship, Is.EqualTo(isApprenticeship));
-        });
+        }
     }
 
     [Test]
@@ -1044,14 +1044,14 @@ public class WhenCreatingCourseProviderViewModel
 
         var sut = (CourseProviderViewModel)source;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.Courses, Is.Not.Null);
             Assert.That(sut.Courses, Is.Empty);
             Assert.That(sut.Locations, Is.Not.Null);
             Assert.That(sut.Locations, Is.Empty);
             Assert.That(sut.ProviderCoursesDetails.Courses, Is.Empty);
-        });
+        }
     }
 
     [Test]
@@ -1080,7 +1080,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.TrainingOptions;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Location, Is.EqualTo("Leeds"));
             Assert.That(result.ShowOnlineOption, Is.True);
@@ -1091,7 +1091,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.ClosestProviderLocation, Is.EqualTo(providerLocation));
             Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.3"));
             Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Provider Street, Leeds, LS1 1AA"));
-        });
+        }
     }
 
     [Test]
@@ -1126,7 +1126,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.TrainingOptions;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.ShowProviderOption, Is.True);
             Assert.That(result.ProviderLocations, Has.Count.EqualTo(2));
@@ -1134,7 +1134,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.ClosestProviderLocation, Is.EqualTo(closestProviderLocation));
             Assert.That(result.ClosestProviderLocationDistanceDisplay, Is.EqualTo("1.0"));
             Assert.That(result.ClosestProviderLocationAddress, Is.EqualTo("1 Closest Street, Leeds, LS1 1AA"));
-        });
+        }
     }
 
     [Test]
@@ -1158,13 +1158,13 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.AchievementsAndParticipation;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Qar, Is.EqualTo(qar));
             Assert.That(result.AchievementRateInformation, Is.EqualTo(sut.AchievementRateInformation));
             Assert.That(result.EndpointAssessmentsCountDisplay, Is.EqualTo("12"));
             Assert.That(result.EndpointAssessmentDisplayMessage, Is.EqualTo(sut.EndpointAssessmentDisplayMessage));
-        });
+        }
     }
 
     [Test]
@@ -1189,11 +1189,11 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.ContactDetails;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.ContactAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
             Assert.That(result.Contact, Is.EqualTo(contact));
-        });
+        }
     }
 
     [Test]
@@ -1212,12 +1212,12 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.ProviderReviews;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Reviews, Is.EqualTo(reviews));
             Assert.That(result.EmployerReviewsDisplayMessage, Is.EqualTo(sut.EmployerReviewsDisplayMessage));
             Assert.That(result.ApprenticeReviewsDisplayMessage, Is.EqualTo(sut.ApprenticeReviewsDisplayMessage));
-        });
+        }
     }
 
     [Test]
@@ -1238,7 +1238,7 @@ public class WhenCreatingCourseProviderViewModel
 
         var result = sut.ShortlistPanel;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.ShortlistClass, Is.EqualTo("app-provider-shortlist-added"));
             Assert.That(result.LarsCode, Is.EqualTo("123"));
@@ -1249,7 +1249,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.ShowMultipleProvidersForCourse, Is.True);
             Assert.That(result.TotalProvidersCount, Is.EqualTo(2));
             Assert.That(result.CourseNameAndLevel, Is.EqualTo("Software developer (level 4)"));
-        });
+        }
     }
 }
 

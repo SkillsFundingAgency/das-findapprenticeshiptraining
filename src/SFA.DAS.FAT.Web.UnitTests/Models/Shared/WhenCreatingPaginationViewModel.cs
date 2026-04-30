@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
@@ -186,11 +186,11 @@ public sealed class WhenCreatingPaginationViewModel
     {
         var (startPage, endPage) = PaginationViewModel.GetPageRange(currentPage, totalRecords, pageSize);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(startPage, Is.EqualTo(expectedStartPage), "Start page did not match expected value.");
             Assert.That(endPage, Is.EqualTo(expectedEndPage), "End page did not match expected value.");
-        });
+        }
     }
 
     [Test]

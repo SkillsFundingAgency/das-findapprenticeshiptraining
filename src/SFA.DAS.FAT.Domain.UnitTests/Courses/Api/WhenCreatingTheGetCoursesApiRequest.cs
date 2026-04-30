@@ -22,7 +22,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             OrderBy = OrderBy.Score
         };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut.BaseUrl, Is.EqualTo("https://api.test/"));
             Assert.That(_sut.Keyword, Is.EqualTo("test"));
@@ -33,7 +33,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Assert.That(_sut.Levels, Is.EquivalentTo(new List<int> { 3, 4 }));
             Assert.That(_sut.Page, Is.EqualTo(1));
             Assert.That(_sut.OrderBy, Is.EqualTo(OrderBy.Score));
-        });
+        }
     }
 
     [Test]

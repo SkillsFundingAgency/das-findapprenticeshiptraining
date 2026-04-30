@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
