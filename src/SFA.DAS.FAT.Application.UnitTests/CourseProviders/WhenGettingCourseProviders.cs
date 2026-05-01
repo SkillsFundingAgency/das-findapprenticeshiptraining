@@ -13,7 +13,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.CourseProviders;
 public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
-    public async Task Then_The_CourseService_And_AcademicLatestYearsService_Returns_Expected_Details(
+    public async Task Handle_ValidRequest_ReturnsExpectedDetails(
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
         CourseProvidersDetails courseProvidersDetails,
@@ -40,6 +40,9 @@ public class WhenGettingCourseProviders
             TotalPages = courseProvidersDetails.TotalPages,
             TotalCount = courseProvidersDetails.TotalCount,
             StandardName = courseProvidersDetails.StandardName,
+            CourseType = courseProvidersDetails.CourseType,
+            ApprenticeshipType = courseProvidersDetails.ApprenticeshipType,
+            IsActiveAvailable = courseProvidersDetails.IsActiveAvailable,
             QarPeriod = academicYearsLatestResponse.QarPeriod,
             ReviewPeriod = academicYearsLatestResponse.ReviewPeriod,
             Providers = courseProvidersDetails.Providers
@@ -55,7 +58,7 @@ public class WhenGettingCourseProviders
     [InlineAutoData(ProviderOrderBy.AchievementRate)]
     [InlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
     [InlineAutoData(ProviderOrderBy.EmployerProviderRating)]
-    public async Task Then_The_OrderBy_Values_Are_Used_In_Calling_CourseService(
+    public async Task Handle_OrderByProvided_CallsCourseServiceWithMatchingParameters(
         ProviderOrderBy orderBy,
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
@@ -95,7 +98,7 @@ public class WhenGettingCourseProviders
 
     [Test]
     [MoqAutoData]
-    public async Task And_CourseService_Returns_Null_Then_Handler_Returns_Null(
+    public async Task Handle_CourseServiceReturnsNull_ReturnsNull(
         GetCourseProvidersQuery query,
         [Frozen] Mock<ICourseService> mockCourseService,
         [Frozen] Mock<IAcademicYearsService> mockAcademicYearsService)
