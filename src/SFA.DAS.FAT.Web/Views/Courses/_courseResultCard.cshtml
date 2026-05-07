@@ -47,8 +47,14 @@
     </div>
 
     <div class="govuk-body das-inline-container">
-        <p asp-show="!Model.HasProviders" class="das-inline-text">
-            No providers run this course yet. <a class="das-search-results__link" asp-show="Model.IsApprenticeshipType" href="@Model.RequestApprenticeshipTrainingUrl">Ask if training providers can run this course</a>
+        <p asp-show="Model.ShowNoProvidersRunThisCourseApprenticeshipMessage" class="das-inline-text">
+            No providers run this course yet. <a class="das-search-results__link" href="@Model.RequestApprenticeshipTrainingUrl">Ask if training providers can run this course</a>
+        </p>
+        <p asp-show="Model.ShowNoProvidersBasedOnSearchApprenticeshipMessage" class="das-inline-text">
+            There are no providers based on your search. Search again or <a class="das-search-results__link" href="@Model.RequestApprenticeshipTrainingUrl">Ask if training providers can run this course</a>
+        </p>
+        <p asp-show="Model.ShowNoProvidersBasedOnSearchShortCourseMessage" class="das-inline-text">
+            There are no providers based on your search. <a asp-route="@RouteNames.Courses" class="govuk-link govuk-link--no-visited-state">Search again</a>
         </p>
 
         <a class="das-search-results__link" asp-show="Model.HasProviders" larscode="standard-@Model.LarsCode" href="@Model.FindProvidersUrl">@Model.FindProvidersUrlDescription</a>

@@ -59,6 +59,44 @@ public class StandardViewModelTests
     }
 
     [Test, AutoData]
+    public void ShowNoProvidersRunThisCourseMessage_NoProvidersAndNoTotalProvidersAndApprenticeship_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    {
+        standardModel.Level = 1;
+        standardModel.CourseType = CourseType.Apprenticeship;
+        standardModel.ProvidersCount = 0;
+        standardModel.TotalProvidersCount = 0;
+
+        var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
+
+        sut.ShowNoProvidersRunThisCourseApprenticeshipMessage.Should().BeTrue();
+    }
+
+    [Test, AutoData]
+    public void ShowNoProvidersBasedOnSearchApprenticeshipMessage_NoProvidersAndTotalProvidersGreaterThanZeroAndApprenticeship_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    {
+        standardModel.Level = 1;
+        standardModel.CourseType = CourseType.Apprenticeship;
+        standardModel.ProvidersCount = 0;
+        standardModel.TotalProvidersCount = 1;
+
+        var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
+
+        sut.ShowNoProvidersBasedOnSearchApprenticeshipMessage.Should().BeTrue();
+    }
+
+    [Test, AutoData]
+    public void ShowNoProvidersBasedOnSearchShortCourseMessage_NoProvidersAndShortCourse_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    {
+        standardModel.Level = 1;
+        standardModel.CourseType = CourseType.ShortCourse;
+        standardModel.ProvidersCount = 0;
+
+        var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
+
+        sut.ShowNoProvidersBasedOnSearchShortCourseMessage.Should().BeTrue();
+    }
+
+    [Test, AutoData]
     public void LearningTypeTagClass_ForUnknownType_ReturnsEmptyString(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
