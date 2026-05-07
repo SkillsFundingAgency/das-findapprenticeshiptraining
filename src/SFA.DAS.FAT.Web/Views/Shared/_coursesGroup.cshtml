@@ -18,7 +18,7 @@
                 @foreach (var course in courseGroup.Courses)
                 {
                     <li class="govuk-!-margin-bottom-2">
-                        <a class="govuk-link link--no-visited-state"
+                        <a class="govuk-link govuk-link--no-visited-state"
                            asp-route="@RouteNames.CourseProviderDetails"
                            asp-route-larsCode="@course.LarsCode"
                            asp-route-providerId="@courseGroup.Ukprn"
