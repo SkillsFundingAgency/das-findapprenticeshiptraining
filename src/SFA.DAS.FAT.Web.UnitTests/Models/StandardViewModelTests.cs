@@ -58,42 +58,47 @@ public class StandardViewModelTests
         sut.HasProviders.Should().Be(expectedValue);
     }
 
-    [Test, AutoData]
-    public void ShowNoProvidersRunThisCourseMessage_NoProvidersAndNoTotalProvidersAndApprenticeship_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    [InlineAutoData(0, 0, CourseType.Apprenticeship, true)]
+    [InlineAutoData(0, 0, CourseType.ShortCourse, false)]
+    [InlineAutoData(1, 1, CourseType.Apprenticeship, false)]
+    public void ShowNoProvidersRunThisCourseMessage_NoProvidersAndNoTotalProvidersAndApprenticeship_ReturnsExpected(int providersCount, int totalProvidersCount, CourseType courseType, bool expected, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
-        standardModel.CourseType = CourseType.Apprenticeship;
-        standardModel.ProvidersCount = 0;
-        standardModel.TotalProvidersCount = 0;
+        standardModel.ProvidersCount = providersCount;
+        standardModel.TotalProvidersCount = totalProvidersCount;
+        standardModel.CourseType = courseType;
 
         var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
 
-        sut.ShowNoProvidersRunThisCourseApprenticeshipMessage.Should().BeTrue();
+        sut.ShowNoProvidersRunThisCourseApprenticeshipMessage.Should().Be(expected);
     }
 
-    [Test, AutoData]
-    public void ShowNoProvidersBasedOnSearchApprenticeshipMessage_NoProvidersAndTotalProvidersGreaterThanZeroAndApprenticeship_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    [InlineAutoData(0, 1, CourseType.Apprenticeship, true)]
+    [InlineAutoData(0, 1, CourseType.ShortCourse, false)]
+    [InlineAutoData(0, 0, CourseType.Apprenticeship, false)]
+    public void ShowNoProvidersBasedOnSearchApprenticeshipMessage_NoProvidersAndTotalProvidersGreaterThanZeroAndApprenticeship_ReturnsExpected(int providersCount, int totalProvidersCount, CourseType courseType, bool expected, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
-        standardModel.CourseType = CourseType.Apprenticeship;
-        standardModel.ProvidersCount = 0;
-        standardModel.TotalProvidersCount = 1;
+        standardModel.ProvidersCount = providersCount;
+        standardModel.TotalProvidersCount = totalProvidersCount;
+        standardModel.CourseType = courseType;
 
         var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
 
-        sut.ShowNoProvidersBasedOnSearchApprenticeshipMessage.Should().BeTrue();
+        sut.ShowNoProvidersBasedOnSearchApprenticeshipMessage.Should().Be(expected);
     }
 
-    [Test, AutoData]
-    public void ShowNoProvidersBasedOnSearchShortCourseMessage_NoProvidersAndShortCourse_ReturnsTrue(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    [InlineAutoData(0, CourseType.ShortCourse, true)]
+    [InlineAutoData(0, CourseType.Apprenticeship, false)]
+    [InlineAutoData(1, CourseType.ShortCourse, false)]
+    public void ShowNoProvidersBasedOnSearchShortCourseMessage_NoProvidersAndShortCourse_ReturnsExpected(int providersCount, CourseType courseType, bool expected, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
-        standardModel.CourseType = CourseType.ShortCourse;
-        standardModel.ProvidersCount = 0;
-
+        standardModel.ProvidersCount = providersCount;
+        standardModel.CourseType = courseType;
         var sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
 
-        sut.ShowNoProvidersBasedOnSearchShortCourseMessage.Should().BeTrue();
+        sut.ShowNoProvidersBasedOnSearchShortCourseMessage.Should().Be(expected);
     }
 
     [Test, AutoData]
