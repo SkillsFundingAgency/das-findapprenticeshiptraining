@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,6 +16,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -226,7 +226,7 @@ public class CourseProvidersController : Controller
         if (!validationLocationResult.IsValid)
         {
             viewModel.Location = string.Empty;
-            validationLocationResult.AddToModelState(ModelState);
+            ModelState.AddValidationErrors(validationLocationResult.Errors);
         }
 
         return View(viewModel);

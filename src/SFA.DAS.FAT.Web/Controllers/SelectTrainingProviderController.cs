@@ -1,6 +1,6 @@
 ﻿using System.Threading;
-using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 
@@ -24,7 +24,7 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
         if (!result.IsValid)
         {
             var model = new SelectTrainingProviderViewModel();
-            result.AddToModelState(ModelState);
+            ModelState.AddValidationErrors(result.Errors);
             return View(model);
         }
 
