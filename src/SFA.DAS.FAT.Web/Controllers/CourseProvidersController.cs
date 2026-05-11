@@ -59,6 +59,7 @@ public class CourseProvidersController : Controller
         _config = config.Value;
     }
 
+    [HttpPost]
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
@@ -164,6 +165,7 @@ public class CourseProvidersController : Controller
         return View(courseProvidersViewModel);
     }
 
+    [HttpPost]
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, [FromQuery] string location, [FromQuery] string distance)
     {
