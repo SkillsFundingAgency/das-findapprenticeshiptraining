@@ -235,7 +235,7 @@ public class CourseProvidersController : Controller
     {
         var dropdown = new List<ProviderOrderByOptionViewModel>();
 
-        foreach (ProviderOrderBy orderByChoice in Enum.GetValues(typeof(ProviderOrderBy)))
+        foreach (ProviderOrderBy orderByChoice in Enum.GetValues<ProviderOrderBy>())
         {
             if (orderByChoice == ProviderOrderBy.Distance && hideDistance) continue;
             dropdown.Add(new ProviderOrderByOptionViewModel

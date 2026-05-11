@@ -75,7 +75,7 @@ public class Startup
             })
             .AddMvc(options =>
             {
-                options.Filters.Add(typeof(GoogleAnalyticsFilter));
+                options.Filters.Add<GoogleAnalyticsFilter>();
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
