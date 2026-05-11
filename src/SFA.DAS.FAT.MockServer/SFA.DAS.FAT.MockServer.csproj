@@ -11,7 +11,6 @@
     <None Remove="shortlist.json" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="OpenTelemetry.Api" Version="1.15.3" />
     <PackageReference Include="StackExchange.Redis" Version="2.12.14" />
     <PackageReference Include="WireMock.Net.StandAlone" Version="2.4.0" />
     <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.8.0" />
