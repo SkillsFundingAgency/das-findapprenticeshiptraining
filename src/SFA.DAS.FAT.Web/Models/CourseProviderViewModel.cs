@@ -28,6 +28,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType ApprenticeshipType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int Level { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
@@ -147,6 +148,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             CourseName = source.CourseName,
             CourseType = source.CourseType,
             ApprenticeshipType = source.ApprenticeshipType,
+            IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

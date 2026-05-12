@@ -41,6 +41,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public LearningType LearningType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
     public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
@@ -84,6 +85,8 @@ public class CourseViewModel : PageLinksViewModelBase
             IsFoundationApprenticeship = learningType == LearningType.FoundationApprenticeship,
             IsApprenticeshipUnit = learningType == LearningType.ApprenticeshipUnit,
             LearningType = learningType,
+            
+            IsActiveAvailable = source.IsActiveAvailable,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
             IsShortCourseType = source.CourseType == CourseType.ShortCourse
