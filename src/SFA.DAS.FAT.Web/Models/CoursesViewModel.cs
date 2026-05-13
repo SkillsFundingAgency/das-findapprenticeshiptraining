@@ -18,7 +18,7 @@ public class CoursesViewModel : PageLinksViewModelBase
     public const string BestMatchToCourse = "Best match to course";
     public const string NameOfCourse = "Name of course";
     private const string CoursesSubHeaderText = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
-    private const string LocationCoursesSubHeader = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
+    private const string LocationCoursesSubHeaderText = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
     public const string TrainingTypeFindOutMoreText = "Find out more about training types (opens in new tab)";
     public const string TrainingTypeFindOutMoreLink = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
@@ -104,10 +104,10 @@ public class CoursesViewModel : PageLinksViewModelBase
 
         if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
         {
-            return LocationCoursesSubHeader;
+            return LocationCoursesSubHeaderText;
         }
 
-        return CoursesSubHeader;
+        return CoursesSubHeaderText;
     }
 
     private string GetTotalMessage()
