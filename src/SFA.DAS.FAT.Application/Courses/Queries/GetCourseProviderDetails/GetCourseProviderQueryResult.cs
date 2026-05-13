@@ -20,6 +20,7 @@ public class GetCourseProviderQueryResult : CourseProviderDetailsBase
             CourseName = source.CourseName,
             CourseType = source.CourseType,
             ApprenticeshipType = source.ApprenticeshipType,
+            IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

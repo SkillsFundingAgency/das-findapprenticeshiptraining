@@ -119,6 +119,7 @@ public class CourseProvidersController : Controller
             CourseTitleAndLevel = result.StandardName,
             CourseType = result.CourseType,
             ApprenticeshipType = result.ApprenticeshipType,
+            IsActiveAvailable = result.IsActiveAvailable,
             Location = request.Location,
             Distance = convertedDistance.ToString(),
             SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()).ToList(),

@@ -22,6 +22,7 @@ public sealed class GetCourseResponse
     public List<Ksb> Ksbs { get; set; } = [];
     public LearningType ApprenticeshipType { get; set; }
     public CourseType CourseType { get; set; }
+    public bool IsActiveAvailable { get; set; }
     public int IncentivePayment { get; set; }
     public List<RelatedOccupationResponse> RelatedOccupations { get; set; } = [];
 }

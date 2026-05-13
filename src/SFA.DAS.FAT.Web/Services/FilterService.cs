@@ -12,31 +12,6 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
-    public enum FilterComponentType
-    {
-        CheckboxList,
-        Dropdown,
-        TextBox,
-        Search,
-        Accordion,
-        AccordionGroup
-    }
-
-    public enum FilterType
-    {
-        Location,
-        Levels,
-        Categories,
-        KeyWord,
-        OrderBy,
-        Distance,
-        DeliveryModes,
-        QarRatings,
-        EmployerProviderRatings,
-        ApprenticeProviderRatings,
-        Reviews,
-        LearningTypes
-    }
 
     public const string KEYWORD_SECTION_HEADING = "Course";
     public const string KEYWORD_SECTION_SUB_HEADING = "Enter course, job or standard";
@@ -70,6 +45,32 @@ public static class FilterService
 
     public const string EMPLOYER_REVIEWS_SECTION_HEADING = "Average employer review";
     public const string APPRENTICE_REVIEWS_SECTION_HEADING = "Average apprentice review";
+
+    public enum FilterComponentType
+    {
+        CheckboxList,
+        Dropdown,
+        TextBox,
+        Search,
+        Accordion,
+        AccordionGroup
+    }
+
+    public enum FilterType
+    {
+        Location,
+        Levels,
+        Categories,
+        KeyWord,
+        OrderBy,
+        Distance,
+        DeliveryModes,
+        QarRatings,
+        EmployerProviderRatings,
+        ApprenticeProviderRatings,
+        Reviews,
+        LearningTypes
+    }
 
     public static Dictionary<FilterType, string> ClearFilterSectionHeadings => _ClearFilterSectionHeadings;
 

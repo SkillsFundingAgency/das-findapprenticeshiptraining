@@ -39,6 +39,11 @@ public class StandardViewModel
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;
     public bool IsApprenticeshipType => CourseType == CourseType.Apprenticeship;
     public bool HasProviders => ProvidersCount > 0;
+    public bool ShowNoProvidersRunThisCourseApprenticeshipMessage => !HasProviders && TotalProvidersCount == 0 && IsApprenticeshipType;
+    public bool ShowNoProvidersBasedOnSearchApprenticeshipMessage => !HasProviders && TotalProvidersCount > 0 && IsApprenticeshipType;
+    public bool ShowNoProvidersRunThisCourseShortCourseMessage => !HasProviders && TotalProvidersCount == 0 && IsShortCourseType;
+    public bool ShowNoProvidersBasedOnSearchShortCourseMessage => !HasProviders && TotalProvidersCount > 0 && IsShortCourseType;
+
     public Dictionary<string, string> CourseDetailsRouteValues { get; init; } = new();
 
     public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels)
