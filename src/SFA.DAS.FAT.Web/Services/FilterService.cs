@@ -176,7 +176,7 @@ public static class FilterService
     };
 
     public static IReadOnlyList<ClearFilterSectionViewModel> CreateClearFilterSections(
-        Dictionary<FilterType, List<string>> selectedFilters,
+        Dictionary<FilterType, IEnumerable<string>> selectedFilters,
         Dictionary<FilterType, Func<string, string>> overrideValueFunctions = null,
         FilterType[] excludedFilterTypes = null
     )
@@ -190,7 +190,7 @@ public static class FilterService
 
         foreach (var filter in selectedFilters)
         {
-            if (excludedFilterTypes is not null && excludedFilterTypes.Contains(filter.Key) || filter.Value.Count == 0)
+            if (excludedFilterTypes is not null && excludedFilterTypes.Contains(filter.Key) || !filter.Value.Any())
             {
                 continue;
             }
@@ -211,7 +211,7 @@ public static class FilterService
         return clearFilterSections;
     }
 
-    public static List<FilterItemViewModel> GetDistanceFilterValues(string selectedDistance)
+    public static IEnumerable<FilterItemViewModel> GetDistanceFilterValues(string selectedDistance)
     {
         var validDistance = DistanceService.GetValidDistance(selectedDistance);
 
@@ -242,7 +242,7 @@ public static class FilterService
     private static string BuildQueryWithoutValue(
         FilterType filterType,
         string value,
-        Dictionary<FilterType, List<string>> queryParams,
+        Dictionary<FilterType, IEnumerable<string>> queryParams,
         Dictionary<FilterType, Func<string, string>> overrideValueFunctions = null
     )
     {
@@ -255,7 +255,7 @@ public static class FilterService
 
         foreach (var param in queryParams)
         {
-            if (param.Value is null || param.Value.Count < 1)
+            if (param.Value is null || !param.Value.Any())
             {
                 continue;
             }
@@ -268,7 +268,7 @@ public static class FilterService
         return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
     }
 
-    private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, List<string>> param,
+    private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
         StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
     {
         if (param.Key == filterType)
@@ -334,7 +334,7 @@ public static class FilterService
         }
     }
 
-    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, string value)
+    public static void AddSelectedFilter(Dictionary<FilterType, IEnumerable<string>> filters, FilterType filterType, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -342,7 +342,7 @@ public static class FilterService
         }
     }
 
-    public static void AddSelectedFilter(Dictionary<FilterType, List<string>> filters, FilterType filterType, List<string> values)
+    public static void AddSelectedFilter(Dictionary<FilterType, IEnumerable<string>> filters, FilterType filterType, List<string> values)
     {
         var valuesToProcess = values;
 
@@ -357,7 +357,7 @@ public static class FilterService
         }
     }
 
-    private static string GetDisplayValue(FilterType key, string displayValue, Dictionary<FilterType, List<string>> queryParams)
+    private static string GetDisplayValue(FilterType key, string displayValue, Dictionary<FilterType, IEnumerable<string>> queryParams)
     {
         return key switch
         {
@@ -374,23 +374,25 @@ public static class FilterService
             : string.Empty;
     }
 
-    private static string GetWorkLocationDistanceDisplayMessage(Dictionary<FilterType, List<string>> queryParams)
+    private static string GetWorkLocationDistanceDisplayMessage(Dictionary<FilterType, IEnumerable<string>> queryParams)
     {
-        if (!queryParams.TryGetValue(FilterType.Location, out var location) || location == null || location.Count == 0 || string.IsNullOrWhiteSpace(location[0]))
+        if (!queryParams.TryGetValue(FilterType.Location, out var location) || location == null || !location.Any() || string.IsNullOrWhiteSpace(location.First()))
         {
             return string.Empty;
         }
 
-        if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || distanceList.Count == 0)
+        var locationValue = location.First();
+
+        if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || !distanceList.Any())
         {
-            return $"{location[0]} ({AcrossEnglandFilterText})";
+            return $"{locationValue} ({AcrossEnglandFilterText})";
         }
 
-        if (!int.TryParse(distanceList[0], out var distance) || distance < 1 || distance > 100)
+        if (!int.TryParse(distanceList.First(), out var distance) || distance < 1 || distance > 100)
         {
-            return $"{location[0]} ({AcrossEnglandFilterText})";
+            return $"{locationValue} ({AcrossEnglandFilterText})";
         }
 
-        return $"{location[0]} (within {distance} miles)";
+        return $"{locationValue} (within {distance} miles)";
     }
 }

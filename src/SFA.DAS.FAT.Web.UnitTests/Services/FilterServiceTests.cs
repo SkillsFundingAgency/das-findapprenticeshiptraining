@@ -155,7 +155,7 @@ public sealed class FilterServiceTests
     [Test]
     public void AddSelectedFilter_WithValidStringValue_ShouldAddFilter()
     {
-        var _sut = new Dictionary<FilterType, List<string>>();
+        var _sut = new Dictionary<FilterType, IEnumerable<string>>();
         var filterType = FilterType.KeyWord;
         var value = "Construction";
 
@@ -164,15 +164,15 @@ public sealed class FilterServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(_sut.ContainsKey(filterType), Is.True, "FilterType should exist in the dictionary.");
-            Assert.That(_sut[filterType], Has.Count.EqualTo(1), "FilterType should have exactly one value.");
-            Assert.That(_sut[filterType][0], Is.EqualTo(value), "FilterType should contain the correct value.");
+            Assert.That(_sut[filterType].Count(), Is.EqualTo(1), "FilterType should have exactly one value.");
+            Assert.That(_sut[filterType].First(), Is.EqualTo(value), "FilterType should contain the correct value.");
         });
     }
 
     [Test]
     public void AddSelectedFilter_WithNullOrWhitespaceString_ShouldNotAddFilter()
     {
-        var _sut = new Dictionary<FilterType, List<string>>();
+        var _sut = new Dictionary<FilterType, IEnumerable<string>>();
         var filterType = FilterType.KeyWord;
         string nullValue = null;
 
@@ -186,7 +186,7 @@ public sealed class FilterServiceTests
     [Test]
     public void AddSelectedFilter_WithValidList_ShouldAddFilter()
     {
-        var _sut = new Dictionary<FilterType, List<string>>();
+        var _sut = new Dictionary<FilterType, IEnumerable<string>>();
         var filterType = FilterType.Levels;
         var values = new List<string> { "Level 3", "Level 4" };
 
@@ -202,7 +202,7 @@ public sealed class FilterServiceTests
     [Test]
     public void AddSelectedFilter_WithEmptyList_ShouldNotAddFilter()
     {
-        var _sut = new Dictionary<FilterType, List<string>>();
+        var _sut = new Dictionary<FilterType, IEnumerable<string>>();
         var filterType = FilterType.Levels;
         var emptyValues = new List<string>();
 
@@ -213,7 +213,7 @@ public sealed class FilterServiceTests
     [Test]
     public void AddSelectedFilter_WithEmptyValue_ShouldNotAddFilter()
     {
-        var _sut = new Dictionary<FilterType, List<string>>();
+        var _sut = new Dictionary<FilterType, IEnumerable<string>>();
         var filterType = FilterType.Levels;
 
         AddSelectedFilter(_sut, filterType, string.Empty);
@@ -229,7 +229,7 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut, Has.Count.EqualTo(DistanceService.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
+            Assert.That(_sut.Count(), Is.EqualTo(DistanceService.Distances.Count() + 1), "Result should contain all distances + 'Across England' option.");
             Assert.That(_sut.Any(i => i.Value == DistanceService.AcrossEnglandFilterValue && i.DisplayText == AcrossEnglandFilterText), Is.True, "'Across England' option should be present.");
         });
     }
@@ -279,13 +279,13 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithValidFilters_ShouldReturnCorrectSections()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "London" } },
             { FilterType.Distance, new List<string> { "10" } }
         };
 
-        var _sut = CreateClearFilterSections(selectedFilters, null, [FilterType.Distance]);
+        var _sut = CreateClearFilterSections(selectedFilters, null, new[] { FilterType.Distance });
 
         Assert.Multiple(() =>
         {
@@ -298,7 +298,7 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithExcludedFilterType_ShouldExcludeIt()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "London" } },
             { FilterType.Distance, new List<string> { "10" } }
@@ -318,7 +318,7 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithOverrideValueFunctions_ShouldModifyDisplayValue()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Levels, new List<string> { "level-2", "level-3" } }
         };
@@ -350,7 +350,7 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithEmptyFilters_ShouldReturnEmptyList()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
         var _sut = CreateClearFilterSections(selectedFilters);
         Assert.That(_sut, Is.Empty);
     }
@@ -358,7 +358,7 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithNullFilters_ShouldReturnEmptyList()
     {
-        Dictionary<FilterType, List<string>> selectedFilters = null;
+        Dictionary<FilterType, IEnumerable<string>> selectedFilters = null;
         var result = CreateClearFilterSections(selectedFilters);
         Assert.That(result, Is.Empty, "Result should be an empty list when input is null.");
     }
@@ -366,7 +366,7 @@ public sealed class FilterServiceTests
     [Test]
     public void CreateClearFilterSections_WithFilterHavingNoValues_ShouldNotAddSection()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string>() }
         };
@@ -378,7 +378,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndDistance_ShouldReturnCorrectMessage()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "M60 7RA" } },
             { FilterType.Distance, new List<string> { "10" } }
@@ -393,7 +393,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndNoDistance_ShouldReturnAcrossEngland()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "M60 7RA" } }
         };
@@ -405,7 +405,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithValidLocationAndInvalidDistance_ShouldReturnAcrossEngland()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "M60 7RA" } },
             { FilterType.Distance, new List<string> { "9999" } }
@@ -419,7 +419,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithEmptyLocation_ShouldReturnEmpty()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "" } }
         };
@@ -432,7 +432,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithWhitespaceLocation_ShouldReturnNull()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>
         {
             { FilterType.Location, new List<string> { "   " } }
         };
@@ -445,7 +445,7 @@ public sealed class FilterServiceTests
     [Test]
     public void GetWorkLocationDistanceDisplayMessage_WithNoFilters_ShouldReturnNull()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
         var _sut = CreateClearFilterSections(selectedFilters);
         var locationFilterClearSection = _sut.FirstOrDefault(a => a.FilterType == FilterType.Location);
         Assert.That(locationFilterClearSection, Is.Null, "Empty filter dictionary should return null.");

@@ -138,7 +138,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             [
                 CreateInputFilterSection("keyword-input", KeywordSectionHeading, KeywordSectionSubHeading, nameof(Keyword), Keyword),
                 CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
-                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance)),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
                 CreateAccordionFilterSection(
                 "multi-select",
                 string.Empty,
@@ -186,7 +186,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);

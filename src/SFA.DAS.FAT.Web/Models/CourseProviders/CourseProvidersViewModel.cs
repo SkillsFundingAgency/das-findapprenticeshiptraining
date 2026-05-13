@@ -23,10 +23,10 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public CourseType CourseType { get; set; }
     public LearningType ApprenticeshipType { get; set; }
     public bool IsActiveAvailable { get; set; }
-    public List<string> SelectedDeliveryModes { get; set; } = [];
-    public List<string> SelectedEmployerApprovalRatings { get; set; } = [];
-    public List<string> SelectedApprenticeApprovalRatings { get; set; } = [];
-    public List<string> SelectedQarRatings { get; set; } = [];
+    public IEnumerable<string> SelectedDeliveryModes { get; set; } = [];
+    public IEnumerable<string> SelectedEmployerApprovalRatings { get; set; } = [];
+    public IEnumerable<string> SelectedApprenticeApprovalRatings { get; set; } = [];
+    public IEnumerable<string> SelectedQarRatings { get; set; } = [];
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }
     public string QarPeriodStartYear => $"20{QarPeriod.AsSpan(0, 2)}";
@@ -81,7 +81,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             FilterSections =
             [
                 CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
-                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance)),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
                 CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DeliveryModesSectionHeading, DeliveryModesSectionSubHeading, GenerateDeliveryModesFilterItems()),
                 CreateAccordionGroupFilterSection(
                     "ratings-select",
@@ -304,7 +304,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddLocationAndDistanceFilters(selectedFilters);
         AddDeliveryModesFilter(selectedFilters);
@@ -319,11 +319,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return CreateClearFilterSections(
                 selectedFilters,
                 _valueFunctions,
-                [FilterType.Distance, FilterType.OrderBy]
+                new[] { FilterType.Distance, FilterType.OrderBy }
             );
     }
 
-    private void AddLocationAndDistanceFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    private void AddLocationAndDistanceFilters(Dictionary<FilterType, IEnumerable<string>> selectedFilters)
     {
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
 
@@ -338,9 +338,9 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
     }
 
-    private void AddDeliveryModesFilter(Dictionary<FilterType, List<string>> selectedFilters)
+    private void AddDeliveryModesFilter(Dictionary<FilterType, IEnumerable<string>> selectedFilters)
     {
-        if (SelectedDeliveryModes.Count > 0)
+        if (SelectedDeliveryModes.Any())
         {
             var deliveryModes = GenerateDeliveryModesFilterItems();
             var selectedDeliveryNames = deliveryModes
@@ -359,16 +359,16 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
     }
 
-    private void AddRatingFilters(Dictionary<FilterType, List<string>> selectedFilters)
+    private void AddRatingFilters(Dictionary<FilterType, IEnumerable<string>> selectedFilters)
     {
         AddRatingFilter(selectedFilters, SelectedEmployerApprovalRatings, GenerateEmployerReviewsFilterItems, FilterType.EmployerProviderRatings);
         AddRatingFilter(selectedFilters, SelectedApprenticeApprovalRatings, GenerateApprenticeReviewsFilterItems, FilterType.ApprenticeProviderRatings);
         AddRatingFilter(selectedFilters, SelectedQarRatings, GenerateQarFilterItems, FilterType.QarRatings);
     }
 
-    private static void AddRatingFilter(Dictionary<FilterType, List<string>> selectedFilters, List<string> selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
+    private static void AddRatingFilter(Dictionary<FilterType, IEnumerable<string>> selectedFilters, IEnumerable<string> selectedRatings, Func<List<FilterItemViewModel>> generateFilterItems, FilterType filterType)
     {
-        if (selectedRatings?.Count > 0)
+        if (selectedRatings?.Any() ?? false)
         {
             var filterItems = generateFilterItems();
             var selectedItems = filterItems

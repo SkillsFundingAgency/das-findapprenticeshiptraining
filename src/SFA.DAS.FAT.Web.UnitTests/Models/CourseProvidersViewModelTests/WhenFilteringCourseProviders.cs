@@ -167,7 +167,7 @@ public sealed class WhenFilteringCourseProviders
                 Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
             Assert.That(checkboxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderDeliveryMode)).Length));
             Assert.That(checkboxList.Items.Where(a => a.IsSelected).ToList(),
-                Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count));
+                Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count()));
             Assert.That(checkboxList.Heading, Is.EqualTo(FilterService.DeliveryModesSectionHeading));
             Assert.That(checkboxList.SubHeading, Is.EqualTo(FilterService.DeliveryModesSectionSubHeading));
             Assert.That(checkboxList.Link, Is.Null);
@@ -183,7 +183,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.DeliveryModes);
             Assert.That(clearLinks, Is.Not.Null);
-            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count - 1));
+            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count() - 1));
 
             var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("&deliverymodes=Provider", "");
             var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("&deliverymodes=DayRelease", "");
@@ -233,7 +233,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)employerProviderRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.EmployerReviewsSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
@@ -249,7 +249,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.EmployerProviderRatings);
             Assert.That(clearLinks, Is.Not.Null);
-            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count));
+            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count()));
 
             var urlWithoutEmployerProviderReviewsGood = _fullQueryString.Replace("&employerproviderratings=Good", "");
             var urlWithoutEmployerProviderReviewsExcellent = _fullQueryString.Replace("&employerproviderratings=Excellent", "");
@@ -285,7 +285,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)apprenticeProviderRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.ApprenticeReviewsSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.Null);
@@ -301,7 +301,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.ApprenticeProviderRatings);
             Assert.That(clearLinks, Is.Not.Null);
-            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count));
+            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count()));
 
             var urlWithoutApprenticeProviderReviewsVeryPoor = _fullQueryString.Replace("&apprenticeproviderratings=VeryPoor", "");
             var urlWithoutApprenticeProviderReviewsPoor = _fullQueryString.Replace("&apprenticeproviderratings=Poor", "");
@@ -337,7 +337,7 @@ public sealed class WhenFilteringCourseProviders
             var checkBoxList = ((CheckboxListFilterSectionViewModel)qarRatingsFilterSection);
 
             Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(QarRating)).Length));
-            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count));
+            Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.QarSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
             Assert.That(checkBoxList.SubHeading, Is.EqualTo(ExpectedQarSubHeading));
@@ -353,7 +353,7 @@ public sealed class WhenFilteringCourseProviders
         {
             var clearLinks = sut.First(a => a.FilterType == FilterService.FilterType.QarRatings);
             Assert.That(clearLinks, Is.Not.Null);
-            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count));
+            Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count()));
 
             var urlWithoutQarRatingsExcellent = _fullQueryString.Replace("&qarratings=Excellent", "");
             var urlWithoutQarRatingsVeryPoor = _fullQueryString.Replace("&qarratings=VeryPoor", "");
