@@ -46,9 +46,9 @@ public sealed class WhenBuildingLearningTypeItems
 
         Assert.Multiple(() =>
         {
-            Assert.That(units.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipUnitDescription));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeFoundationApprenticeshipDescription));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipDescription));
+            Assert.That(units.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipUnitDescription));
+            Assert.That(foundation.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.FoundationApprenticeshipDescription));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipDescription));
         });
     }
 

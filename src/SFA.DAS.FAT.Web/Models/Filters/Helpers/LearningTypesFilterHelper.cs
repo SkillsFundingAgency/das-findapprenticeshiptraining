@@ -7,9 +7,9 @@ namespace SFA.DAS.FAT.Web.Models.Filters.Helpers;
 
 public static class LearningTypesFilterHelper
 {
-    public const string LearningTypeApprenticeshipUnitDescription = "Short training courses based on employer skills needs, levels 2 to 5";
-    public const string LearningTypeFoundationApprenticeshipDescription = "Introductory apprenticeships, level 2";
-    public const string LearningTypeApprenticeshipDescription = "Qualifications from levels 2 to 7";
+    public const string ApprenticeshipUnitDescription = "Short training courses based on employer skills needs, levels 2 to 5";
+    public const string FoundationApprenticeshipDescription = "Introductory apprenticeships, level 2";
+    public const string ApprenticeshipDescription = "Qualifications from levels 2 to 7";
     public static List<FilterItemViewModel> BuildItems(List<LearningType> selectedTrainingTypes, bool isLearningTypeEmphasised = false)
     {
         var allTrainingTypes = new[]
@@ -27,9 +27,9 @@ public static class LearningTypesFilterHelper
                 IsLearningTypeEmphasised = isLearningTypeEmphasised,
                 DisplayDescription = trainingType switch
                 {
-                    LearningType.ApprenticeshipUnit => LearningTypeApprenticeshipUnitDescription,
-                    LearningType.FoundationApprenticeship => LearningTypeFoundationApprenticeshipDescription,
-                    _ => LearningTypeApprenticeshipDescription
+                    LearningType.ApprenticeshipUnit => ApprenticeshipUnitDescription,
+                    LearningType.FoundationApprenticeship => FoundationApprenticeshipDescription,
+                    _ => ApprenticeshipDescription
                 },
                 IsSelected = selectedTrainingTypes.Contains(trainingType)
             })

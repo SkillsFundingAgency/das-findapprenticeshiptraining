@@ -202,9 +202,9 @@ public sealed class WhenFilteringCourses
             Assert.That(typesCheckBoxList.Items[1].DisplayText, Is.EqualTo(LearningType.FoundationApprenticeship.GetDescription()));
             Assert.That(typesCheckBoxList.Items[2].DisplayText, Is.EqualTo(LearningType.Apprenticeship.GetDescription()));
 
-            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipUnitDescription));
-            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeFoundationApprenticeshipDescription));
-            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipDescription));
+            Assert.That(typesCheckBoxList.Items[0].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipUnitDescription));
+            Assert.That(typesCheckBoxList.Items[1].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.FoundationApprenticeshipDescription));
+            Assert.That(typesCheckBoxList.Items[2].DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipDescription));
         });
     }
 

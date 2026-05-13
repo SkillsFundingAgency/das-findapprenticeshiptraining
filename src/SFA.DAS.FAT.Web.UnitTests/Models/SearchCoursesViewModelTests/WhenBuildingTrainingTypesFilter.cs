@@ -46,9 +46,9 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(foundationApprenticeship.DisplayText, Is.EqualTo(LearningType.FoundationApprenticeship.GetDescription()));
             Assert.That(apprenticeship.DisplayText, Is.EqualTo(LearningType.Apprenticeship.GetDescription()));
 
-            Assert.That(apprenticeshipUnit.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipUnitDescription));
-            Assert.That(foundationApprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeFoundationApprenticeshipDescription));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LearningTypeApprenticeshipDescription));
+            Assert.That(apprenticeshipUnit.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipUnitDescription));
+            Assert.That(foundationApprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.FoundationApprenticeshipDescription));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipDescription));
 
             Assert.That(apprenticeshipUnit.IsSelected, Is.False);
             Assert.That(foundationApprenticeship.IsSelected, Is.True);

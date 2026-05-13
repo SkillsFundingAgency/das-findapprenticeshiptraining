@@ -1,7 +1,6 @@
-﻿
-using SFA.DAS.FAT.Web.Models.Providers;
+﻿using SFA.DAS.FAT.Web.Models.Providers;
 
-namespace SFA.DAS.FAT.Web.Models;
+namespace SFA.DAS.FAT.Web.Models.Shared;
 
 public interface ICourseGroupModel
 {
