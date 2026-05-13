@@ -24,7 +24,7 @@ public class WhenCreatingCoursesViewModel
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Distance, Is.EqualTo(DistanceService.TEN_MILES.ToString()));
+            Assert.That(_sut.Distance, Is.EqualTo(DistanceService.TenMiles.ToString()));
             Assert.That(filters.ClearFilterSections.Any(s => s.FilterType == FilterService.FilterType.Distance), Is.False);
             Assert.That(filters.ClearFilterSections, Is.Empty);
         });

@@ -84,7 +84,7 @@ public class CourseProvidersController : Controller
 
         if (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance))
         {
-            request.Distance = DistanceService.TEN_MILES.ToString();
+            request.Distance = DistanceService.TenMiles.ToString();
         }
 
         int? convertedDistance = DistanceService.GetValidDistanceNullable(request.Distance);
@@ -189,7 +189,7 @@ public class CourseProvidersController : Controller
 
         if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
         {
-            distance = DistanceService.TEN_MILES.ToString();
+            distance = DistanceService.TenMiles.ToString();
         }
 
         var query = new GetCourseProviderDetailsQuery
@@ -197,7 +197,7 @@ public class CourseProvidersController : Controller
             Ukprn = providerId,
             LarsCode = larsCode,
             Location = location?.Trim(),
-            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DEFAULT_DISTANCE,
+            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DefaultDistance,
             ShortlistUserId = shortlistUserId
         };
 
@@ -213,7 +213,7 @@ public class CourseProvidersController : Controller
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
         viewModel.Location = location;
-        viewModel.Distance = distance ?? DistanceService.TEN_MILES.ToString();
+        viewModel.Distance = distance ?? DistanceService.TenMiles.ToString();
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
         viewModel.ShowApprenticeTrainingCourseCrumb = true;

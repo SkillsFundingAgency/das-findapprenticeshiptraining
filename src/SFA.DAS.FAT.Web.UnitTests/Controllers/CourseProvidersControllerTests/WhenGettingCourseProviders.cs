@@ -93,7 +93,7 @@ public class WhenGettingCourseProviders
 
         foreach (var provider in expectedProviders)
         {
-            provider.Distance = DistanceService.TEN_MILES.ToString();
+            provider.Distance = DistanceService.TenMiles.ToString();
             provider.Location = request.Location;
         }
 
@@ -109,7 +109,7 @@ public class WhenGettingCourseProviders
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.LarsCode.Should().Be(request.LarsCode.ToString());
             actualModel.Location.Should().Be(request.Location ?? string.Empty);
-            actualModel.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
+            actualModel.Distance.Should().Be(DistanceService.TenMiles.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
             actualModel.SelectedEmployerApprovalRatings.Should()
@@ -341,7 +341,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
+            actualModel!.Distance.Should().Be(DistanceService.TenMiles.ToString());
         }
     }
 
@@ -598,7 +598,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(DistanceService.TEN_MILES.ToString());
+            actualModel!.Distance.Should().Be(DistanceService.TenMiles.ToString());
             actualModel.OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
         }
     }
@@ -747,7 +747,7 @@ public class WhenGettingCourseProviders
     [Test]
     [MoqInlineAutoData(1, "Coventry", "10", "1 result within 10 miles")]
     [MoqInlineAutoData(2, "Coventry", "20", "2 results within 20 miles")]
-    [MoqInlineAutoData(2, "Coventry", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "2 results")]
+    [MoqInlineAutoData(2, "Coventry", DistanceService.AcrossEnglandFilterValue, "2 results")]
     [MoqInlineAutoData(2, "Coventry", "", "2 results within 10 miles")]
     public async Task CourseProviders_WithLocationAndDistance_SetsTotalMessageWithDistanceDetails(
         int totalCount,

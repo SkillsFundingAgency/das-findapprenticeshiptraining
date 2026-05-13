@@ -226,14 +226,14 @@ public static class FilterService
 
         distanceFilterItems.Add(new FilterItemViewModel
         {
-            Value = DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
-                DisplayText = AcrossEnglandFilterText,
+            Value = DistanceService.AcrossEnglandFilterValue,
+            DisplayText = AcrossEnglandFilterText,
             IsSelected =
                 string.Equals(
                     selectedDistance,
-                    DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
+                    DistanceService.AcrossEnglandFilterValue,
                     StringComparison.OrdinalIgnoreCase
-                ) || validDistance == DistanceService.DEFAULT_DISTANCE
+                ) || validDistance == DistanceService.DefaultDistance
         });
 
         return distanceFilterItems;
@@ -383,12 +383,12 @@ public static class FilterService
 
         if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || distanceList.Count == 0)
         {
-                return $"{location[0]} ({AcrossEnglandFilterText})";
+            return $"{location[0]} ({AcrossEnglandFilterText})";
         }
 
         if (!int.TryParse(distanceList[0], out var distance) || distance < 1 || distance > 100)
         {
-                return $"{location[0]} ({AcrossEnglandFilterText})";
+            return $"{location[0]} ({AcrossEnglandFilterText})";
         }
 
         return $"{location[0]} (within {distance} miles)";

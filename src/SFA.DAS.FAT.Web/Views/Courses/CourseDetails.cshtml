@@ -4,7 +4,6 @@
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
-@using System.Globalization
 @using SFA.DAS.FAT.Web.TagHelpers
 @model SFA.DAS.FAT.Web.Models.CourseViewModel
 @inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
@@ -135,7 +134,7 @@
                         Foundation apprenticeship incentive payment
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.IncentivePayment.ToString("C0", new CultureInfo("en-GB")) <br/>
+                        @Model.IncentivePaymentDisplayValue <br/>
                         <span class="govuk-!-font-size-16 das-text--muted">Employers get this incentive payment in 3 stages linked to retention and progression</span>
                     </dd>
                 </div>
@@ -250,7 +249,7 @@
                         Maximum funding
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.MaxFunding.ToString("C0", new CultureInfo("en-GB")) <br />
+                        @Model.MaxFundingDisplayValue <br />
                         <span class="govuk-!-font-size-16 das-text--muted">
                             Maximum government funding for <br/>
                             @Model.GetMaximumFundingTextToDisplay()

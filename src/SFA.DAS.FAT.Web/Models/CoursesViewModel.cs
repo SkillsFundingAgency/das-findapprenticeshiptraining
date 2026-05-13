@@ -15,12 +15,12 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
-    public const string BEST_MATCH_TO_COURSE = "Best match to course";
-    public const string NAME_OF_COURSE = "Name of course";
-    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
-    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
-    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
-    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+    public const string BestMatchToCourse = "Best match to course";
+    public const string NameOfCourse = "Name of course";
+    private const string CoursesSubHeaderText = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+    private const string LocationCoursesSubHeader = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
+    public const string TrainingTypeFindOutMoreText = "Find out more about training types (opens in new tab)";
+    public const string TrainingTypeFindOutMoreLink = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
 
@@ -59,7 +59,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public int TotalFiltered { get; set; }
 
-    public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BEST_MATCH_TO_COURSE : NAME_OF_COURSE;
+    public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BestMatchToCourse : NameOfCourse;
 
     private OrderBy? _orderBy;
 
@@ -102,12 +102,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
         {
-            return _LOCATION_COURSES_SUB_HEADER;
+            return LocationCoursesSubHeader;
         }
 
-        return _COURSES_SUB_HEADER;
+        return CoursesSubHeader;
     }
 
     private string GetTotalMessage()
@@ -149,8 +149,8 @@ public class CoursesViewModel : PageLinksViewModelBase
                         TrainingTypesSectionHeading,
                         null,
                         LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
-                        TRAINING_TYPE_FIND_OUT_MORE_TEXT,
-                        TRAINING_TYPE_FIND_OUT_MORE_LINK
+                        TrainingTypeFindOutMoreText,
+                        TrainingTypeFindOutMoreLink
                     ),
                     CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
                     CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
@@ -192,7 +192,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = DistanceService.TEN_MILES.ToString();
+            Distance = DistanceService.TenMiles.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))

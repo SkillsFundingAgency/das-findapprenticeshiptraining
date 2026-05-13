@@ -143,7 +143,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
                         result.Add(!string.IsNullOrWhiteSpace(Distance)
                             ? ValueTuple.Create(nameof(Distance), Distance)
-                            : ValueTuple.Create(nameof(Distance), DistanceService.ACROSS_ENGLAND_FILTER_VALUE));
+                            : ValueTuple.Create(nameof(Distance), DistanceService.AcrossEnglandFilterValue));
                     }
                     break;
 
@@ -181,7 +181,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var totalMessage = $"{totalToUse} result{(TotalCount == 1 ? string.Empty : "s")}";
 
         if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
-            Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+            Distance != DistanceService.AcrossEnglandFilterValue)
         {
             totalMessage = $"{totalMessage} within {Distance} miles";
         }
@@ -329,7 +329,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {
-            Distance = DistanceService.TEN_MILES.ToString();
+            Distance = DistanceService.TenMiles.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))

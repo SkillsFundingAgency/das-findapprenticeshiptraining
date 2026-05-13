@@ -35,7 +35,7 @@ public class SearchCoursesController() : Controller
         if (!string.IsNullOrEmpty(submitModel.Location))
         {
             request.Location = submitModel.Location;
-            request.Distance = DistanceService.TEN_MILES.ToString();
+            request.Distance = DistanceService.TenMiles.ToString();
         }
         request.LearningTypes = submitModel.SelectedTypes;
 

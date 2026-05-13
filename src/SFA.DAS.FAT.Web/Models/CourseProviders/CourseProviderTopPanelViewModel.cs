@@ -19,7 +19,7 @@ public class CourseProviderTopPanelViewModel
         get
         {
             var distance = string.Empty;
-            if (!string.IsNullOrEmpty(Distance) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+            if (!string.IsNullOrEmpty(Distance) && Distance != DistanceService.AcrossEnglandFilterValue)
             {
                 distance = Distance;
             }

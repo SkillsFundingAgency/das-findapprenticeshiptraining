@@ -86,7 +86,7 @@ public sealed class WhenCreatingCourseViewModel
 
         var sut = model.GetProviderCountDisplayMessage();
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.ZeroProvidersWithinDistanceMessage));
     }
 
     [Test]
@@ -100,7 +100,7 @@ public sealed class WhenCreatingCourseViewModel
 
         var sut = model.GetProviderCountDisplayMessage();
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.SingleProviderWithinDistanceMessage));
     }
 
     [Test]
@@ -114,7 +114,7 @@ public sealed class WhenCreatingCourseViewModel
 
         var sut = model.GetProviderCountDisplayMessage();
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", model.ProvidersCountWithinDistance.ToString())));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", model.ProvidersCountWithinDistance.ToString())));
     }
 
     [Test]
@@ -128,7 +128,7 @@ public sealed class WhenCreatingCourseViewModel
 
         var sut = model.GetProviderCountDisplayMessage();
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.SingleProviderOutsideDistanceMessage));
     }
 
     [Test]
@@ -142,7 +142,7 @@ public sealed class WhenCreatingCourseViewModel
 
         var sut = model.GetProviderCountDisplayMessage();
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", model.TotalProvidersCount.ToString())));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", model.TotalProvidersCount.ToString())));
     }
 
     [Test]
@@ -153,7 +153,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KnowledgeSkillsHeaderTextApprenticeshipUnit));
     }
 
     [Test]
@@ -164,7 +164,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT));
+        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KnowledgeSkillsHeaderText));
     }
 
     [Test]
@@ -175,7 +175,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KnowledgeSkillsLinkTextApprenticeshipUnit));
     }
 
     [Test]
@@ -186,7 +186,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT));
+        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KnowledgeSkillsLinkText));
     }
 
     [Test]
@@ -197,7 +197,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MaximumFundingTextApprenticeshipUnit));
     }
 
     [Test]
@@ -208,7 +208,7 @@ public sealed class WhenCreatingCourseViewModel
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT));
+        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MaximumFundingText));
     }
 
     [Test]
@@ -252,7 +252,7 @@ public sealed class WhenCreatingCourseViewModel
             Distance = "All"
         };
 
-        Assert.That(sut.GetApprenticeCanTravelDisplayMessage(), Is.EqualTo(DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT));
+        Assert.That(sut.GetApprenticeCanTravelDisplayMessage(), Is.EqualTo(DistanceService.AcrossEnglandDisplayText));
     }
 
     [Test]
@@ -319,6 +319,6 @@ public sealed class WhenCreatingCourseViewModel
 
         var result = sut.GetProviderCountDisplayMessage();
 
-        Assert.That(result, Is.EqualTo(CourseViewModel.MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", "3")));
+        Assert.That(result, Is.EqualTo(CourseViewModel.MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", "3")));
     }
 }

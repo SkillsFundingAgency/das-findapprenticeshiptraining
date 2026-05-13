@@ -47,7 +47,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
+                c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -65,7 +65,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                     q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -101,7 +101,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
+                c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -126,7 +126,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == larsCode &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                     q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -196,7 +196,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
+                c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -214,7 +214,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                     q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -250,7 +250,7 @@ public class WhenGettingCourseProviderDetails
                 c.Ukprn.Equals(providerId) &&
                 c.LarsCode.Equals(courseId) &&
                 c.Location.Equals(location) &&
-                c.Distance.Equals(DistanceService.DEFAULT_DISTANCE) &&
+                c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
             It.IsAny<CancellationToken>()
@@ -272,7 +272,7 @@ public class WhenGettingCourseProviderDetails
                      q.LarsCode == courseId &&
                      q.Ukprn == providerId &&
                      q.Location == location &&
-                     q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                     q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
                  It.IsAny<CancellationToken>()
@@ -431,7 +431,7 @@ public class WhenGettingCourseProviderDetails
                         q.LarsCode == courseId &&
                         q.Ukprn == providerId &&
                         q.Location == location &&
-                        q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                        q.Distance == DistanceService.DefaultDistance &&
                         q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                     ),
                     It.IsAny<CancellationToken>()
@@ -479,7 +479,7 @@ public class WhenGettingCourseProviderDetails
                 q.LarsCode == query.LarsCode &&
                 q.Ukprn == query.Ukprn &&
                 q.Location == query.Location &&
-                q.Distance == DistanceService.DEFAULT_DISTANCE &&
+                q.Distance == DistanceService.DefaultDistance &&
                 q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
             ),
             It.IsAny<CancellationToken>()),

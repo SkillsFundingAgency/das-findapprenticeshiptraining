@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -12,18 +13,18 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
-    public const string KNOWLEDGE_SKILLS_HEADER_TEXT = "Knowledge, skills and behaviours";
-    public const string KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT = "Knowledge and skills learners will gain";
-    public const string KNOWLEDGE_SKILLS_LINK_TEXT = "View knowledge, skills and behaviours";
-    public const string KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT = "View knowledge and skills";
-    public const string MAXIMUM_FUNDING_TEXT = "apprenticeship training and assessment costs.";
-    public const string MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT = "apprenticeship unit training and assessment costs.";
+    public const string KnowledgeSkillsHeaderText = "Knowledge, skills and behaviours";
+    public const string KnowledgeSkillsHeaderTextApprenticeshipUnit = "Knowledge and skills learners will gain";
+    public const string KnowledgeSkillsLinkText = "View knowledge, skills and behaviours";
+    public const string KnowledgeSkillsLinkTextApprenticeshipUnit = "View knowledge and skills";
+    public const string MaximumFundingText = "apprenticeship training and assessment costs.";
+    public const string MaximumFundingTextApprenticeshipUnit = "apprenticeship unit training and assessment costs.";
 
-    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
-    public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
-    public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
-    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
-    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
+    public const string ZeroProvidersWithinDistanceMessage = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
+    public const string SingleProviderWithinDistanceMessage = "There is 1 training provider who offers this course.";
+    public const string MultipleProvidersWithinDistanceMessage = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
+    public const string SingleProviderOutsideDistanceMessage = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
+    public const string MultipleProviderOutsideDistanceMessage = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
 
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
@@ -37,6 +38,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string Route { get; set; }
     public int RouteCode { get; set; }
     public int MaxFunding { get; set; }
+    public string MaxFundingDisplayValue => MaxFunding.ToString("C0", new CultureInfo("en-GB"));
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
@@ -49,6 +51,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsShortCourseType { get; set; }
 
     public int IncentivePayment { get; set; }
+    public string IncentivePaymentDisplayValue => IncentivePayment.ToString("C0", new CultureInfo("en-GB"));
 
     public List<Level> Levels { get; set; } = [];
 
@@ -85,7 +88,7 @@ public class CourseViewModel : PageLinksViewModelBase
             IsFoundationApprenticeship = learningType == LearningType.FoundationApprenticeship,
             IsApprenticeshipUnit = learningType == LearningType.ApprenticeshipUnit,
             LearningType = learningType,
-            
+
             IsActiveAvailable = source.IsActiveAvailable,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
@@ -107,15 +110,15 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public string GetKnowledgeSkillsHeaderTextToDisplay()
     {
-        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_HEADER_TEXT;
+        return IsApprenticeshipUnit ? KnowledgeSkillsHeaderTextApprenticeshipUnit : KnowledgeSkillsHeaderText;
     }
     public string GetKnowledgeSkillsLinkTextToDisplay()
     {
-        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_LINK_TEXT;
+        return IsApprenticeshipUnit ? KnowledgeSkillsLinkTextApprenticeshipUnit : KnowledgeSkillsLinkText;
     }
     public string GetMaximumFundingTextToDisplay()
     {
-        return IsApprenticeshipUnit ? MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT : MAXIMUM_FUNDING_TEXT;
+        return IsApprenticeshipUnit ? MaximumFundingTextApprenticeshipUnit : MaximumFundingText;
     }
 
     public string[] GetTypicalJobTitles()
@@ -142,23 +145,23 @@ public class CourseViewModel : PageLinksViewModelBase
         if (!HasLocation)
         {
             return TotalProvidersCount == 1
-                ? SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE
-                : MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
+                ? SingleProviderOutsideDistanceMessage
+                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
         }
 
         return ProvidersCountWithinDistance switch
         {
-            0 => ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE,
-            1 => SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE,
-            _ => MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
+            0 => ZeroProvidersWithinDistanceMessage,
+            1 => SingleProviderWithinDistanceMessage,
+            _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
         };
     }
 
     public string GetApprenticeCanTravelDisplayMessage()
     {
-        if (Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (Distance == DistanceService.AcrossEnglandFilterValue)
         {
-            return DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT;
+            return DistanceService.AcrossEnglandDisplayText;
         }
 
         return $"{Distance} miles";

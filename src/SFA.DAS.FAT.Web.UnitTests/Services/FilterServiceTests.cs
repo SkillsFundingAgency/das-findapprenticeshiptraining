@@ -230,7 +230,7 @@ public sealed class FilterServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(_sut, Has.Count.EqualTo(DistanceService.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
-            Assert.That(_sut.Any(i => i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE && i.DisplayText == AcrossEnglandFilterText), Is.True, "'Across England' option should be present.");
+            Assert.That(_sut.Any(i => i.Value == DistanceService.AcrossEnglandFilterValue && i.DisplayText == AcrossEnglandFilterText), Is.True, "'Across England' option should be present.");
         });
     }
 
@@ -257,8 +257,8 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "'Across England' should be selected when distance is null.");
-            Assert.That(_sut.Any(i => i.IsSelected && i.Value != DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.False, "No specific distance should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.AcrossEnglandFilterValue), Is.True, "'Across England' should be selected when distance is null.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value != DistanceService.AcrossEnglandFilterValue), Is.False, "No specific distance should be selected when distance is null.");
         });
     }
 
@@ -272,7 +272,7 @@ public sealed class FilterServiceTests
         Assert.Multiple(() =>
         {
             Assert.That(_sut.Any(i => i.IsSelected && i.Value == $"{selectedDistance} Miles"), Is.False, "An invalid distance should not be marked as selected.");
-            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.ACROSS_ENGLAND_FILTER_VALUE), Is.True, "Across England should be selected if an invalid distance is provided.");
+            Assert.That(_sut.Any(i => i.IsSelected && i.Value == DistanceService.AcrossEnglandFilterValue), Is.True, "Across England should be selected if an invalid distance is provided.");
         });
     }
 

@@ -141,7 +141,7 @@ public class WhenCreatingCourseProvidersViewModel
         {
             TotalCount = totalCount,
             Location = location,
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
+            Distance = DistanceService.AcrossEnglandFilterValue
         };
 
         sut.TotalMessage.Should().Be(expectedMessage);
@@ -437,7 +437,7 @@ public class WhenCreatingCourseProvidersViewModel
         using (new AssertionScope())
         {
             result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == location);
-            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == DistanceService.ACROSS_ENGLAND_FILTER_VALUE);
+            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == DistanceService.AcrossEnglandFilterValue);
         }
     }
 
