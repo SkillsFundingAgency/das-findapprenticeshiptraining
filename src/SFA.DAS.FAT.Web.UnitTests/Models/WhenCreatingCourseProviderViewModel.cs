@@ -1252,5 +1252,51 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.CourseNameAndLevel, Is.EqualTo("Software developer (level 4)"));
         });
     }
+
+    [Test]
+    public void ContactDetails_ContactAndAddressAreNull_ReturnsEmptyDefaults()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel(),
+            Contact = null
+        };
+
+        var result = sut.ContactDetails;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.RegisteredAddress, Is.EqualTo(string.Empty));
+            Assert.That(result.Email, Is.EqualTo(string.Empty));
+            Assert.That(result.PhoneNumber, Is.EqualTo(string.Empty));
+            Assert.That(result.Website, Is.EqualTo(string.Empty));
+        });
+    }
+
+    [Test]
+    public void ContactDetails_ContactHasWebsite_ReturnsMappedWebsite()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel
+            {
+                AddressLine1 = "1 High Street",
+                Town = "Leeds",
+                Postcode = "LS1 2AB"
+            },
+            Contact = new ContactModel
+            {
+                Website = "https://provider.test"
+            }
+        };
+
+        var result = sut.ContactDetails;
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.RegisteredAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Website, Is.EqualTo("https://provider.test"));
+        });
+    }
 }
 

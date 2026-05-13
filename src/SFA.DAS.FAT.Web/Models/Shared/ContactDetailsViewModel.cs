@@ -1,4 +1,5 @@
-﻿using SFA.DAS.FAT.Domain.Providers.Api.Responses;
+﻿using System;
+using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 
 namespace SFA.DAS.FAT.Web.Models.Shared;
 
@@ -14,9 +15,12 @@ public class ContactDetailsViewModel
     {
         if (source == null) return new ContactDetailsViewModel();
 
-        var website = source.Website;
+        var website = string.IsNullOrWhiteSpace(source.Website)
+            ? string.Empty
+            : source.Website.Trim();
 
-        if (website != null && !website.StartsWith("http") && website.Trim() != string.Empty)
+        if (!string.IsNullOrEmpty(website) &&
+            !website.StartsWith("http", StringComparison.OrdinalIgnoreCase))
         {
             website = $"http://{website}";
         }
@@ -26,7 +30,7 @@ public class ContactDetailsViewModel
             MarketingInfo = source.MarketingInfo,
             Email = source.Email,
             PhoneNumber = source.PhoneNumber,
-            Website = website ?? string.Empty
+            Website = website
         };
     }
 }
