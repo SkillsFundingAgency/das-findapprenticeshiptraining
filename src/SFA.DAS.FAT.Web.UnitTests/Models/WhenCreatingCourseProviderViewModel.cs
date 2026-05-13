@@ -1191,8 +1191,9 @@ public class WhenCreatingCourseProviderViewModel
 
         Assert.Multiple(() =>
         {
-            Assert.That(result.ContactAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
-            Assert.That(result.Contact, Is.EqualTo(contact));
+            Assert.That(result.RegisteredAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Email, Is.EqualTo(contact.Email));
+            Assert.That(result.PhoneNumber, Is.EqualTo(contact.PhoneNumber));
         });
     }
 

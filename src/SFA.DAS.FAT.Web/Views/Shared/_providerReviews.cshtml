@@ -1,0 +1,21 @@
+@using SFA.DAS.FAT.Domain.Courses
+@model SFA.DAS.FAT.Web.Models.Shared.ProviderReviewsViewModel
+
+<h2 class="govuk-heading-l govuk-!-margin-bottom-5">
+
+    Training provider information
+
+</h2>
+
+<h3 class="govuk-heading-m govuk-!-margin-bottom-5">
+
+    Employer and apprentice reviews for this training provider
+
+</h3>
+
+@await Html.PartialAsync("_providerReviewsCard", Model)
+
+<div class="govuk-inset-text govuk-!-margin-top-3">
+    Combined reviews for all courses delivered by this provider in the last full academic year (@Model.Reviews.AcademicPeriod).
+    Data collected by Department for Education.
+</div>

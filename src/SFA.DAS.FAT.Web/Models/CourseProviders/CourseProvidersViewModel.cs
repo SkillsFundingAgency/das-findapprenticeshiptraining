@@ -39,6 +39,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public List<ProviderOrderByOptionViewModel> ProviderOrderOptions { get; set; } = [];
     public PaginationViewModel Pagination { get; set; }
     public int TotalCount { get; set; }
+    private readonly string _requestApprenticeshipTrainingUrl;
+    private readonly string _employerAccountsUrl;
+    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+    private FiltersViewModel _filters;
+
     public string TotalMessage => GetTotalMessage();
 
     public FiltersViewModel Filters
@@ -53,7 +58,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             return _filters;
         }
     }
-
     public CourseProvidersViewModel(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration)
     {
         _valueFunctions = new Dictionary<FilterType, Func<string, string>>
@@ -76,17 +80,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             Route = RouteNames.CourseProviders,
             FilterSections =
             [
-                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
-                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
-                CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DELIVERYMODES_SECTION_HEADING, DELIVERYMODES_SECTION_SUB_HEADING, GenerateDeliveryModesFilterItems()),
+                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance)),
+                CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DeliveryModesSectionHeading, DeliveryModesSectionSubHeading, GenerateDeliveryModesFilterItems()),
                 CreateAccordionGroupFilterSection(
                     "ratings-select",
                     nameof(FilterType.Reviews),
                     [
-                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(FilterType.EmployerProviderRatings), EMPLOYER_REVIEWS_SECTION_HEADING,null, GenerateEmployerReviewsFilterItems()),
-                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(FilterType.ApprenticeProviderRatings), APPRENTICE_REVIEWS_SECTION_HEADING,null, GenerateApprenticeReviewsFilterItems())
+                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(FilterType.EmployerProviderRatings), EmployerReviewsSectionHeading,null, GenerateEmployerReviewsFilterItems()),
+                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(FilterType.ApprenticeProviderRatings), ApprenticeReviewsSectionHeading,null, GenerateApprenticeReviewsFilterItems())
                     ],
-                    REVIEW_SECTION_HEADING,
+                    ReviewSectionHeading,
                     $"From {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"
                 ),
                 CreateAccordionFilterSection(
@@ -96,7 +100,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                         CreateCheckboxListFilterSection(
                             "qar-filter",
                             nameof(FilterType.QarRatings),
-                            QAR_SECTION_HEADING,
+                            QarSectionHeading,
                             $"From {QarPeriodStartYear} to {QarPeriodEndYear}",
                             GenerateQarFilterItems()
                         )
@@ -170,10 +174,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return result;
     }
 
-    private readonly string _requestApprenticeshipTrainingUrl;
-    private readonly string _employerAccountsUrl;
-    private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
-    private FiltersViewModel _filters;
 
     private string GetTotalMessage()
     {
@@ -242,18 +242,18 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var deliveryModes = BuildDeliveryModeOptionViewModel();
 
         return deliveryModes.Select(deliveryMode => new FilterItemViewModel
+        {
+            Value = deliveryMode.DeliveryItemChoice.ToString(),
+            DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
+            DisplayDescription = deliveryMode.DeliveryItemChoice switch
             {
-                Value = deliveryMode.DeliveryItemChoice.ToString(),
-                DisplayText = deliveryMode.DeliveryItemChoice.GetDescription(),
-                DisplayDescription = deliveryMode.DeliveryItemChoice switch
-                {
-                    ProviderDeliveryMode.Online => FilterService.DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION,
-                    ProviderDeliveryMode.Workplace => FilterService.DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION,
-                    ProviderDeliveryMode.Provider => FilterService.DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION,
-                    _ => string.Empty
-                },
-                IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
-            })
+                ProviderDeliveryMode.Online => FilterService.DeliveryModesSectionOnlineDisplayDescription,
+                ProviderDeliveryMode.Workplace => FilterService.DeliveryModesSectionWorkplaceDisplayDescription,
+                ProviderDeliveryMode.Provider => FilterService.DeliveryModesSectionProviderDisplayDescription,
+                _ => string.Empty
+            },
+            IsSelected = SelectedDeliveryModes?.Contains(deliveryMode.DeliveryItemChoice.ToString()) ?? false
+        })
             .ToList();
     }
 
@@ -262,11 +262,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var qarRatings = BuildQarRatingsViewModel();
 
         return qarRatings.Select(qarRating => new FilterItemViewModel
-            {
-                Value = qarRating.QarRatingType.ToString(),
-                DisplayText = qarRating.QarRatingType.GetDescription(),
-                IsSelected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
-            })
+        {
+            Value = qarRating.QarRatingType.ToString(),
+            DisplayText = qarRating.QarRatingType.GetDescription(),
+            IsSelected = SelectedQarRatings?.Contains(qarRating.QarRatingType.ToString()) ?? false
+        })
             .ToList();
     }
 
@@ -275,14 +275,14 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var ratings = BuildEmployerProviderRatingsViewModel();
 
         return ratings.Select(rating => new FilterItemViewModel
-            {
-                Value = rating.ProviderRatingType.ToString(),
-                DisplayText =
+        {
+            Value = rating.ProviderRatingType.ToString(),
+            DisplayText =
                     rating.ProviderRatingType == ProviderRating.NotYetReviewed
                     ? "No employer reviews"
                     : rating.ProviderRatingType.GetDescription(),
-                IsSelected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
-            })
+            IsSelected = SelectedEmployerApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+        })
             .ToList();
     }
 
@@ -291,14 +291,14 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var ratings = BuildApprenticeProviderRatingsViewModel();
 
         return ratings.Select(rating => new FilterItemViewModel
-            {
-                Value = rating.ProviderRatingType.ToString(),
-                DisplayText =
+        {
+            Value = rating.ProviderRatingType.ToString(),
+            DisplayText =
                     rating.ProviderRatingType == ProviderRating.NotYetReviewed
                         ? "No apprentice reviews"
                         : rating.ProviderRatingType.GetDescription(),
-                IsSelected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
-            })
+            IsSelected = SelectedApprenticeApprovalRatings?.Contains(rating.ProviderRatingType.ToString()) ?? false
+        })
             .ToList();
     }
 

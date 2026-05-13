@@ -1,0 +1,40 @@
+@model SFA.DAS.FAT.Web.Models.Shared.AchievementsAndParticipationViewModel
+
+<div class="das-reviews">
+    <div class="govuk-grid-column-one-half das-reviews-container">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+            Achievements
+        </h3>
+        <div asp-show="@Model.AchievementRatePresent">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                @Model.AchievementRate%
+            </h2>
+            <p class="govuk-body-s">
+                @Model.AchievementInformation
+            </p>
+            <p asp-show="@Model.ShowNationalAchievementRate" class="govuk-body-s govuk-!-font-weight-bold govuk-!-margin-bottom-0">
+                @Model.NationalAchievementRate% national achievement rate
+            </p>
+        </div>
+        <div asp-show="!@Model.AchievementRatePresent">
+            <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+                No data
+            </h2>
+            <p class="govuk-body-s">
+                @Model.AchievementNoDataMessage
+            </p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-half das-reviews-container">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-6">
+            Participation
+        </h3>
+        <h2 class="govuk-heading-xl govuk-!-margin-bottom-2">
+            @Model.ParticipationCount
+        </h2>
+        <p class="govuk-body-s">
+            @Model.ParticipationMessage
+        </p>
+    </div>
+</div>

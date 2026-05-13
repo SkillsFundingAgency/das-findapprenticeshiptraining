@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
+using SFA.DAS.FAT.Web.Models.Shared;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
 using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
 
@@ -72,6 +73,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
     public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
     public bool ShowMultipleProvidersForCourse => TotalProvidersCount > 1;
     public TrainingOptionsTableViewModel TrainingOptions => new()
     {
@@ -112,8 +114,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     };
     public ContactDetailsViewModel ContactDetails => new()
     {
-        ContactAddress = ContactAddress,
-        Contact = Contact
+        RegisteredAddress = ContactAddress,
+        Email = Contact?.Email ?? string.Empty,
+        PhoneNumber = Contact?.PhoneNumber ?? string.Empty,
+        Website = Contact?.Website ?? string.Empty
     };
     public ShortlistPanelViewModel ShortlistPanel => new()
     {

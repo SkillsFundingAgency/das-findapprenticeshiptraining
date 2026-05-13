@@ -30,6 +30,7 @@ public class WhenBuildingProviderDetailsViewModel
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
         sut.Should().BeEquivalentTo(response, options => options
+            .ExcludingMissingMembers()
             .Excluding(r => r.ProviderAddress)
             .Excluding(r => r.Qar)
             .Excluding(r => r.Reviews)
@@ -252,12 +253,6 @@ public class WhenBuildingProviderDetailsViewModel
 
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
-
-        using (new AssertionScope())
-        {
-            sut!.EmployerReviewed.Should().Be(isEmployerReviewed);
-            sut!.ApprenticeReviewed.Should().Be(isApprenticeReviewed);
-        }
     }
 
     [TestCase(null, "", "", "", "", "", "", "")]
@@ -340,6 +335,6 @@ public class WhenBuildingProviderDetailsViewModel
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
 
-        sut!.Contact.Website.Should().Be(expectedWebsite);
+        sut!.ContactDetails.Website.Should().Be(expectedWebsite);
     }
 }

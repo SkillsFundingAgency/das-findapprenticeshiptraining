@@ -136,9 +136,9 @@ public class CoursesViewModel : PageLinksViewModelBase
             Route = RouteNames.Courses,
             FilterSections =
             [
-                CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
-                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
-                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
+                CreateInputFilterSection("keyword-input", KeywordSectionHeading, KeywordSectionSubHeading, nameof(Keyword), Keyword),
+                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance)),
                 CreateAccordionFilterSection(
                 "multi-select",
                 string.Empty,
@@ -146,14 +146,14 @@ public class CoursesViewModel : PageLinksViewModelBase
                     CreateCheckboxListFilterSection(
                         "types-filter",
                         nameof(FilterType.LearningTypes),
-                        TRAINING_TYPES_SECTION_HEADING,
+                        TrainingTypesSectionHeading,
                         null,
                         LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
                         TRAINING_TYPE_FIND_OUT_MORE_TEXT,
                         TRAINING_TYPE_FIND_OUT_MORE_LINK
                     ),
-                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
-                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null, GenerateRouteFilterItems())
+                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
+                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
                 ]
             )
             ],

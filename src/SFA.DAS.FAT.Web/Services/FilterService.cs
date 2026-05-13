@@ -13,38 +13,38 @@ namespace SFA.DAS.FAT.Web.Services;
 public static class FilterService
 {
 
-    public const string KEYWORD_SECTION_HEADING = "Course";
-    public const string KEYWORD_SECTION_SUB_HEADING = "Enter course, job or standard";
+    public const string KeywordSectionHeading = "Course";
+    public const string KeywordSectionSubHeading = "Enter course, job or standard";
 
-    public const string LOCATION_SECTION_HEADING = "Learner's work location";
-    public const string LOCATION_SECTION_SUB_HEADING = "Enter city or postcode";
+    public const string LocationSectionHeading = "Learner's work location";
+    public const string LocationSectionSubHeading = "Enter city or postcode";
 
-    public const string DISTANCE_SECTION_HEADING = "Learner can travel";
-    public const string DISTANCE_SECTION_SUB_HEADING = "Distance learner can travel";
+    public const string DistanceSectionHeading = "Learner can travel";
+    public const string DistanceSectionSubHeading = "Distance learner can travel";
 
-    public const string LEVELS_SECTION_HEADING = "Training level";
-    public const string CATEGORIES_SECTION_HEADING = "Job categories";
+    public const string LevelsSectionHeading = "Training level";
+    public const string CategoriesSectionHeading = "Job categories";
 
-    public const string LEVEL_INFORMATION_DISPLAY_TEXT = "Find out more about training levels (opens in new tab)";
-    public const string LEVEL_INFORMATION_URL = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
+    public const string LevelInformationDisplayText = "Find out more about training levels (opens in new tab)";
+    public const string LevelInformationUrl = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
-    public const string ACROSS_ENGLAND_FILTER_TEXT = "Across England";
+    public const string AcrossEnglandFilterText = "Across England";
 
 
-    public const string DELIVERYMODES_SECTION_HEADING = "Training options";
-    public const string DELIVERYMODES_SECTION_SUB_HEADING = "Select a training option";
-    public const string DELIVERYMODES_SECTION_ONLINE_DISPLAYDESCRIPTION = "Your learner will complete this training remotely.";
-    public const string DELIVERYMODES_SECTION_WORKPLACE_DISPLAYDESCRIPTION = "The training provider will travel to you to deliver this course.";
-    public const string DELIVERYMODES_SECTION_PROVIDER_DISPLAYDESCRIPTION = "Your learner will travel to the training provider to complete this course.";
+    public const string DeliveryModesSectionHeading = "Training options";
+    public const string DeliveryModesSectionSubHeading = "Select a training option";
+    public const string DeliveryModesSectionOnlineDisplayDescription = "Your learner will complete this training remotely.";
+    public const string DeliveryModesSectionWorkplaceDisplayDescription = "The training provider will travel to you to deliver this course.";
+    public const string DeliveryModesSectionProviderDisplayDescription = "Your learner will travel to the training provider to complete this course.";
 
-    public const string TRAINING_TYPES_SECTION_HEADING = "Training type";
+    public const string TrainingTypesSectionHeading = "Training type";
 
-    public const string QAR_SECTION_HEADING = "Achievement rate";
+    public const string QarSectionHeading = "Achievement rate";
 
-    public const string REVIEW_SECTION_HEADING = "Reviews";
+    public const string ReviewSectionHeading = "Reviews";
 
-    public const string EMPLOYER_REVIEWS_SECTION_HEADING = "Average employer review";
-    public const string APPRENTICE_REVIEWS_SECTION_HEADING = "Average apprentice review";
+    public const string EmployerReviewsSectionHeading = "Average employer review";
+    public const string ApprenticeReviewsSectionHeading = "Average apprentice review";
 
     public enum FilterComponentType
     {
@@ -76,15 +76,15 @@ public static class FilterService
 
     private static readonly Dictionary<FilterType, string> _ClearFilterSectionHeadings = new Dictionary<FilterType, string>()
     {
-        { FilterType.KeyWord, KEYWORD_SECTION_HEADING },
-        { FilterType.Location, LOCATION_SECTION_HEADING},
-        { FilterType.Levels, LEVELS_SECTION_HEADING },
-        { FilterType.Categories, CATEGORIES_SECTION_HEADING },
-        { FilterType.DeliveryModes, DELIVERYMODES_SECTION_HEADING },
-        { FilterType.QarRatings, QAR_SECTION_HEADING },
-        { FilterType.EmployerProviderRatings, EMPLOYER_REVIEWS_SECTION_HEADING},
-        { FilterType.ApprenticeProviderRatings, APPRENTICE_REVIEWS_SECTION_HEADING},
-        { FilterType.LearningTypes, TRAINING_TYPES_SECTION_HEADING}
+        { FilterType.KeyWord, KeywordSectionHeading },
+        { FilterType.Location, LocationSectionHeading},
+        { FilterType.Levels, LevelsSectionHeading },
+        { FilterType.Categories, CategoriesSectionHeading },
+        { FilterType.DeliveryModes, DeliveryModesSectionHeading },
+        { FilterType.QarRatings, QarSectionHeading },
+        { FilterType.EmployerProviderRatings, EmployerReviewsSectionHeading},
+        { FilterType.ApprenticeProviderRatings, ApprenticeReviewsSectionHeading},
+        { FilterType.LearningTypes, TrainingTypesSectionHeading}
     };
 
     public static FilterSection CreateInputFilterSection(string id, string heading, string subHeading, string filterFor, string inputValue)
@@ -227,7 +227,7 @@ public static class FilterService
         distanceFilterItems.Add(new FilterItemViewModel
         {
             Value = DistanceService.ACROSS_ENGLAND_FILTER_VALUE,
-            DisplayText = ACROSS_ENGLAND_FILTER_TEXT,
+                DisplayText = AcrossEnglandFilterText,
             IsSelected =
                 string.Equals(
                     selectedDistance,
@@ -383,12 +383,12 @@ public static class FilterService
 
         if (!queryParams.TryGetValue(FilterType.Distance, out var distanceList) || distanceList == null || distanceList.Count == 0)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
+                return $"{location[0]} ({AcrossEnglandFilterText})";
         }
 
         if (!int.TryParse(distanceList[0], out var distance) || distance < 1 || distance > 100)
         {
-            return $"{location[0]} ({ACROSS_ENGLAND_FILTER_TEXT})";
+                return $"{location[0]} ({AcrossEnglandFilterText})";
         }
 
         return $"{location[0]} (within {distance} miles)";
