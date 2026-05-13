@@ -1298,5 +1298,38 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.Website, Is.EqualTo("https://provider.test"));
         });
     }
+
+    [Test]
+    public void HasLocation_LocationIsNull_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = null
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsWhitespace_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "   "
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsSet_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "Leeds"
+        };
+
+        Assert.That(sut.HasLocation, Is.True);
+    }
 }
 

@@ -530,4 +530,68 @@ public class WhenCreatingCourseProvidersViewModel
 
         decodedResult.Should().Contain("location=   ");
     }
+
+    [Test]
+    public void CreateFilterSections_NoFiltersSelectedAndDistanceEmpty_CreatesNoClearFilterSections()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            Distance = string.Empty,
+            Location = null,
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        Assert.That(result.ClearFilterSections, Is.Empty);
+    }
+
+    [Test]
+    public void CreateFilterSections_LocationAndDistanceSelected_IncludesLocationClearFilterSection()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            Location = "Leeds",
+            Distance = "10",
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().ContainSingle(s => s.FilterType == FilterService.FilterType.Location);
+            var locationSection = result.ClearFilterSections.Single(s => s.FilterType == FilterService.FilterType.Location);
+            locationSection.Items.Should().ContainSingle();
+            locationSection.Items[0].DisplayText.Should().Be("Leeds (within 10 miles)");
+        }
+    }
+
+    [Test]
+    public void CreateFilterSections_SelectedDeliveryModesForShortCourse_IncludesDeliveryModeDisplayText()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            CourseType = CourseType.ShortCourse,
+            SelectedDeliveryModes = new[] { ProviderDeliveryMode.Workplace.ToString() },
+            OrderBy = ProviderOrderBy.Distance,
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().ContainSingle(s => s.FilterType == FilterService.FilterType.DeliveryModes);
+            var section = result.ClearFilterSections.Single(s => s.FilterType == FilterService.FilterType.DeliveryModes);
+            section.Items.Should().ContainSingle(i => i.DisplayText == "At learner's workplace");
+        }
+    }
 }

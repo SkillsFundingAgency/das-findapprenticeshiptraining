@@ -321,4 +321,30 @@ public sealed class WhenCreatingCourseViewModel
 
         Assert.That(result, Is.EqualTo(CourseViewModel.MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", "3")));
     }
+
+    [TestCase(0, "£0")]
+    [TestCase(1000, "£1,000")]
+    [TestCase(123456, "£123,456")]
+    public void MaxFundingDisplayValue_MaxFundingSet_ReturnsCurrencyFormattedValue(int maxFunding, string expected)
+    {
+        var sut = new CourseViewModel
+        {
+            MaxFunding = maxFunding
+        };
+
+        Assert.That(sut.MaxFundingDisplayValue, Is.EqualTo(expected));
+    }
+
+    [TestCase(0, "£0")]
+    [TestCase(3000, "£3,000")]
+    [TestCase(999999, "£999,999")]
+    public void IncentivePaymentDisplayValue_IncentivePaymentSet_ReturnsCurrencyFormattedValue(int incentivePayment, string expected)
+    {
+        var sut = new CourseViewModel
+        {
+            IncentivePayment = incentivePayment
+        };
+
+        Assert.That(sut.IncentivePaymentDisplayValue, Is.EqualTo(expected));
+    }
 }
