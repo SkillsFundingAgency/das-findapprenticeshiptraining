@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Models.Courses;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -103,6 +104,43 @@ public class CourseViewModel : PageLinksViewModelBase
     public string HelpFindingCourseUrl => GetHelpFindingCourseUrl(ConfigOptions.Value);
     public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
     public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
+    public CourseInformationSummaryViewModel CourseInformationSummary => new()
+    {
+        LarsCode = LarsCode,
+        TitleAndLevel = TitleAndLevel,
+        OverviewOfRole = OverviewOfRole,
+        IsFoundationApprenticeship = IsFoundationApprenticeship,
+        IsApprenticeshipUnit = IsApprenticeshipUnit,
+        IncentivePaymentDisplayValue = IncentivePaymentDisplayValue,
+        KnowledgeSkillsHeaderTextToDisplay = KnowledgeSkillsHeaderTextToDisplay,
+        KnowledgeSkillsLinkTextToDisplay = KnowledgeSkillsLinkTextToDisplay,
+        KsbDetails = KsbDetails,
+        Route = Route,
+        Level = Level,
+        LevelEquivalentToDisplayText = LevelEquivalentToDisplayText,
+        LearningType = LearningType,
+        TypicalDuration = TypicalDuration,
+        MaxFundingDisplayValue = MaxFundingDisplayValue,
+        MaximumFundingTextToDisplay = MaximumFundingTextToDisplay,
+        IsApprenticeship = IsApprenticeship,
+        TypicalJobTitlesArray = TypicalJobTitlesArray,
+        RelatedOccupations = RelatedOccupations,
+        StandardPageUrl = StandardPageUrl
+    };
+
+    public CourseProviderAvailabilityViewModel CourseProviderAvailability => new()
+    {
+        TotalProvidersCount = TotalProvidersCount,
+        IsShortCourseType = IsShortCourseType,
+        TitleAndLevel = TitleAndLevel,
+        HelpFindingCourseUrl = HelpFindingCourseUrl,
+        ProviderCountDisplayMessage = ProviderCountDisplayMessage,
+        HasLocation = HasLocation,
+        LarsCode = LarsCode,
+        Location = Location,
+        ApprenticeCanTravelDisplayMessage = ApprenticeCanTravelDisplayMessage,
+        Distance = Distance
+    };
     public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
     private string GetLevelEquivalentToDisplayText()
     {

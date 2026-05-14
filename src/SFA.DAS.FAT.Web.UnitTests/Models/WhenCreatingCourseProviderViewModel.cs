@@ -1331,5 +1331,28 @@ public class WhenCreatingCourseProviderViewModel
 
         Assert.That(sut.HasLocation, Is.True);
     }
+
+    [Test]
+    public void CourseProviderByLocationSearch_CourseProviderViewModelHasValues_ReturnsMappedViewModel()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "Leeds",
+            LarsCode = "123",
+            Ukprn = 10000001,
+            Distance = "10"
+        };
+
+        var result = sut.CourseProviderByLocationSearch;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.HasLocation, Is.EqualTo(sut.HasLocation));
+            Assert.That(result.Location, Is.EqualTo(sut.Location));
+            Assert.That(result.LarsCode, Is.EqualTo(sut.LarsCode));
+            Assert.That(result.Ukprn, Is.EqualTo(sut.Ukprn));
+            Assert.That(result.Distance, Is.EqualTo(sut.Distance));
+        }
+    }
 }
 

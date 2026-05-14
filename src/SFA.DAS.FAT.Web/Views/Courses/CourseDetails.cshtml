@@ -3,7 +3,6 @@
 @using SFA.DAS.FAT.Domain.Configuration
 @using SFA.DAS.FAT.Domain.Extensions
 @model SFA.DAS.FAT.Web.Models.CourseViewModel
-@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 
 @{
     ViewData["Title"] = $"{Model.TitleAndLevel} - apprenticeship training course";
@@ -22,6 +21,6 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@Model.TitleAndLevel</h1>
         </div>
     </div>
-    @await Html.PartialAsync("_courseProviderAvailability", Model)
-    @await Html.PartialAsync("_courseInformationSummary", Model)
+    @await Html.PartialAsync("_courseProviderAvailability", Model.CourseProviderAvailability)
+    @await Html.PartialAsync("_courseInformationSummary", Model.CourseInformationSummary)
 </main>

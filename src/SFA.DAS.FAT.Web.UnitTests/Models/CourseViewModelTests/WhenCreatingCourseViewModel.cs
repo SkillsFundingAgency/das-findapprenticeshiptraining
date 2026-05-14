@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using Microsoft.Extensions.Options;
+using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -362,5 +363,94 @@ public sealed class WhenCreatingCourseViewModel
         };
 
         Assert.That(sut.IncentivePaymentDisplayValue, Is.EqualTo(expected));
+    }
+
+    [Test]
+    public void CourseInformationSummary_CourseViewModelHasValues_ReturnsMappedViewModel()
+    {
+        var ksbDetails = new List<KsbGroup> { new() { Type = KsbType.Knowledge, Details = new List<string> { "detail" } } };
+        var relatedOccupations = new List<RelatedOccupation> { new() { Title = "Occupation", Level = 2 } };
+
+        var sut = new CourseViewModel
+        {
+            LarsCode = "123",
+            TitleAndLevel = "Title (level 2)",
+            OverviewOfRole = "Overview",
+            IsFoundationApprenticeship = true,
+            IsApprenticeshipUnit = false,
+            IncentivePayment = 2000,
+            KsbDetails = ksbDetails,
+            Route = "Health",
+            Level = 2,
+            Levels = new List<Level> { new() { Code = 2, Name = "Level 2" } },
+            LearningType = LearningType.Apprenticeship,
+            TypicalDuration = 18,
+            MaxFunding = 12000,
+            IsApprenticeship = true,
+            TypicalJobTitles = "Job A|Job B",
+            RelatedOccupations = relatedOccupations,
+            StandardPageUrl = "https://example.com/course"
+        };
+
+        var result = sut.CourseInformationSummary;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.LarsCode, Is.EqualTo(sut.LarsCode));
+            Assert.That(result.TitleAndLevel, Is.EqualTo(sut.TitleAndLevel));
+            Assert.That(result.OverviewOfRole, Is.EqualTo(sut.OverviewOfRole));
+            Assert.That(result.IsFoundationApprenticeship, Is.EqualTo(sut.IsFoundationApprenticeship));
+            Assert.That(result.IsApprenticeshipUnit, Is.EqualTo(sut.IsApprenticeshipUnit));
+            Assert.That(result.IncentivePaymentDisplayValue, Is.EqualTo(sut.IncentivePaymentDisplayValue));
+            Assert.That(result.KnowledgeSkillsHeaderTextToDisplay, Is.EqualTo(sut.KnowledgeSkillsHeaderTextToDisplay));
+            Assert.That(result.KnowledgeSkillsLinkTextToDisplay, Is.EqualTo(sut.KnowledgeSkillsLinkTextToDisplay));
+            Assert.That(result.KsbDetails, Is.EqualTo(sut.KsbDetails));
+            Assert.That(result.Route, Is.EqualTo(sut.Route));
+            Assert.That(result.Level, Is.EqualTo(sut.Level));
+            Assert.That(result.LevelEquivalentToDisplayText, Is.EqualTo(sut.LevelEquivalentToDisplayText));
+            Assert.That(result.LearningType, Is.EqualTo(sut.LearningType));
+            Assert.That(result.TypicalDuration, Is.EqualTo(sut.TypicalDuration));
+            Assert.That(result.MaxFundingDisplayValue, Is.EqualTo(sut.MaxFundingDisplayValue));
+            Assert.That(result.MaximumFundingTextToDisplay, Is.EqualTo(sut.MaximumFundingTextToDisplay));
+            Assert.That(result.IsApprenticeship, Is.EqualTo(sut.IsApprenticeship));
+            Assert.That(result.TypicalJobTitlesArray, Is.EqualTo(sut.TypicalJobTitlesArray));
+            Assert.That(result.RelatedOccupations, Is.EqualTo(sut.RelatedOccupations));
+            Assert.That(result.StandardPageUrl, Is.EqualTo(sut.StandardPageUrl));
+        }
+    }
+
+    [Test]
+    public void CourseProviderAvailability_CourseViewModelHasValues_ReturnsMappedViewModel()
+    {
+        var sut = new CourseViewModel
+        {
+            TotalProvidersCount = 2,
+            IsShortCourseType = true,
+            TitleAndLevel = "Title (level 2)",
+            LarsCode = "123",
+            Location = "Leeds",
+            Distance = "All",
+            ConfigOptions = Options.Create(new FindApprenticeshipTrainingWeb
+            {
+                EmployerAccountsUrl = "https://accounts.example",
+                RequestApprenticeshipTrainingUrl = "https://rat.example"
+            })
+        };
+
+        var result = sut.CourseProviderAvailability;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.TotalProvidersCount, Is.EqualTo(sut.TotalProvidersCount));
+            Assert.That(result.IsShortCourseType, Is.EqualTo(sut.IsShortCourseType));
+            Assert.That(result.TitleAndLevel, Is.EqualTo(sut.TitleAndLevel));
+            Assert.That(result.HelpFindingCourseUrl, Is.EqualTo(sut.HelpFindingCourseUrl));
+            Assert.That(result.ProviderCountDisplayMessage, Is.EqualTo(sut.ProviderCountDisplayMessage));
+            Assert.That(result.HasLocation, Is.EqualTo(sut.HasLocation));
+            Assert.That(result.LarsCode, Is.EqualTo(sut.LarsCode));
+            Assert.That(result.Location, Is.EqualTo(sut.Location));
+            Assert.That(result.ApprenticeCanTravelDisplayMessage, Is.EqualTo(sut.ApprenticeCanTravelDisplayMessage));
+            Assert.That(result.Distance, Is.EqualTo(sut.Distance));
+        }
     }
 }
