@@ -222,7 +222,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         if (SelectedTrainingTypes.Count > 0)
         {
             var validTrainingTypes = SelectedTrainingTypes
-                .Where(type => Enum.IsDefined(typeof(LearningType), type))
+                .Where(type => Enum.IsDefined(type))
                 .Select(type => type.ToString())
                 .ToList();
             AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes);

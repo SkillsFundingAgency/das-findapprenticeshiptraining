@@ -14,7 +14,7 @@ public class ProviderReviewsViewModelTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.EmployerReviewed, Is.True);
-            Assert.That(sut.EmployerStarsValue, Is.EqualTo(0));
+            Assert.That(sut.EmployerStarsValue, Is.Zero);
             Assert.That(sut.EmployerRating, Is.EqualTo(ProviderRating.Excellent.ToString()));
             Assert.That(sut.EmployerReviewsMessage, Is.EqualTo(string.Empty));
         }
@@ -28,7 +28,7 @@ public class ProviderReviewsViewModelTests
         using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.ApprenticeReviewed, Is.True);
-            Assert.That(sut.ApprenticeStarsValue, Is.EqualTo(0));
+            Assert.That(sut.ApprenticeStarsValue, Is.Zero);
             Assert.That(sut.ApprenticeRating, Is.EqualTo(ProviderRating.Excellent.ToString()));
             Assert.That(sut.ApprenticeReviewsMessage, Is.EqualTo(string.Empty));
         }

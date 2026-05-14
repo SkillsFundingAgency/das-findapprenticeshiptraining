@@ -232,7 +232,7 @@ public sealed class WhenFilteringCourseProviders
 
             var checkBoxList = ((CheckboxListFilterSectionViewModel)employerProviderRatingsFilterSection);
 
-            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
+            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames<ProviderRating>().Length));
             Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedEmployerApprovalRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.EmployerReviewsSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
@@ -284,7 +284,7 @@ public sealed class WhenFilteringCourseProviders
 
             var checkBoxList = ((CheckboxListFilterSectionViewModel)apprenticeProviderRatingsFilterSection);
 
-            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(ProviderRating)).Length));
+            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames<ProviderRating>().Length));
             Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedApprenticeApprovalRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.ApprenticeReviewsSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
@@ -336,7 +336,7 @@ public sealed class WhenFilteringCourseProviders
 
             var checkBoxList = ((CheckboxListFilterSectionViewModel)qarRatingsFilterSection);
 
-            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames(typeof(QarRating)).Length));
+            Assert.That(checkBoxList.Items, Has.Count.EqualTo(Enum.GetNames<QarRating>().Length));
             Assert.That(checkBoxList.Items.Where(a => a.IsSelected).ToList(), Has.Count.EqualTo(_viewModel.SelectedQarRatings.Count()));
             Assert.That(checkBoxList.Heading, Is.EqualTo(FilterService.QarSectionHeading));
             Assert.That(checkBoxList.Link, Is.Null);
