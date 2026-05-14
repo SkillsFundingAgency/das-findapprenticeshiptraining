@@ -598,4 +598,29 @@ public class WhenCreatingCourseProvidersViewModel
             section.Items.Should().ContainSingle(i => i.DisplayText == "At learner's workplace");
         }
     }
+
+    [Test]
+    public void CreateFilterSections_SelectedRatingsAreEmpty_DoesNotAddRatingClearFilterSections()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            SelectedDeliveryModes = [],
+            SelectedEmployerApprovalRatings = [],
+            SelectedApprenticeApprovalRatings = [],
+            SelectedQarRatings = [],
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.EmployerProviderRatings);
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.ApprenticeProviderRatings);
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.QarRatings);
+        }
+    }
 }

@@ -1001,4 +1001,38 @@ public class WhenGettingCourseProviders
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
     }
+
+    [Test, MoqAutoData]
+    public async Task CourseProviders_ShortlistCountMissingFromSession_DefaultsToZero(
+    [Frozen] Mock<ISessionService> sessionServiceMock,
+    [Frozen] Mock<IMediator> mediatorMock,
+    [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+    [Frozen] Mock<ITempDataDictionary> tempDataMock,
+    [Greedy] CourseProvidersController sut,
+    CourseProvidersDetails mediatorResult)
+    {
+        // Arrange
+        sut.AddUrlHelperMock();
+        sut.TempData = tempDataMock.Object;
+
+        mediatorMock
+            .Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(mediatorResult);
+
+        validatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        sessionServiceMock
+            .Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount))
+            .Returns((ShortlistsCount)null);
+
+        // Act
+        var result = await sut.CourseProviders(new CourseProvidersRequest { LarsCode = "1" }) as ViewResult;
+
+        // Assert
+        result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(0);
+    }
 }

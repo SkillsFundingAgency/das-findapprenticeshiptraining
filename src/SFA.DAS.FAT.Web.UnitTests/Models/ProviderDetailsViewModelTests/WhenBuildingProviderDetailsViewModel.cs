@@ -255,6 +255,65 @@ public class WhenBuildingProviderDetailsViewModel
         sut.Should().NotBeNull();
     }
 
+    [Test, MoqAutoData]
+    public void BuildProviderDetailsViewModel_FromValidReviewRatings_ParsesProviderRatings(
+        ProviderRating employerProviderRating,
+        ProviderRating apprenticeProviderRating)
+    {
+        var response = new GetProviderQueryResponse
+        {
+            Ukprn = 12345678,
+            Reviews = new GetProviderReviewsModel
+            {
+                ReviewPeriod = "2324",
+                EmployerReviews = "1",
+                EmployerStars = "2",
+                ApprenticeReviews = "3",
+                ApprenticeStars = "4",
+                EmployerRating = employerProviderRating.ToString(),
+                ApprenticeRating = apprenticeProviderRating.ToString()
+            }
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderReviews.Reviews.EmployerRating.Should().Be(employerProviderRating);
+            sut.ProviderReviews.Reviews.ApprenticeRating.Should().Be(apprenticeProviderRating);
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("NotARealRating")]
+    [TestCase("Very poor")]
+    public void BuildProviderDetailsViewModel_FromInvalidReviewRating_DefaultsToNotYetReviewed(string invalidRating)
+    {
+        var response = new GetProviderQueryResponse
+        {
+            Ukprn = 12345678,
+            Reviews = new GetProviderReviewsModel
+            {
+                ReviewPeriod = "2324",
+                EmployerReviews = "1",
+                EmployerStars = "2",
+                ApprenticeReviews = "3",
+                ApprenticeStars = "4",
+                EmployerRating = invalidRating,
+                ApprenticeRating = invalidRating
+            }
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderReviews.Reviews.EmployerRating.Should().Be(ProviderRating.NotYetReviewed);
+            sut.ProviderReviews.Reviews.ApprenticeRating.Should().Be(ProviderRating.NotYetReviewed);
+        }
+    }
+
     [TestCase(null, "", "", "", "", "", "", "")]
     [TestCase("", "", "", "", "", "", "", "")]
     [TestCase("", null, null, null, null, null, null, "")]
