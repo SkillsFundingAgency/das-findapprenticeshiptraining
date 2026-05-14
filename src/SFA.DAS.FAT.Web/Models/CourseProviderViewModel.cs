@@ -284,7 +284,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             leaversText = leaversCount.ToString("N0");
         }
 
-        if (this.Qar.AchievementRate is not null)
+        if (Qar.AchievementRate is not null)
         {
             return $"of apprentices ({Qar.TotalNumberOfCompletedParticipants.ToString("N0")} of {leaversText}) completed this course and passed their end-point assessment with this " +
                    $"provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the " +

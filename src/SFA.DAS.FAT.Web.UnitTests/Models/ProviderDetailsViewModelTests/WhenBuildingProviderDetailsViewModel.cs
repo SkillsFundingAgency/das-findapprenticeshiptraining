@@ -337,4 +337,43 @@ public class WhenBuildingProviderDetailsViewModel
 
         sut!.ContactDetails.Website.Should().Be(expectedWebsite);
     }
+
+    [Test]
+    public void ImplicitOperator_ProviderAddressComposed_SetsContactDetailsRegisteredAddress()
+    {
+        GetProviderQueryResponse response = new GetProviderQueryResponse
+        {
+            ProviderName = ProviderName,
+            ProviderAddress = new GetProviderAddressModel
+            {
+                AddressLine1 = Address1,
+                Town = Town,
+                Postcode = Postcode
+            },
+            Contact = null
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderAddress.Should().Be($"{ProviderName}, {Address1}, {Town}, {Postcode}");
+            sut.ContactDetails.RegisteredAddress.Should().Be($"{ProviderName}, {Address1}, {Town}, {Postcode}");
+        }
+    }
+
+    [Test]
+    public void ImplicitOperator_ProviderAddressEmpty_SetsContactDetailsRegisteredAddressToEmptyString()
+    {
+        GetProviderQueryResponse response = new GetProviderQueryResponse
+        {
+            ProviderName = null,
+            ProviderAddress = null,
+            Contact = null
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        sut.ContactDetails.RegisteredAddress.Should().Be(string.Empty);
+    }
 }

@@ -309,7 +309,15 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         AddLocationAndDistanceFilters(selectedFilters);
         AddDeliveryModesFilter(selectedFilters);
         AddRatingFilters(selectedFilters);
-        AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
+
+        var defaultOrderBy = (CourseType == CourseType.ShortCourse)
+            ? ProviderOrderBy.Distance
+            : ProviderOrderBy.AchievementRate;
+
+        if (OrderBy != defaultOrderBy)
+        {
+            AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
+        }
 
         if (selectedFilters.Count == 0)
         {
@@ -317,10 +325,9 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         }
 
         return CreateClearFilterSections(
-                selectedFilters,
-                _valueFunctions,
-                new[] { FilterType.Distance, FilterType.OrderBy }
-            );
+            selectedFilters,
+            _valueFunctions,
+            new[] { FilterType.Distance, FilterType.OrderBy });
     }
 
     private void AddLocationAndDistanceFilters(Dictionary<FilterType, IEnumerable<string>> selectedFilters)

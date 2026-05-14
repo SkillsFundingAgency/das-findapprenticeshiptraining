@@ -229,7 +229,7 @@ public sealed class FilterServiceTests
 
         Assert.Multiple(() =>
         {
-            Assert.That(_sut.Count(), Is.EqualTo(DistanceService.Distances.Count() + 1), "Result should contain all distances + 'Across England' option.");
+            Assert.That(_sut.Count(), Is.EqualTo(DistanceService.Distances.Count + 1), "Result should contain all distances + 'Across England' option.");
             Assert.That(_sut.Any(i => i.Value == DistanceService.AcrossEnglandFilterValue && i.DisplayText == AcrossEnglandFilterText), Is.True, "'Across England' option should be present.");
         });
     }

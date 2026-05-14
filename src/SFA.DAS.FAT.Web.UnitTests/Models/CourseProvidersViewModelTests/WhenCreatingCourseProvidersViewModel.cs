@@ -536,17 +536,21 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Distance = string.Empty,
-            Location = null,
             CourseType = CourseType.Apprenticeship,
             OrderBy = ProviderOrderBy.AchievementRate,
+            Location = null,
+            Distance = " ",
+            SelectedDeliveryModes = [],
+            SelectedEmployerApprovalRatings = [],
+            SelectedApprenticeApprovalRatings = [],
+            SelectedQarRatings = [],
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
 
         var result = sut.CreateFilterSections();
 
-        Assert.That(result.ClearFilterSections, Is.Empty);
+        result.ClearFilterSections.Should().BeEmpty();
     }
 
     [Test]
