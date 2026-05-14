@@ -23,6 +23,8 @@ public class CoursesViewModel : PageLinksViewModelBase
     public const string TrainingTypeFindOutMoreLink = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+    private OrderBy? _orderBy;
+    private FiltersViewModel _filters;
 
     public CoursesViewModel()
     {
@@ -61,8 +63,6 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BestMatchToCourse : NameOfCourse;
 
-    private OrderBy? _orderBy;
-
     public OrderBy OrderBy
     {
         get
@@ -76,7 +76,9 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    private FiltersViewModel _filters;
+    public string TotalMessage => GetTotalMessage();
+
+    public string CoursesSubHeader => PopulateCoursesSubHeader();
 
     public FiltersViewModel Filters
     {
@@ -90,43 +92,6 @@ public class CoursesViewModel : PageLinksViewModelBase
             return _filters;
         }
     }
-
-    public string TotalMessage => GetTotalMessage();
-
-    public string CoursesSubHeader => PopulateCoursesSubHeader();
-
-    private string PopulateCoursesSubHeader()
-    {
-        if (Total == 0)
-        {
-            return string.Empty;
-        }
-
-        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
-        {
-            return LocationCoursesSubHeaderText;
-        }
-
-        return CoursesSubHeaderText;
-    }
-
-    private string GetTotalMessage()
-    {
-        var totalToUse = string.IsNullOrEmpty(Keyword)
-                         && (SelectedRoutes == null || SelectedRoutes.Count < 1)
-                         && (SelectedLevels == null || SelectedLevels.Count < 1)
-                                ? Total
-                                : TotalFiltered;
-
-        string resultDisplayMessage = $"{totalToUse} result";
-        if (totalToUse != 1)
-        {
-            resultDisplayMessage += "s";
-        }
-
-        return resultDisplayMessage;
-    }
-
     public FiltersViewModel CreateFilterSections()
     {
         var selectedFilterSections = CreateSelectedFilterSections();
@@ -160,6 +125,38 @@ public class CoursesViewModel : PageLinksViewModelBase
             ClearFilterSections = selectedFilterSections
         };
     }
+    private string PopulateCoursesSubHeader()
+    {
+        if (Total == 0)
+        {
+            return string.Empty;
+        }
+
+        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
+        {
+            return LocationCoursesSubHeaderText;
+        }
+
+        return CoursesSubHeaderText;
+    }
+
+    private string GetTotalMessage()
+    {
+        var totalToUse = string.IsNullOrEmpty(Keyword)
+                         && (SelectedRoutes == null || SelectedRoutes.Count < 1)
+                         && (SelectedLevels == null || SelectedLevels.Count < 1)
+                                ? Total
+                                : TotalFiltered;
+
+        string resultDisplayMessage = $"{totalToUse} result";
+        if (totalToUse != 1)
+        {
+            resultDisplayMessage += "s";
+        }
+
+        return resultDisplayMessage;
+    }
+
 
     private List<FilterItemViewModel> GenerateRouteFilterItems()
     {

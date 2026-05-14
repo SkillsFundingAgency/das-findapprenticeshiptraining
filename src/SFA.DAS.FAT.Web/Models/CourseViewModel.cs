@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
@@ -13,6 +14,8 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
+    public IOptions<FindApprenticeshipTrainingWeb> ConfigOptions { get; set; }
+
     public const string KnowledgeSkillsHeaderText = "Knowledge, skills and behaviours";
     public const string KnowledgeSkillsHeaderTextApprenticeshipUnit = "Knowledge and skills learners will gain";
     public const string KnowledgeSkillsLinkText = "View knowledge, skills and behaviours";
@@ -49,12 +52,9 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsFoundationApprenticeship { get; set; }
     public bool IsApprenticeshipUnit { get; set; }
     public bool IsShortCourseType { get; set; }
-
     public int IncentivePayment { get; set; }
     public string IncentivePaymentDisplayValue => IncentivePayment.ToString("C0", new CultureInfo("en-GB"));
-
     public List<Level> Levels { get; set; } = [];
-
     public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
 
@@ -95,8 +95,16 @@ public class CourseViewModel : PageLinksViewModelBase
             IsShortCourseType = source.CourseType == CourseType.ShortCourse
         };
     }
-
-    public string GetLevelEquivalentToDisplayText()
+    public string LevelEquivalentToDisplayText => GetLevelEquivalentToDisplayText();
+    public string KnowledgeSkillsHeaderTextToDisplay => GetKnowledgeSkillsHeaderTextToDisplay();
+    public string KnowledgeSkillsLinkTextToDisplay => GetKnowledgeSkillsLinkTextToDisplay();
+    public string MaximumFundingTextToDisplay => GetMaximumFundingTextToDisplay();
+    public string[] TypicalJobTitlesArray => GetTypicalJobTitles();
+    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl(ConfigOptions.Value);
+    public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
+    public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    private string GetLevelEquivalentToDisplayText()
     {
         if (Levels.Count == 0)
         {
@@ -107,31 +115,16 @@ public class CourseViewModel : PageLinksViewModelBase
 
         return equivalentLevel is null ? string.Empty : $"Equal to {equivalentLevel.Name}";
     }
-
-    public string GetKnowledgeSkillsHeaderTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? KnowledgeSkillsHeaderTextApprenticeshipUnit : KnowledgeSkillsHeaderText;
-    }
-    public string GetKnowledgeSkillsLinkTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? KnowledgeSkillsLinkTextApprenticeshipUnit : KnowledgeSkillsLinkText;
-    }
-    public string GetMaximumFundingTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? MaximumFundingTextApprenticeshipUnit : MaximumFundingText;
-    }
-
-    public string[] GetTypicalJobTitles()
+    private string[] GetTypicalJobTitles()
     {
         if (string.IsNullOrWhiteSpace(TypicalJobTitles))
         {
-            return [];
+            return Array.Empty<string>();
         }
 
         return TypicalJobTitles.Split('|');
     }
-
-    public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+    private string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
     {
         var redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
         var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
@@ -139,8 +132,16 @@ public class CourseViewModel : PageLinksViewModelBase
         return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
+    private string GetKnowledgeSkillsHeaderTextToDisplay() =>
+        IsApprenticeshipUnit ? KnowledgeSkillsHeaderTextApprenticeshipUnit : KnowledgeSkillsHeaderText;
 
-    public string GetProviderCountDisplayMessage()
+    private string GetKnowledgeSkillsLinkTextToDisplay() =>
+        IsApprenticeshipUnit ? KnowledgeSkillsLinkTextApprenticeshipUnit : KnowledgeSkillsLinkText;
+
+    private string GetMaximumFundingTextToDisplay() =>
+        IsApprenticeshipUnit ? MaximumFundingTextApprenticeshipUnit : MaximumFundingText;
+
+    private string GetProviderCountDisplayMessage()
     {
         if (!HasLocation)
         {
@@ -156,18 +157,10 @@ public class CourseViewModel : PageLinksViewModelBase
             _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
         };
     }
-
-    public string GetApprenticeCanTravelDisplayMessage()
-    {
-        if (Distance == DistanceService.AcrossEnglandFilterValue)
-        {
-            return DistanceService.AcrossEnglandDisplayText;
-        }
-
-        return $"{Distance} miles";
-    }
-
-    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    private string GetApprenticeCanTravelDisplayMessage() =>
+        Distance == DistanceService.AcrossEnglandFilterValue
+            ? DistanceService.AcrossEnglandDisplayText
+            : $"{Distance} miles";
 
     private static List<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
     {

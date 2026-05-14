@@ -130,6 +130,7 @@ public class CoursesController : Controller
         var viewModel = (CourseViewModel)result;
         viewModel.Location = location;
         viewModel.Distance = distance;
+        viewModel.ConfigOptions = Options.Create(_config);
 
         return View(viewModel);
     }
