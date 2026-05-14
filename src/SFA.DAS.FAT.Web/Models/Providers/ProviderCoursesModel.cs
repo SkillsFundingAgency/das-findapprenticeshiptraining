@@ -14,7 +14,7 @@ public class ProviderCoursesModel
     public string Location { get; set; }
 
     public int CourseCount => Courses.Count;
-
+    public IList<CourseGroupViewModel> CourseGroups => GetCourseGroups();
     public string CoursesDropdownText
     {
         get
@@ -43,7 +43,7 @@ public class ProviderCoursesModel
             ? displayName
             : "Apprenticeship";
 
-    public IList<CourseGroupViewModel> GetCourseGroups()
+    private List<CourseGroupViewModel> GetCourseGroups()
     {
         if (Courses.Count == 0)
         {

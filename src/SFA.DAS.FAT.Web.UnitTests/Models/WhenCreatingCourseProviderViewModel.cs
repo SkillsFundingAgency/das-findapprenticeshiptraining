@@ -1191,8 +1191,9 @@ public class WhenCreatingCourseProviderViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.ContactAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
-            Assert.That(result.Contact, Is.EqualTo(contact));
+            Assert.That(result.RegisteredAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Email, Is.EqualTo(contact.Email));
+            Assert.That(result.PhoneNumber, Is.EqualTo(contact.PhoneNumber));
         }
     }
 
@@ -1249,6 +1250,108 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.ShowMultipleProvidersForCourse, Is.True);
             Assert.That(result.TotalProvidersCount, Is.EqualTo(2));
             Assert.That(result.CourseNameAndLevel, Is.EqualTo("Software developer (level 4)"));
+        }
+    }
+
+    [Test]
+    public void ContactDetails_ContactAndAddressAreNull_ReturnsEmptyDefaults()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel(),
+            Contact = null
+        };
+
+        var result = sut.ContactDetails;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.RegisteredAddress, Is.EqualTo(string.Empty));
+            Assert.That(result.Email, Is.EqualTo(string.Empty));
+            Assert.That(result.PhoneNumber, Is.EqualTo(string.Empty));
+            Assert.That(result.Website, Is.EqualTo(string.Empty));
+        }
+    }
+
+    [Test]
+    public void ContactDetails_ContactHasWebsite_ReturnsMappedWebsite()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            ProviderAddress = new ShortProviderAddressModel
+            {
+                AddressLine1 = "1 High Street",
+                Town = "Leeds",
+                Postcode = "LS1 2AB"
+            },
+            Contact = new ContactModel
+            {
+                Website = "https://provider.test"
+            }
+        };
+
+        var result = sut.ContactDetails;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.RegisteredAddress, Is.EqualTo("1 High Street, Leeds, LS1 2AB"));
+            Assert.That(result.Website, Is.EqualTo("https://provider.test"));
+        }
+    }
+
+    [Test]
+    public void HasLocation_LocationIsNull_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = null
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsWhitespace_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "   "
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsSet_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "Leeds"
+        };
+
+        Assert.That(sut.HasLocation, Is.True);
+    }
+
+    [Test]
+    public void CourseProviderByLocationSearch_CourseProviderViewModelHasValues_ReturnsMappedViewModel()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "Leeds",
+            LarsCode = "123",
+            Ukprn = 10000001,
+            Distance = "10"
+        };
+
+        var result = sut.CourseProviderByLocationSearch;
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result.HasLocation, Is.EqualTo(sut.HasLocation));
+            Assert.That(result.Location, Is.EqualTo(sut.Location));
+            Assert.That(result.LarsCode, Is.EqualTo(sut.LarsCode));
+            Assert.That(result.Ukprn, Is.EqualTo(sut.Ukprn));
+            Assert.That(result.Distance, Is.EqualTo(sut.Distance));
         }
     }
 }

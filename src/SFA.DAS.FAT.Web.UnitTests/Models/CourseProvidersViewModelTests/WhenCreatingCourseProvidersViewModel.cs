@@ -141,7 +141,7 @@ public class WhenCreatingCourseProvidersViewModel
         {
             TotalCount = totalCount,
             Location = location,
-            Distance = DistanceService.ACROSS_ENGLAND_FILTER_VALUE
+            Distance = DistanceService.AcrossEnglandFilterValue
         };
 
         sut.TotalMessage.Should().Be(expectedMessage);
@@ -437,7 +437,7 @@ public class WhenCreatingCourseProvidersViewModel
         using (new AssertionScope())
         {
             result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == location);
-            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == DistanceService.ACROSS_ENGLAND_FILTER_VALUE);
+            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == DistanceService.AcrossEnglandFilterValue);
         }
     }
 
@@ -485,6 +485,142 @@ public class WhenCreatingCourseProvidersViewModel
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Online");
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Workplace");
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Provider");
+        }
+    }
+
+    [Test]
+    public void Filters_PropertyAccessedTwice_ReturnsSameInstance()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var first = sut.Filters;
+        var second = sut.Filters;
+
+        first.Should().BeSameAs(second);
+    }
+
+    [Test]
+    public void TotalMessage_LocationMissing_DoesNotIncludeWithinDistanceText()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            TotalCount = 3,
+            Location = string.Empty,
+            Distance = "10"
+        };
+
+        sut.TotalMessage.Should().Be("3 results");
+    }
+
+    [Test]
+    public void GetHelpFindingCourseUrl_WhitespaceLocation_IncludesEncodedLocationParameter()
+    {
+        const string larsCode = "123";
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            Location = "   "
+        };
+
+        var result = sut.GetHelpFindingCourseUrl(larsCode);
+        var decodedResult = Uri.UnescapeDataString(result);
+
+        decodedResult.Should().Contain("location=   ");
+    }
+
+    [Test]
+    public void CreateFilterSections_NoFiltersSelectedAndDistanceEmpty_CreatesNoClearFilterSections()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            Location = null,
+            Distance = " ",
+            SelectedDeliveryModes = [],
+            SelectedEmployerApprovalRatings = [],
+            SelectedApprenticeApprovalRatings = [],
+            SelectedQarRatings = [],
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        result.ClearFilterSections.Should().BeEmpty();
+    }
+
+    [Test]
+    public void CreateFilterSections_LocationAndDistanceSelected_IncludesLocationClearFilterSection()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            Location = "Leeds",
+            Distance = "10",
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().ContainSingle(s => s.FilterType == FilterService.FilterType.Location);
+            var locationSection = result.ClearFilterSections.Single(s => s.FilterType == FilterService.FilterType.Location);
+            locationSection.Items.Should().ContainSingle();
+            locationSection.Items[0].DisplayText.Should().Be("Leeds (within 10 miles)");
+        }
+    }
+
+    [Test]
+    public void CreateFilterSections_SelectedDeliveryModesForShortCourse_IncludesDeliveryModeDisplayText()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            CourseType = CourseType.ShortCourse,
+            SelectedDeliveryModes = new[] { ProviderDeliveryMode.Workplace.ToString() },
+            OrderBy = ProviderOrderBy.Distance,
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().ContainSingle(s => s.FilterType == FilterService.FilterType.DeliveryModes);
+            var section = result.ClearFilterSections.Single(s => s.FilterType == FilterService.FilterType.DeliveryModes);
+            section.Items.Should().ContainSingle(i => i.DisplayText == "At learner's workplace");
+        }
+    }
+
+    [Test]
+    public void CreateFilterSections_SelectedRatingsAreEmpty_DoesNotAddRatingClearFilterSections()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            CourseType = CourseType.Apprenticeship,
+            OrderBy = ProviderOrderBy.AchievementRate,
+            SelectedDeliveryModes = [],
+            SelectedEmployerApprovalRatings = [],
+            SelectedApprenticeApprovalRatings = [],
+            SelectedQarRatings = [],
+            QarPeriod = "2223",
+            ReviewPeriod = "2324"
+        };
+
+        var result = sut.CreateFilterSections();
+
+        using (new AssertionScope())
+        {
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.EmployerProviderRatings);
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.ApprenticeProviderRatings);
+            result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.QarRatings);
         }
     }
 }

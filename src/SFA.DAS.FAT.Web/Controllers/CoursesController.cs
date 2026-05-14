@@ -43,7 +43,7 @@ public class CoursesController : Controller
 
         if (string.IsNullOrWhiteSpace(model.Distance) || !DistanceService.IsValidDistance(model.Distance))
         {
-            model.Distance = DistanceService.TEN_MILES.ToString();
+            model.Distance = DistanceService.TenMiles.ToString();
         }
 
         var result = await _mediator.Send(new GetCoursesQuery
@@ -99,14 +99,14 @@ public class CoursesController : Controller
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 
         int? convertedDistance = null;
-        if (distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (distance == DistanceService.AcrossEnglandFilterValue)
         {
-            convertedDistance = DistanceService.DEFAULT_DISTANCE;
+            convertedDistance = DistanceService.DefaultDistance;
         }
         else if (!DistanceService.IsValidDistance(distance))
         {
-            convertedDistance = DistanceService.TEN_MILES;
-            distance = DistanceService.TEN_MILES.ToString();
+            convertedDistance = DistanceService.TenMiles;
+            distance = DistanceService.TenMiles.ToString();
         }
         else
         {
@@ -130,6 +130,7 @@ public class CoursesController : Controller
         var viewModel = (CourseViewModel)result;
         viewModel.Location = location;
         viewModel.Distance = distance;
+        viewModel.ConfigOptions = Options.Create(_config);
 
         return View(viewModel);
     }

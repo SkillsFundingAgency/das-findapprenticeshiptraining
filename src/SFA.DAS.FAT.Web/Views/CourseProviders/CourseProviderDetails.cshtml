@@ -1,12 +1,10 @@
-@using SFA.DAS.FAT.Domain.Courses
-@using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Extensions
+@using SFA.DAS.FAT.Web.Infrastructure
 @model SFA.DAS.FAT.Web.Models.CourseProviderViewModel
 
 @{
     ViewData["Title"] = $"{Model.ProviderName} - training provider";
     ViewData["Description"] = $"View {Model.ProviderName}'s available training options, pass rate and contact details for {Model.CourseNameAndLevel}. You can also check their employer reviews and any other apprenticeship training courses that they offer.";
-    var feedbackSurvey = Model.FeedbackSurvey;
 }
 <div asp-show="@(!Model.IsActiveAvailable)">
     <partial name="_standardNotAcceptingNewApprenticesBanner" />
@@ -27,68 +25,9 @@
                 @Model.CourseNameAndLevel
             </h2>
 
-            <h3 class="govuk-heading-m govuk-!-margin-bottom-3">
-                Training options for this course
-            </h3>
-
-            @if (string.IsNullOrWhiteSpace(Model.Location))
-            {
-                <p class="govuk-body">
-                    This provider offers these training options for this course.
-
-                    <span class="govuk-!-font-weight-bold">
-                        Search for a city or postcode
-                    </span>
-
-                    to view what options are available in your location and distances from your location to the training options.
-                </p>
-            }
-            else
-            {
-                <p class="govuk-body">
-                    This provider offers these training options for this course in <strong>@Model.Location</strong>.
-
-                    You can
-
-                    <a class="govuk-link govuk-link--no-visited-state"
-                           asp-route="@RouteNames.CourseProviderDetails"
-                           asp-route-larsCode="@Model.LarsCode"
-                           asp-route-providerId="@Model.Ukprn">
-                        remove or change your location
-                    </a>.
-
-                    This may change what options are available.
-                </p>
-
-                <p class="govuk-body">You will need to contact the provider to confirm:</p>
-
-                <ul class="govuk-list govuk-list--bullet">
-                    <li>what training they offer</li>
-                    <li>your chosen delivery method.</li>
-                </ul>
-
-                <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
-            }
-
             @* Search courses by location *@
 
-            @if (string.IsNullOrWhiteSpace(Model.Location))
-            {
-                <form method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
-                    <input type="hidden" name="Distance" value="@Model.Distance" />
-
-                    <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
-                        <div class="govuk-form-group @(!ViewContext.ModelState.IsValid ? "govuk-form-group--error" : "")">
-                            <span asp-validation-for="Location" class="govuk-error-message"></span>
-                            <label for="search-location" class="govuk-label">Enter a city or postcode</label>
-                            <div class="app-inline-search">
-                                <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
-                                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
-                            </div>
-                        </div>
-                    </div>
-                </form>
-            }
+            @await Html.PartialAsync("_courseProviderByLocationSearch", Model.CourseProviderByLocationSearch)
 
             @* Search courses by location *@
 
@@ -110,16 +49,9 @@
         @*  View results of our survey with employers and apprentices for this provider *@
         <div class="govuk-grid-row">
             <div class="govuk-grid-column-full">
-                <details class="govuk-details govuk-!-margin-bottom-8">
-                    <summary class="govuk-details__summary">
-                        <span class="govuk-details__summary-text">
-                            View reviews with feedback from the last 5 years
-                        </span>
-                    </summary>
-                    <div class="govuk-details__text">
-                        @await Html.PartialAsync("_feedbackSurvey", feedbackSurvey)
-                    </div>
-                </details>
+                <div class="govuk-!-margin-bottom-8">
+                    @await Html.PartialAsync("_feedbackSurvey", Model.FeedbackSurvey)
+                </div>
             </div>
         </div>
     }
@@ -149,9 +81,7 @@
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h3 class="govuk-heading-m govuk-!-margin-bottom-3">Courses offered by this training provider</h3>
-            <div class="govuk-body">
-                @await Html.PartialAsync("_coursesGroup", Model.ProviderCoursesDetails.GetCourseGroups())
-            </div>
+            @await Html.PartialAsync("_coursesGroup", Model.ProviderCoursesDetails.CourseGroups)
         </div>
     </div>
     @* Courses offered by this training provider *@

@@ -106,13 +106,13 @@ public class StandardViewModel
     private string GetFindProvidersUrl(IUrlHelper urlHelper, string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE ? DistanceService.ACROSS_ENGLAND_FILTER_VALUE : distance })!;
+        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.AcrossEnglandFilterValue ? DistanceService.AcrossEnglandFilterValue : distance })!;
     }
 
     private string GetFindProvidersUrlDescription(string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE;
+        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || distance == DistanceService.AcrossEnglandFilterValue;
 
         string providerText = "training provider".ToQuantity(ProvidersCount);
 

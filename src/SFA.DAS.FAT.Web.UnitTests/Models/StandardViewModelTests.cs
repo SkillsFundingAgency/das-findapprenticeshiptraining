@@ -217,7 +217,7 @@ public class StandardViewModelTests
         urlHelperMock.Verify(x => x.RouteUrl(It.IsAny<UrlRouteContext>()), Times.Never);
     }
 
-    [InlineAutoData(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, DistanceService.ACROSS_ENGLAND_FILTER_VALUE)]
+    [InlineAutoData(DistanceService.AcrossEnglandFilterValue, DistanceService.AcrossEnglandFilterValue)]
     [InlineAutoData("10", "10")]
     public void FindProvidersUrl_GeneratesUrl(string distance, string expectedValue, StandardModel standard, FindApprenticeshipTrainingWeb config)
     {
@@ -256,10 +256,10 @@ public class StandardViewModelTests
         }
     }
 
-    [InlineAutoData("MK4", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, 10, "View 10 training providers for this course")]
-    [InlineAutoData("MK4", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, 1, "View 1 training provider for this course")]
-    [InlineAutoData("", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, 10, "View 10 training providers for this course")]
-    [InlineAutoData("", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, 1, "View 1 training provider for this course")]
+    [InlineAutoData("MK4", DistanceService.AcrossEnglandFilterValue, 10, "View 10 training providers for this course")]
+    [InlineAutoData("MK4", DistanceService.AcrossEnglandFilterValue, 1, "View 1 training provider for this course")]
+    [InlineAutoData("", DistanceService.AcrossEnglandFilterValue, 10, "View 10 training providers for this course")]
+    [InlineAutoData("", DistanceService.AcrossEnglandFilterValue, 1, "View 1 training provider for this course")]
     [InlineAutoData("MK4", "10", 10, "View 10 training providers within 10 miles")]
     [InlineAutoData("MK4", "20", 1, "View 1 training provider within 20 miles")]
     public void FindProvidersUrlDescription_ReturnsCorrectDescription(string location, string distance, int providerCount, string expectedDescription, StandardModel standard, FindApprenticeshipTrainingWeb config)

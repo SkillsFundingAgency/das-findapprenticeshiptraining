@@ -1,0 +1,59 @@
+@using SFA.DAS.FAT.Web.Infrastructure
+@model SFA.DAS.FAT.Web.Models.CourseProviders.CourseProviderByLocationSearchViewModel
+
+<h3 class="govuk-heading-m govuk-!-margin-bottom-3">
+    Training options for this course
+</h3>
+
+<p asp-show="@(!Model.HasLocation)" class="govuk-body">
+    This provider offers these training options for this course.
+
+    <span class="govuk-!-font-weight-bold">
+        Search for a city or postcode
+    </span>
+
+    to view what options are available in your location and distances from your location to the training options.
+</p>
+
+<div asp-show="@(Model.HasLocation)">
+    <p class="govuk-body">
+        This provider offers these training options for this course in <strong>@Model.Location</strong>.
+
+        You can
+
+        <a class="govuk-link govuk-link--no-visited-state"
+               asp-route="@RouteNames.CourseProviderDetails"
+               asp-route-larsCode="@Model.LarsCode"
+               asp-route-providerId="@Model.Ukprn">
+            remove or change your location
+        </a>.
+
+        This may change what options are available.
+    </p>
+
+    <p class="govuk-body">You will need to contact the provider to confirm:</p>
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>what training they offer</li>
+        <li>your chosen delivery method.</li>
+    </ul>
+
+    <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
+</div>
+
+<form asp-show="@(!Model.HasLocation)" method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
+    <input type="hidden" name="Distance" value="@Model.Distance" />
+
+    <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
+        <div class="govuk-form-group @(!ViewContext.ModelState.IsValid ? "govuk-form-group--error" : "")">
+            <span asp-validation-for="Location" class="govuk-error-message"></span>
+            <label for="search-location" class="govuk-label">Enter a city or postcode</label>
+            <div class="app-inline-search">
+                <input type="search" id="search-location" name="location" title="Search" class="govuk-input" data-default-value="@Model.Location" data-submit-on-selection="false">
+                <button type="submit" id="continue" class="govuk-button" data-disable-on-submit="true">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+

@@ -46,9 +46,9 @@ public sealed class WhenBuildingLearningTypeItems
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(units.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_UNIT_DESCRIPTION));
-            Assert.That(foundation.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_FOUNDATION_APPRENTICESHIP_DESCRIPTION));
-            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.LEARNING_TYPE_APPRENTICESHIP_DESCRIPTION));
+            Assert.That(units.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipUnitDescription));
+            Assert.That(foundation.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.FoundationApprenticeshipDescription));
+            Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipDescription));
         }
     }
 

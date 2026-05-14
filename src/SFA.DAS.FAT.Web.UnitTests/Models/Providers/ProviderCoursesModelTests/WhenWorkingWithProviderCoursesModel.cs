@@ -69,7 +69,7 @@ public class WhenWorkingWithProviderCoursesModel
     [TestCase(0, LearningType.ApprenticeshipUnit, 2, "Apprenticeship units", "Apprenticeship units")]
     [TestCase(1, LearningType.FoundationApprenticeship, 1, "Foundation apprenticeships", "Foundation apprenticeship")]
     [TestCase(2, LearningType.Apprenticeship, 1, "Apprenticeships", "Apprenticeship")]
-    public void GetCourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames(
+    public void CourseGroups_CoursesWithDifferentTypes_GroupsInConfiguredOrderWithCorrectCountsAndDisplayNames(
         int groupIndex,
         LearningType expectedType,
         int expectedCount,
@@ -89,7 +89,7 @@ public class WhenWorkingWithProviderCoursesModel
             Courses = courses
         };
 
-        var groups = sut.GetCourseGroups();
+        var groups = sut.CourseGroups;
 
         groups.Count.Should().Be(3);
 
@@ -101,32 +101,32 @@ public class WhenWorkingWithProviderCoursesModel
     }
 
     [Test]
-    public void GetCourseGroups_DefaultCourses_ReturnsEmptyList()
+    public void CourseGroups_DefaultCourses_ReturnsEmptyList()
     {
         var sut = new ProviderCoursesModel();
 
-        var groups = sut.GetCourseGroups();
+        var groups = sut.CourseGroups;
 
         groups.Should().NotBeNull();
         groups.Should().BeEmpty();
     }
 
     [Test]
-    public void GetCourseGroups_EmptyCourses_ReturnsEmptyList()
+    public void CourseGroups_EmptyCourses_ReturnsEmptyList()
     {
         var sut = new ProviderCoursesModel
         {
             Courses = new List<ProviderCourseDetails>()
         };
 
-        var groups = sut.GetCourseGroups();
+        var groups = sut.CourseGroups;
 
         groups.Should().NotBeNull();
         groups.Should().BeEmpty();
     }
 
     [Test]
-    public void GetCourseGroups_SetsUkprnAndLocationOnGroups()
+    public void CourseGroups_SetsUkprnAndLocationOnGroups()
     {
         var courses = new List<ProviderCourseDetails>
         {
@@ -141,7 +141,7 @@ public class WhenWorkingWithProviderCoursesModel
             Location = "TestLocation"
         };
 
-        var groups = sut.GetCourseGroups();
+        var groups = sut.CourseGroups;
 
         groups.Should().NotBeNull();
         groups.Should().HaveCount(2);

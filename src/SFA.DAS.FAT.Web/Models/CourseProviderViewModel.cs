@@ -10,6 +10,7 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
+using SFA.DAS.FAT.Web.Models.Shared;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
 using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
 
@@ -36,7 +37,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public EndpointAssessmentModel EndpointAssessments { get; set; }
     public int TotalProvidersCount { get; set; }
     public Guid? ShortlistId { get; set; }
-    public IReadOnlyCollection<LocationModel> Locations { get; set; }
+    public IReadOnlyCollection<LocationModel> Locations { get; set; } = [];
     public IReadOnlyCollection<ProviderCourseModel> Courses { get; set; } = [];
     public string CourseNameAndLevel => $"{CourseName} (level {Level})";
     public string AchievementRateInformation => GetAchievementRateInformation();
@@ -72,6 +73,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
     public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
     public bool ShowMultipleProvidersForCourse => TotalProvidersCount > 1;
     public TrainingOptionsTableViewModel TrainingOptions => new()
     {
@@ -112,8 +114,10 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     };
     public ContactDetailsViewModel ContactDetails => new()
     {
-        ContactAddress = ContactAddress,
-        Contact = Contact
+        RegisteredAddress = ContactAddress,
+        Email = Contact?.Email ?? string.Empty,
+        PhoneNumber = Contact?.PhoneNumber ?? string.Empty,
+        Website = Contact?.Website ?? string.Empty
     };
     public ShortlistPanelViewModel ShortlistPanel => new()
     {
@@ -126,6 +130,14 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         ShowMultipleProvidersForCourse = ShowMultipleProvidersForCourse,
         TotalProvidersCount = TotalProvidersCount,
         CourseNameAndLevel = CourseNameAndLevel
+    };
+    public CourseProviderByLocationSearchViewModel CourseProviderByLocationSearch => new()
+    {
+        HasLocation = HasLocation,
+        Location = Location,
+        LarsCode = LarsCode,
+        Ukprn = Ukprn,
+        Distance = Distance
     };
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
@@ -280,7 +292,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             leaversText = leaversCount.ToString("N0");
         }
 
-        if (this.Qar.AchievementRate is not null)
+        if (Qar.AchievementRate is not null)
         {
             return $"of apprentices ({Qar.TotalNumberOfCompletedParticipants.ToString("N0")} of {leaversText}) completed this course and passed their end-point assessment with this " +
                    $"provider in academic year {Qar.PeriodDisplay}. {Qar.FailureRate}% did not pass or left the course before taking the " +

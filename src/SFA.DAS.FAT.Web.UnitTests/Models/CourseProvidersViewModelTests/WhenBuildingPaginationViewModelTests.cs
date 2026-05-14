@@ -14,6 +14,7 @@ using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
+
 public class WhenBuildingPaginationViewModelTests
 {
     private readonly Mock<IUrlHelper> _urlHelperMock = new();
@@ -45,10 +46,10 @@ public class WhenBuildingPaginationViewModelTests
         {
             Location = request.Location,
             Distance = request.Distance,
-            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()),
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
@@ -86,10 +87,10 @@ public class WhenBuildingPaginationViewModelTests
         {
             Location = request.Location,
             Distance = request.Distance,
-            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()),
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
@@ -149,10 +150,10 @@ public class WhenBuildingPaginationViewModelTests
         {
             Location = request.Location,
             Distance = request.Distance,
-            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()),
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
@@ -200,10 +201,10 @@ public class WhenBuildingPaginationViewModelTests
         {
             Location = request.Location,
             Distance = request.Distance,
-            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()),
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
@@ -276,10 +277,10 @@ public class WhenBuildingPaginationViewModelTests
         {
             Location = request.Location,
             Distance = request.Distance,
-            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()).ToList(),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()).ToList(),
-            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()).ToList(),
+            SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
+            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
+            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(x => x.ToString()),
+            SelectedQarRatings = request.QarRatings.Select(x => x.ToString()),
             QarPeriod = "2223",
             ReviewPeriod = "2324"
         };
