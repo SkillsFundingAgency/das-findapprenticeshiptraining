@@ -10,13 +10,10 @@ public class TrainingOptionsShortCourseViewModel
     public required bool IsEmployerLocationAvailable { get; set; }
     public string EmployerLocationDisplayDescription { get; set; }
 
-
     public required bool IsProviderAvailable { get; set; }
     public string ProviderLocationDisplayDescription { get; set; }
 
-
     public decimal? NearestEmployerLocation { get; set; }
-
 
     public decimal? NearestProviderPlace { get; set; }
 
@@ -42,5 +39,4 @@ public class TrainingOptionsShortCourseViewModel
     }
 
     public bool ShowDistanceDetails => !string.IsNullOrEmpty(Location);
-
 }
