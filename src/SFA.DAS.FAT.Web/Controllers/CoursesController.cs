@@ -33,6 +33,7 @@ public class CoursesController : Controller
         _config = config.Value;
     }
 
+    [HttpGet]
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
@@ -91,6 +92,7 @@ public class CoursesController : Controller
         return View(viewModel);
     }
 
+    [HttpGet]
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, [FromQuery] string location, [FromQuery] string distance)
     {

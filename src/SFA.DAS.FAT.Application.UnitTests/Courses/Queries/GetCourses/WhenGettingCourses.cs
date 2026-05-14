@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
@@ -127,7 +127,7 @@ public class WhenGettingCourses
             )
         ), Times.Once);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(response.Standards, Is.EquivalentTo(coursesResponse.Standards));
             Assert.That(response.Page, Is.EqualTo(coursesResponse.Page));
@@ -136,7 +136,7 @@ public class WhenGettingCourses
             Assert.That(response.TotalPages, Is.EqualTo(coursesResponse.TotalPages));
             Assert.That(response.Levels, Is.EquivalentTo(levels));
             Assert.That(response.Routes, Is.EquivalentTo(routes));
-        });
+        }
     }
 
     [Test]

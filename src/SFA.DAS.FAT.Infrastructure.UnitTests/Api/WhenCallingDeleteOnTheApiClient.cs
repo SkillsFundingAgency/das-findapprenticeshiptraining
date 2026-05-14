@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;

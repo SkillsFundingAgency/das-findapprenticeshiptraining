@@ -7,43 +7,42 @@ using Microsoft.Extensions.Logging;
 using SFA.DAS.FAT.Application.Locations.Queries.GetLocations;
 using SFA.DAS.FAT.Web.Models;
 
-namespace SFA.DAS.FAT.Web.Controllers
+namespace SFA.DAS.FAT.Web.Controllers;
+
+[Route("[controller]")]
+public class LocationsController : Controller
 {
-    [Route("[controller]")]
-    public class LocationsController : Controller
+    private readonly ILogger<CoursesController> _logger;
+    private readonly IMediator _mediator;
+
+    public LocationsController(
+        ILogger<CoursesController> logger,
+        IMediator mediator)
     {
-        private readonly ILogger<CoursesController> _logger;
-        private readonly IMediator _mediator;
+        _logger = logger;
+        _mediator = mediator;
+    }
 
-        public LocationsController(
-            ILogger<CoursesController> logger,
-            IMediator mediator)
+
+    [HttpGet]
+    [Route("")]
+    public async Task<IActionResult> Locations([FromQuery] string searchTerm)
+    {
+        if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Trim().Length < 3)
         {
-            _logger = logger;
-            _mediator = mediator;
+            return new JsonResult(new LocationsViewModel { Locations = new List<LocationViewModel>() });
         }
 
-
-        [HttpGet]
-        [Route("")]
-        public async Task<IActionResult> Locations([FromQuery] string searchTerm)
+        var result = await _mediator.Send(new GetLocationsQuery
         {
-            if (string.IsNullOrWhiteSpace(searchTerm) || searchTerm.Trim().Length < 3)
-            {
-                return new JsonResult(new LocationsViewModel { Locations = new List<LocationViewModel>() });
-            }
+            SearchTerm = searchTerm.Trim()
+        });
 
-            var result = await _mediator.Send(new GetLocationsQuery
-            {
-                SearchTerm = searchTerm.Trim()
-            });
+        var model = new LocationsViewModel
+        {
+            Locations = result.LocationItems.Select(c => (LocationViewModel)c).ToList()
+        };
 
-            var model = new LocationsViewModel
-            {
-                Locations = result.LocationItems.Select(c => (LocationViewModel)c).ToList()
-            };
-
-            return new JsonResult(model);
-        }
+        return new JsonResult(model);
     }
 }

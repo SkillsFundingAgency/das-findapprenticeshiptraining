@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Mvc;
@@ -243,7 +243,7 @@ public class StandardViewModelTests
             levels: Levels);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.FindProvidersUrl, Is.EqualTo("/courses/200/providers"));
             Assert.That(captured, Is.Not.Null, "UrlRouteContext was not provided to IUrlHelper.RouteUrl");
@@ -253,7 +253,7 @@ public class StandardViewModelTests
             Assert.That(values["larsCode"]?.ToString(), Is.EqualTo(standard.LarsCode));
             Assert.That(values["location"]?.ToString(), Is.EqualTo(string.Empty));
             Assert.That(values["distance"]?.ToString(), Is.EqualTo(expectedValue));
-        });
+        }
     }
 
     [InlineAutoData("MK4", DistanceService.ACROSS_ENGLAND_FILTER_VALUE, 10, "View 10 training providers for this course")]
@@ -306,12 +306,12 @@ public class StandardViewModelTests
 
         var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.RequestApprenticeshipTrainingUrl, Does.StartWith("https://accounts/service/?redirectUri="));
             Assert.That(Uri.UnescapeDataString(sut.RequestApprenticeshipTrainingUrl), Does.Contain("standardId=123"));
             Assert.That(Uri.UnescapeDataString(sut.RequestApprenticeshipTrainingUrl), Does.Contain("location=M60 7RA"));
-        });
+        }
     }
 
     [AutoData]
@@ -321,14 +321,14 @@ public class StandardViewModelTests
 
         var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.CourseDetailsRouteValues["larsCode"], Is.EqualTo(standard.LarsCode));
             Assert.That(sut.CourseDetailsRouteValues.ContainsKey("location"), Is.True);
             Assert.That(sut.CourseDetailsRouteValues.ContainsKey("distance"), Is.True);
             Assert.That(sut.CourseDetailsRouteValues["location"], Is.EqualTo(location));
             Assert.That(sut.CourseDetailsRouteValues["distance"], Is.EqualTo(distance));
-        });
+        }
     }
 
     [AutoData]
@@ -339,12 +339,12 @@ public class StandardViewModelTests
 
         var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.CourseDetailsRouteValues["larsCode"], Is.EqualTo(standard.LarsCode));
             Assert.That(sut.CourseDetailsRouteValues.ContainsKey("location"), Is.False);
             Assert.That(sut.CourseDetailsRouteValues.ContainsKey("distance"), Is.False);
-        });
+        }
     }
 
 

@@ -1,14 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SFA.DAS.FAT.Domain\SFA.DAS.FAT.Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="8.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="8.0.11" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.DataProtection.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.7" />
   </ItemGroup>
 </Project>

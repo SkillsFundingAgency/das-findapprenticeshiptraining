@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,6 +16,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -59,6 +59,7 @@ public class CourseProvidersController : Controller
         _config = config.Value;
     }
 
+    [HttpGet]
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
@@ -165,6 +166,7 @@ public class CourseProvidersController : Controller
         return View(courseProvidersViewModel);
     }
 
+    [HttpGet]
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, [FromQuery] string location, [FromQuery] string distance)
     {
@@ -227,7 +229,7 @@ public class CourseProvidersController : Controller
         if (!validationLocationResult.IsValid)
         {
             viewModel.Location = string.Empty;
-            validationLocationResult.AddToModelState(ModelState);
+            ModelState.AddValidationErrors(validationLocationResult.Errors);
         }
 
         return View(viewModel);
@@ -236,7 +238,7 @@ public class CourseProvidersController : Controller
     {
         var dropdown = new List<ProviderOrderByOptionViewModel>();
 
-        foreach (ProviderOrderBy orderByChoice in Enum.GetValues(typeof(ProviderOrderBy)))
+        foreach (ProviderOrderBy orderByChoice in Enum.GetValues<ProviderOrderBy>())
         {
             if (orderByChoice == ProviderOrderBy.Distance && hideDistance) continue;
             dropdown.Add(new ProviderOrderByOptionViewModel

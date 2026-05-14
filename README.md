@@ -1,23 +1,34 @@
-# das-findapprenticeshiptraining
+## ⛔Never push sensitive information such as client id's, secrets or keys into repositories including in the README file⛔
 
+# Find Apprenticeship Training
+
+<img src="https://avatars.githubusercontent.com/u/9841374?s=200&v=4" align="right" alt="UK Government logo">
 
 [![Build Status](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_apis/build/status/SkillsFundingAgency.das-findapprenticeshiptraining?branchName=master)](https://sfa-gov-uk.visualstudio.com/Digital%20Apprenticeship%20Service/_build/latest?definitionId=2181&branchName=master)
-
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=SkillsFundingAgency_das-findapprenticeshiptraining&metric=alert_status)](https://sonarcloud.io/dashboard?id=SkillsFundingAgency_das-findapprenticeshiptraining)
-
-## Requirements
-
-DotNet Core 8 and any supported IDE for DEV running.
-
-Azure Storage Emulator
+[![License](https://img.shields.io/badge/license-MIT-lightgrey.svg?longCache=true&style=flat-square)](https://en.wikipedia.org/wiki/MIT_License)
 
 ## About
 
 [Find Apprenticeship Training Service](https://findapprenticeshiptraining.apprenticeships.education.gov.uk/). The service is for finding training courses and training providers that can deliver the standard you have searched for. 
 
-## Local running
+## 🚀 Installation
 
-You must have the Azure Storage emulator running, and in that a table created called `Configuration` in that table add the following:
+### Pre-requisites
+
+- A clone of this repository
+- .NET 10 SDK
+- Visual Studio or another supported IDE
+- Azurite (or Azure Storage Emulator)
+
+### Dependencies
+
+- `SFA.DAS.FAT.MockServer` for local API responses
+- Configuration loaded from local storage table data
+
+### Configuration
+
+Create a table named `Configuration` in your local storage emulator and add:
 
 PartitionKey: LOCAL
 
@@ -41,7 +52,7 @@ Data:
 }
 ```
 
-In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.Development.json file with following content:
+In `SFA.DAS.FAT.Web`, create `appSettings.Development.json` (if it does not already exist) with:
 ```json
 {
   "Logging": {
@@ -62,12 +73,18 @@ In the SFA.DAS.FAT.Web project, if it does not exist already, add appSettings.De
 }
 ```
 
+Ensure `FindApprenticeshipTrainingApi:BaseUrl` points to the mock server URL.
 
-The important part of the configuration is making sure that your BaseUrl is pointed to the MockServer url
+### Run locally
 
-You are able to run the website by doing the following:
-* Run the console app ```SFA.DAS.FAT.MockServer``` - this will create a mock server on http://localhost:5003
-* Start the web solution ```SFA.DAS.FAT.Web```
+1. Run `SFA.DAS.FAT.MockServer` (starts on `http://localhost:5003`)
+2. Start `SFA.DAS.FAT.Web` (site runs on `https://localhost:5004`)
+
+## Technologies
+
+- .NET 10
+- ASP.NET Core
+- Redis (configuration dependent)
 
 
 ## Useful URLs

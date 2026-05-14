@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Web.Infrastructure;
 
-namespace SFA.DAS.FAT.Web.Controllers
+namespace SFA.DAS.FAT.Web.Controllers;
+
+[Route("[controller]")]
+public class AccessibilityController : Controller
 {
-    [Route("[controller]")]
-    public class AccessibilityController : Controller
+    [HttpGet]
+    [Route("", Name = RouteNames.AccessibilityStatement)]
+    public IActionResult AccessibilityStatement()
     {
-        [Route("", Name = RouteNames.AccessibilityStatement)]
-        public IActionResult AccessibilityStatement()
-        {
-            return View();
-        }
+        return View();
     }
 }

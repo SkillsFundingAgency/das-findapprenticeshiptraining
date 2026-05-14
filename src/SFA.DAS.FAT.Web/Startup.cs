@@ -75,7 +75,7 @@ public class Startup
             })
             .AddMvc(options =>
             {
-                options.Filters.Add(typeof(GoogleAnalyticsFilter));
+                options.Filters.Add<GoogleAnalyticsFilter>();
                 options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             });
 
@@ -86,8 +86,7 @@ public class Startup
 
         services
             .AddLogging()
-            .AddTelemetryRegistration(_configuration)
-            .AddApplicationInsightsTelemetry();
+            .AddTelemetryRegistration(_configuration);
 
         if (!_environment.IsDevelopment())
         {

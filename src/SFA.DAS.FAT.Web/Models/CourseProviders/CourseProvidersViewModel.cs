@@ -60,7 +60,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var deliveryModeOptionViewModels = new List<DeliveryModeOptionViewModel>();
 
-        foreach (ProviderDeliveryMode deliveryModeChoice in Enum.GetValues(typeof(ProviderDeliveryMode)))
+        foreach (ProviderDeliveryMode deliveryModeChoice in Enum.GetValues<ProviderDeliveryMode>())
         {
             deliveryModeOptionViewModels.Add(new DeliveryModeOptionViewModel
             {
@@ -76,7 +76,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var qarOptionViewModels = new List<QarOptionViewModel>();
 
-        foreach (QarRating rating in Enum.GetValues(typeof(QarRating)))
+        foreach (QarRating rating in Enum.GetValues<QarRating>())
         {
             qarOptionViewModels.Add(new QarOptionViewModel()
             {
@@ -92,7 +92,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<EmployerProviderRatingOptionViewModel>();
 
-        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues<ProviderRating>())
         {
             ratingViewModels.Add(new EmployerProviderRatingOptionViewModel()
             {
@@ -108,7 +108,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var ratingViewModels = new List<ApprenticeProviderRatingOptionViewModel>();
 
-        foreach (ProviderRating rating in Enum.GetValues(typeof(ProviderRating)))
+        foreach (ProviderRating rating in Enum.GetValues<ProviderRating>())
         {
             ratingViewModels.Add(new ApprenticeProviderRatingOptionViewModel()
             {

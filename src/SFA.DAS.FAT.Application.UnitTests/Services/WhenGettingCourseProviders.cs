@@ -1,6 +1,6 @@
 ﻿#nullable enable
 using System.Net;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Microsoft.Extensions.Options;
 using Moq;

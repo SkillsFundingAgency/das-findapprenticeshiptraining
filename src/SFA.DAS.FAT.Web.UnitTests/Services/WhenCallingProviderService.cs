@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using AutoFixture.NUnit3;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;

@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit3;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -141,7 +141,7 @@ public class WhenGettingCourseProviderDetails
         var expectedCoursesAlphabetically = response.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
 
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(model.Ukprn, Is.EqualTo(response.Ukprn));
             Assert.That(model.ProviderName, Is.EqualTo(response.ProviderName));
@@ -166,7 +166,7 @@ public class WhenGettingCourseProviderDetails
             Assert.That(model.ShowApprenticeTrainingCoursesCrumb, Is.True);
             Assert.That(model.ShowShortListLink, Is.True);
             Assert.That(model.ShowSearchCrumb, Is.True);
-        });
+        }
     }
 
     [Test, MoqAutoData]
