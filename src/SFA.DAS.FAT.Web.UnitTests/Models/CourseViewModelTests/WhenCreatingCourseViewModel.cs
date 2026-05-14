@@ -1,5 +1,5 @@
-﻿using NUnit.Framework;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
+using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
@@ -75,7 +75,7 @@ public sealed class WhenCreatingCourseViewModel
             TypicalJobTitles = "Software Engineer|Construction Worker"
         };
 
-        Assert.That(sut.TypicalJobTitlesArray, Is.EqualTo(new[] { "Software Engineer", "Construction Worker" }));
+        Assert.That(sut.TypicalJobTitlesArray, Is.EqualTo(["Software Engineer", "Construction Worker"]));
     }
 
     [Test]

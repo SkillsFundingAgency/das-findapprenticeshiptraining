@@ -43,7 +43,7 @@ public class ProviderCoursesModel
             ? displayName
             : "Apprenticeship";
 
-    private IList<CourseGroupViewModel> GetCourseGroups()
+    private List<CourseGroupViewModel> GetCourseGroups()
     {
         if (Courses.Count == 0)
         {
