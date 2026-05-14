@@ -123,9 +123,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         List<ValueTuple<string, string>> result = new();
 
-        var defaultOrderBy = CourseType == CourseType.ShortCourse
-            ? ProviderOrderBy.Distance
-            : ProviderOrderBy.AchievementRate;
+        var defaultOrderBy = GetDefaultOrderBy(CourseType);
 
         if (OrderBy != defaultOrderBy)
         {
@@ -304,15 +302,17 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
+        return CreateSelectedFilterSections(CourseType);
+    }
+
+    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections(CourseType courseType)
+    {
         var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddLocationAndDistanceFilters(selectedFilters);
         AddDeliveryModesFilter(selectedFilters);
         AddRatingFilters(selectedFilters);
-
-        var defaultOrderBy = (CourseType == CourseType.ShortCourse)
-            ? ProviderOrderBy.Distance
-            : ProviderOrderBy.AchievementRate;
+        var defaultOrderBy = GetDefaultOrderBy(courseType);
 
         if (OrderBy != defaultOrderBy)
         {
@@ -328,6 +328,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             selectedFilters,
             _valueFunctions,
             new[] { FilterType.Distance, FilterType.OrderBy });
+    }
+
+    private static ProviderOrderBy GetDefaultOrderBy(CourseType courseType)
+    {
+        return (courseType == CourseType.ShortCourse)
+                    ? ProviderOrderBy.Distance
+                    : ProviderOrderBy.AchievementRate;
     }
 
     private void AddLocationAndDistanceFilters(Dictionary<FilterType, IEnumerable<string>> selectedFilters)
