@@ -13,11 +13,11 @@ public class AchievementsAndParticipationViewModelTests
         {
             Qar = new QarModel { AchievementRate = "95.5" }
         };
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.AchievementRatePresent, Is.True);
             Assert.That(sut.ShowNationalAchievementRate, Is.True);
-        });
+        }
     }
 
     [Test]
@@ -25,11 +25,11 @@ public class AchievementsAndParticipationViewModelTests
     {
         var sut = new AchievementsAndParticipationViewModel();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.AchievementRatePresent, Is.False);
             Assert.That(sut.ShowNationalAchievementRate, Is.False);
-        });
+        }
     }
 
     [Test]
@@ -37,7 +37,7 @@ public class AchievementsAndParticipationViewModelTests
     {
         var sut = new AchievementsAndParticipationViewModel();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.AchievementRate, Is.EqualTo(string.Empty));
             Assert.That(sut.AchievementInformation, Is.EqualTo(string.Empty));
@@ -45,7 +45,7 @@ public class AchievementsAndParticipationViewModelTests
             Assert.That(sut.ParticipationCount, Is.EqualTo(string.Empty));
             Assert.That(sut.ParticipationMessage, Is.EqualTo(string.Empty));
             Assert.That(sut.AchievementNoDataMessage, Is.EqualTo("There is not enough data to show the achievement rate for this course. This may be because a small number of apprentices completed this course, or this is a new course for this provider."));
-        });
+        }
     }
 
     [Test]

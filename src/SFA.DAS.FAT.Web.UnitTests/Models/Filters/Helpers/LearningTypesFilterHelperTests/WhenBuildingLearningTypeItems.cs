@@ -44,12 +44,12 @@ public sealed class WhenBuildingLearningTypeItems
         var foundation = items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
         var apprenticeship = items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(units.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipUnitDescription));
             Assert.That(foundation.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.FoundationApprenticeshipDescription));
             Assert.That(apprenticeship.DisplayDescription, Is.EqualTo(LearningTypesFilterHelper.ApprenticeshipDescription));
-        });
+        }
     }
 
     [Test]
@@ -67,11 +67,11 @@ public sealed class WhenBuildingLearningTypeItems
         var foundationApprenticeship = items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
         var apprenticeship = items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(apprenticeshipUnit.IsSelected, Is.True);
             Assert.That(foundationApprenticeship.IsSelected, Is.False);
             Assert.That(apprenticeship.IsSelected, Is.True);
-        });
+        }
     }
 }

@@ -30,7 +30,7 @@ public sealed class WhenBuildingTrainingTypesFilter
         var foundationApprenticeship = filter.Items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
         var apprenticeship = filter.Items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(filter, Is.Not.Null);
             Assert.That(filter.Id, Is.EqualTo("training-types"));
@@ -53,7 +53,7 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(apprenticeshipUnit.IsSelected, Is.False);
             Assert.That(foundationApprenticeship.IsSelected, Is.True);
             Assert.That(apprenticeship.IsSelected, Is.False);
-        });
+        }
     }
 
     [Test]
@@ -76,12 +76,12 @@ public sealed class WhenBuildingTrainingTypesFilter
         var foundationApprenticeship = filter.Items.First(i => i.DisplayText == LearningType.FoundationApprenticeship.GetDescription());
         var apprenticeship = filter.Items.First(i => i.DisplayText == LearningType.Apprenticeship.GetDescription());
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(apprenticeshipUnit.IsSelected, Is.False);
             Assert.That(foundationApprenticeship.IsSelected, Is.False);
             Assert.That(apprenticeship.IsSelected, Is.True);
-        });
+        }
     }
 
     [Test]
@@ -93,11 +93,11 @@ public sealed class WhenBuildingTrainingTypesFilter
         };
 
         var filter = sut.TrainingTypesCheckboxListItems;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(filter.Items, Has.Count.EqualTo(3));
             Assert.That(filter.Items.All(i => i.IsSelected), Is.False);
             Assert.That(filter.Items.All(i => i.IsLearningTypeEmphasised), Is.False);
-        });
+        }
     }
 }

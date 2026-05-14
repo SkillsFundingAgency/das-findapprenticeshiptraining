@@ -22,12 +22,12 @@ public class WhenCreatingCoursesViewModel
 
         var filters = _sut.Filters;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut.Distance, Is.EqualTo(DistanceService.TenMiles.ToString()));
             Assert.That(filters.ClearFilterSections.Any(s => s.FilterType == FilterService.FilterType.Distance), Is.False);
             Assert.That(filters.ClearFilterSections, Is.Empty);
-        });
+        }
     }
 
     [Test]
@@ -211,11 +211,11 @@ public class WhenCreatingCoursesViewModel
 
         var _sut = viewModel.ToQueryString();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(_sut.FindIndex(a => a.Item1 == "Location"), Is.AtLeast(0));
             Assert.That(_sut.FindIndex(a => a.Item1 == "Distance"), Is.AtLeast(0));
-        });
+        }
     }
 
     [Test]
@@ -360,11 +360,11 @@ public class WhenCreatingCoursesViewModel
 
         var result = viewModel.ToQueryString();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.True);
             Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.False);
-        });
+        }
     }
 
     [Test]

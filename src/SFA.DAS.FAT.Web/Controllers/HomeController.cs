@@ -29,6 +29,7 @@ public class HomeController : Controller
         _configuration = configuration;
     }
 
+    [HttpGet]
     [Route("", Name = RouteNames.ServiceStartDefault, Order = 0)]
     [Route("start", Name = RouteNames.ServiceStart, Order = 1)]
     public IActionResult Index()
@@ -41,18 +42,21 @@ public class HomeController : Controller
         return View();
     }
 
+    [HttpGet]
     [Route("cookies", Name = RouteNames.Cookies)]
     public IActionResult Cookies()
     {
         return View();
     }
 
+    [HttpGet]
     [Route("cookies-details", Name = RouteNames.CookiesDetails)]
     public IActionResult CookiesDetails()
     {
         return View();
     }
 
+    [HttpGet]
     [Route("sitemap.xml")]
     public async Task<IActionResult> SitemapXml()
     {

@@ -13,14 +13,14 @@ public class ContactDetailsViewModelTests
 
         var sut = (ContactDetailsViewModel)source;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.MarketingInfo, Is.EqualTo(string.Empty));
             Assert.That(sut.Email, Is.EqualTo(string.Empty));
             Assert.That(sut.PhoneNumber, Is.EqualTo(string.Empty));
             Assert.That(sut.Website, Is.EqualTo(string.Empty));
             Assert.That(sut.RegisteredAddress, Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     [Test]

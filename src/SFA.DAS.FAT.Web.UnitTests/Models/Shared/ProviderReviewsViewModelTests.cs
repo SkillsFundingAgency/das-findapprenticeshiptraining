@@ -11,13 +11,13 @@ public class ProviderReviewsViewModelTests
     {
         var sut = new ProviderReviewsViewModel();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.EmployerReviewed, Is.True);
             Assert.That(sut.EmployerStarsValue, Is.EqualTo(0));
             Assert.That(sut.EmployerRating, Is.EqualTo(ProviderRating.Excellent.ToString()));
             Assert.That(sut.EmployerReviewsMessage, Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     [Test]
@@ -25,13 +25,13 @@ public class ProviderReviewsViewModelTests
     {
         var sut = new ProviderReviewsViewModel();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.ApprenticeReviewed, Is.True);
             Assert.That(sut.ApprenticeStarsValue, Is.EqualTo(0));
             Assert.That(sut.ApprenticeRating, Is.EqualTo(ProviderRating.Excellent.ToString()));
             Assert.That(sut.ApprenticeReviewsMessage, Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     [Test]
@@ -50,7 +50,7 @@ public class ProviderReviewsViewModelTests
             ApprenticeReviewsDisplayMessage = "apprentice message"
         };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.EmployerReviewed, Is.True);
             Assert.That(sut.ApprenticeReviewed, Is.True);
@@ -60,6 +60,6 @@ public class ProviderReviewsViewModelTests
             Assert.That(sut.ApprenticeRating, Is.EqualTo(ProviderRating.Excellent.ToString()));
             Assert.That(sut.EmployerReviewsMessage, Is.EqualTo("employer message"));
             Assert.That(sut.ApprenticeReviewsMessage, Is.EqualTo("apprentice message"));
-        });
+        }
     }
 }

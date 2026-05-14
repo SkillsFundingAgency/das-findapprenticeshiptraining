@@ -64,7 +64,7 @@ public sealed class WhenCreatingTheQarModel
     {
         var sut = new QarModel { AchievementRate = rate };
 
-        Assert.That(sut.FailureRate, Is.EqualTo(0));
+        Assert.That(sut.FailureRate, Is.Zero);
     }
 
     [TestCase("1819", "2018", "2019", "2018 to 2019")]
@@ -73,11 +73,11 @@ public sealed class WhenCreatingTheQarModel
     {
         var sut = new QarModel { Period = period };
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(sut.QarPeriodStartYear, Is.EqualTo(startYear));
             Assert.That(sut.QarPeriodEndYear, Is.EqualTo(endYear));
             Assert.That(sut.PeriodDisplay, Is.EqualTo(display));
-        });
+        }
     }
 }
