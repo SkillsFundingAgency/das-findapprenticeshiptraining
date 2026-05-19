@@ -143,19 +143,19 @@ public class CourseViewModel : PageLinksViewModelBase
 
     private string GetProviderCountDisplayMessage()
     {
-        if (!HasLocation)
+        if (HasLocation)
         {
-            return TotalProvidersCount == 1
-                ? SingleProviderOutsideDistanceMessage
-                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
+            return ProvidersCountWithinDistance switch
+            {
+                0 => ZeroProvidersWithinDistanceMessage,
+                1 => SingleProviderWithinDistanceMessage,
+                _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
+            };
         }
 
-        return ProvidersCountWithinDistance switch
-        {
-            0 => ZeroProvidersWithinDistanceMessage,
-            1 => SingleProviderWithinDistanceMessage,
-            _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
-        };
+        return TotalProvidersCount == 1
+                ? SingleProviderOutsideDistanceMessage
+                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
     }
     private string GetApprenticeCanTravelDisplayMessage() =>
         Distance == DistanceService.AcrossEnglandFilterValue
