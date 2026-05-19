@@ -110,9 +110,11 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         };
     }
 
-    public string GetHelpFindingCourseUrl(string larsCode)
+    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl();
+
+    private string GetHelpFindingCourseUrl()
     {
-        var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={larsCode}&requestType={EntryPoint.CourseDetail}";
+        var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
 
         var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
 
