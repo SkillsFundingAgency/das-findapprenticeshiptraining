@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+﻿using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -277,11 +275,12 @@ public sealed class WhenCreatingCourseViewModel
         {
             LarsCode = "1",
             Location = "SW1",
-            ConfigOptions = Options.Create(findApprenticeshipTrainingWebConfiguration)
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
 
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
-        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=SW1")}";
+        string redirectUri = $"{_sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{_sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=SW1")}";
 
         var result = _sut.HelpFindingCourseUrl;
         Assert.That(expectedLink, Is.EqualTo(result));
@@ -296,11 +295,12 @@ public sealed class WhenCreatingCourseViewModel
         {
             LarsCode = "1",
             Location = string.Empty,
-            ConfigOptions = Options.Create(findApprenticeshipTrainingWebConfiguration)
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
 
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
-        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+        string redirectUri = $"{_sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{_sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
 
         var result = _sut.HelpFindingCourseUrl;
         Assert.That(expectedLink, Is.EqualTo(result));
@@ -315,11 +315,12 @@ public sealed class WhenCreatingCourseViewModel
         {
             LarsCode = "1",
             Location = "   ",
-            ConfigOptions = Options.Create(findApprenticeshipTrainingWebConfiguration)
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
 
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
-        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+        string redirectUri = $"{sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
 
         var result = sut.HelpFindingCourseUrl;
         Assert.That(expectedLink, Is.EqualTo(result));

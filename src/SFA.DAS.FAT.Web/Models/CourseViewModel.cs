@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -14,8 +12,6 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
-    public IOptions<FindApprenticeshipTrainingWeb> ConfigOptions { get; set; }
-
     public const string KnowledgeSkillsHeaderText = "Knowledge, skills and behaviours";
     public const string KnowledgeSkillsHeaderTextApprenticeshipUnit = "Knowledge and skills learners will gain";
     public const string KnowledgeSkillsLinkText = "View knowledge, skills and behaviours";
@@ -28,7 +24,8 @@ public class CourseViewModel : PageLinksViewModelBase
     public const string MultipleProvidersWithinDistanceMessage = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
     public const string SingleProviderOutsideDistanceMessage = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
     public const string MultipleProviderOutsideDistanceMessage = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
-
+    public string RequestApprenticeshipTrainingUrl { get; set; }
+    public string EmployerAccountsUrl { get; set; }
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -100,7 +97,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string KnowledgeSkillsLinkTextToDisplay => GetKnowledgeSkillsLinkTextToDisplay();
     public string MaximumFundingTextToDisplay => GetMaximumFundingTextToDisplay();
     public string[] TypicalJobTitlesArray => GetTypicalJobTitles();
-    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl(ConfigOptions.Value);
+    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl();
     public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
     public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
     public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
@@ -124,12 +121,12 @@ public class CourseViewModel : PageLinksViewModelBase
 
         return TypicalJobTitles.Split('|');
     }
-    private string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+    private string GetHelpFindingCourseUrl()
     {
-        var redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+        var redirectUri = $"{RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
         var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
 
-        return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+        return $"{EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
     private string GetKnowledgeSkillsHeaderTextToDisplay() =>
