@@ -150,14 +150,15 @@ public class WhenCreatingCourseProvidersViewModel
     [RecursiveMoqInlineAutoData("123", "Coventry")]
     [RecursiveMoqInlineAutoData("456", "London")]
     [RecursiveMoqInlineAutoData("789", "")]
-    public void GetHelpFindingCourseUrl_WithLarsCode_ReturnsCorrectUrl(string larsCode, string location)
+    public void HelpFindingCourseUrl_WithLarsCode_ReturnsCorrectUrl(string larsCode, string location)
     {
         var sut = new CourseProvidersViewModel(_config)
         {
+            LarsCode = larsCode,
             Location = location
         };
 
-        var result = sut.GetHelpFindingCourseUrl(larsCode);
+        var result = sut.HelpFindingCourseUrl;
 
         using (new AssertionScope())
         {
@@ -517,15 +518,16 @@ public class WhenCreatingCourseProvidersViewModel
     }
 
     [Test]
-    public void GetHelpFindingCourseUrl_WhitespaceLocation_IncludesEncodedLocationParameter()
+    public void HelpFindingCourseUrl_WhitespaceLocation_IncludesEncodedLocationParameter()
     {
         const string larsCode = "123";
         var sut = new CourseProvidersViewModel(_config)
         {
+            LarsCode = larsCode,
             Location = "   "
         };
 
-        var result = sut.GetHelpFindingCourseUrl(larsCode);
+        var result = sut.HelpFindingCourseUrl;
         var decodedResult = Uri.UnescapeDataString(result);
 
         decodedResult.Should().Contain("location=   ");

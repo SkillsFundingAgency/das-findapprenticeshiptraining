@@ -31,7 +31,7 @@
                 <p>Achievement and participation rate data does not include apprenticeship units.</p>
             </div>
 
-            @await Html.PartialAsync("_achievementsAndParticipationCard", Model.AchievementsAndParticipation)
+            @await Html.PartialAsync("_achievementsAndParticipationPanel", Model.AchievementsAndParticipation)
             <br />
             <div class="govuk-body">
                 <p>
@@ -49,7 +49,7 @@
                 <p>It does not include reviews for apprenticeship units.</p>
             </div>
 
-            @await Html.PartialAsync("_providerReviewsCard", Model.ProviderReviews)
+            @await Html.PartialAsync("_providerReviewsPanel", Model.ProviderReviews)
             <br />
             <div class="govuk-body">
                 <p>

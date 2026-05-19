@@ -10,6 +10,10 @@ public class ContactDetailsViewModel
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string Website { get; set; } = string.Empty;
+    public bool HasRegisteredAddress => !string.IsNullOrEmpty(RegisteredAddress);
+    public bool HasEmail => !string.IsNullOrEmpty(Email);
+    public bool HasPhoneNumber => !string.IsNullOrEmpty(PhoneNumber);
+    public bool HasWebsite => !string.IsNullOrEmpty(Website);
 
     public static implicit operator ContactDetailsViewModel(GetProviderContactDetails source)
     {

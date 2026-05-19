@@ -2,21 +2,16 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using Microsoft.Extensions.Options;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
-using SFA.DAS.FAT.Web.Models.Courses;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
-    public IOptions<FindApprenticeshipTrainingWeb> ConfigOptions { get; set; }
-
     public const string KnowledgeSkillsHeaderText = "Knowledge, skills and behaviours";
     public const string KnowledgeSkillsHeaderTextApprenticeshipUnit = "Knowledge and skills learners will gain";
     public const string KnowledgeSkillsLinkText = "View knowledge, skills and behaviours";
@@ -29,7 +24,8 @@ public class CourseViewModel : PageLinksViewModelBase
     public const string MultipleProvidersWithinDistanceMessage = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
     public const string SingleProviderOutsideDistanceMessage = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
     public const string MultipleProviderOutsideDistanceMessage = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
-
+    public string RequestApprenticeshipTrainingUrl { get; set; }
+    public string EmployerAccountsUrl { get; set; }
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -101,46 +97,9 @@ public class CourseViewModel : PageLinksViewModelBase
     public string KnowledgeSkillsLinkTextToDisplay => GetKnowledgeSkillsLinkTextToDisplay();
     public string MaximumFundingTextToDisplay => GetMaximumFundingTextToDisplay();
     public string[] TypicalJobTitlesArray => GetTypicalJobTitles();
-    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl(ConfigOptions.Value);
+    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl();
     public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
     public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
-    public CourseInformationSummaryViewModel CourseInformationSummary => new()
-    {
-        LarsCode = LarsCode,
-        TitleAndLevel = TitleAndLevel,
-        OverviewOfRole = OverviewOfRole,
-        IsFoundationApprenticeship = IsFoundationApprenticeship,
-        IsApprenticeshipUnit = IsApprenticeshipUnit,
-        IncentivePaymentDisplayValue = IncentivePaymentDisplayValue,
-        KnowledgeSkillsHeaderTextToDisplay = KnowledgeSkillsHeaderTextToDisplay,
-        KnowledgeSkillsLinkTextToDisplay = KnowledgeSkillsLinkTextToDisplay,
-        KsbDetails = KsbDetails,
-        Route = Route,
-        Level = Level,
-        LevelEquivalentToDisplayText = LevelEquivalentToDisplayText,
-        LearningType = LearningType,
-        TypicalDuration = TypicalDuration,
-        MaxFundingDisplayValue = MaxFundingDisplayValue,
-        MaximumFundingTextToDisplay = MaximumFundingTextToDisplay,
-        IsApprenticeship = IsApprenticeship,
-        TypicalJobTitlesArray = TypicalJobTitlesArray,
-        RelatedOccupations = RelatedOccupations,
-        StandardPageUrl = StandardPageUrl
-    };
-
-    public CourseProviderAvailabilityViewModel CourseProviderAvailability => new()
-    {
-        TotalProvidersCount = TotalProvidersCount,
-        IsShortCourseType = IsShortCourseType,
-        TitleAndLevel = TitleAndLevel,
-        HelpFindingCourseUrl = HelpFindingCourseUrl,
-        ProviderCountDisplayMessage = ProviderCountDisplayMessage,
-        HasLocation = HasLocation,
-        LarsCode = LarsCode,
-        Location = Location,
-        ApprenticeCanTravelDisplayMessage = ApprenticeCanTravelDisplayMessage,
-        Distance = Distance
-    };
     public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
     private string GetLevelEquivalentToDisplayText()
     {
@@ -162,12 +121,12 @@ public class CourseViewModel : PageLinksViewModelBase
 
         return TypicalJobTitles.Split('|');
     }
-    private string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+    private string GetHelpFindingCourseUrl()
     {
-        var redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+        var redirectUri = $"{RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
         var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
 
-        return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+        return $"{EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
     private string GetKnowledgeSkillsHeaderTextToDisplay() =>
@@ -181,19 +140,19 @@ public class CourseViewModel : PageLinksViewModelBase
 
     private string GetProviderCountDisplayMessage()
     {
-        if (!HasLocation)
+        if (HasLocation)
         {
-            return TotalProvidersCount == 1
-                ? SingleProviderOutsideDistanceMessage
-                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
+            return ProvidersCountWithinDistance switch
+            {
+                0 => ZeroProvidersWithinDistanceMessage,
+                1 => SingleProviderWithinDistanceMessage,
+                _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
+            };
         }
 
-        return ProvidersCountWithinDistance switch
-        {
-            0 => ZeroProvidersWithinDistanceMessage,
-            1 => SingleProviderWithinDistanceMessage,
-            _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
-        };
+        return TotalProvidersCount == 1
+                ? SingleProviderOutsideDistanceMessage
+                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
     }
     private string GetApprenticeCanTravelDisplayMessage() =>
         Distance == DistanceService.AcrossEnglandFilterValue

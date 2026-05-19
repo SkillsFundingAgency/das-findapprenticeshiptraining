@@ -131,14 +131,6 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         TotalProvidersCount = TotalProvidersCount,
         CourseNameAndLevel = CourseNameAndLevel
     };
-    public CourseProviderByLocationSearchViewModel CourseProviderByLocationSearch => new()
-    {
-        HasLocation = HasLocation,
-        Location = Location,
-        LarsCode = LarsCode,
-        Ukprn = Ukprn,
-        Distance = Distance
-    };
 
     public FeedbackSurveyViewModel FeedbackSurvey { get; set; }
 
