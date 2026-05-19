@@ -13,8 +13,8 @@
                     Registered address
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <span asp-show="@(!string.IsNullOrEmpty(Model.RegisteredAddress))">@Model.RegisteredAddress</span>
-                    <span asp-show="@(string.IsNullOrEmpty(Model.RegisteredAddress))">-</span>
+                    <span asp-show="@Model.HasRegisteredAddress">@Model.RegisteredAddress</span>
+                    <span asp-show="@(!Model.HasRegisteredAddress)">-</span>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -22,8 +22,8 @@
                     Email
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <a asp-show="@(!string.IsNullOrEmpty(Model.Email))" href="mailto:@Model.Email" class="govuk-link">@Model.Email</a>
-                    <span asp-show="@(string.IsNullOrEmpty(Model.Email))">-</span>
+                    <a asp-show="@Model.HasEmail" href="mailto:@Model.Email" class="govuk-link">@Model.Email</a>
+                    <span asp-show="@(!Model.HasEmail)">-</span>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -31,8 +31,8 @@
                     Telephone
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <span asp-show="@(!string.IsNullOrEmpty(Model.PhoneNumber))">@Model.PhoneNumber</span>
-                    <span asp-show="@(string.IsNullOrEmpty(Model.PhoneNumber))">-</span>
+                    <span asp-show="@Model.HasPhoneNumber">@Model.PhoneNumber</span>
+                    <span asp-show="@(!Model.HasPhoneNumber)">-</span>
                 </dd>
             </div>
             <div class="govuk-summary-list__row">
@@ -40,8 +40,8 @@
                     Website
                 </dt>
                 <dd class="govuk-summary-list__value">
-                    <a asp-show="@(!string.IsNullOrEmpty(Model.Website))" href="@Model.Website" target="_blank" class="govuk-link">@Model.Website</a>
-                    <span asp-show="@(string.IsNullOrEmpty(Model.Website))">-</span>
+                    <a asp-show="@Model.HasWebsite" href="@Model.Website" target="_blank" class="govuk-link">@Model.Website</a>
+                    <span asp-show="@(!Model.HasWebsite)">-</span>
                 </dd>
             </div>
         </dl>
