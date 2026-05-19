@@ -61,7 +61,7 @@ public class CourseViewModel : PageLinksViewModelBase
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
-        var learningType = source.ApprenticeshipType;
+        var learningType = source.LearningType;
 
         return new CourseViewModel
         {
