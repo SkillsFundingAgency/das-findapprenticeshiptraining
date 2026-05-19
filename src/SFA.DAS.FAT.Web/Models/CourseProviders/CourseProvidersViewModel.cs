@@ -300,24 +300,15 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             .ToList();
     }
 
-    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
-    {
-        return CreateSelectedFilterSections(CourseType);
-    }
 
-    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections(CourseType courseType)
+    private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
         var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddLocationAndDistanceFilters(selectedFilters);
         AddDeliveryModesFilter(selectedFilters);
         AddRatingFilters(selectedFilters);
-        var defaultOrderBy = GetDefaultOrderBy(courseType);
-
-        if (OrderBy != defaultOrderBy)
-        {
-            AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
-        }
+        AddSelectedFilter(selectedFilters, FilterType.OrderBy, OrderBy.ToString());
 
         if (selectedFilters.Count == 0)
         {
