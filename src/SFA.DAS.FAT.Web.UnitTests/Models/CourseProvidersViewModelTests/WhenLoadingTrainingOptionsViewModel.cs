@@ -10,7 +10,7 @@ public class WhenLoadingTrainingOptionsViewModel
     [TestCase("10", "", "", false)]
     [TestCase("", "Coventry", "", true)]
     [TestCase("10", "Coventry", "within 10 miles", true)]
-    [TestCase(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "Coventry", "", true)]
+    [TestCase(DistanceService.AcrossEnglandFilterValue, "Coventry", "", true)]
     public void Constructor_WithVariousDistanceAndLocationValues_SetsDistanceDetailsAndShowDistanceDetailsCorrectly(string distance, string location, string expectedDistanceDetails, bool showDistanceDetails)
     {
         var sut = new TrainingOptionsViewModel

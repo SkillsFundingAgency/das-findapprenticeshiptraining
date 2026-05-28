@@ -21,7 +21,7 @@ public sealed class WhenCreatingTheReviewsModel
     [TestCase(null)]
     [TestCase("")]
     [TestCase("  ")]
-    [TestCase("21")] 
+    [TestCase("21")]
     [TestCase("abcd")]
     [TestCase("21AB")]
     public void Then_Academic_Period_Should_Return_Property_Value_When_Invalid(string invalidInput)
@@ -57,7 +57,7 @@ public sealed class WhenCreatingTheReviewsModel
             EmployerStars = input
         };
 
-        Assert.That(sut.ConvertedEmployerStars, Is.EqualTo(0));
+        Assert.That(sut.ConvertedEmployerStars, Is.Zero);
     }
 
     [TestCase("4", 4)]
@@ -83,6 +83,6 @@ public sealed class WhenCreatingTheReviewsModel
             ApprenticeStars = input
         };
 
-        Assert.That(sut.ConvertedApprenticeStars, Is.EqualTo(0));
+        Assert.That(sut.ConvertedApprenticeStars, Is.Zero);
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
@@ -12,13 +12,20 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CourseViewModel : PageLinksViewModelBase
 {
-    public const string KNOWLEDGE_SKILLS_HEADER_TEXT = "Knowledge, skills and behaviours";
-    public const string KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT = "Knowledge and skills learners will gain";
-    public const string KNOWLEDGE_SKILLS_LINK_TEXT = "View knowledge, skills and behaviours";
-    public const string KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT = "View knowledge and skills";
-    public const string MAXIMUM_FUNDING_TEXT = "apprenticeship training and assessment costs.";
-    public const string MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT = "apprenticeship unit training and assessment costs.";
+    public const string KnowledgeSkillsHeaderText = "Knowledge, skills and behaviours";
+    public const string KnowledgeSkillsHeaderTextApprenticeshipUnit = "Knowledge and skills learners will gain";
+    public const string KnowledgeSkillsLinkText = "View knowledge, skills and behaviours";
+    public const string KnowledgeSkillsLinkTextApprenticeshipUnit = "View knowledge and skills";
+    public const string MaximumFundingText = "apprenticeship training and assessment costs.";
+    public const string MaximumFundingTextApprenticeshipUnit = "apprenticeship unit training and assessment costs.";
 
+    public const string ZeroProvidersWithinDistanceMessage = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
+    public const string SingleProviderWithinDistanceMessage = "There is 1 training provider who offers this course.";
+    public const string MultipleProvidersWithinDistanceMessage = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
+    public const string SingleProviderOutsideDistanceMessage = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
+    public const string MultipleProviderOutsideDistanceMessage = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
+    public string RequestApprenticeshipTrainingUrl { get; set; }
+    public string EmployerAccountsUrl { get; set; }
     public string StandardUId { get; set; }
     public string IFateReferenceNumber { get; set; }
     public int ProvidersCountWithinDistance { get; set; }
@@ -31,6 +38,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string Route { get; set; }
     public int RouteCode { get; set; }
     public int MaxFunding { get; set; }
+    public string MaxFundingDisplayValue => MaxFunding.ToString("C0", new CultureInfo("en-GB"));
     public int TypicalDuration { get; set; }
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
@@ -41,16 +49,16 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsFoundationApprenticeship { get; set; }
     public bool IsApprenticeshipUnit { get; set; }
     public bool IsShortCourseType { get; set; }
-
     public int IncentivePayment { get; set; }
-
+    public string IncentivePaymentDisplayValue => IncentivePayment.ToString("C0", new CultureInfo("en-GB"));
     public List<Level> Levels { get; set; } = [];
-
     public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
 
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
+        var learningType = source.ApprenticeshipType;
+
         return new CourseViewModel
         {
             StandardUId = source.StandardUId,
@@ -73,113 +81,106 @@ public class CourseViewModel : PageLinksViewModelBase
             Levels = source.Levels,
             ShowShortListLink = true,
             ShowApprenticeTrainingCoursesCrumb = true,
-            IsApprenticeship = source.ApprenticeshipType == LearningType.Apprenticeship,
-            IsFoundationApprenticeship = source.ApprenticeshipType == LearningType.FoundationApprenticeship,
-            IsApprenticeshipUnit = source.ApprenticeshipType == LearningType.ApprenticeshipUnit,
-            LearningType = source.ApprenticeshipType,
+            IsApprenticeship = learningType == LearningType.Apprenticeship,
+            IsFoundationApprenticeship = learningType == LearningType.FoundationApprenticeship,
+            IsApprenticeshipUnit = learningType == LearningType.ApprenticeshipUnit,
+            LearningType = learningType,
+
             IsActiveAvailable = source.IsActiveAvailable,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
             IsShortCourseType = source.CourseType == CourseType.ShortCourse
         };
     }
-
-    public string GetLevelEquivalentToDisplayText()
+    public string LevelEquivalentToDisplayText => GetLevelEquivalentToDisplayText();
+    public string KnowledgeSkillsHeaderTextToDisplay => GetKnowledgeSkillsHeaderTextToDisplay();
+    public string KnowledgeSkillsLinkTextToDisplay => GetKnowledgeSkillsLinkTextToDisplay();
+    public string MaximumFundingTextToDisplay => GetMaximumFundingTextToDisplay();
+    public string[] TypicalJobTitlesArray => GetTypicalJobTitles();
+    public string HelpFindingCourseUrl => GetHelpFindingCourseUrl();
+    public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
+    public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
+    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    private string GetLevelEquivalentToDisplayText()
     {
-        if (Levels.Count < 1)
+        if (Levels.Count == 0)
         {
             return string.Empty;
         }
 
-        Level EquivalentLevel = Levels.Find(a => a.Code == Level);
+        var equivalentLevel = Levels.Find(a => a.Code == Level);
 
-        return EquivalentLevel is null ? string.Empty : $"Equal to {EquivalentLevel.Name}";
+        return equivalentLevel is null ? string.Empty : $"Equal to {equivalentLevel.Name}";
     }
-
-    public string GetKnowledgeSkillsHeaderTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_HEADER_TEXT;
-    }
-    public string GetKnowledgeSkillsLinkTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT : KNOWLEDGE_SKILLS_LINK_TEXT;
-    }
-    public string GetMaximumFundingTextToDisplay()
-    {
-        return IsApprenticeshipUnit ? MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT : MAXIMUM_FUNDING_TEXT;
-    }
-
-    public string[] GetTypicalJobTitles()
+    private string[] GetTypicalJobTitles()
     {
         if (string.IsNullOrWhiteSpace(TypicalJobTitles))
         {
-            return [];
+            return Array.Empty<string>();
         }
 
         return TypicalJobTitles.Split('|');
     }
-
-    public string GetHelpFindingCourseUrl(FindApprenticeshipTrainingWeb config)
+    private string GetHelpFindingCourseUrl()
     {
-        string redirectUri = $"{config.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+        var redirectUri = $"{RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
+        var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
 
-        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
-
-        return $"{config.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
+        return $"{EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    public const string ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are no training providers who offer this course. Remove location or select View providers for this course to increase how far the learner can travel.";
+    private string GetKnowledgeSkillsHeaderTextToDisplay() =>
+        IsApprenticeshipUnit ? KnowledgeSkillsHeaderTextApprenticeshipUnit : KnowledgeSkillsHeaderText;
 
-    public const string SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE = "There is 1 training provider who offers this course.";
+    private string GetKnowledgeSkillsLinkTextToDisplay() =>
+        IsApprenticeshipUnit ? KnowledgeSkillsLinkTextApprenticeshipUnit : KnowledgeSkillsLinkText;
 
-    public const string MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
+    private string GetMaximumFundingTextToDisplay() =>
+        IsApprenticeshipUnit ? MaximumFundingTextApprenticeshipUnit : MaximumFundingText;
 
-    public const string SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
-
-    public const string MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
-
-    public string GetProviderCountDisplayMessage()
+    private string GetProviderCountDisplayMessage()
     {
         if (HasLocation)
         {
             return ProvidersCountWithinDistance switch
             {
-                0 => ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE,
-                1 => SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE,
-                _ => MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
+                0 => ZeroProvidersWithinDistanceMessage,
+                1 => SingleProviderWithinDistanceMessage,
+                _ => MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", ProvidersCountWithinDistance.ToString())
             };
         }
 
         return TotalProvidersCount == 1
-            ? SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE
-            : MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
+                ? SingleProviderOutsideDistanceMessage
+                : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
     }
-
-    public string GetApprenticeCanTravelDisplayMessage()
-    {
-        if (Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
-        {
-            return DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT;
-        }
-
-        return $"{Distance} miles";
-    }
-
-    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    private string GetApprenticeCanTravelDisplayMessage() =>
+        Distance == DistanceService.AcrossEnglandFilterValue
+            ? DistanceService.AcrossEnglandDisplayText
+            : $"{Distance} miles";
 
     private static List<KsbGroup> KsbsGroupsOrdered(List<Ksb> ksbs)
     {
-        List<KsbGroup> ksbsOrdered = new List<KsbGroup>();
+        var ksbsOrdered = new List<KsbGroup>();
 
         var ksbGroups = ksbs.GroupBy(x => x.Type)
             .Select(c => new KsbGroup { Type = c.Key, Details = c.Select(x => x.Detail).ToList() }).ToList();
 
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Knowledge));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalKnowledge));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Skill));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.TechnicalSkill));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.Behaviour));
-        ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == KsbType.EmployabilitySkillsAndBehaviour));
+        var orderedTypes = new[]
+        {
+            KsbType.Knowledge,
+            KsbType.TechnicalKnowledge,
+            KsbType.Skill,
+            KsbType.TechnicalSkill,
+            KsbType.Behaviour,
+            KsbType.EmployabilitySkillsAndBehaviour
+        };
+
+        foreach (var ksbType in orderedTypes)
+        {
+            ksbsOrdered.AddRange(ksbGroups.Where(x => x.Type == ksbType));
+        }
+
         return ksbsOrdered;
     }
 }

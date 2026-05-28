@@ -3,6 +3,7 @@
 @using SFA.DAS.FAT.Web.Models.Providers
 @model IEnumerable<SFA.DAS.FAT.Web.Models.Providers.CourseGroupViewModel>
 
+<div class="govuk-body">
 @foreach (var courseGroup in Model)
 {
     <h4 class="govuk-heading-s">@courseGroup.DisplayNameHeader</h4>
@@ -29,3 +30,5 @@
         </div>
     </details>
 }
+</div>
+

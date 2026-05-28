@@ -1,0 +1,59 @@
+@model SFA.DAS.FAT.Web.Models.Shared.ProviderReviewsViewModel
+
+<div class="das-reviews">
+    <div class="govuk-grid-column-one-half das-reviews-container">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+            Employers
+        </h3>
+        <div asp-show="@Model.EmployerReviewed">
+            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                <span class="das-rating-large das-rating--@(Model.EmployerStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.EmployerStarsValue out of 4 stars">
+                    <span aria-hidden="true" class="das-rating__icon-star"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.EmployerStarsValue < 2 ? "--empty" : "")"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.EmployerStarsValue < 3 ? "--empty" : "")"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.EmployerStarsValue < 4 ? "--empty" : "")"></span>
+                </span>
+                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.EmployerStarsValue > 2 ? "good" : "poor")">@Model.EmployerRating</span>
+            </p>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">
+                @Model.EmployerReviewsMessage
+            </p>
+        </div>
+        <div asp-show="!@Model.EmployerReviewed">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                No reviews
+            </h2>
+            <p class="govuk-body-s">
+                Not enough employers have reviewed this provider.
+            </p>
+        </div>
+    </div>
+
+    <div class="govuk-grid-column-one-half das-reviews-container">
+        <h3 class="govuk-heading-m govuk-!-margin-bottom-4">
+            Apprentices
+        </h3>
+        <div asp-show="@Model.ApprenticeReviewed">
+            <p class="govuk-!-margin-0 govuk-!-margin-bottom-4 govuk-!-font-size-24">
+                <span class="das-rating das-rating--@(Model.ApprenticeStarsValue > 2 ? "good" : "poor")" role="img" aria-label="Rating: @Model.ApprenticeStarsValue out of 4 stars">
+                    <span aria-hidden="true" class="das-rating__icon-star"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.ApprenticeStarsValue < 2 ? "--empty" : "")"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.ApprenticeStarsValue < 3 ? "--empty" : "")"></span>
+                    <span aria-hidden="true" class="das-rating__icon-star@(Model.ApprenticeStarsValue < 4 ? "--empty" : "")"></span>
+                </span>
+                <span class="govuk-!-margin-left-1 govuk-!-font-weight-bold das-rating__label--@(Model.ApprenticeStarsValue > 2 ? "good" : "poor")">@Model.ApprenticeRating</span>
+            </p>
+            <p class="govuk-body-s govuk-!-margin-bottom-2">
+                @Model.ApprenticeReviewsMessage
+            </p>
+        </div>
+        <div asp-show="!@Model.ApprenticeReviewed">
+            <h2 class="govuk-heading-s govuk-!-margin-bottom-4">
+                No reviews
+            </h2>
+            <p class="govuk-body-s">
+                Not enough apprentices have reviewed this provider.
+            </p>
+        </div>
+    </div>
+</div>

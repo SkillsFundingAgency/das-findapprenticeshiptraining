@@ -20,7 +20,6 @@ public class FeedbackSurveyViewModel
     public static DateTime CurrentDate { get; set; }
     public List<FeedbackByYear> FeedbackByYear { get; set; }
 
-
     public static FeedbackSurveyViewModel ProcessFeedbackDetails(List<EmployerFeedbackAnnualSummaries> employerSummaries, List<ApprenticeFeedbackAnnualSummaries> apprenticeSummaries, DateTime currentDate)
     {
         CurrentDate = currentDate;
@@ -139,6 +138,4 @@ public class FeedbackSurveyViewModel
 
         return feedback;
     }
-
-
 }

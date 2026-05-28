@@ -18,7 +18,7 @@ public class WhenGettingCourses
     private Mock<ILevelsService> _levelsServiceMock;
     private Mock<IRoutesService> _routesServiceMock;
     private Mock<IOptions<FindApprenticeshipTrainingApi>> _config;
-    private const string BASE_URL = "https://test.local/";
+    private const string BaseUrl = "https://test.local/";
 
     [SetUp]
     public void Setup()
@@ -29,7 +29,7 @@ public class WhenGettingCourses
         _config = new Mock<IOptions<FindApprenticeshipTrainingApi>>();
         _config.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi()
         {
-            BaseUrl = BASE_URL
+            BaseUrl = BaseUrl
         });
     }
 
@@ -92,7 +92,7 @@ public class WhenGettingCourses
 
         _apiClientMock.Setup(x => x.Get<GetCoursesResponse>(
                 It.Is<GetCoursesApiRequest>(r =>
-                    r.BaseUrl == BASE_URL &&
+                    r.BaseUrl == BaseUrl &&
                     r.Keyword == query.Keyword &&
                     r.Location == query.Location &&
                     r.Distance == query.Distance &&
@@ -122,7 +122,7 @@ public class WhenGettingCourses
                 r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                 r.Levels.SequenceEqual(query.Levels) &&
                 r.OrderBy == query.OrderBy &&
-                r.BaseUrl == BASE_URL &&
+                r.BaseUrl == BaseUrl &&
                 r.LearningTypes.SequenceEqual(expectedLearningTypes)
             )
         ), Times.Once);
@@ -155,7 +155,7 @@ public class WhenGettingCourses
     {
         mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi
         {
-            BaseUrl = BASE_URL
+            BaseUrl = BaseUrl
         });
 
         mockLevelsService
@@ -205,7 +205,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var routes = new List<Route>
         {
@@ -250,7 +250,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var routes = new List<Route>
         {
@@ -293,7 +293,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var query = new GetCoursesQuery
         {
@@ -330,7 +330,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var query = new GetCoursesQuery
         {
@@ -372,7 +372,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var query = new GetCoursesQuery
         {
@@ -408,7 +408,7 @@ public class WhenGettingCourses
         [Greedy] GetCoursesQueryHandler sut
     )
     {
-        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BASE_URL });
+        mockConfig.Setup(x => x.Value).Returns(new FindApprenticeshipTrainingApi { BaseUrl = BaseUrl });
 
         var expectedLevels = new List<int> { 2, 3, 4, 6 };
         var query = new GetCoursesQuery

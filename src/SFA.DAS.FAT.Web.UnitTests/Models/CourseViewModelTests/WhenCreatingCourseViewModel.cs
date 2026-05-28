@@ -24,14 +24,14 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void GetLevelEquivalentToDisplayText_WithLevelsCountLessThanOne_ReturnsEmpty()
+    public void LevelEquivalentToDisplayText_WithLevelsCountLessThanOne_ReturnsEmpty()
     {
         var sut = new CourseViewModel() { Level = 1 };
-        Assert.That(sut.GetLevelEquivalentToDisplayText(), Is.Empty);
+        Assert.That(sut.LevelEquivalentToDisplayText, Is.Empty);
     }
 
     [Test]
-    public void GetLevelEquivalentToDisplayText_WhenLevelNotFound_ReturnsEmpty()
+    public void LevelEquivalentToDisplayText_WhenLevelNotFound_ReturnsEmpty()
     {
         var sut = new CourseViewModel()
         {
@@ -39,11 +39,11 @@ public sealed class WhenCreatingCourseViewModel
             Levels = new List<Level>() { new Level() { Code = 2, Name = "Level 2" } }
         };
 
-        Assert.That(sut.GetLevelEquivalentToDisplayText(), Is.Empty);
+        Assert.That(sut.LevelEquivalentToDisplayText, Is.Empty);
     }
 
     [Test]
-    public void GetLevelEquivalentToDisplayText_WhenLevelFound_ReturnsEqualToLevelName()
+    public void LevelEquivalentToDisplayText_WhenLevelFound_ReturnsEqualToLevelName()
     {
         var sut = new CourseViewModel()
         {
@@ -51,46 +51,46 @@ public sealed class WhenCreatingCourseViewModel
             Levels = new List<Level>() { new Level() { Code = 2, Name = "Level 2" } }
         };
 
-        Assert.That(sut.GetLevelEquivalentToDisplayText(), Is.EqualTo("Equal to Level 2"));
+        Assert.That(sut.LevelEquivalentToDisplayText, Is.EqualTo("Equal to Level 2"));
     }
 
     [Test]
-    public void GetTypicalJobTitles_WhenEmpty_ReturnsEmptyArray()
+    public void TypicalJobTitlesArray_WhenEmpty_ReturnsEmptyArray()
     {
         var sut = new CourseViewModel()
         {
             TypicalJobTitles = string.Empty
         };
 
-        Assert.That(sut.GetTypicalJobTitles(), Is.Empty);
+        Assert.That(sut.TypicalJobTitlesArray, Is.Empty);
     }
 
     [Test]
-    public void GetTypicalJobTitles_WhenPopulated_ReturnsSplitArray()
+    public void TypicalJobTitlesArray_WhenPopulated_ReturnsSplitArray()
     {
         var sut = new CourseViewModel()
         {
             TypicalJobTitles = "Software Engineer|Construction Worker"
         };
 
-        Assert.That(sut.GetTypicalJobTitles(), Is.EqualTo(["Software Engineer", "Construction Worker"]));
+        Assert.That(sut.TypicalJobTitlesArray, Is.EqualTo(["Software Engineer", "Construction Worker"]));
     }
 
     [Test]
-    public void GetProviderCountDisplayMessage_WithLocationAndNoProviders_ReturnsZeroProviderWithinDistanceMessage()
+    public void ProviderCountDisplayMessage_WithLocationAndNoProviders_ReturnsZeroProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
             Location = "SW1"
         };
 
-        var sut = model.GetProviderCountDisplayMessage();
+        var sut = model.ProviderCountDisplayMessage;
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.ZERO_PROVIDERS_WITHIN_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.ZeroProvidersWithinDistanceMessage));
     }
 
     [Test]
-    public void GetProviderCountDisplayMessage_WithLocationAndOneProvider_ReturnsSingleProviderWithinDistanceMessage()
+    public void ProviderCountDisplayMessage_WithLocationAndOneProvider_ReturnsSingleProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -98,13 +98,13 @@ public sealed class WhenCreatingCourseViewModel
             ProvidersCountWithinDistance = 1
         };
 
-        var sut = model.GetProviderCountDisplayMessage();
+        var sut = model.ProviderCountDisplayMessage;
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.SINGLE_PROVIDER_WITHIN_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.SingleProviderWithinDistanceMessage));
     }
 
     [Test]
-    public void GetProviderCountDisplayMessage_WithLocationAndMultipleProviders_ReturnsMultipleProviderWithinDistanceMessage()
+    public void ProviderCountDisplayMessage_WithLocationAndMultipleProviders_ReturnsMultipleProviderWithinDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -112,13 +112,13 @@ public sealed class WhenCreatingCourseViewModel
             ProvidersCountWithinDistance = 2
         };
 
-        var sut = model.GetProviderCountDisplayMessage();
+        var sut = model.ProviderCountDisplayMessage;
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.MULTPLE_PROVIDERS_WITHIN_DISTANCE_MESSAGE.Replace("{{ProvidersCountWithinDistance}}", model.ProvidersCountWithinDistance.ToString())));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.MultipleProvidersWithinDistanceMessage.Replace("{{ProvidersCountWithinDistance}}", model.ProvidersCountWithinDistance.ToString())));
     }
 
     [Test]
-    public void GetProviderCountDisplayMessage_WithoutLocationAndOneProvider_ReturnsSingleProviderOutsideDistanceMessage()
+    public void ProviderCountDisplayMessage_WithoutLocationAndOneProvider_ReturnsSingleProviderOutsideDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -126,13 +126,13 @@ public sealed class WhenCreatingCourseViewModel
             TotalProvidersCount = 1
         };
 
-        var sut = model.GetProviderCountDisplayMessage();
+        var sut = model.ProviderCountDisplayMessage;
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.SINGLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.SingleProviderOutsideDistanceMessage));
     }
 
     [Test]
-    public void GetProviderCountDisplayMessage_WithoutLocationAndMultipleProviders_ReturnsMultipleProvidersOutsideDistanceMessage()
+    public void ProviderCountDisplayMessage_WithoutLocationAndMultipleProviders_ReturnsMultipleProvidersOutsideDistanceMessage()
     {
         var model = new CourseViewModel()
         {
@@ -140,75 +140,75 @@ public sealed class WhenCreatingCourseViewModel
             TotalProvidersCount = 2
         };
 
-        var sut = model.GetProviderCountDisplayMessage();
+        var sut = model.ProviderCountDisplayMessage;
 
-        Assert.That(sut, Is.EqualTo(CourseViewModel.MULTIPLE_PROVIDER_OUTSIDE_DISTANCE_MESSAGE.Replace("{{TotalProvidersCount}}", model.TotalProvidersCount.ToString())));
+        Assert.That(sut, Is.EqualTo(CourseViewModel.MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", model.TotalProvidersCount.ToString())));
     }
 
     [Test]
-    public void GetKnowledgeSkillsHeaderTextToDisplay_IsApprenticeshipUnit_ReturnsKnowledgeAndSkillsLearnersWillGain()
+    public void KnowledgeSkillsHeaderTextToDisplay_IsApprenticeshipUnit_ReturnsKnowledgeAndSkillsLearnersWillGain()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.KnowledgeSkillsHeaderTextToDisplay, Is.EqualTo(CourseViewModel.KnowledgeSkillsHeaderTextApprenticeshipUnit));
     }
 
     [Test]
-    public void GetKnowledgeSkillsHeaderTextToDisplay_IsNotApprenticeshipUnit_ReturnsKnowledgeSkillsAndBehaviours()
+    public void KnowledgeSkillsHeaderTextToDisplay_IsNotApprenticeshipUnit_ReturnsKnowledgeSkillsAndBehaviours()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetKnowledgeSkillsHeaderTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_HEADER_TEXT));
+        Assert.That(sut.KnowledgeSkillsHeaderTextToDisplay, Is.EqualTo(CourseViewModel.KnowledgeSkillsHeaderText));
     }
 
     [Test]
-    public void GetKnowledgeSkillsLinkTextToDisplay_IsApprenticeshipUnit_ReturnsViewKnowledgeAndSkills()
+    public void KnowledgeSkillsLinkTextToDisplay_IsApprenticeshipUnit_ReturnsViewKnowledgeAndSkills()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.KnowledgeSkillsLinkTextToDisplay, Is.EqualTo(CourseViewModel.KnowledgeSkillsLinkTextApprenticeshipUnit));
     }
 
     [Test]
-    public void GetKnowledgeSkillsLinkTextToDisplay_IsNotApprenticeshipUnit_ReturnsViewKnowledgeSkillsAndBehaviours()
+    public void KnowledgeSkillsLinkTextToDisplay_IsNotApprenticeshipUnit_ReturnsViewKnowledgeSkillsAndBehaviours()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetKnowledgeSkillsLinkTextToDisplay(), Is.EqualTo(CourseViewModel.KNOWLEDGE_SKILLS_LINK_TEXT));
+        Assert.That(sut.KnowledgeSkillsLinkTextToDisplay, Is.EqualTo(CourseViewModel.KnowledgeSkillsLinkText));
     }
 
     [Test]
-    public void GetMaximumFundingTextToDisplay_IsApprenticeshipUnit_ReturnsUnitFundingText()
+    public void MaximumFundingTextToDisplay_IsApprenticeshipUnit_ReturnsUnitFundingText()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = true
         };
 
-        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT_APPRENTICESHIP_UNIT));
+        Assert.That(sut.MaximumFundingTextToDisplay, Is.EqualTo(CourseViewModel.MaximumFundingTextApprenticeshipUnit));
     }
 
     [Test]
-    public void GetMaximumFundingTextToDisplay_IsNotApprenticeshipUnit_ReturnsApprenticeshipFundingText()
+    public void MaximumFundingTextToDisplay_IsNotApprenticeshipUnit_ReturnsApprenticeshipFundingText()
     {
         var sut = new CourseViewModel
         {
             IsApprenticeshipUnit = false
         };
 
-        Assert.That(sut.GetMaximumFundingTextToDisplay(), Is.EqualTo(CourseViewModel.MAXIMUM_FUNDING_TEXT));
+        Assert.That(sut.MaximumFundingTextToDisplay, Is.EqualTo(CourseViewModel.MaximumFundingText));
     }
 
     [Test]
@@ -217,6 +217,17 @@ public sealed class WhenCreatingCourseViewModel
         var sut = new CourseViewModel
         {
             Location = "   "
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void HasLocation_LocationIsNull_ReturnsFalse()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = null
         };
 
         Assert.That(sut.HasLocation, Is.False);
@@ -234,52 +245,125 @@ public sealed class WhenCreatingCourseViewModel
     }
 
     [Test]
-    public void GetApprenticeCanTravelDisplayMessage_WithDistanceAll_ReturnsAcrossEnglandDisplayText()
+    public void ApprenticeCanTravelDisplayMessage_WithDistanceAll_ReturnsAcrossEnglandDisplayText()
     {
         var sut = new CourseViewModel()
         {
             Distance = "All"
         };
 
-        Assert.That(sut.GetApprenticeCanTravelDisplayMessage(), Is.EqualTo(DistanceService.ACROSS_ENGLAND_DISPLAY_TEXT));
+        Assert.That(sut.ApprenticeCanTravelDisplayMessage, Is.EqualTo(DistanceService.AcrossEnglandDisplayText));
     }
 
     [Test]
-    public void GetApprenticeCanTravelDisplayMessage_WithDistanceSet_ReturnsMilesDisplayText()
+    public void ApprenticeCanTravelDisplayMessage_WithDistanceSet_ReturnsMilesDisplayText()
     {
         var sut = new CourseViewModel()
         {
             Distance = "10"
         };
 
-        Assert.That(sut.GetApprenticeCanTravelDisplayMessage(), Is.EqualTo($"{sut.Distance} miles"));
+        Assert.That(sut.ApprenticeCanTravelDisplayMessage, Is.EqualTo($"{sut.Distance} miles"));
     }
 
     [Test, MoqAutoData]
-    public void GetHelpFindingCourseUrl_WithLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithLocation(
+    public void HelpFindingCourseUrl_WithLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithLocation(
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        var _sut = new CourseViewModel() { LarsCode = "1", Location = "SW1" };
+        var _sut = new CourseViewModel()
+        {
+            LarsCode = "1",
+            Location = "SW1",
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
+        };
 
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
-        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=SW1")}";
+        string redirectUri = $"{_sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{_sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + "&location=SW1")}";
 
-        var result = _sut.GetHelpFindingCourseUrl(findApprenticeshipTrainingWebConfiguration);
+        var result = _sut.HelpFindingCourseUrl;
         Assert.That(expectedLink, Is.EqualTo(result));
     }
 
     [Test, MoqAutoData]
-    public void GetHelpFindingCourseUrl_WithoutLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
+    public void HelpFindingCourseUrl_WithoutLocationSet_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
         FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
     )
     {
-        var _sut = new CourseViewModel() { LarsCode = "1", Location = string.Empty };
+        var _sut = new CourseViewModel()
+        {
+            LarsCode = "1",
+            Location = string.Empty,
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
+        };
 
-        string redirectUri = $"{findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
-        string expectedLink = $"{findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+        string redirectUri = $"{_sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={_sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{_sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
 
-        var result = _sut.GetHelpFindingCourseUrl(findApprenticeshipTrainingWebConfiguration);
+        var result = _sut.HelpFindingCourseUrl;
         Assert.That(expectedLink, Is.EqualTo(result));
     }
+
+    [Test, MoqAutoData]
+    public void HelpFindingCourseUrl_LocationIsWhitespace_ReturnsRequestApprenticeshipTrainingUrlWithoutLocation(
+        FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration
+    )
+    {
+        var sut = new CourseViewModel()
+        {
+            LarsCode = "1",
+            Location = "   ",
+            RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
+            EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
+        };
+
+        string redirectUri = $"{sut.RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={sut.LarsCode}&requestType={EntryPoint.CourseDetail}";
+        string expectedLink = $"{sut.EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri)}";
+
+        var result = sut.HelpFindingCourseUrl;
+        Assert.That(expectedLink, Is.EqualTo(result));
+    }
+
+    [Test]
+    public void ProviderCountDisplayMessage_LocationIsWhitespace_ReturnsMultipleProvidersOutsideDistanceMessage()
+    {
+        var sut = new CourseViewModel
+        {
+            Location = "   ",
+            TotalProvidersCount = 3
+        };
+
+        var result = sut.ProviderCountDisplayMessage;
+
+        Assert.That(result, Is.EqualTo(CourseViewModel.MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", "3")));
+    }
+
+    [TestCase(0, "£0")]
+    [TestCase(1000, "£1,000")]
+    [TestCase(123456, "£123,456")]
+    public void MaxFundingDisplayValue_MaxFundingSet_ReturnsCurrencyFormattedValue(int maxFunding, string expected)
+    {
+        var sut = new CourseViewModel
+        {
+            MaxFunding = maxFunding
+        };
+
+        Assert.That(sut.MaxFundingDisplayValue, Is.EqualTo(expected));
+    }
+
+    [TestCase(0, "£0")]
+    [TestCase(3000, "£3,000")]
+    [TestCase(999999, "£999,999")]
+    public void IncentivePaymentDisplayValue_IncentivePaymentSet_ReturnsCurrencyFormattedValue(int incentivePayment, string expected)
+    {
+        var sut = new CourseViewModel
+        {
+            IncentivePayment = incentivePayment
+        };
+
+        Assert.That(sut.IncentivePaymentDisplayValue, Is.EqualTo(expected));
+    }
+
 }

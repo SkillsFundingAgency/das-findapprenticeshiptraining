@@ -90,7 +90,7 @@ public class WhenPostingSearchCourses
             result.RouteValues.Should().ContainKey("Location");
             result.RouteValues!["Location"].Should().Be(location);
             result.RouteValues.Should().ContainKey("Distance");
-            result.RouteValues!["Distance"].Should().Be(DistanceService.TEN_MILES.ToString());
+            result.RouteValues!["Distance"].Should().Be(DistanceService.TenMiles.ToString());
         }
     }
 
@@ -119,7 +119,7 @@ public class WhenPostingSearchCourses
             result.RouteValues.Should().ContainKey("Location");
             result.RouteValues!["Location"].Should().Be(location);
             result.RouteValues.Should().ContainKey("Distance");
-            result.RouteValues!["Distance"].Should().Be(DistanceService.TEN_MILES.ToString());
+            result.RouteValues!["Distance"].Should().Be(DistanceService.TenMiles.ToString());
         }
     }
 }

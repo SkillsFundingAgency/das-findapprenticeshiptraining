@@ -54,6 +54,7 @@ public class WhenGettingProviders
         var model = actualVm!.Model as ProviderDetailsViewModel;
         model.Should().NotBeNull();
         model.Should().BeEquivalentTo(response, options => options
+            .ExcludingMissingMembers()
             .Excluding(r => r.ProviderAddress)
             .Excluding(r => r.Qar)
             .Excluding(r => r.Reviews)

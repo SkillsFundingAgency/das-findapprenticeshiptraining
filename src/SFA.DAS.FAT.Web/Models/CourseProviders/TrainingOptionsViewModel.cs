@@ -29,7 +29,7 @@ public class TrainingOptionsViewModel
             }
 
             var distanceDetails =
-                Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrEmpty(Distance)
+                Distance == DistanceService.AcrossEnglandFilterValue || string.IsNullOrEmpty(Distance)
                     ? string.Empty
                     : $"within {Distance} miles";
 

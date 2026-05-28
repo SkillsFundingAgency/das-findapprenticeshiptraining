@@ -15,14 +15,16 @@ namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesViewModel : PageLinksViewModelBase
 {
-    public const string BEST_MATCH_TO_COURSE = "Best match to course";
-    public const string NAME_OF_COURSE = "Name of course";
-    private const string _COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
-    private const string _LOCATION_COURSES_SUB_HEADER = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
-    public const string TRAINING_TYPE_FIND_OUT_MORE_TEXT = "Find out more about training types (opens in new tab)";
-    public const string TRAINING_TYPE_FIND_OUT_MORE_LINK = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
+    public const string BestMatchToCourse = "Best match to course";
+    public const string NameOfCourse = "Name of course";
+    private const string CoursesSubHeaderText = "Select the course name to view details about it, or select view training providers to see the training providers who run that course.";
+    private const string LocationCoursesSubHeaderText = "Select the course name to view details about it, or select view training providers to see the training providers who run that course in the learner's work location.";
+    public const string TrainingTypeFindOutMoreText = "Find out more about training types (opens in new tab)";
+    public const string TrainingTypeFindOutMoreLink = "https://www.apprenticeships.gov.uk/employers/new-what-is-an-apprenticeship";
 
     private readonly Dictionary<FilterType, Func<string, string>> _valueFunctions;
+    private OrderBy? _orderBy;
+    private FiltersViewModel _filters;
 
     public CoursesViewModel()
     {
@@ -59,9 +61,7 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     public int TotalFiltered { get; set; }
 
-    public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BEST_MATCH_TO_COURSE : NAME_OF_COURSE;
-
-    private OrderBy? _orderBy;
+    public string SortedDisplayMessage => OrderBy == OrderBy.Score ? BestMatchToCourse : NameOfCourse;
 
     public OrderBy OrderBy
     {
@@ -76,7 +76,9 @@ public class CoursesViewModel : PageLinksViewModelBase
         }
     }
 
-    private FiltersViewModel _filters;
+    public string TotalMessage => GetTotalMessage();
+
+    public string CoursesSubHeader => PopulateCoursesSubHeader();
 
     public FiltersViewModel Filters
     {
@@ -90,11 +92,39 @@ public class CoursesViewModel : PageLinksViewModelBase
             return _filters;
         }
     }
+    public FiltersViewModel CreateFilterSections()
+    {
+        var selectedFilterSections = CreateSelectedFilterSections();
 
-    public string TotalMessage => GetTotalMessage();
-
-    public string CoursesSubHeader => PopulateCoursesSubHeader();
-
+        return new FiltersViewModel()
+        {
+            Route = RouteNames.Courses,
+            FilterSections =
+            [
+                CreateInputFilterSection("keyword-input", KeywordSectionHeading, KeywordSectionSubHeading, nameof(Keyword), Keyword),
+                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
+                CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
+                CreateAccordionFilterSection(
+                "multi-select",
+                string.Empty,
+                [
+                    CreateCheckboxListFilterSection(
+                        "types-filter",
+                        nameof(FilterType.LearningTypes),
+                        TrainingTypesSectionHeading,
+                        null,
+                        LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
+                        TrainingTypeFindOutMoreText,
+                        TrainingTypeFindOutMoreLink
+                    ),
+                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
+                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
+                ]
+            )
+            ],
+            ClearFilterSections = selectedFilterSections
+        };
+    }
     private string PopulateCoursesSubHeader()
     {
         if (Total == 0)
@@ -102,12 +132,12 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.ACROSS_ENGLAND_FILTER_VALUE)
+        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
         {
-            return _LOCATION_COURSES_SUB_HEADER;
+            return LocationCoursesSubHeaderText;
         }
 
-        return _COURSES_SUB_HEADER;
+        return CoursesSubHeaderText;
     }
 
     private string GetTotalMessage()
@@ -127,39 +157,6 @@ public class CoursesViewModel : PageLinksViewModelBase
         return resultDisplayMessage;
     }
 
-    public FiltersViewModel CreateFilterSections()
-    {
-        var selectedFilterSections = CreateSelectedFilterSections();
-
-        return new FiltersViewModel()
-        {
-            Route = RouteNames.Courses,
-            FilterSections =
-            [
-                CreateInputFilterSection("keyword-input", KEYWORD_SECTION_HEADING, KEYWORD_SECTION_SUB_HEADING, nameof(Keyword), Keyword),
-                CreateSearchFilterSection("search-location", LOCATION_SECTION_HEADING, LOCATION_SECTION_SUB_HEADING, nameof(Location), Location),
-                CreateDropdownFilterSection("distance-filter", nameof(Distance), DISTANCE_SECTION_HEADING, DISTANCE_SECTION_SUB_HEADING, GetDistanceFilterValues(Distance)),
-                CreateAccordionFilterSection(
-                "multi-select",
-                string.Empty,
-                [
-                    CreateCheckboxListFilterSection(
-                        "types-filter",
-                        nameof(FilterType.LearningTypes),
-                        TRAINING_TYPES_SECTION_HEADING,
-                        null,
-                        LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
-                        TRAINING_TYPE_FIND_OUT_MORE_TEXT,
-                        TRAINING_TYPE_FIND_OUT_MORE_LINK
-                    ),
-                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LEVELS_SECTION_HEADING, null, GenerateLevelFilterItems(), LEVEL_INFORMATION_DISPLAY_TEXT, LEVEL_INFORMATION_URL),
-                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CATEGORIES_SECTION_HEADING, null, GenerateRouteFilterItems())
-                ]
-            )
-            ],
-            ClearFilterSections = selectedFilterSections
-        };
-    }
 
     private List<FilterItemViewModel> GenerateRouteFilterItems()
     {
@@ -186,13 +183,13 @@ public class CoursesViewModel : PageLinksViewModelBase
 
     private IReadOnlyList<ClearFilterSectionViewModel> CreateSelectedFilterSections()
     {
-        var selectedFilters = new Dictionary<FilterType, List<string>>();
+        var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = DistanceService.TEN_MILES.ToString();
+            Distance = DistanceService.TenMiles.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))
@@ -222,7 +219,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         if (SelectedTrainingTypes.Count > 0)
         {
             var validTrainingTypes = SelectedTrainingTypes
-                .Where(type => Enum.IsDefined(typeof(LearningType), type))
+                .Where(type => Enum.IsDefined(type))
                 .Select(type => type.ToString())
                 .ToList();
             AddSelectedFilter(selectedFilters, FilterType.LearningTypes, validTrainingTypes);

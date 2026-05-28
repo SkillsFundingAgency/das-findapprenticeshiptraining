@@ -10,13 +10,10 @@ public class TrainingOptionsShortCourseViewModel
     public required bool IsEmployerLocationAvailable { get; set; }
     public string EmployerLocationDisplayDescription { get; set; }
 
-
     public required bool IsProviderAvailable { get; set; }
     public string ProviderLocationDisplayDescription { get; set; }
 
-
     public decimal? NearestEmployerLocation { get; set; }
-
 
     public decimal? NearestProviderPlace { get; set; }
 
@@ -33,7 +30,7 @@ public class TrainingOptionsShortCourseViewModel
             }
 
             var distanceDetails =
-                Distance == DistanceService.ACROSS_ENGLAND_FILTER_VALUE || string.IsNullOrEmpty(Distance)
+                Distance == DistanceService.AcrossEnglandFilterValue || string.IsNullOrEmpty(Distance)
                     ? string.Empty
                     : $"within {Distance} miles";
 
@@ -42,5 +39,4 @@ public class TrainingOptionsShortCourseViewModel
     }
 
     public bool ShowDistanceDetails => !string.IsNullOrEmpty(Location);
-
 }

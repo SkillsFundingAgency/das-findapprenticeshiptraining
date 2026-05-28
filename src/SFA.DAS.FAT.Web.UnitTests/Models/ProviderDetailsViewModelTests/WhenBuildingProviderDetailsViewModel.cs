@@ -30,6 +30,7 @@ public class WhenBuildingProviderDetailsViewModel
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
         sut.Should().BeEquivalentTo(response, options => options
+            .ExcludingMissingMembers()
             .Excluding(r => r.ProviderAddress)
             .Excluding(r => r.Qar)
             .Excluding(r => r.Reviews)
@@ -252,11 +253,64 @@ public class WhenBuildingProviderDetailsViewModel
 
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
+    }
+
+    [Test, MoqAutoData]
+    public void BuildProviderDetailsViewModel_FromValidReviewRatings_ParsesProviderRatings(
+        ProviderRating employerProviderRating,
+        ProviderRating apprenticeProviderRating)
+    {
+        var response = new GetProviderQueryResponse
+        {
+            Ukprn = 12345678,
+            Reviews = new GetProviderReviewsModel
+            {
+                ReviewPeriod = "2324",
+                EmployerReviews = "1",
+                EmployerStars = "2",
+                ApprenticeReviews = "3",
+                ApprenticeStars = "4",
+                EmployerRating = employerProviderRating.ToString(),
+                ApprenticeRating = apprenticeProviderRating.ToString()
+            }
+        };
+
+        ProviderDetailsViewModel sut = response;
 
         using (new AssertionScope())
         {
-            sut!.EmployerReviewed.Should().Be(isEmployerReviewed);
-            sut!.ApprenticeReviewed.Should().Be(isApprenticeReviewed);
+            sut.ProviderReviews.Reviews.EmployerRating.Should().Be(employerProviderRating);
+            sut.ProviderReviews.Reviews.ApprenticeRating.Should().Be(apprenticeProviderRating);
+        }
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [TestCase("NotARealRating")]
+    [TestCase("Very poor")]
+    public void BuildProviderDetailsViewModel_FromInvalidReviewRating_DefaultsToNotYetReviewed(string invalidRating)
+    {
+        var response = new GetProviderQueryResponse
+        {
+            Ukprn = 12345678,
+            Reviews = new GetProviderReviewsModel
+            {
+                ReviewPeriod = "2324",
+                EmployerReviews = "1",
+                EmployerStars = "2",
+                ApprenticeReviews = "3",
+                ApprenticeStars = "4",
+                EmployerRating = invalidRating,
+                ApprenticeRating = invalidRating
+            }
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderReviews.Reviews.EmployerRating.Should().Be(ProviderRating.NotYetReviewed);
+            sut.ProviderReviews.Reviews.ApprenticeRating.Should().Be(ProviderRating.NotYetReviewed);
         }
     }
 
@@ -340,6 +394,45 @@ public class WhenBuildingProviderDetailsViewModel
         ProviderDetailsViewModel sut = response;
         sut.Should().NotBeNull();
 
-        sut!.Contact.Website.Should().Be(expectedWebsite);
+        sut!.ContactDetails.Website.Should().Be(expectedWebsite);
+    }
+
+    [Test]
+    public void ImplicitOperator_ProviderAddressComposed_SetsContactDetailsRegisteredAddress()
+    {
+        GetProviderQueryResponse response = new GetProviderQueryResponse
+        {
+            ProviderName = ProviderName,
+            ProviderAddress = new GetProviderAddressModel
+            {
+                AddressLine1 = Address1,
+                Town = Town,
+                Postcode = Postcode
+            },
+            Contact = null
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderAddress.Should().Be($"{ProviderName}, {Address1}, {Town}, {Postcode}");
+            sut.ContactDetails.RegisteredAddress.Should().Be($"{ProviderName}, {Address1}, {Town}, {Postcode}");
+        }
+    }
+
+    [Test]
+    public void ImplicitOperator_ProviderAddressEmpty_SetsContactDetailsRegisteredAddressToEmptyString()
+    {
+        GetProviderQueryResponse response = new GetProviderQueryResponse
+        {
+            ProviderName = null,
+            ProviderAddress = null,
+            Contact = null
+        };
+
+        ProviderDetailsViewModel sut = response;
+
+        sut.ContactDetails.RegisteredAddress.Should().Be(string.Empty);
     }
 }

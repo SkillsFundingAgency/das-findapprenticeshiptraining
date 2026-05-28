@@ -12,7 +12,7 @@ public class WhenBuildingCourseProviderTopPanelViewModelTests
     [MoqInlineAutoData("10", "10")]
     [MoqInlineAutoData("20", "20")]
     [MoqInlineAutoData("50", "50")]
-    [MoqInlineAutoData(DistanceService.ACROSS_ENGLAND_FILTER_VALUE, "")]
+    [MoqInlineAutoData(DistanceService.AcrossEnglandFilterValue, "")]
     public void Then_Set_ProviderRouteData(string distance, string distanceExpected, CourseProviderTopPanelViewModel sut)
     {
 

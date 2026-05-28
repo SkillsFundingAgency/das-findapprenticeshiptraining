@@ -1,13 +1,8 @@
 @using Humanizer
-@using Microsoft.Extensions.Options
-@using SFA.DAS.FAT.Domain.Configuration
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
-@using System.Globalization
-@using SFA.DAS.FAT.Web.TagHelpers
 @model SFA.DAS.FAT.Web.Models.CourseViewModel
-@inject IOptions<FindApprenticeshipTrainingWeb> ConfigOptions;
 
 @{
     ViewData["Title"] = $"{Model.TitleAndLevel} - apprenticeship training course";
@@ -26,6 +21,7 @@
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@Model.TitleAndLevel</h1>
         </div>
     </div>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <div class="das-highlight govuk-!-margin-bottom-6">
@@ -42,7 +38,7 @@
                             You can use this service if you employ apprentices. You'll need to be signed in to your apprenticeship service account.
                         </p>
 
-                        <p class="govuk-body"><a href="@Model.GetHelpFindingCourseUrl(ConfigOptions.Value)" class="govuk-link govuk-link--no-visited-state" id="share-interest">Ask if training providers can run this course</a>.
+                        <p class="govuk-body"><a href="@Model.HelpFindingCourseUrl" class="govuk-link govuk-link--no-visited-state" id="share-interest">Ask if training providers can run this course</a>.
                         </p>
                     </div>
 
@@ -56,7 +52,7 @@
 
                 <div class="govuk-!-width-three-quarters" asp-show="Model.TotalProvidersCount > 0 && Model.HasLocation">
                     <p class="govuk-body">
-                        @Model.GetProviderCountDisplayMessage()
+                        @Model.ProviderCountDisplayMessage
                     </p>
 
                     <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
@@ -67,7 +63,7 @@
 
                         <h3 class="govuk-heading-s govuk-!-margin-bottom-6">
                             Learner can travel:
-                            <span class="govuk-!-font-weight-regular">@Model.GetApprenticeCanTravelDisplayMessage()</span>
+                            <span class="govuk-!-font-weight-regular">@Model.ApprenticeCanTravelDisplayMessage</span>
                         </h3>
 
                         <div class="govuk-button-group govuk-!-margin-bottom-0">
@@ -85,7 +81,7 @@
 
                 <div class="govuk-!-width-three-quarters" asp-show="Model.TotalProvidersCount > 0 && !Model.HasLocation">
                     <p class="govuk-body">
-                        @Model.GetProviderCountDisplayMessage()
+                        @Model.ProviderCountDisplayMessage
                     </p>
 
                     <form method="GET"
@@ -112,11 +108,12 @@
             </div>
         </div>
     </div>
+
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
             <h2 class="govuk-heading-l">Information about @Model.TitleAndLevel</h2>
             <p class="govuk-body-l">@Model.OverviewOfRole</p>
-            
+
             <div class="govuk-inset-text" id="foundation-information" asp-show="Model.IsFoundationApprenticeship">
                 <p>Foundation apprenticeships introduce skills for a range of jobs in a sector, and provide general skills for work. After a foundation, apprentices can specialise and do a standard level 2 or 3 apprenticeship. </p>
 
@@ -135,11 +132,11 @@
                         Foundation apprenticeship incentive payment
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.IncentivePayment.ToString("C0", new CultureInfo("en-GB")) <br/>
+                        @Model.IncentivePaymentDisplayValue <br/>
                         <span class="govuk-!-font-size-16 das-text--muted">Employers get this incentive payment in 3 stages linked to retention and progression</span>
                     </dd>
                 </div>
-                <div asp-show="@Model.IsFoundationApprenticeship"  class="govuk-summary-list__row">
+                <div asp-show="@Model.IsFoundationApprenticeship" class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Who can do a foundation apprenticeship
                     </dt>
@@ -151,7 +148,7 @@
                                 </span>
                             </summary>
                             <div class="govuk-details__text app-details-bottom">
-                                At the start of the apprenticeship, they must be: 
+                                At the start of the apprenticeship, they must be:
                                 <ul class="govuk-list govuk-list--bullet">
                                     <li>aged between 16 to 21 (or 15 if their 16th birthday is between the last Friday of June and 31 August)</li>
                                     <li>aged between 22 to 24 and
@@ -170,13 +167,13 @@
                 <div class="govuk-summary-list__row">
 
                     <dt class="govuk-summary-list__key">
-                        @Model.GetKnowledgeSkillsHeaderTextToDisplay()
+                        @Model.KnowledgeSkillsHeaderTextToDisplay
                     </dt>
                     <dd class="govuk-summary-list__value">
                         <details class="govuk-details">
                             <summary class="govuk-details__summary">
                                 <span class="govuk-details__summary-text">
-                                    @Model.GetKnowledgeSkillsLinkTextToDisplay()
+                                    @Model.KnowledgeSkillsLinkTextToDisplay
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
@@ -211,7 +208,7 @@
                     <dd class="govuk-summary-list__value">
                         @Model.Level<br/>
                         <span class="govuk-!-font-size-16 das-text--muted">
-                            @Model.GetLevelEquivalentToDisplayText()
+                            @Model.LevelEquivalentToDisplayText
                         </span>
                     </dd>
                 </div>
@@ -232,7 +229,7 @@
                     <dd class="govuk-summary-list__value">
                         @Model.TypicalDuration delivery hours <br />
                         <span class="govuk-!-font-size-16 das-text--muted">
-                            Delivery hours  are the minimum amount of time a learner will spend with their instructor while on the course. This does not include coursework or self-paced activities.
+                            Delivery hours are the minimum amount of time a learner will spend with their instructor while on the course. This does not include coursework or self-paced activities.
                         </span>
                     </dd>
                 </div>
@@ -250,28 +247,28 @@
                         Maximum funding
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        @Model.MaxFunding.ToString("C0", new CultureInfo("en-GB")) <br />
+                        @Model.MaxFundingDisplayValue <br />
                         <span class="govuk-!-font-size-16 das-text--muted">
                             Maximum government funding for <br/>
-                            @Model.GetMaximumFundingTextToDisplay()
+                            @Model.MaximumFundingTextToDisplay
                         </span>
                     </dd>
                 </div>
 
-                <div asp-show="@Model.IsApprenticeship"  class="govuk-summary-list__row">
+                <div asp-show="@Model.IsApprenticeship" class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Job titles include
                     </dt>
                     <dd class="govuk-summary-list__value">
                         <ul class="govuk-list govuk-list--bullet">
-                            @foreach (string title in @Model.GetTypicalJobTitles())
+                            @foreach (string title in @Model.TypicalJobTitlesArray)
                             {
                                 <li>@title</li>
                             }
                         </ul>
                     </dd>
                 </div>
-                
+
                 <div asp-show="@Model.IsFoundationApprenticeship" class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Course apprentices can progress to
@@ -284,16 +281,16 @@
                                 </span>
                             </summary>
                             <div class="govuk-details__text">
-                                
-                                    Foundation apprenticeships cover some knowledge and skills from these courses. If the apprentice progresses to one of these, what theyv'e learnt will be taken off the assessment. They could finish the course in a shorter time.      
-                                    <br/><br/>
-                                    
-                                    <ul class="govuk-list govuk-list--bullet">
-                                        @foreach (var occupation in Model.RelatedOccupations)
-                                        {
-                                            <li>@occupation.Description</li>
-                                        }
-                                    </ul>
+
+                                Foundation apprenticeships cover some knowledge and skills from these courses. If the apprentice progresses to one of these, what they've learnt will be taken off the assessment. They could finish the course in a shorter time.
+                                <br/><br/>
+
+                                <ul class="govuk-list govuk-list--bullet">
+                                    @foreach (var occupation in Model.RelatedOccupations)
+                                    {
+                                        <li>@occupation.Description</li>
+                                    }
+                                </ul>
 
                             </div>
                         </details>
@@ -301,9 +298,9 @@
                 </div>
             </dl>
 
-                <p class="govuk-body-s">
+            <p class="govuk-body-s">
                 View more information about <a id="course-more-information-@Model.LarsCode" class="govuk-link govuk-link--no-visited-state" href="@Model.StandardPageUrl" target="_blank" rel="noopener noreferrer">@Model.TitleAndLevel from Skills England</a>.
-                </p>
-            </div>
+            </p>
+        </div>
     </div>
 </main>

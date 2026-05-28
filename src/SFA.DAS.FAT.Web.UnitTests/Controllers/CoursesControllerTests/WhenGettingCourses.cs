@@ -39,7 +39,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TEN_MILES) &&
+                    c.Distance.Equals(DistanceService.TenMiles) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber) &&
@@ -85,7 +85,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TEN_MILES) &&
+                    c.Distance.Equals(DistanceService.TenMiles) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber)
@@ -141,7 +141,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TEN_MILES) &&
+                    c.Distance.Equals(DistanceService.TenMiles) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories)
                 ),
@@ -182,7 +182,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
                     c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TEN_MILES) &&
+                    c.Distance.Equals(DistanceService.TenMiles) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories)
                 ),
