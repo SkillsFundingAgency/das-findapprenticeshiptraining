@@ -92,6 +92,34 @@ public class CourseProvidersController : Controller
 
         var deliveryModes = request.DeliveryModes.ToList();
 
+        CourseProvidersViewModel CreateBaseCourseProvidersViewModel()
+        {
+            return new CourseProvidersViewModel(_config)
+            {
+                LarsCode = request.LarsCode,
+                ShortlistCount = shortlistCount?.Count ?? 0,
+                OrderBy = orderBy,
+                Location = request.Location,
+                Distance = convertedDistance.ToString(),
+                SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
+                SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()),
+                SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()),
+                SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
+                Providers = []
+            };
+        }
+
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = request.Location?.Trim() });
+
+        if (!validationLocationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationLocationResult.Errors);
+
+            var invalidViewModel = CreateBaseCourseProvidersViewModel();
+
+            return View(invalidViewModel);
+        }
+
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
             LarsCode = request.LarsCode,
@@ -111,30 +139,19 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
-        var courseProvidersViewModel = new CourseProvidersViewModel(_config)
-        {
-            LarsCode = request.LarsCode,
-            ShortlistCount = shortlistCount?.Count ?? 0,
-            OrderBy = orderBy,
-            CourseTitleAndLevel = result.StandardName,
-            CourseType = result.CourseType,
-            ApprenticeshipType = result.ApprenticeshipType,
-            IsActiveAvailable = result.IsActiveAvailable,
-            Location = request.Location,
-            Distance = convertedDistance.ToString(),
-            SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()),
-            SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
-            ShowSearchCrumb = true,
-            ShowShortListLink = true,
-            ShowApprenticeTrainingCoursesCrumb = true,
-            ShowApprenticeTrainingCourseCrumb = true,
-            QarPeriod = result.QarPeriod,
-            ReviewPeriod = result.ReviewPeriod,
-            TotalCount = result.TotalCount,
-            Providers = []
-        };
+        var courseProvidersViewModel = CreateBaseCourseProvidersViewModel();
+
+        courseProvidersViewModel.CourseTitleAndLevel = result.StandardName;
+        courseProvidersViewModel.CourseType = result.CourseType;
+        courseProvidersViewModel.ApprenticeshipType = result.ApprenticeshipType;
+        courseProvidersViewModel.IsActiveAvailable = result.IsActiveAvailable;
+        courseProvidersViewModel.ShowSearchCrumb = true;
+        courseProvidersViewModel.ShowShortListLink = true;
+        courseProvidersViewModel.ShowApprenticeTrainingCoursesCrumb = true;
+        courseProvidersViewModel.ShowApprenticeTrainingCourseCrumb = true;
+        courseProvidersViewModel.QarPeriod = result.QarPeriod;
+        courseProvidersViewModel.ReviewPeriod = result.ReviewPeriod;
+        courseProvidersViewModel.TotalCount = result.TotalCount;
 
         var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
         foreach (var provider in providers)
@@ -251,4 +268,6 @@ public class CourseProvidersController : Controller
 
         return dropdown;
     }
+
+
 }

@@ -15,6 +15,7 @@
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <partial name="_validationSummary" />
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
                 <span>Training providers for</span>
                 <span>@Model.CourseTitleAndLevel</span>
@@ -189,7 +190,7 @@
                 </div>
             }
             <div class="govuk-!-margin-top-4">
-                @await Html.PartialAsync("_pagination", Model.Pagination)
+                @await Html.PartialAsync("_pagination", Model?.Pagination)
             </div>
 
             <div class="das-highlight" asp-show="@Model.CourseType == CourseType.Apprenticeship">
