@@ -365,11 +365,8 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
-        tempDataMock.SetupGet(t => t[CourseProvidersController.LocationTempDataKey]).Returns((string)null);
         controller.TempData = tempDataMock.Object;
 
-        request.Location = location;
-        request.Distance = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 

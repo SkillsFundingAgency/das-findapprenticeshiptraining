@@ -69,7 +69,6 @@ public class StandardViewModel
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
         FindProvidersUrl = GetFindProvidersUrl(urlHelper, location, distance);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
-        GenerateStandardRouteValues(location, distance);
     }
 
     private string GetLevelName(List<LevelViewModel> levels)
@@ -79,16 +78,6 @@ public class StandardViewModel
         return $"{Level} - equal to {level.Name}";
     }
 
-    private void GenerateStandardRouteValues(string location, string distance)
-    {
-        CourseDetailsRouteValues.Add("larsCode", LarsCode);
-
-        if (!string.IsNullOrWhiteSpace(location))
-        {
-            CourseDetailsRouteValues.Add("location", location);
-            CourseDetailsRouteValues.Add("distance", distance.ToString());
-        }
-    }
 
     private string GetRequestApprenticeshipTrainingUrl(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, string location)
     {
@@ -106,7 +95,7 @@ public class StandardViewModel
     private string GetFindProvidersUrl(IUrlHelper urlHelper, string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.AcrossEnglandFilterValue ? DistanceService.AcrossEnglandFilterValue : distance })!;
+        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode })!;
     }
 
     private string GetFindProvidersUrlDescription(string location, string distance)

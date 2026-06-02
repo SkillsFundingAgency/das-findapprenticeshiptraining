@@ -22,34 +22,53 @@ public class CoursesController : Controller
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
 
     public CoursesController(
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
-        ICookieStorageService<ShortlistCookieItem> shortlistCookieService)
+        ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
+        ICookieStorageService<LocationCookieItem> locationCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
+        _locationCookieService = locationCookieService;
         _config = config.Value;
+    }
+
+    [HttpPost]
+    [Route("", Name = RouteNames.Courses)]
+    public IActionResult CoursesPost(GetCoursesViewModel postModel)
+    {
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = postModel.Location, Distance = postModel.Distance });
+        var getModel = new GetCoursesViewModel
+        {
+            Keyword = postModel.Keyword,
+            Categories = postModel.Categories,
+            Levels = postModel.Levels,
+            LearningTypes = postModel.LearningTypes,
+            PageNumber = 1
+        };
+        return RedirectToRoute(RouteNames.Courses, getModel);
     }
 
     [HttpGet]
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
-        var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-
-        int validatedDistance = DistanceService.GetValidDistance(model.Distance, model.Location);
-
-        if (string.IsNullOrWhiteSpace(model.Distance) || !DistanceService.IsValidDistance(model.Distance))
+        if (Request.Query.ContainsKey("location"))
         {
-            model.Distance = DistanceService.TenMiles.ToString();
+            _locationCookieService.Delete(Constants.LocationCookieName);
         }
 
+        var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+
+        int validatedDistance = DistanceService.GetValidDistance(locationCookieItem?.Distance, locationCookieItem?.Location);
         var result = await _mediator.Send(new GetCoursesQuery
         {
             Keyword = model.Keyword,
-            Location = model.Location,
+            Location = locationCookieItem?.Location,
             Distance = validatedDistance,
             Routes = model.Categories,
             Levels = model.Levels,
@@ -62,7 +81,7 @@ public class CoursesController : Controller
         List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, model.Levels))];
         var viewModel = new CoursesViewModel()
         {
-            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, model.Location, model.Distance, _config, Url, levels))],
+            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, locationCookieItem?.Location, locationCookieItem?.Distance, _config, Url, levels))],
             Routes = [.. result.Routes.Select(route => new RouteViewModel(route, model.Categories))],
             Total = result.TotalCount,
             TotalFiltered = result.TotalCount,
@@ -70,8 +89,8 @@ public class CoursesController : Controller
             SelectedRoutes = model.Categories,
             SelectedLevels = model.Levels,
             Levels = levels,
-            Location = model.Location ?? string.Empty,
-            Distance = DistanceService.GetDistanceQueryString(model.Distance, model.Location),
+            Location = locationCookieItem?.Location ?? string.Empty,
+            Distance = DistanceService.GetDistance(locationCookieItem?.Distance, locationCookieItem?.Location),
             SelectedTrainingTypes = model.LearningTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true
@@ -92,31 +111,36 @@ public class CoursesController : Controller
         return View(viewModel);
     }
 
+    [HttpPost]
+    [Route("{larsCode}", Name = RouteNames.CourseDetails)]
+    public IActionResult CourseDetailsPost(CoursesViewModel model, [FromRoute] string larsCode)
+    {
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location, Distance = model.Distance });
+        return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
+    }
+
+    [HttpGet]
+    [Route("{larsCode}/remove-location", Name = RouteNames.CourseDetailsRemoveLocation)]
+    public IActionResult CourseDetailsDelete([FromRoute] string larsCode)
+    {
+        _locationCookieService.Delete(Constants.LocationCookieName);
+        return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
+    }
+
     [HttpGet]
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
-    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, [FromQuery] string location, [FromQuery] string distance)
+    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode)
     {
+        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 
-        int? convertedDistance = null;
-        if (distance == DistanceService.AcrossEnglandFilterValue)
-        {
-            convertedDistance = DistanceService.DefaultDistance;
-        }
-        else if (!DistanceService.IsValidDistance(distance))
-        {
-            convertedDistance = DistanceService.TenMiles;
-            distance = DistanceService.TenMiles.ToString();
-        }
-        else
-        {
-            convertedDistance = DistanceService.GetValidDistance(distance);
-        }
+        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(locationCookieItem?.Distance, locationCookieItem?.Location);
 
         var query = new GetCourseQuery()
         {
             LarsCode = larsCode,
-            Location = location,
+            Location = locationCookieItem?.Location,
             Distance = convertedDistance
         };
 
@@ -128,8 +152,8 @@ public class CoursesController : Controller
         }
 
         var viewModel = (CourseViewModel)result;
-        viewModel.Location = location;
-        viewModel.Distance = distance;
+        viewModel.Location = locationCookieItem?.Location;
+        viewModel.Distance = convertedDistance.ToString();
         viewModel.RequestApprenticeshipTrainingUrl = _config.RequestApprenticeshipTrainingUrl;
         viewModel.EmployerAccountsUrl = _config.EmployerAccountsUrl;
 

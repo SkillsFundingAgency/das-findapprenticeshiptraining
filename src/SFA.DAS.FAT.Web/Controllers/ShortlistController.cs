@@ -27,6 +27,7 @@ public class ShortlistController : Controller
     public const string RemovedProviderNameTempDataKey = "RemovedProviderName";
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
     private readonly IDataProtector _protector;
     private readonly IRequestApprenticeshipTrainingService _requestApprenticeshipTrainingService;
     private readonly ISessionService _sessionService;
@@ -36,13 +37,15 @@ public class ShortlistController : Controller
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IDataProtectionProvider provider,
         IRequestApprenticeshipTrainingService requestApprenticeshipTrainingService,
-        ISessionService sessionService)
+        ISessionService sessionService,
+        ICookieStorageService<LocationCookieItem> locationCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _protector = provider.CreateProtector(Constants.ShortlistProtectorName);
         _requestApprenticeshipTrainingService = requestApprenticeshipTrainingService;
         _sessionService = sessionService;
+        _locationCookieService = locationCookieService;
     }
 
     [HttpGet]
@@ -149,11 +152,12 @@ public class ShortlistController : Controller
                 ShortlistUserId = Guid.NewGuid()
             };
         }
+        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand
         {
             Ukprn = request.Ukprn,
-            LocationName = request.LocationName,
+            LocationName = locationCookieItem?.Location?.Trim(),
             LarsCode = request.LarsCode,
             ShortlistUserId = cookie.ShortlistUserId
         });

@@ -273,16 +273,30 @@ public static class FilterService
     {
         if (param.Key == filterType)
         {
-            foreach (var val in param.Value.Where(v => v != value))
+            var remaining = param.Value.Where(v => v != value).ToList();
+
+            if (remaining.Any())
             {
-                var paramValue = GetClearVal(val, filterType, param.Key);
-
-                if (string.IsNullOrWhiteSpace(paramValue))
+                foreach (var val in remaining)
                 {
-                    continue;
-                }
+                    var paramValue = GetClearVal(val, filterType, param.Key);
 
-                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+                    if (string.IsNullOrWhiteSpace(paramValue))
+                    {
+                        continue;
+                    }
+
+                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+                }
+            }
+            else
+            {
+                // If clearing the location filter we need to emit an explicit empty location parameter
+                // so the controller can detect the clear action and remove the location cookie.
+                if (param.Key == FilterType.Location)
+                {
+                    AppendQueryParam(queryBuilder, param.Key, string.Empty, overrideValueFunction);
+                }
             }
         }
         else
@@ -320,7 +334,8 @@ public static class FilterService
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string> overrideValueFunction = null)
     {
-        if (!string.IsNullOrWhiteSpace(value))
+        // Allow empty value for location so that clearing location can be expressed as 'location='
+        if (value != null && (!string.IsNullOrWhiteSpace(value) || key == FilterType.Location))
         {
             var queryValue = overrideValueFunction == null
                 ? value

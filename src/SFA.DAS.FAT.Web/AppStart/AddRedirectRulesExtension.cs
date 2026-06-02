@@ -19,10 +19,10 @@ namespace SFA.DAS.FAT.Web.AppStart
             options.AddRedirect("(?i)apprenticeship/framework/(.*)", "courses", (int)HttpStatusCode.PermanentRedirect);
 
             //Course Provider
-            options.Add(new PathWithQueryRule("(?i)provider/detail\\b", "/courses/$0/providers/$1?location=$2", new List<string> { "standardCode", "ukprn", "postcode" }));
+            options.Add(new PathWithQueryRule("(?i)provider/detail\\b", "/courses/$0/providers/$1", new List<string> { "standardCode", "ukprn" }));
 
             //Course Providers
-            options.Add(new PathWithQueryRule("(?i)provider/standardresults\\b", "/courses/$0/providers?location={1}", new List<string> { "apprenticeshipid", "postcode" }));
+            options.Add(new PathWithQueryRule("(?i)provider/standardresults\\b", "/courses/$0/providers", new List<string> { "apprenticeshipid" }));
             options.Add(new PathWithQueryRule("(?i)Apprenticeship/SearchForStandardProviders\\b", "/courses/$0/providers", new List<string> { "standardId" }));
 
             //Home

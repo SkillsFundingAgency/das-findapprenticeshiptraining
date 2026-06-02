@@ -29,22 +29,21 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-            <form id="course-providers-form" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode" method="GET">
+            <form id="course-providers-form" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode" method="post">
                 <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
                 @await Html.PartialAsync(Model.CourseType == CourseType.Apprenticeship ? "_filters" : "_filtersShortCourse", Model.Filters)
             </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="GET" class="app-search-results-header">
+            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="post" class="app-search-results-header">
                 @foreach (var q in Context.Request.Query)
                 {
                     switch (q.Key.ToLower())
                     {
                         case "orderby":
-                            continue;
                         case "location":
-                            <input type="hidden" name="@q.Key" value="@q.Value" />
-                            break;
+                        case "distance":
+                            continue;
                         default:
                             {
                                 var itemValues = q.Value.ToString().Split(",").ToList();
@@ -133,9 +132,7 @@
                                         ShortlistCount = Model.ShortlistCount,
                                         ProviderName = provider.ProviderName,
                                         ShortlistId = provider.ShortlistId,
-                                        Ukprn = provider.Ukprn,
-                                        Location = Model.Location,
-                                        Distance = Model.Distance
+                                        Ukprn = provider.Ukprn
                                     })
                                 </div>
 

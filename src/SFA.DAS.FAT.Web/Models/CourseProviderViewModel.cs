@@ -147,7 +147,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         {
             Ukprn = source.Ukprn,
             ProviderName = source.ProviderName,
-            ProviderAddress = source.ProviderAddress,
+            ProviderAddress = source.ProviderAddress ?? new ShortProviderAddressModel(),
             Contact = source.Contact,
             CourseName = source.CourseName,
             CourseType = source.CourseType,
@@ -240,6 +240,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string FormatContactAddress()
     {
+        if (ProviderAddress is null) return string.Empty;
+
         var builder = new StringBuilder();
 
         void AppendIfNotEmpty(string value)
@@ -254,12 +256,12 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             }
         }
 
-        AppendIfNotEmpty(ProviderAddress.AddressLine1);
-        AppendIfNotEmpty(ProviderAddress.AddressLine2);
-        AppendIfNotEmpty(ProviderAddress.AddressLine3);
-        AppendIfNotEmpty(ProviderAddress.AddressLine4);
-        AppendIfNotEmpty(ProviderAddress.Town);
-        AppendIfNotEmpty(ProviderAddress.Postcode);
+        AppendIfNotEmpty(ProviderAddress?.AddressLine1);
+        AppendIfNotEmpty(ProviderAddress?.AddressLine2);
+        AppendIfNotEmpty(ProviderAddress?.AddressLine3);
+        AppendIfNotEmpty(ProviderAddress?.AddressLine4);
+        AppendIfNotEmpty(ProviderAddress?.Town);
+        AppendIfNotEmpty(ProviderAddress?.Postcode);
 
         return builder.ToString();
     }
@@ -278,7 +280,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetAchievementRateInformation()
     {
-        string leaversText = Qar.Leavers;
+        if (Qar is null)
+            return string.Empty;
+
+        string leaversText = Qar.Leavers ?? string.Empty;
+
         if (int.TryParse(Qar.Leavers, out var leaversCount))
         {
             leaversText = leaversCount.ToString("N0");
@@ -301,6 +307,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetEmployerReviewsDisplayMessage()
     {
+        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.EmployerReviews))
+            return string.Empty;
+
         if (int.TryParse(Reviews.EmployerReviews, out int employerReviewsCount))
         {
             string plural = employerReviewsCount > 1 ? "s" : string.Empty;
@@ -314,6 +323,9 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetApprenticeReviewsDisplayMessage()
     {
+        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.ApprenticeReviews))
+            return string.Empty;
+
         if (int.TryParse(Reviews.ApprenticeReviews, out int apprenticeReviewsCount))
         {
             string plural = apprenticeReviewsCount > 1 ? "s" : string.Empty;

@@ -30,6 +30,11 @@ public static class DistanceService
 
     public static int GetValidDistance(string distance, string location)
     {
+        if (string.IsNullOrWhiteSpace(location) || !DistanceService.IsValidDistance(distance))
+        {
+            return DistanceService.TenMiles;
+        }
+
         if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
         {
             return DefaultDistance;
@@ -58,7 +63,7 @@ public static class DistanceService
         return null;
     }
 
-    public static string GetDistanceQueryString(string distance, string location)
+    public static string GetDistance(string distance, string location)
     {
         if (string.IsNullOrWhiteSpace(location) || string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
         {
@@ -86,5 +91,27 @@ public static class DistanceService
         }
 
         return false;
+    }
+
+    public static string EnsureHasDefaultDistance(string distance)
+    {
+        return string.IsNullOrWhiteSpace(distance) || !IsValidDistance(distance)
+            ? TenMiles.ToString()
+            : distance;
+    }
+
+    public static int? GetConvertedDistanceForDetails(string distance, string location)
+    {
+        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        {
+            return DefaultDistance;
+        }
+
+        if (!IsValidDistance(distance))
+        {
+            return TenMiles;
+        }
+
+        return GetValidDistance(distance, location);
     }
 }

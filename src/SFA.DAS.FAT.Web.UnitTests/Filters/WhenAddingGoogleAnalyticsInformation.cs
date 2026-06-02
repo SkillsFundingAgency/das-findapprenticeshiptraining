@@ -59,7 +59,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
             viewBag.Should().NotBeNull();
-            viewBag!.Location.Should().Be(location.Name);
+            viewBag!.Location.Should().Be(location.Location);
         }
         [Test, MoqAutoData]
         public async Task

@@ -56,7 +56,21 @@ public class CoursesViewModel : PageLinksViewModelBase
     public List<string> SelectedRoutes { get; set; } = [];
     public List<LearningType> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
-
+    public List<string> Categories
+    {
+        get => SelectedRoutes;
+        set => SelectedRoutes = value ?? new List<string>();
+    }
+    public List<LearningType> LearningTypes
+    {
+        get => SelectedTrainingTypes;
+        set => SelectedTrainingTypes = value ?? new List<LearningType>();
+    }
+    public List<int> LevelCodes
+    {
+        get => SelectedLevels;
+        set => SelectedLevels = value ?? new List<int>();
+    }
     public int Total { get; set; }
 
     public int TotalFiltered { get; set; }
@@ -110,15 +124,15 @@ public class CoursesViewModel : PageLinksViewModelBase
                 [
                     CreateCheckboxListFilterSection(
                         "types-filter",
-                        nameof(FilterType.LearningTypes),
+                        nameof(LearningTypes),
                         TrainingTypesSectionHeading,
                         null,
                         LearningTypesFilterHelper.BuildItems(SelectedTrainingTypes),
                         TrainingTypeFindOutMoreText,
                         TrainingTypeFindOutMoreLink
                     ),
-                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
-                    CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
+                    CreateCheckboxListFilterSection("levels-filter", nameof(LevelCodes), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
+                    CreateCheckboxListFilterSection("categories-filter", nameof(Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
                 ]
             )
             ],
@@ -253,16 +267,6 @@ public class CoursesViewModel : PageLinksViewModelBase
                 case FilterType.KeyWord:
                     {
                         result.Add(ValueTuple.Create(nameof(Keyword), Keyword!));
-                    }
-                    break;
-                case FilterType.Location:
-                    {
-                        result.Add(ValueTuple.Create(nameof(Location), Location));
-
-                        if (!string.IsNullOrWhiteSpace(Distance))
-                        {
-                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
-                        }
                     }
                     break;
                 case FilterType.Levels:
