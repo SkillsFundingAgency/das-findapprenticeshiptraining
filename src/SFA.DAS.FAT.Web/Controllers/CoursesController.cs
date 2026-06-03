@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -9,6 +10,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
@@ -21,6 +23,7 @@ public class CoursesController : Controller
 {
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
+    private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
 
@@ -28,12 +31,14 @@ public class CoursesController : Controller
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        ICookieStorageService<LocationCookieItem> locationCookieService)
+        ICookieStorageService<LocationCookieItem> locationCookieService,
+        IValidator<GetCourseLocationQuery> courseLocationValidator)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _locationCookieService = locationCookieService;
         _config = config.Value;
+        _courseLocationValidator = courseLocationValidator;
     }
 
     [HttpPost]
@@ -66,19 +71,18 @@ public class CoursesController : Controller
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
-        // If we just issued a delete for the location cookie, the Request.Cookies will still
-        // contain the old value for this running request. Treat the cookie as removed for the
-        // remainder of this request so the cleared state takes effect immediately.
         if (hasDeletedLocationCookie)
         {
             locationCookieItem = null;
         }
+        var requestLocation = locationCookieItem?.Location?.Trim();
+        var requestDistance = locationCookieItem?.Distance;
 
-        int validatedDistance = DistanceService.GetValidDistance(locationCookieItem?.Distance, locationCookieItem?.Location);
+        int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);
         var result = await _mediator.Send(new GetCoursesQuery
         {
             Keyword = model.Keyword,
-            Location = locationCookieItem?.Location,
+            Location = requestLocation,
             Distance = validatedDistance,
             Routes = model.Categories,
             Levels = model.Levels,
@@ -91,7 +95,7 @@ public class CoursesController : Controller
         List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, model.Levels))];
         var viewModel = new CoursesViewModel()
         {
-            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, locationCookieItem?.Location, locationCookieItem?.Distance, _config, Url, levels))],
+            Standards = [.. result.Standards.Select(c => new StandardViewModel(c, requestLocation, requestDistance, _config, Url, levels))],
             Routes = [.. result.Routes.Select(route => new RouteViewModel(route, model.Categories))],
             Total = result.TotalCount,
             TotalFiltered = result.TotalCount,
@@ -99,22 +103,35 @@ public class CoursesController : Controller
             SelectedRoutes = model.Categories,
             SelectedLevels = model.Levels,
             Levels = levels,
-            Location = locationCookieItem?.Location ?? string.Empty,
-            Distance = DistanceService.GetDistance(locationCookieItem?.Distance, locationCookieItem?.Location),
+            Location = requestLocation ?? string.Empty,
+            Distance = DistanceService.GetDistance(requestDistance, requestLocation),
             SelectedTrainingTypes = model.LearningTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };
+        if (!string.IsNullOrWhiteSpace(requestLocation))
+        {
+            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
+            if (!validationLocationResult.IsValid)
+            {
+                ModelState.AddValidationErrors(validationLocationResult.Errors);
+            }
+        }
 
         if (result.Standards.Count > 0)
         {
+            var paginationQueryParams = viewModel.ToQueryString();
+            paginationQueryParams.RemoveAll(q =>
+               string.Equals(q.Item1, nameof(CoursesViewModel.Location), System.StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(q.Item1, nameof(CoursesViewModel.Distance), System.StringComparison.OrdinalIgnoreCase)
+           );
             viewModel.Pagination = new PaginationViewModel(
                 result.Page,
                 result.TotalCount,
                 result.PageSize,
                 Url,
                 RouteNames.Courses,
-                viewModel.ToQueryString()
+                paginationQueryParams
             );
         }
 

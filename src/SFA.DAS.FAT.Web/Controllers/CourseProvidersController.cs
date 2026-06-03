@@ -100,10 +100,10 @@ public class CourseProvidersController : Controller
 
         if (!string.IsNullOrWhiteSpace(requestLocation))
         {
-            var validationLocationResultForSession = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
-            if (!validationLocationResultForSession.IsValid)
+            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
+            if (!validationLocationResult.IsValid)
             {
-                ModelState.AddValidationErrors(validationLocationResultForSession.Errors);
+                ModelState.AddValidationErrors(validationLocationResult.Errors);
 
                 CourseProvidersViewModel invalidViewModel = new CourseProvidersViewModel(_config)
                 {
@@ -209,13 +209,18 @@ public class CourseProvidersController : Controller
 
         if (result.Providers.Count > 0)
         {
+            var paginationQueryParams = courseProvidersViewModel.ToQueryString();
+            paginationQueryParams.RemoveAll(q =>
+               string.Equals(q.Item1, nameof(CourseProvidersViewModel.Location), System.StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(q.Item1, nameof(CourseProvidersViewModel.Distance), System.StringComparison.OrdinalIgnoreCase)
+           );
             courseProvidersViewModel.Pagination = new PaginationViewModel(
                 result.Page,
                 result.TotalCount,
                 result.PageSize,
                 Url,
                 RouteNames.CourseProviders,
-                courseProvidersViewModel.ToQueryString()
+                paginationQueryParams
             );
         }
 

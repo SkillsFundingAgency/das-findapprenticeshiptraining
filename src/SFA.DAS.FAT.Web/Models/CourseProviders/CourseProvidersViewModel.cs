@@ -164,15 +164,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             switch (clearFilterSection.FilterType)
             {
-                case FilterType.Location:
-                    {
-                        result.Add(ValueTuple.Create(nameof(Location), Location));
-
-                        result.Add(!string.IsNullOrWhiteSpace(Distance)
-                            ? ValueTuple.Create(nameof(Distance), Distance)
-                            : ValueTuple.Create(nameof(Distance), DistanceService.AcrossEnglandFilterValue));
-                    }
-                    break;
                 case FilterType.DeliveryModes:
                     {
                         result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));
