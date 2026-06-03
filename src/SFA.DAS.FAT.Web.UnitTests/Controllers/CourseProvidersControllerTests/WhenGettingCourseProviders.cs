@@ -343,8 +343,17 @@ public class WhenGettingCourseProviders
 
         request.Location = location;
         request.Distance = null;
+
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = null });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -1021,7 +1030,11 @@ public class WhenGettingCourseProviders
         sut.TempData = tempDataMock.Object;
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
-
+        validatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
             .Returns(new LocationCookieItem { Location = "CV1 Coventry", Distance = "10" });
 

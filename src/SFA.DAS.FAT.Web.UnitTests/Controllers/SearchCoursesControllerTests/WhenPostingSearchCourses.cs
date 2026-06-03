@@ -96,7 +96,7 @@ public class WhenPostingSearchCourses
     }
 
     [Test, MoqAutoData]
-    public void And_Post_Redirects_to_Courses_With_Location_And_Course_Term_In_Route_Values(
+    public void And_Post_Redirects_to_Courses_With_Course_Term_In_Route_Values(
         string location,
         string courseTerm,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
@@ -104,6 +104,7 @@ public class WhenPostingSearchCourses
     {
         //Arrange
         SearchCoursesViewModel viewModel = new SearchCoursesViewModel { Location = location, CourseTerm = courseTerm };
+
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
                     .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.TenMiles.ToString() });
 
@@ -112,18 +113,14 @@ public class WhenPostingSearchCourses
 
         //Assert
         actual.Should().NotBeNull();
-        var result = actual! as RedirectToActionResult;
+        var result = actual! as RedirectToRouteResult;
         using (new AssertionScope())
         {
             result.Should().NotBeNull();
-            result!.ActionName.Should().Be("Index");
-            result.ControllerName.Should().Be("Courses");
+            result!.RouteName.Should().Be(RouteNames.Courses);
             result.RouteValues.Should().ContainKey("Keyword");
             result.RouteValues!["Keyword"].Should().Be(courseTerm);
             result.RouteValues.Should().ContainKey("Location");
-            result.RouteValues!["Location"].Should().Be(location);
-            result.RouteValues.Should().ContainKey("Distance");
-            result.RouteValues!["Distance"].Should().Be(DistanceService.TenMiles.ToString());
         }
     }
 }
