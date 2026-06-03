@@ -115,8 +115,8 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                     "ratings-select",
                     nameof(FilterType.Reviews),
                     [
-                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(EmployerApprovalRatings), EmployerReviewsSectionHeading,null, GenerateEmployerReviewsFilterItems()),
-                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(ApprenticeApprovalRatings), ApprenticeReviewsSectionHeading,null, GenerateApprenticeReviewsFilterItems())
+                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(CourseProvidersRequest.EmployerProviderRatings), EmployerReviewsSectionHeading,null, GenerateEmployerReviewsFilterItems()),
+                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(CourseProvidersRequest.ApprenticeProviderRatings), ApprenticeReviewsSectionHeading,null, GenerateApprenticeReviewsFilterItems())
                     ],
                     ReviewSectionHeading,
                     $"From {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"

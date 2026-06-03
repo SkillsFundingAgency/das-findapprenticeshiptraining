@@ -60,7 +60,6 @@ public class CourseProvidersController : Controller
         _config = config.Value;
         _locationCookieService = locationCookieService;
     }
-
     [HttpPost]
     [Route("", Name = RouteNames.CourseProviders)]
     public IActionResult CourseProvidersPost(CourseProvidersRequest submitModel)
@@ -75,6 +74,7 @@ public class CourseProvidersController : Controller
             QarRatings = submitModel.QarRatings,
             PageNumber = 1
         };
+
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.CourseProviders, model);
     }

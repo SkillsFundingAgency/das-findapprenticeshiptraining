@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
-    public const string ClearLocationQueryParameter = "clearlocation";
+    public const string ClearLocationQueryParameter = "location";
 
     public const string KeywordSectionHeading = "Course";
     public const string KeywordSectionSubHeading = "Enter course, job or standard";

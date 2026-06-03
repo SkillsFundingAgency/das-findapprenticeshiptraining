@@ -7,17 +7,12 @@ namespace SFA.DAS.FAT.Web.Models;
 public class CourseProvidersRequest
 {
     public string LarsCode { get; set; }
-
     public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.Distance;
-
-    public IReadOnlyList<ProviderDeliveryMode> DeliveryModes { get; set; } = [];
-    public IReadOnlyList<ProviderRating> EmployerProviderRatings { get; set; } = [];
-    public IReadOnlyList<ProviderRating> ApprenticeProviderRatings { get; set; } = [];
-    public IReadOnlyList<QarRating> QarRatings { get; set; } = [];
-
+    public List<ProviderDeliveryMode> DeliveryModes { get; set; } = [];
+    public List<ProviderRating> EmployerProviderRatings { get; set; } = [];
+    public List<ProviderRating> ApprenticeProviderRatings { get; set; } = [];
+    public List<QarRating> QarRatings { get; set; } = [];
     public int PageNumber { get; set; } = 1;
-
     public string Location { get; set; } = string.Empty;
-
     public string Distance { get; set; } = string.Empty;
 }
