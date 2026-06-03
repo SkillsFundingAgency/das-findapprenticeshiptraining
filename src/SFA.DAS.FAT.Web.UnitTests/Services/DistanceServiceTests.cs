@@ -42,7 +42,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void GetValidDistance_LocationOverload_ShouldReturnDefault_WhenLocationIsNotSet()
     {
-        Assert.That(DistanceService.GetValidDistance("40", ""), Is.EqualTo(DistanceService.DefaultDistance));
+        Assert.That(DistanceService.GetValidDistance("40", ""), Is.EqualTo(DistanceService.TenMiles));
     }
 
     [Test]

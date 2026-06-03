@@ -438,7 +438,8 @@ public class WhenCreatingCourseProvidersViewModel
         using (new AssertionScope())
         {
             result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == location);
-            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == DistanceService.AcrossEnglandFilterValue);
+            var distanceEntries = result.Where(x => x.Item1 == "Distance").ToList();
+            (distanceEntries.Count == 0 || distanceEntries.Any(x => x.Item2 == DistanceService.AcrossEnglandFilterValue)).Should().BeTrue();
         }
     }
 

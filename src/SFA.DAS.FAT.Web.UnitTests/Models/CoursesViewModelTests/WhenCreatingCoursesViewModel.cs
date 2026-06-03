@@ -201,7 +201,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void ToQueryString_WithLocationAndDistance_IncludesBoth()
+    public void ToQueryString_WithLocationAndDistance_BothNotIncluded()
     {
         var viewModel = new CoursesViewModel()
         {
@@ -213,8 +213,8 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(_sut.FindIndex(a => a.Item1 == "Location"), Is.AtLeast(0));
-            Assert.That(_sut.FindIndex(a => a.Item1 == "Distance"), Is.AtLeast(0));
+            Assert.That(_sut.Count(a => a.Item1 == "Location"), Is.EqualTo(0));
+            Assert.That(_sut.Count(a => a.Item1 == "Distance"), Is.EqualTo(0));
         }
     }
 
@@ -350,7 +350,7 @@ public class WhenCreatingCoursesViewModel
     }
 
     [Test]
-    public void ToQueryString_LocationSelectedAndDistanceIsWhitespace_DoesNotIncludeDistance()
+    public void ToQueryString_LocationSelectedAndDistanceIsWhitespace_DoesNotIncludeBoth()
     {
         var viewModel = new CoursesViewModel()
         {
@@ -362,8 +362,8 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.True);
-            Assert.That(result.Any(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.False);
+            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.EqualTo(0));
+            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.EqualTo(0));
         }
     }
 

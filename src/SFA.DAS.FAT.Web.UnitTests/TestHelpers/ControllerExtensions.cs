@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Moq;
 
@@ -9,6 +10,7 @@ public static class ControllerExtensions
     {
         var urlHelperMock = new Mock<IUrlHelper>();
         controller.Url = urlHelperMock.Object;
+        controller.ControllerContext = new ControllerContext { HttpContext = new DefaultHttpContext() };
         return urlHelperMock;
     }
 

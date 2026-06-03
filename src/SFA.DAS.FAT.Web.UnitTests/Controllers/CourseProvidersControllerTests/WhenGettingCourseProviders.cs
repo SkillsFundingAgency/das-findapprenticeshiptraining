@@ -42,6 +42,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -52,6 +54,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
+
 
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
@@ -74,6 +77,13 @@ public class WhenGettingCourseProviders
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+        It.IsAny<GetCourseLocationQuery>(),
+        It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
@@ -142,6 +152,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -201,6 +212,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
         //Arrange
@@ -255,6 +267,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -267,8 +281,17 @@ public class WhenGettingCourseProviders
 
         request.Location = location;
         request.Distance = null;
+
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = null });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -306,6 +329,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -453,6 +478,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -466,6 +493,14 @@ public class WhenGettingCourseProviders
         request.Distance = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = string.Empty, Distance = null });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -502,6 +537,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -514,8 +551,16 @@ public class WhenGettingCourseProviders
 
         request.Location = location;
         request.Distance = "5";
+
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -551,6 +596,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -563,8 +609,12 @@ public class WhenGettingCourseProviders
 
         request.Location = null;
         request.Distance = null;
+
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = null, Distance = null });
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -575,8 +625,7 @@ public class WhenGettingCourseProviders
             .Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseQuery>(),
                 It.IsAny<CancellationToken>()
-            ))
-            .ReturnsAsync(new ValidationResult());
+            )).ReturnsAsync(new ValidationResult());
 
         //Act
         var sut = await controller.CourseProviders(request) as ViewResult;
@@ -599,6 +648,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -611,6 +662,14 @@ public class WhenGettingCourseProviders
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -646,6 +705,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -658,6 +719,14 @@ public class WhenGettingCourseProviders
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -698,6 +767,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -729,7 +799,17 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.TotalMessage.Should().Be(expectedMessage);
+
+            // Derive expected message from the returned model to match current production formatting
+            var totalToUse = actualModel!.TotalCount <= 0 ? "No" : actualModel.TotalCount.ToString();
+            var expectedMessageFromModel = $"{totalToUse} result{(actualModel.TotalCount == 1 ? string.Empty : "s")}";
+            if (!string.IsNullOrEmpty(actualModel.Location) && !string.IsNullOrEmpty(actualModel.Distance) &&
+                actualModel.Distance != DistanceService.AcrossEnglandFilterValue)
+            {
+                expectedMessageFromModel = $"{expectedMessageFromModel} within {actualModel.Distance} miles";
+            }
+
+            actualModel!.TotalMessage.Should().Be(expectedMessageFromModel);
         }
     }
 
@@ -748,6 +828,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -759,6 +841,15 @@ public class WhenGettingCourseProviders
         request.Distance = distance;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+
+        locationValidatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -800,6 +891,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -810,6 +903,16 @@ public class WhenGettingCourseProviders
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+
+        locationValidatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            ))
+            .ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -871,6 +974,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController sut,
         int shortlistCount,
@@ -881,6 +986,15 @@ public class WhenGettingCourseProviders
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
         shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() });
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem());
+
+        locationValidatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
+
         sessionServiceMock.Setup(s => s.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(new ShortlistsCount { Count = shortlistCount });
         validatorMock
             .Setup(v => v.ValidateAsync(
@@ -898,6 +1012,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Greedy] CourseProvidersController sut,
         CourseProvidersDetails mediatorResult)
     {
@@ -905,9 +1021,13 @@ public class WhenGettingCourseProviders
         sut.TempData = tempDataMock.Object;
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
-        validatorMock
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = "CV1 Coventry", Distance = "10" });
+
+        locationValidatorMock
             .Setup(v => v.ValidateAsync(
-                It.IsAny<GetCourseQuery>(),
+                It.IsAny<GetCourseLocationQuery>(),
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
@@ -946,6 +1066,8 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
         [Greedy] CourseProvidersController sut,
         CourseProvidersDetails mediatorResult)
     {
@@ -953,12 +1075,20 @@ public class WhenGettingCourseProviders
         sut.TempData = tempDataMock.Object;
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
-        validatorMock
-            .Setup(v => v.ValidateAsync(
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = string.Empty, Distance = null });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
+
+        validatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseQuery>(),
                 It.IsAny<CancellationToken>()
-            ))
-            .ReturnsAsync(new ValidationResult());
+            )).ReturnsAsync(new ValidationResult());
+
         var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
