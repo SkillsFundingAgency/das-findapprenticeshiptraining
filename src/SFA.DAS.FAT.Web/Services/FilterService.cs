@@ -12,6 +12,8 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
+    public const string ClearLocationQueryParameter = "clearlocation";
+
     public const string KeywordSectionHeading = "Course";
     public const string KeywordSectionSubHeading = "Enter course, job or standard";
 
@@ -269,6 +271,16 @@ public static class FilterService
     private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
         StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
     {
+        if (param.Key == FilterType.Location || param.Key == FilterType.Distance)
+        {
+            if (param.Key == FilterType.Location && filterType == FilterType.Location)
+            {
+                AppendQueryParam(queryBuilder, ClearLocationQueryParameter, "true");
+            }
+
+            return;
+        }
+
         if (param.Key == filterType)
         {
             var remaining = param.Value.Where(v => v != value).ToList();
@@ -285,15 +297,6 @@ public static class FilterService
                     }
 
                     AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
-                }
-            }
-            else
-            {
-                // If clearing the location filter we need to emit an explicit empty location parameter
-                // so the controller can detect the clear action and remove the location cookie.
-                if (param.Key == FilterType.Location)
-                {
-                    AppendQueryParam(queryBuilder, param.Key, string.Empty, overrideValueFunction);
                 }
             }
         }
@@ -332,8 +335,7 @@ public static class FilterService
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string> overrideValueFunction = null)
     {
-        // Allow empty value for location so that clearing location can be expressed as 'location='
-        if (value != null && (!string.IsNullOrWhiteSpace(value) || key == FilterType.Location))
+        if (value != null && !string.IsNullOrWhiteSpace(value))
         {
             var queryValue = overrideValueFunction == null
                 ? value
@@ -347,11 +349,25 @@ public static class FilterService
         }
     }
 
+    private static void AppendQueryParam(StringBuilder builder, string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        builder
+            .Append(builder.Length > 0 ? '&' : '?')
+            .Append(key)
+            .Append('=')
+            .Append(value);
+    }
+
     public static void AddSelectedFilter(Dictionary<FilterType, IEnumerable<string>> filters, FilterType filterType, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            filters[filterType] = [value];
+            filters[filterType] = new[] { value };
         }
     }
 

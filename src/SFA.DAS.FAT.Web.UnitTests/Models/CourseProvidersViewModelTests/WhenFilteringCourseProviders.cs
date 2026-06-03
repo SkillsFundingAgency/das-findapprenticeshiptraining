@@ -43,7 +43,7 @@ public sealed class WhenFilteringCourseProviders
             ReviewPeriod = "2324"
         };
 
-        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
+        _fullQueryString = "?deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
     }
 
     [Test]
@@ -136,7 +136,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        var urlWithoutLocation = _fullQueryString.Replace($"location={_viewModel.Location}&distance={_viewModel.Distance}&", "");
+        var urlWithoutLocation = "?clearlocation=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
 
         using (Assert.EnterMultipleScope())
         {

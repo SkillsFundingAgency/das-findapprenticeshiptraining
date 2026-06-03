@@ -75,7 +75,7 @@ public class CourseProvidersController : Controller
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
         var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey("location"))
+        if (Request.Query.ContainsKey(FilterService.ClearLocationQueryParameter))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;
