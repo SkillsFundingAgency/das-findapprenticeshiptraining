@@ -63,11 +63,20 @@ public class CourseProvidersController : Controller
 
     [HttpPost]
     [Route("", Name = RouteNames.CourseProviders)]
-    public IActionResult CourseProvidersPost(CourseProvidersRequest request)
+    public IActionResult CourseProvidersPost(CourseProvidersRequest submitModel)
     {
-        CourseProvidersRequest submitRequest = new CourseProvidersRequest { LarsCode = request.LarsCode };
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = request.Location, Distance = request.Distance });
-        return RedirectToRoute(RouteNames.CourseProviders, submitRequest);
+        var model = new CourseProvidersRequest
+        {
+            LarsCode = submitModel.LarsCode,
+            OrderBy = submitModel.OrderBy,
+            DeliveryModes = submitModel.DeliveryModes,
+            EmployerProviderRatings = submitModel.EmployerProviderRatings,
+            ApprenticeProviderRatings = submitModel.ApprenticeProviderRatings,
+            QarRatings = submitModel.QarRatings,
+            PageNumber = 1
+        };
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = submitModel.Distance });
+        return RedirectToRoute(RouteNames.CourseProviders, model);
     }
 
     [HttpGet]

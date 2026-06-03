@@ -17,7 +17,6 @@ public class CourseProvidersRequest
 
     public int PageNumber { get; set; } = 1;
 
-    // Location and Distance are posted via forms or persisted to cookies/session.
     public string Location { get; set; } = string.Empty;
 
     public string Distance { get; set; } = string.Empty;

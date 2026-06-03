@@ -43,18 +43,18 @@ public class CoursesController : Controller
 
     [HttpPost]
     [Route("", Name = RouteNames.Courses)]
-    public IActionResult CoursesPost(GetCoursesViewModel postModel)
+    public IActionResult CoursesPost(GetCoursesViewModel submitModel)
     {
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = postModel.Location, Distance = postModel.Distance });
-        var getModel = new GetCoursesViewModel
+        var model = new GetCoursesViewModel
         {
-            Keyword = postModel.Keyword,
-            Categories = postModel.Categories,
-            Levels = postModel.Levels,
-            LearningTypes = postModel.LearningTypes,
+            Keyword = submitModel.Keyword,
+            Categories = submitModel.Categories,
+            Levels = submitModel.Levels,
+            LearningTypes = submitModel.LearningTypes,
             PageNumber = 1
         };
-        return RedirectToRoute(RouteNames.Courses, getModel);
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = submitModel.Distance });
+        return RedirectToRoute(RouteNames.Courses, model);
     }
 
     [HttpGet]
