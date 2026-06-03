@@ -269,6 +269,16 @@ public class CoursesViewModel : PageLinksViewModelBase
                         result.Add(ValueTuple.Create(nameof(Keyword), Keyword!));
                     }
                     break;
+                case FilterType.Location:
+                    {
+                        result.Add(ValueTuple.Create(nameof(Location), Location));
+
+                        if (!string.IsNullOrWhiteSpace(Distance))
+                        {
+                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
+                        }
+                    }
+                    break;
                 case FilterType.Levels:
                     {
                         foreach (int level in SelectedLevels)

@@ -4,6 +4,11 @@
 @using SFA.DAS.FAT.Web.Services
 @model FiltersViewModel
 
+@{
+    var hasIncludeLocationClearQuery = Model.ClearFilterSections?.Any(s => s.FilterType == FilterService.FilterType.Location) == true;
+    var locationClearQuery = hasIncludeLocationClearQuery ? "?location=" : string.Empty;
+}
+
 <div class="das-show-hide" data-module="das-show-hide">
 
     <div class="das-filter das-!-show--from-tablet" id="fat-filter">
@@ -22,7 +27,7 @@
 
                     <h3 class="das-filter__selected-heading">Selected filters</h3>
 
-                    <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@Model.Route">
+                    <a class="das-filter__selected-action govuk-link govuk-link--no-visited-state" asp-route="@Model.Route" asp-querystring="@locationClearQuery">
                         Clear <span class="govuk-visually-hidden">the selected filters</span>
                     </a>
 

@@ -12,7 +12,6 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
-
     public const string KeywordSectionHeading = "Course";
     public const string KeywordSectionSubHeading = "Enter course, job or standard";
 
@@ -29,7 +28,6 @@ public static class FilterService
     public const string LevelInformationUrl = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
     public const string AcrossEnglandFilterText = "Across England";
-
 
     public const string DeliveryModesSectionHeading = "Training options";
     public const string DeliveryModesSectionSubHeading = "Select a training option";
