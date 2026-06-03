@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Services;
@@ -22,6 +24,7 @@ public class WhenGettingCourseDetails
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut
     )
     {
@@ -35,6 +38,9 @@ public class WhenGettingCourseDetails
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         mediator
             .Setup(m => m.Send(
@@ -64,6 +70,7 @@ public class WhenGettingCourseDetails
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -76,6 +83,9 @@ public class WhenGettingCourseDetails
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = "20" });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -102,6 +112,7 @@ public class WhenGettingCourseDetails
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -113,6 +124,9 @@ public class WhenGettingCourseDetails
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = "20" });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -138,6 +152,7 @@ public class WhenGettingCourseDetails
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -151,6 +166,9 @@ public class WhenGettingCourseDetails
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),

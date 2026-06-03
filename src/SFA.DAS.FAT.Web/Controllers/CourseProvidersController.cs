@@ -281,10 +281,10 @@ public class CourseProvidersController : Controller
 
         if (!string.IsNullOrWhiteSpace(location))
         {
-            var validationLocationResultForSession = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
-            if (!validationLocationResultForSession.IsValid)
+            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
+            if (!validationLocationResult.IsValid)
             {
-                ModelState.AddValidationErrors(validationLocationResultForSession.Errors);
+                ModelState.AddValidationErrors(validationLocationResult.Errors);
                 var cookie = locationCookieItem ?? new LocationCookieItem();
                 cookie.Location = string.Empty;
                 cookie.Distance = DistanceService.TenMiles.ToString();
@@ -323,18 +323,6 @@ public class CourseProvidersController : Controller
         viewModel.ShowShortListLink = true;
         viewModel.ShowSearchCrumb = true;
         viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
-
-        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
-
-        if (!validationLocationResult.IsValid)
-        {
-            viewModel.Location = string.Empty;
-            ModelState.AddValidationErrors(validationLocationResult.Errors);
-            var cookie = locationCookieItem ?? new LocationCookieItem();
-            cookie.Location = string.Empty;
-            cookie.Distance = DistanceService.TenMiles.ToString();
-            _locationCookieService.Update(Constants.LocationCookieName, cookie);
-        }
 
         return View(viewModel);
     }
