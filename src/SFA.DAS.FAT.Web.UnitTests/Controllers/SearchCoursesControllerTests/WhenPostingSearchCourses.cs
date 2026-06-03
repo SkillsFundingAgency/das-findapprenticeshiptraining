@@ -9,17 +9,17 @@ using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
+
 public class WhenPostingSearchCourses
 {
     [Test, MoqAutoData]
     public void And_Post_Redirects_to_Courses_With_No_RouteValues_Set(
-        [Greedy] SearchCoursesController controller,
-        CancellationToken cancellationToken)
+        [Greedy] SearchCoursesController controller)
     {
         //Arrange
         SearchCoursesViewModel viewModel = new SearchCoursesViewModel();
         //Act
-        var actual = controller.Index(viewModel, cancellationToken);
+        var actual = controller.Index(viewModel);
 
         //Assert
         actual.Should().NotBeNull();
@@ -41,13 +41,12 @@ public class WhenPostingSearchCourses
     [Test, MoqAutoData]
     public void And_Post_Redirects_to_Courses_With_CourseTerm_In_RouteValues(
         string courseTerm,
-        [Greedy] SearchCoursesController controller,
-        CancellationToken cancellationToken)
+        [Greedy] SearchCoursesController controller)
     {
         //Arrange
         SearchCoursesViewModel viewModel = new SearchCoursesViewModel { CourseTerm = courseTerm };
         //Act
-        var actual = controller.Index(viewModel, cancellationToken);
+        var actual = controller.Index(viewModel);
 
         //Assert
         actual.Should().NotBeNull();
@@ -69,13 +68,12 @@ public class WhenPostingSearchCourses
     [Test, MoqAutoData]
     public void And_Post_Redirects_to_Courses_With_Location_And_Distance_In_RouteValues(
         string location,
-        [Greedy] SearchCoursesController controller,
-        CancellationToken cancellationToken)
+        [Greedy] SearchCoursesController controller)
     {
         //Arrange
         SearchCoursesViewModel viewModel = new SearchCoursesViewModel { Location = location };
         //Act
-        var actual = controller.Index(viewModel, cancellationToken);
+        var actual = controller.Index(viewModel);
 
         //Assert
         actual.Should().NotBeNull();
@@ -98,13 +96,12 @@ public class WhenPostingSearchCourses
     public void And_Post_Redirects_to_Courses_With_Location_And_Course_Term_In_Route_Values(
         string location,
         string courseTerm,
-        [Greedy] SearchCoursesController controller,
-        CancellationToken cancellationToken)
+        [Greedy] SearchCoursesController controller)
     {
         //Arrange
         SearchCoursesViewModel viewModel = new SearchCoursesViewModel { Location = location, CourseTerm = courseTerm };
         //Act
-        var actual = controller.Index(viewModel, cancellationToken);
+        var actual = controller.Index(viewModel);
 
         //Assert
         actual.Should().NotBeNull();

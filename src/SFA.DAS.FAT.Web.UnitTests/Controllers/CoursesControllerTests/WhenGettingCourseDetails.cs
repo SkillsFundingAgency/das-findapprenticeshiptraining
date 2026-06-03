@@ -25,7 +25,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        string courseId = "123";
+        string larsCode = "123";
         string location = "London";
         string distance = "20";
 
@@ -44,7 +44,7 @@ public class WhenGettingCourseDetails
         )
         .ReturnsAsync(queryResult);
 
-        var result = await sut.CourseDetails(courseId, location, distance) as ViewResult;
+        var result = await sut.CourseDetails(larsCode) as ViewResult;
 
         using (Assert.EnterMultipleScope())
         {
@@ -67,9 +67,8 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController controller
     )
     {
-        string courseId = "123";
+        string larsCode = "123";
         string location = "London";
-        string distance = "All";
 
         validator
             .Setup(v => v.ValidateAsync(
@@ -85,13 +84,13 @@ public class WhenGettingCourseDetails
         )
         .ReturnsAsync(queryResult);
 
-        await controller.CourseDetails(courseId, location, distance);
+        await controller.CourseDetails(larsCode);
 
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.DefaultDistance) &&
                     a.Location.Equals(location) &&
-                    a.LarsCode.Equals(courseId)
+                    a.LarsCode.Equals(larsCode)
                 ), It.IsAny<CancellationToken>()
             ), Times.Once
         );
@@ -106,10 +105,8 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController controller
     )
     {
-        string courseId = "123";
+        string larsCode = "123";
         string location = "London";
-        string distance = "-20";
-
         validator
             .Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseQuery>(),
@@ -124,14 +121,13 @@ public class WhenGettingCourseDetails
         )
         .ReturnsAsync(queryResult);
 
-        await controller.CourseDetails(courseId, location, distance);
+        await controller.CourseDetails(larsCode);
 
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.TenMiles) &&
                     a.Location.Equals(location) &&
-                    a.LarsCode.Equals(courseId)
-                ), It.IsAny<CancellationToken>()
+                    a.LarsCode.Equals(larsCode)), It.IsAny<CancellationToken>()
             ), Times.Once
         );
     }
@@ -163,7 +159,7 @@ public class WhenGettingCourseDetails
         )
         .ReturnsAsync(queryResult);
 
-        await controller.CourseDetails(courseId, location, distance);
+        await controller.CourseDetails(courseId);
 
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
@@ -183,12 +179,11 @@ public class WhenGettingCourseDetails
     )
     {
         var larsCode = string.Empty;
-        var distance = 10;
 
-        var result = await sut.CourseDetails(larsCode, location, distance.ToString());
+        var result = await sut.CourseDetails(larsCode);
 
         result.Should().BeOfType<NotFoundResult>();
-        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode && q.Location == location && q.Distance == distance), It.IsAny<CancellationToken>()), Times.Never);
+        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Test, MoqAutoData]
@@ -199,15 +194,14 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        var distance = 10;
         mediator
             .Setup(m => m.Send(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseQueryResult)null);
 
-        var result = await sut.CourseDetails(larsCode, location, distance.ToString());
+        var result = await sut.CourseDetails(larsCode);
 
         result.Should().BeOfType<NotFoundResult>();
-        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode && q.Location == location && q.Distance == distance), It.IsAny<CancellationToken>()), Times.Once);
+        mediator.Verify(m => m.Send(It.Is<GetCourseQuery>(q => q.LarsCode == larsCode), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test]
@@ -219,10 +213,7 @@ public class WhenGettingCourseDetails
         [Greedy] CoursesController sut
     )
     {
-        string courseId = "999";
-        string location = "SW1";
-        string distance = "20";
-
+        string larsCode = "999";
         validator
             .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
@@ -231,7 +222,7 @@ public class WhenGettingCourseDetails
             .Setup(m => m.Send(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync((GetCourseQueryResult)null);
 
-        var result = await sut.CourseDetails(courseId, location, distance);
+        var result = await sut.CourseDetails(larsCode);
 
         result.Should().BeOfType<NotFoundResult>();
     }

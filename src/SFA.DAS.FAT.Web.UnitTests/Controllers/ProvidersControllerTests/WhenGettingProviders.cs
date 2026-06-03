@@ -44,7 +44,7 @@ public class WhenGettingProviders
             )
         ).ReturnsAsync(new ValidationResult());
 
-        var actual = await controller.Index(ukprn, location);
+        var actual = await controller.Index(ukprn);
 
         actual.Should().NotBeNull();
 
@@ -101,7 +101,7 @@ public class WhenGettingProviders
             }
         });
 
-        var sut = await controller.Index(ukprn, location);
+        var sut = await controller.Index(ukprn);
 
         sut.Should().BeOfType<NotFoundResult>();
 

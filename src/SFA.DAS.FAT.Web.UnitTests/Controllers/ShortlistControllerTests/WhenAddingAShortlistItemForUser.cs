@@ -30,7 +30,6 @@ public class WhenAddingAShortlistItemForUser
         //Arrange
         mockMediator.Setup(x => x.Send(It.Is<CreateShortlistItemForUserCommand>(c =>
             c.ShortlistUserId == shortlistCookie.ShortlistUserId
-            && c.LocationName == request.LocationName
             && c.Ukprn == request.Ukprn
             && c.LarsCode == request.LarsCode
         ), It.IsAny<CancellationToken>())).ReturnsAsync(expectedId);
@@ -68,8 +67,7 @@ public class WhenAddingAShortlistItemForUser
         //Assert
         actual.Should().NotBeNull();
         mockMediator.Verify(x => x.Send(It.Is<CreateShortlistItemForUserCommand>(c =>
-              c.LocationName == request.LocationName
-              && c.Ukprn == request.Ukprn
+              c.Ukprn == request.Ukprn
               && c.LarsCode.Equals(request.LarsCode)
         ), It.IsAny<CancellationToken>()), Times.Once);
         mockShortlistCookieService.Verify(x =>
