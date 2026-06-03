@@ -1,15 +1,13 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
-using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
 
 public class WhenBuildingCourseProviderTopPanelViewModelTests
 {
-    [Test]
-    [MoqInlineAutoData(DistanceService.AcrossEnglandFilterValue, "")]
+    [Test, MoqAutoData]
     public void Then_Set_ProviderRouteData(CourseProviderTopPanelViewModel sut)
     {
 

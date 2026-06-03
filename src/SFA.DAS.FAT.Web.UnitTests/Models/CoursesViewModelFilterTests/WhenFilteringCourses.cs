@@ -378,9 +378,6 @@ public sealed class WhenFilteringCourses
         {
             Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Keyword) && kv.Item2 == "Construction"), Is.True);
 
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Location) && kv.Item2 == "M60 7RA"), Is.True);
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Distance) && kv.Item2 == "20"), Is.True);
-
             Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Levels)), Is.EqualTo(2));
             Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "3"), Is.True);
             Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "4"), Is.True);

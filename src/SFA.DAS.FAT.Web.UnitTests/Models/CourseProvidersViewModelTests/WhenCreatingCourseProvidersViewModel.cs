@@ -194,7 +194,7 @@ public class WhenCreatingCourseProvidersViewModel
     }
 
     [Test]
-    public void ToQueryString_WithLocationFilter_IncludesLocationAndDistance()
+    public void ToQueryString_WithLocationFilter_DoesnotIncludesLocationAndDistance()
     {
         var sut = new CourseProvidersViewModel(_config)
         {
@@ -208,8 +208,8 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == "Coventry");
-            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == "10");
+            result.Should().NotContain(x => x.Item1 == "Location" && x.Item2 == "Coventry");
+            result.Should().NotContain(x => x.Item1 == "Distance" && x.Item2 == "10");
         }
     }
 
@@ -411,8 +411,6 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == "Manchester");
-            result.Should().Contain(x => x.Item1 == "Distance" && x.Item2 == "15");
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Online");
             result.Should().Contain(x => x.Item1 == "DeliveryModes" && x.Item2 == "Workplace");
             result.Should().Contain(x => x.Item1 == "ApprenticeProviderRatings" && x.Item2 == "Good");
@@ -437,7 +435,7 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            result.Should().Contain(x => x.Item1 == "Location" && x.Item2 == location);
+            result.Should().NotContain(x => x.Item1 == "Location" && x.Item2 == location);
             var distanceEntries = result.Where(x => x.Item1 == "Distance").ToList();
             (distanceEntries.Count == 0 || distanceEntries.Any(x => x.Item2 == DistanceService.AcrossEnglandFilterValue)).Should().BeTrue();
         }

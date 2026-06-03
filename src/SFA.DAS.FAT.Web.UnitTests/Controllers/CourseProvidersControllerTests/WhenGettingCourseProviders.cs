@@ -1029,8 +1029,7 @@ public class WhenGettingCourseProviders
             .Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
                 It.IsAny<CancellationToken>()
-            ))
-            .ReturnsAsync(new ValidationResult());
+            )).ReturnsAsync(new ValidationResult());
 
         var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = "CV1 Coventry" }) as ViewResult;
 

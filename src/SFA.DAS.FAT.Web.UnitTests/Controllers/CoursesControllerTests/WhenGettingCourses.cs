@@ -26,6 +26,7 @@ public class WhenGettingCourses
         ShortlistCookieItem cookieItem,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut
     )
     {
@@ -50,6 +51,9 @@ public class WhenGettingCourses
         )
         .ReturnsAsync(queryResult);
 
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(cookieItem);
@@ -71,6 +75,7 @@ public class WhenGettingCourses
         Guid shortlistUrl,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -96,6 +101,9 @@ public class WhenGettingCourses
         .ReturnsAsync(queryResult);
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
 
         var _sut = await controller.Courses(request);
 
@@ -130,6 +138,7 @@ public class WhenGettingCourses
         GetCoursesViewModel request,
         GetCoursesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -149,6 +158,9 @@ public class WhenGettingCourses
             )
         )
         .ReturnsAsync(queryResult);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
 
         var _sut = await controller.Courses(request);
 
@@ -170,6 +182,7 @@ public class WhenGettingCourses
         GetCoursesViewModel request,
         GetCoursesQueryResult response,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
@@ -190,6 +203,9 @@ public class WhenGettingCourses
             )
         )
         .ReturnsAsync(response);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
 
         var _sut = await controller.Courses(request);
 
