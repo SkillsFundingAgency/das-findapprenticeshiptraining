@@ -56,13 +56,23 @@ public class CoursesController : Controller
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
+        var hasDeletedLocationCookie = false;
         if (Request.Query.ContainsKey("location"))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
+            hasDeletedLocationCookie = true;
         }
 
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+
+        // If we just issued a delete for the location cookie, the Request.Cookies will still
+        // contain the old value for this running request. Treat the cookie as removed for the
+        // remainder of this request so the cleared state takes effect immediately.
+        if (hasDeletedLocationCookie)
+        {
+            locationCookieItem = null;
+        }
 
         int validatedDistance = DistanceService.GetValidDistance(locationCookieItem?.Distance, locationCookieItem?.Location);
         var result = await _mediator.Send(new GetCoursesQuery
