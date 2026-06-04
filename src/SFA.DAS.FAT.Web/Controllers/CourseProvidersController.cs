@@ -83,23 +83,26 @@ public class CourseProvidersController : Controller
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
     {
-        var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey(FilterService.ClearLocationQueryParameter))
-        {
-            _locationCookieService.Delete(Constants.LocationCookieName);
-            hasDeletedLocationCookie = true;
-        }
+
         var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
 
         if (!validationLarsCodeResult.IsValid)
         {
             return NotFound();
         }
+
+        var hasDeletedLocationCookie = false;
+        if (Request.Query.ContainsKey(FilterService.ClearLocationQueryParameter))
+        {
+            _locationCookieService.Delete(Constants.LocationCookieName);
+            hasDeletedLocationCookie = true;
+        }
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
         if (hasDeletedLocationCookie)
         {
             locationCookieItem = null;
         }
+
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
@@ -256,7 +259,6 @@ public class CourseProvidersController : Controller
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId)
     {
-
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
 
         if (!validationUkprnResult.IsValid)
