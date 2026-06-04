@@ -19,7 +19,7 @@ public class GetCourseProviderQueryResult : CourseProviderDetailsBase
             Contact = source.Contact,
             CourseName = source.CourseName,
             CourseType = source.CourseType,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             IsActiveAvailable = source.IsActiveAvailable,
             Level = source.Level,
             LarsCode = source.LarsCode,

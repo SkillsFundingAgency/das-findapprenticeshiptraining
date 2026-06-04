@@ -118,7 +118,7 @@ public class CourseProvidersController : Controller
             OrderBy = orderBy,
             CourseTitleAndLevel = result.StandardName,
             CourseType = result.CourseType,
-            ApprenticeshipType = result.ApprenticeshipType,
+            LearningType = result.LearningType,
             IsActiveAvailable = result.IsActiveAvailable,
             Location = request.Location,
             Distance = convertedDistance.ToString(),

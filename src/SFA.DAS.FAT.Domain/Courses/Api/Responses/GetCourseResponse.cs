@@ -20,7 +20,7 @@ public sealed class GetCourseResponse
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public List<Ksb> Ksbs { get; set; } = [];
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
     public bool IsActiveAvailable { get; set; }
     public int IncentivePayment { get; set; }

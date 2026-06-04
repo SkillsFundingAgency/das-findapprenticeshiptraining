@@ -81,7 +81,7 @@ public class ShortlistController : Controller
                 LarsCode = course.LarsCode,
                 CourseTitle = course.StandardName,
                 CourseType = course.CourseType,
-                LearningType = course.ApprenticeshipType
+                LearningType = course.LearningType
             };
             foreach (var location in course.Locations)
             {
@@ -102,7 +102,7 @@ public class ShortlistController : Controller
                     {
                         LarsCode = course.LarsCode,
                         CourseType = course.CourseType,
-                        LearningType = course.ApprenticeshipType,
+                        LearningType = course.LearningType,
                         LocationDescription = location.LocationDescription,
                         ShortlistId = provider.ShortlistId,
                         Ukprn = provider.Ukprn,
