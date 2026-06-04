@@ -273,7 +273,7 @@ public class WhenGettingCourseProviderDetails
         .Returns(shortlistCookieItem);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(

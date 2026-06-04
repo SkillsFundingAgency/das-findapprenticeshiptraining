@@ -33,7 +33,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Services
 
         public void Delete(string key, CookieOptions options)
         {
-            throw new System.NotImplementedException();
+            _store.Remove(key);
         }
     }
 }

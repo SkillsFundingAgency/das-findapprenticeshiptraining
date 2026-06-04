@@ -185,9 +185,9 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(clearLinks, Is.Not.Null);
             Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count() - 1));
 
-            var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("&deliverymodes=Provider", "");
-            var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("&deliverymodes=DayRelease", "");
-            var urlWithoutDeliveryModeBlockRelease = _fullQueryString.Replace("&deliverymodes=BlockRelease", "");
+            var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("deliverymodes=Provider&", "");
+            var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("deliverymodes=DayRelease&", "");
+            var urlWithoutDeliveryModeBlockRelease = _fullQueryString.Replace("deliverymodes=BlockRelease&", "");
 
             using (Assert.EnterMultipleScope())
             {

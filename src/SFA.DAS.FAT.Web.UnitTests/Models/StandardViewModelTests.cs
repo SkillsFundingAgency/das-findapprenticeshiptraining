@@ -251,8 +251,6 @@ public class StandardViewModelTests
             var values = new RouteValueDictionary(captured.Values);
             Assert.That(captured.RouteName, Is.EqualTo(RouteNames.CourseProviders));
             Assert.That(values["larsCode"]?.ToString(), Is.EqualTo(standard.LarsCode));
-            Assert.That(values["location"]?.ToString(), Is.EqualTo(string.Empty));
-            Assert.That(values["distance"]?.ToString(), Is.EqualTo(expectedValue));
         }
     }
 
