@@ -139,13 +139,7 @@ public class CourseProvidersController : Controller
 
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
-
         var orderBy = string.IsNullOrEmpty(requestLocation) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
-
-        if (string.IsNullOrEmpty(requestLocation) && !string.IsNullOrEmpty(requestLocation))
-        {
-            orderBy = ProviderOrderBy.Distance;
-        }
 
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
