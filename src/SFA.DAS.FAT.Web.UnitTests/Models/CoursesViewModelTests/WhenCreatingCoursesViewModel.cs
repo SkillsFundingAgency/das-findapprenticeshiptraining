@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -443,5 +444,40 @@ public class WhenCreatingCoursesViewModel
         var result = vm.ToQueryString();
 
         result.Should().BeEmpty();
+    }
+
+    [Test]
+    public void SelectedFilterOptionsAreNotEmpty_DoesHaveFilters()
+    {
+        var sut = new CoursesViewModel()
+        {
+            SelectedRoutes = ["1"],
+            SelectedTrainingTypes = [LearningType.Apprenticeship],
+            SelectedLevels = [10],
+        };
+
+        using (new AssertionScope())
+        {
+            sut.Categories.Contains("1");
+            sut.LearningTypes.Contains(LearningType.Apprenticeship);
+            sut.LevelCodes.Contains(10);
+        }
+    }
+    [Test]
+    public void SelectedFilterOptionsNotEmpty_DoesNotHaveFilters()
+    {
+        var sut = new CoursesViewModel()
+        {
+            SelectedRoutes = [],
+            SelectedTrainingTypes = [],
+            SelectedLevels = [],
+        };
+
+        using (new AssertionScope())
+        {
+            sut.Categories.Should().BeEmpty();
+            sut.LearningTypes.Should().BeEmpty();
+            sut.LevelCodes.Should().BeEmpty();
+        }
     }
 }

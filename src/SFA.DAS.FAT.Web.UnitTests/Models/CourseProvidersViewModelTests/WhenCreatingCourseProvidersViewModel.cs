@@ -624,4 +624,42 @@ public class WhenCreatingCourseProvidersViewModel
             result.ClearFilterSections.Should().NotContain(s => s.FilterType == FilterService.FilterType.QarRatings);
         }
     }
+    [Test]
+    public void SelectedFilterOptionsAreNotEmpty_DoesHaveFilters()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            SelectedDeliveryModes = ["Online"],
+            SelectedEmployerApprovalRatings = ["Excellent"],
+            SelectedApprenticeApprovalRatings = ["Excellent"],
+            SelectedQarRatings = ["Above 70%"],
+        };
+
+        using (new AssertionScope())
+        {
+            sut.DeliveryModes.Contains("Online");
+            sut.EmployerApprovalRatings.Contains("Excellent");
+            sut.ApprenticeApprovalRatings.Contains("Excellent");
+            sut.QarRatings.Contains("Above 70%");
+        }
+    }
+    [Test]
+    public void SelectedFilterOptionsNotEmpty_DoesNotHaveFilters()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            SelectedDeliveryModes = [],
+            SelectedEmployerApprovalRatings = [],
+            SelectedApprenticeApprovalRatings = [],
+            SelectedQarRatings = [],
+        };
+
+        using (new AssertionScope())
+        {
+            sut.DeliveryModes.Should().BeEmpty();
+            sut.EmployerApprovalRatings.Should().BeEmpty();
+            sut.ApprenticeApprovalRatings.Should().BeEmpty();
+            sut.QarRatings.Should().BeEmpty();
+        }
+    }
 }
