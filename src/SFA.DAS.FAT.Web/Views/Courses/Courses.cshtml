@@ -22,7 +22,7 @@
     <div class="govuk-grid-row govuk-!-margin-top-4">
 
         <div class="govuk-grid-column-one-third">
-            <form asp-route="@RouteNames.Courses" method="post">
+            <form asp-route="@RouteNames.Courses" method="POST">
                 @await Html.PartialAsync("_filters", Model.Filters)
             </form>
         </div>

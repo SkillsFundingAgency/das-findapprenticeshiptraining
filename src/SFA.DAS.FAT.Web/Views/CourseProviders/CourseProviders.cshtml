@@ -29,13 +29,13 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-one-third">
-            <form id="course-providers-form" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode" method="post">
+            <form id="course-providers-form" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode" method="POST">
                 <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
                 @await Html.PartialAsync(Model.CourseType == CourseType.Apprenticeship ? "_filters" : "_filtersShortCourse", Model.Filters)
             </form>
         </div>
         <div class="govuk-grid-column-two-thirds">
-            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="post" class="app-search-results-header">
+            <form asp-route="@RouteNames.CourseProviders" id="course-providers-order-form" method="POST" class="app-search-results-header">
                 @foreach (var q in Context.Request.Query)
                 {
                     switch (q.Key.ToLower())

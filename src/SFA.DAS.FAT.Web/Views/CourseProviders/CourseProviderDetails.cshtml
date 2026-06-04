@@ -67,7 +67,7 @@
                 <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
             </div>
 
-            <form asp-show="@(!Model.HasLocation)" method="post" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails" asp-route-providerId="@Model.Ukprn">
+            <form asp-show="@(!Model.HasLocation)" method="POST" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails" asp-route-providerId="@Model.Ukprn">
                 <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
                     <div class="govuk-form-group @(!ViewContext.ModelState.IsValid ? "govuk-form-group--error" : "")">
                         <span asp-validation-for="Location" class="govuk-error-message"></span>
