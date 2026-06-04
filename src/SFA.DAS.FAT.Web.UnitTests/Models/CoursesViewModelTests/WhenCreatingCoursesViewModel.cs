@@ -379,4 +379,69 @@ public class WhenCreatingCoursesViewModel
 
         Assert.That(clearFilters.Any(x => x.FilterType == FilterService.FilterType.LearningTypes), Is.False);
     }
+
+    [Test]
+    public void GenerateLevelFilterItems_WithLevels_AppliesSelection()
+    {
+        var level = new Level { Code = 4, Name = "NVQ" };
+        var vm = new CoursesViewModel()
+        {
+            Levels = new List<LevelViewModel>() { new LevelViewModel(level, new List<int>()) },
+            SelectedLevels = new List<int> { 4 }
+        };
+
+        var filters = vm.CreateFilterSections();
+
+        var accordion = (AccordionFilterSectionViewModel)Enumerable.First(filters.FilterSections, s => s.Id == "multi-select");
+        var levels = (CheckboxListFilterSectionViewModel)Enumerable.First(accordion.Children, c => c.Id == "levels-filter");
+
+        levels.Items.Should().HaveCount(1);
+        var item = levels.Items[0];
+        item.Value.Should().Be("4");
+        item.DisplayText.Should().Be("Level 4");
+        item.DisplayDescription.Should().Be($"Equal to {level.Name}");
+        item.IsSelected.Should().BeTrue();
+    }
+
+    [Test]
+    public void GenerateLevelFilterItems_WithNoLevels_ReturnsEmpty()
+    {
+        var vm = new CoursesViewModel()
+        {
+            Levels = new List<LevelViewModel>(),
+            SelectedLevels = new List<int>()
+        };
+
+        var filters = vm.CreateFilterSections();
+
+        var accordion = (AccordionFilterSectionViewModel)Enumerable.First(filters.FilterSections, s => s.Id == "multi-select");
+        var levels = (CheckboxListFilterSectionViewModel)Enumerable.First(accordion.Children, c => c.Id == "levels-filter");
+
+        levels.Items.Should().BeEmpty();
+    }
+
+    [Test]
+    public void TotalMessage_Zero_Unfiltered_ReturnsZeroResults()
+    {
+        var vm = new CoursesViewModel()
+        {
+            Total = 0,
+            TotalFiltered = 0,
+            Keyword = string.Empty,
+            SelectedRoutes = new List<string>(),
+            SelectedLevels = new List<int>()
+        };
+
+        vm.TotalMessage.Should().Be("0 results");
+    }
+
+    [Test]
+    public void ToQueryString_NoSelectedFilters_ReturnsEmpty()
+    {
+        var vm = new CoursesViewModel();
+
+        var result = vm.ToQueryString();
+
+        result.Should().BeEmpty();
+    }
 }
