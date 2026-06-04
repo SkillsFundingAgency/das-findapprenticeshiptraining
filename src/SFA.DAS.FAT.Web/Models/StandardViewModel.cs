@@ -65,7 +65,7 @@ public class StandardViewModel
         MaxFunding = source.MaxFunding.ToString("C0", new CultureInfo("en-GB"));
         LevelName = GetLevelName(levels);
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
-        FindProvidersUrl = GetFindProvidersUrl(urlHelper, location);
+        FindProvidersUrl = GetFindProvidersUrl(urlHelper);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
     }
 
@@ -90,7 +90,7 @@ public class StandardViewModel
         return $"{employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    private string GetFindProvidersUrl(IUrlHelper urlHelper, string location)
+    private string GetFindProvidersUrl(IUrlHelper urlHelper)
     {
         if (!HasProviders) return string.Empty;
         return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode })!;

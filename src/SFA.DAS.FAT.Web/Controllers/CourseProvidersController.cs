@@ -285,9 +285,11 @@ public class CourseProvidersController : Controller
             if (!validationLocationResult.IsValid)
             {
                 ModelState.AddValidationErrors(validationLocationResult.Errors);
-                var cookie = locationCookieItem ?? new LocationCookieItem();
-                cookie.Location = string.Empty;
-                cookie.Distance = DistanceService.TenMiles.ToString();
+                var cookie = new LocationCookieItem
+                {
+                    Location = string.Empty,
+                    Distance = DistanceService.TenMiles.ToString()
+                };
                 _locationCookieService.Update(Constants.LocationCookieName, cookie);
                 location = string.Empty;
                 distance = cookie.Distance;
