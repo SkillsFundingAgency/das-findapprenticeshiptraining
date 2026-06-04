@@ -51,7 +51,7 @@ public class ProviderCoursesModel
         }
 
         var groupedCourses = Courses
-            .GroupBy(c => c.ApprenticeshipType)
+            .GroupBy(c => c.LearningType)
             .ToDictionary(group => group.Key, group => group.ToList());
 
         var courseGroups = new List<CourseGroupViewModel>();
@@ -79,7 +79,7 @@ public class ProviderCoursesModel
         {
             Ukprn = Ukprn,
             Location = Location,
-            ApprenticeshipType = learningType,
+            LearningType = learningType,
             DisplayNameHeader = pluralDisplayName,
             DisplayName = coursesByType.Count > 1 ? pluralDisplayName : learningTypeDisplayName,
             Courses = coursesByType,

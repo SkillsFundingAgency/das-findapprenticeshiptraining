@@ -78,10 +78,10 @@ public class WhenWorkingWithProviderCoursesModel
     {
         var courses = new List<ProviderCourseDetails>
         {
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.Apprenticeship },
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit },
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.FoundationApprenticeship },
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit }
+            new ProviderCourseDetails { LearningType = LearningType.Apprenticeship },
+            new ProviderCourseDetails { LearningType = LearningType.ApprenticeshipUnit },
+            new ProviderCourseDetails { LearningType = LearningType.FoundationApprenticeship },
+            new ProviderCourseDetails { LearningType = LearningType.ApprenticeshipUnit }
         };
 
         var sut = new ProviderCoursesModel
@@ -93,8 +93,8 @@ public class WhenWorkingWithProviderCoursesModel
 
         groups.Count.Should().Be(3);
 
-        groups[groupIndex].ApprenticeshipType.Should().Be(ProviderCoursesModel.LearningTypeOrder[groupIndex]);
-        groups[groupIndex].ApprenticeshipType.Should().Be(expectedType);
+        groups[groupIndex].LearningType.Should().Be(ProviderCoursesModel.LearningTypeOrder[groupIndex]);
+        groups[groupIndex].LearningType.Should().Be(expectedType);
         groups[groupIndex].Count.Should().Be(expectedCount);
         groups[groupIndex].DisplayNameHeader.Should().Be(expectedDisplayNameHeader);
         groups[groupIndex].DisplayName.Should().Be(expectedDisplayName);
@@ -130,8 +130,8 @@ public class WhenWorkingWithProviderCoursesModel
     {
         var courses = new List<ProviderCourseDetails>
         {
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.ApprenticeshipUnit },
-            new ProviderCourseDetails { ApprenticeshipType = LearningType.FoundationApprenticeship }
+            new ProviderCourseDetails { LearningType = LearningType.ApprenticeshipUnit },
+            new ProviderCourseDetails { LearningType = LearningType.FoundationApprenticeship }
         };
 
         var sut = new ProviderCoursesModel

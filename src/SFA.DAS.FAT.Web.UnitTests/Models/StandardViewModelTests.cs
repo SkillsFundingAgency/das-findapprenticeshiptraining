@@ -35,7 +35,7 @@ public class StandardViewModelTests
 
     [InlineAutoData(CourseType.Apprenticeship, false, true)]
     [InlineAutoData(CourseType.ShortCourse, true, false)]
-    public void CourseTypeFlags_AreSetCorrectly(CourseType courseType, bool expectedShortCourseType, bool expectedApprenticeshipType, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
+    public void CourseTypeFlags_AreSetCorrectly(CourseType courseType, bool expectedShortCourseType, bool expectedLearningType, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
         standardModel.CourseType = courseType;
@@ -43,7 +43,7 @@ public class StandardViewModelTests
         StandardViewModel sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
 
         sut.IsShortCourseType.Should().Be(expectedShortCourseType);
-        sut.IsApprenticeshipType.Should().Be(expectedApprenticeshipType);
+        sut.IsApprenticeshipType.Should().Be(expectedLearningType);
     }
 
     [InlineAutoData(1, true)]

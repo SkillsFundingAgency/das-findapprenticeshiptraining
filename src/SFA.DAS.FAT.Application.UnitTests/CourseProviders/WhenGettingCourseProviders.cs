@@ -41,7 +41,7 @@ public class WhenGettingCourseProviders
             TotalCount = courseProvidersDetails.TotalCount,
             StandardName = courseProvidersDetails.StandardName,
             CourseType = courseProvidersDetails.CourseType,
-            ApprenticeshipType = courseProvidersDetails.ApprenticeshipType,
+            LearningType = courseProvidersDetails.LearningType,
             IsActiveAvailable = courseProvidersDetails.IsActiveAvailable,
             QarPeriod = academicYearsLatestResponse.QarPeriod,
             ReviewPeriod = academicYearsLatestResponse.ReviewPeriod,

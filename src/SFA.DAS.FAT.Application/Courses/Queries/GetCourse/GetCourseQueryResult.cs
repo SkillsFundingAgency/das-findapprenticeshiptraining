@@ -27,7 +27,7 @@ public class GetCourseQueryResult
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
     public List<Ksb> Ksbs { get; set; } = [];
 
-    public LearningType ApprenticeshipType { get; set; }
+    public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
     public bool IsActiveAvailable { get; set; }
 
@@ -55,7 +55,7 @@ public class GetCourseQueryResult
             IncentivePayment = source.IncentivePayment,
             Ksbs = source.Ksbs,
             RelatedOccupations = source.RelatedOccupations.Select(c => (RelatedOccupation)c).ToList(),
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             CourseType = source.CourseType,
             IsActiveAvailable = source.IsActiveAvailable,
         };

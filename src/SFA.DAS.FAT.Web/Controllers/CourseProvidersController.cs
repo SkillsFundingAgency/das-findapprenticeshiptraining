@@ -191,7 +191,7 @@ public class CourseProvidersController : Controller
 
         courseProvidersViewModel.CourseTitleAndLevel = result.StandardName;
         courseProvidersViewModel.CourseType = result.CourseType;
-        courseProvidersViewModel.ApprenticeshipType = result.ApprenticeshipType;
+        courseProvidersViewModel.LearningType = result.LearningType;
         courseProvidersViewModel.IsActiveAvailable = result.IsActiveAvailable;
         courseProvidersViewModel.ShowSearchCrumb = true;
         courseProvidersViewModel.ShowShortListLink = true;

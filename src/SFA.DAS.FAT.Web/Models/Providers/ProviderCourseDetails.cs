@@ -6,7 +6,7 @@ namespace SFA.DAS.FAT.Web.Models.Providers;
 public class ProviderCourseDetails
 {
     public string CourseName { get; init; }
-    public LearningType ApprenticeshipType { get; init; }
+    public LearningType LearningType { get; init; }
     public int Level { get; init; }
     public string LarsCode { get; init; }
 
@@ -15,7 +15,7 @@ public class ProviderCourseDetails
         return new ProviderCourseDetails
         {
             CourseName = source.CourseName,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             Level = source.Level,
             LarsCode = source.LarsCode
         };
@@ -25,7 +25,7 @@ public class ProviderCourseDetails
         return new ProviderCourseDetails
         {
             CourseName = source.CourseName,
-            ApprenticeshipType = source.ApprenticeshipType,
+            LearningType = source.LearningType,
             Level = source.Level,
             LarsCode = source.LarsCode
         };

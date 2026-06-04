@@ -12,10 +12,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 public class WhenBuildingCourseViewModelFromQueryResult
 {
     [Test, MoqAutoData]
-    public void ExplicitCastOperator_QueryResultProvided_MapsModelCorrectly(GetCourseQueryResult source, LearningType apprenticeshipType)
+    public void ExplicitCastOperator_QueryResultProvided_MapsModelCorrectly(GetCourseQueryResult source, LearningType learningType)
     {
-        source.ApprenticeshipType = apprenticeshipType;
-        var isFoundationApprenticeship = apprenticeshipType == LearningType.FoundationApprenticeship;
+        source.LearningType = learningType;
+        var isFoundationApprenticeship = learningType == LearningType.FoundationApprenticeship;
 
         var sut = (CourseViewModel)source;
 
@@ -42,7 +42,7 @@ public class WhenBuildingCourseViewModelFromQueryResult
             Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
             Assert.That(sut.ShowShortListLink, Is.True);
             Assert.That(sut.ShowApprenticeTrainingCoursesCrumb, Is.True);
-            Assert.That(sut.LearningType, Is.EqualTo(source.ApprenticeshipType));
+            Assert.That(sut.LearningType, Is.EqualTo(source.LearningType));
         }
     }
 
@@ -145,15 +145,15 @@ public class WhenBuildingCourseViewModelFromQueryResult
     [TestCase(LearningType.Apprenticeship, true, false, false)]
     [TestCase(LearningType.FoundationApprenticeship, false, true, false)]
     [TestCase(LearningType.ApprenticeshipUnit, false, false, true)]
-    public void ExplicitCastOperator_ApprenticeshipTypeSet_MapsApprenticeshipFlags(
-        LearningType apprenticeshipType,
+    public void ExplicitCastOperator_LearningTypeSet_MapsApprenticeshipFlags(
+        LearningType learningType,
         bool expectedIsApprenticeship,
         bool expectedIsFoundationApprenticeship,
         bool expectedIsApprenticeshipUnit)
     {
         var source = new GetCourseQueryResult
         {
-            ApprenticeshipType = apprenticeshipType,
+            LearningType = learningType,
             Ksbs = []
         };
 
