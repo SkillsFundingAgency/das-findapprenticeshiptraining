@@ -285,7 +285,7 @@ public static class FilterService
         {
             var remaining = param.Value.Where(v => v != value).ToList();
 
-            if (remaining.Any())
+            if (remaining.Count != 0)
             {
                 foreach (var val in remaining)
                 {

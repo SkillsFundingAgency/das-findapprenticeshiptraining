@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Mvc.TagHelpers;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -32,7 +33,6 @@ public class ExtendedAnchorTagHelper : AnchorTagHelper
         {
             base.Process(context, output);
             output.Attributes.TryGetAttribute("href", out attribute);
-            hasHref = attribute != null;
         }
 
         var href = attribute?.Value?.ToString() ?? string.Empty;
@@ -45,16 +45,16 @@ public class ExtendedAnchorTagHelper : AnchorTagHelper
 
         if (!string.IsNullOrEmpty(href) && href.Contains('?'))
         {
-            if (qs.StartsWith("?"))
+            if (qs.StartsWith('?'))
             {
-                qs = "&" + qs.Substring(1);
+                qs = string.Concat("&", qs.AsSpan(1));
             }
         }
         else
         {
-            if (qs.StartsWith("&"))
+            if (qs.StartsWith('&'))
             {
-                qs = "?" + qs.Substring(1);
+                qs = string.Concat("?", qs.AsSpan(1));
             }
         }
 
