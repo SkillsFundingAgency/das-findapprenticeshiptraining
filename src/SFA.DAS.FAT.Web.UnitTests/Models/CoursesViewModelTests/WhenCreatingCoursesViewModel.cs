@@ -458,9 +458,9 @@ public class WhenCreatingCoursesViewModel
 
         using (new AssertionScope())
         {
-            sut.Categories.Contains("1");
-            sut.LearningTypes.Contains(LearningType.Apprenticeship);
-            sut.LevelCodes.Contains(10);
+            sut.Categories.Should().Contain("1");
+            sut.LearningTypes.Should().Contain(LearningType.Apprenticeship);
+            sut.LevelCodes.Should().Contain(10);
         }
     }
     [Test]

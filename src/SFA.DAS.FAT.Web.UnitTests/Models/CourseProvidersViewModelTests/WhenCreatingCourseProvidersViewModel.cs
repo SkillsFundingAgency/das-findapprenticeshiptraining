@@ -637,10 +637,10 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            sut.DeliveryModes.Contains("Online");
-            sut.EmployerApprovalRatings.Contains("Excellent");
-            sut.ApprenticeApprovalRatings.Contains("Excellent");
-            sut.QarRatings.Contains("Above 70%");
+            sut.DeliveryModes.Should().Contain("Online");
+            sut.EmployerApprovalRatings.Should().Contain("Excellent");
+            sut.ApprenticeApprovalRatings.Should().Contain("Excellent");
+            sut.QarRatings.Should().Contain("Above 70%");
         }
     }
     [Test]

@@ -15,6 +15,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
@@ -1169,32 +1170,84 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
-        [Frozen] Mock<IMediator> mediatorMock,
-        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
-        [Frozen] Mock<ITempDataDictionary> tempDataMock,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Greedy] CourseProvidersController sut,
-        CourseProvidersDetails mediatorResult)
+    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndReturnsInvalidViewModel(
+           [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidator,
+           [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+           [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+           [Frozen] Mock<ISessionService> sessionService,
+           [Greedy] CourseProvidersController sut)
     {
+        // Arrange
+        var request = new CourseProvidersRequest { LarsCode = "123" };
+
+        courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+
         sut.AddUrlHelperMock();
-        sut.TempData = tempDataMock.Object;
-        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location");
+        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location=true");
 
-        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+        var locationCookieItem = new LocationCookieItem { Location = "M1 1AA", Distance = "10" };
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(locationCookieItem);
 
-        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = "London", Distance = "10" });
+        locationCookieService.Setup(x => x.Delete(It.IsAny<string>()));
+        locationCookieService.Setup(x => x.Update(It.IsAny<string>(), It.IsAny<LocationCookieItem>()));
 
-        validatorMock.Setup(v => v.ValidateAsync(
-                It.IsAny<GetCourseQuery>(),
-                It.IsAny<CancellationToken>()
-            )).ReturnsAsync(new ValidationResult());
+        // Act
+        var result = await sut.CourseProviders(request) as ViewResult;
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+        // Assert
+        result.Should().NotBeNull();
+        var model = result!.Model as CourseProvidersViewModel;
+        model.Should().NotBeNull();
+        model.Providers.Should().BeEmpty();
+        locationCookieService.Verify(x => x.Delete(It.IsAny<string>()), Times.Once);
+        locationCookieService.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(i => i == null || i.Location == string.Empty)), Times.Never);
+    }
 
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
 
-        mediatorMock.Verify(x => x.Send(It.Is<GetCourseLocationQuery>(q => q.Location == null), It.IsAny<CancellationToken>()), Times.Never);
+    [Test, MoqAutoData]
+    public async Task WhenLocationIsInvalid_UpdateLocationCookie_AndReturnsInvalidViewModel(
+           [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidator,
+           [Frozen] Mock<IValidator<GetCourseLocationQuery>> courseLocationValidator,
+           [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+           [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+           [Frozen] Mock<ISessionService> sessionService,
+           [Greedy] CourseProvidersController sut)
+    {
+        // Arrange
+        var request = new CourseProvidersRequest { LarsCode = "123" };
+        request.ApprenticeProviderRatings = new List<ProviderRating> { ProviderRating.Excellent, ProviderRating.Good };
+        request.DeliveryModes = new List<ProviderDeliveryMode> { ProviderDeliveryMode.Online, ProviderDeliveryMode.Workplace };
+        request.EmployerProviderRatings = new List<ProviderRating> { ProviderRating.Good, ProviderRating.Poor };
+        request.QarRatings = new List<QarRating> { QarRating.Excellent, QarRating.Good };
+
+        courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
+
+        sut.AddUrlHelperMock();
+
+        var locationCookieItem = new LocationCookieItem { Location = "Invalid Location", Distance = "10" };
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(locationCookieItem);
+
+        locationCookieService.Setup(x => x.Delete(It.IsAny<string>()));
+        locationCookieService.Setup(x => x.Update(It.IsAny<string>(), It.IsAny<LocationCookieItem>()));
+
+        courseLocationValidator.Setup(x => x.ValidateAsync(It.IsAny<GetCourseLocationQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult(new[] { new ValidationFailure("Location", "Invalid location") }));
+
+        // Act
+        var result = await sut.CourseProviders(request) as ViewResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        var model = result!.Model as CourseProvidersViewModel;
+        model.Should().NotBeNull();
+        model.Providers.Should().BeEmpty();
+        model.SelectedApprenticeApprovalRatings.Should().Equal(request.ApprenticeProviderRatings.Select(r => r.ToString()));
+        model.SelectedDeliveryModes.Should().Equal(request.DeliveryModes.Select(r => r.ToString()));
+        model.SelectedApprenticeApprovalRatings.Should().Equal(request.ApprenticeProviderRatings.Select(r => r.ToString()));
+        model.SelectedEmployerApprovalRatings.Should().Equal(request.EmployerProviderRatings.Select(r => r.ToString()));
+        model.SelectedQarRatings.Should().Equal(request.QarRatings.Select(r => r.ToString()));
+
+        locationCookieService.Verify(x => x.Get(It.IsAny<string>()), Times.Once);
+        locationCookieService.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(i => i == null || i.Location == string.Empty)), Times.Once);
     }
 }

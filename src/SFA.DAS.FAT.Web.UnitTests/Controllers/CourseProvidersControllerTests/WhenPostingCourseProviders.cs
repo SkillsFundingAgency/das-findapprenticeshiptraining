@@ -44,11 +44,14 @@ public class WhenPostingCourseProviders
         var result = await controller.CourseProviderDetailsPost(model, larsCode, providerId) as RedirectToRouteResult;
 
         // Assert
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!.RouteName, Is.EqualTo(RouteNames.CourseProviderDetails));
-        Assert.That(result.RouteValues, Is.Not.Null);
-        Assert.That(result.RouteValues!["providerId"].ToString(), Is.EqualTo(providerId.ToString()));
-        Assert.That(result.RouteValues!["larsCode"].ToString(), Is.EqualTo(larsCode));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(result, Is.Not.Null);
+            Assert.That(result!.RouteName, Is.EqualTo(RouteNames.CourseProviderDetails));
+            Assert.That(result.RouteValues, Is.Not.Null);
+            Assert.That(result.RouteValues!["providerId"].ToString(), Is.EqualTo(providerId.ToString()));
+            Assert.That(result.RouteValues!["larsCode"].ToString(), Is.EqualTo(larsCode));
+        }
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
