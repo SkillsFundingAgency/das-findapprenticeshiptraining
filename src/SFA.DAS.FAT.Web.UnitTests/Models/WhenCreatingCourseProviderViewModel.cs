@@ -1298,6 +1298,38 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.Website, Is.EqualTo("https://provider.test"));
         }
     }
+    [Test]
+    public void WhenLocationIsWhiteSpace_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "   "
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void WhenLocationIsNull_ReturnsFalse()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = null
+        };
+
+        Assert.That(sut.HasLocation, Is.False);
+    }
+
+    [Test]
+    public void WhenLocationIsSet_ReturnsTrue()
+    {
+        var sut = new CourseProviderViewModel
+        {
+            Location = "SW1"
+        };
+
+        Assert.That(sut.HasLocation, Is.True);
+    }
 
 }
 
