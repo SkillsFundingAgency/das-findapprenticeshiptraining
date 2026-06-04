@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -1165,5 +1166,35 @@ public class WhenGettingCourseProviders
 
         // Assert
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(0);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CourseProvidersController sut,
+        CourseProvidersDetails mediatorResult)
+    {
+        sut.AddUrlHelperMock();
+        sut.TempData = tempDataMock.Object;
+        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location");
+
+        mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = "London", Distance = "10" });
+
+        validatorMock.Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+
+        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+
+        mediatorMock.Verify(x => x.Send(It.Is<GetCourseLocationQuery>(q => q.Location == null), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

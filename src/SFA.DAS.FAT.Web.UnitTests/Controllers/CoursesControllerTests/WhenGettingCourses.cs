@@ -1,6 +1,7 @@
 ﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -220,5 +221,41 @@ public class WhenGettingCourses
             Assert.That(model.Standards, Has.Count.EqualTo(0));
             Assert.That(model.Pagination, Is.Null);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
+        GetCoursesViewModel request,
+        GetCoursesQueryResult queryResult,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CoursesController controller
+    )
+    {
+        // Arrange
+        controller.AddUrlHelperMock();
+        CoursesViewModel model = new CoursesViewModel();
+        queryResult.Standards = [];
+        controller.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location");
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = "London", Distance = "10" });
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(m => m.Send(It.IsAny<GetCoursesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
+
+        // Act
+        var result = await controller.Courses(request) as ViewResult;
+
+        // Assert
+        result.Should().NotBeNull();
+
+        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+
+        mediator.Verify(x => x.Send(It.Is<GetCoursesQuery>(q => q.Location == null), It.IsAny<CancellationToken>()), Times.Once);
     }
 }
