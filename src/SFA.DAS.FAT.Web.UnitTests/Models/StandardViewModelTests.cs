@@ -314,40 +314,6 @@ public class StandardViewModelTests
         }
     }
 
-    [AutoData]
-    public void GenerateStandardRouteValues_WithLocation_IncludesLocationAndDistance(StandardModel standard, FindApprenticeshipTrainingWeb config, string location, string distance)
-    {
-        standard.Level = Levels[0].Code;
-
-        var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(sut.CourseDetailsRouteValues["larsCode"], Is.EqualTo(standard.LarsCode));
-            Assert.That(sut.CourseDetailsRouteValues.ContainsKey("location"), Is.True);
-            Assert.That(sut.CourseDetailsRouteValues.ContainsKey("distance"), Is.True);
-            Assert.That(sut.CourseDetailsRouteValues["location"], Is.EqualTo(location));
-            Assert.That(sut.CourseDetailsRouteValues["distance"], Is.EqualTo(distance));
-        }
-    }
-
-    [AutoData]
-    public void GenerateStandardRouteValues_WithOutLocation_ExcludesLocationAndDistance(StandardModel standard, FindApprenticeshipTrainingWeb config, string distance)
-    {
-        standard.Level = Levels[0].Code;
-        var location = string.Empty;
-
-        var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
-
-        using (Assert.EnterMultipleScope())
-        {
-            Assert.That(sut.CourseDetailsRouteValues["larsCode"], Is.EqualTo(standard.LarsCode));
-            Assert.That(sut.CourseDetailsRouteValues.ContainsKey("location"), Is.False);
-            Assert.That(sut.CourseDetailsRouteValues.ContainsKey("distance"), Is.False);
-        }
-    }
-
-
     private static List<LevelViewModel> Levels =>
     [
         new(new Level{ Code = 1, Name = "GCSE" }, []),

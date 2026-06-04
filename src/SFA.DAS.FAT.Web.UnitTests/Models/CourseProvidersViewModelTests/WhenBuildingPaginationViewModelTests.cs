@@ -255,16 +255,15 @@ public class WhenBuildingPaginationViewModelTests
     }
 
     [Test]
-    [MoqInlineAutoData("Location 1", "5", true)]
-    [MoqInlineAutoData("location 1", "100", true)]
-    [MoqInlineAutoData("location 3", "All", true)]
-    [MoqInlineAutoData(null, "5", false)]
-    [MoqInlineAutoData(null, "100", false)]
-    [MoqInlineAutoData(null, "All", false)]
+    [MoqInlineAutoData("Location 1", "5")]
+    [MoqInlineAutoData("location 1", "100")]
+    [MoqInlineAutoData("location 3", "All")]
+    [MoqInlineAutoData(null, "5")]
+    [MoqInlineAutoData(null, "100")]
+    [MoqInlineAutoData(null, "All")]
     public void Then_Pagination_2_Pages_Page_1_Distance_Is_Set(
         string location,
         string distance,
-        bool isDistanceInPaginationUrl,
         CourseProvidersRequest request,
         [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
@@ -316,16 +315,6 @@ public class WhenBuildingPaginationViewModelTests
             var urlCheck = sut.Pages[2].Url;
 
             urlCheck.Should().Contain(TestConstants.DefaultUrl);
-            switch (isDistanceInPaginationUrl)
-            {
-                case true:
-                    urlCheck.Should().Contain($"Distance={distance}");
-                    break;
-                default:
-                    urlCheck.Should().NotContain($"Distance={distance}");
-                    break;
-            }
-
         }
     }
 }

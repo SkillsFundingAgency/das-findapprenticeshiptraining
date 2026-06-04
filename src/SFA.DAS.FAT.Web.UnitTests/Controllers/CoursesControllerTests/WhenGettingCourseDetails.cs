@@ -76,6 +76,7 @@ public class WhenGettingCourseDetails
     {
         string larsCode = "123";
         string location = "London";
+        string distance = "All";
 
         validator
             .Setup(v => v.ValidateAsync(
@@ -85,7 +86,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = "20" });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -126,7 +127,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = "20" });
+            .Returns(new LocationCookieItem { Location = location });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
