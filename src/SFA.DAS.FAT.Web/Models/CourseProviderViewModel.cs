@@ -256,12 +256,12 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             }
         }
 
-        AppendIfNotEmpty(ProviderAddress?.AddressLine1);
-        AppendIfNotEmpty(ProviderAddress?.AddressLine2);
-        AppendIfNotEmpty(ProviderAddress?.AddressLine3);
-        AppendIfNotEmpty(ProviderAddress?.AddressLine4);
-        AppendIfNotEmpty(ProviderAddress?.Town);
-        AppendIfNotEmpty(ProviderAddress?.Postcode);
+        AppendIfNotEmpty(ProviderAddress.AddressLine1);
+        AppendIfNotEmpty(ProviderAddress.AddressLine2);
+        AppendIfNotEmpty(ProviderAddress.AddressLine3);
+        AppendIfNotEmpty(ProviderAddress.AddressLine4);
+        AppendIfNotEmpty(ProviderAddress.Town);
+        AppendIfNotEmpty(ProviderAddress.Postcode);
 
         return builder.ToString();
     }

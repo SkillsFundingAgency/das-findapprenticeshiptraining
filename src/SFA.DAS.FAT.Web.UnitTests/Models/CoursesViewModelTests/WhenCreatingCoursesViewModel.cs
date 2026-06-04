@@ -213,8 +213,8 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(_sut.Count(a => a.Item1 == "Location"), Is.EqualTo(0));
-            Assert.That(_sut.Count(a => a.Item1 == "Distance"), Is.EqualTo(0));
+            Assert.That(_sut.Count(a => a.Item1 == "Location"), Is.Zero);
+            Assert.That(_sut.Count(a => a.Item1 == "Distance"), Is.Zero);
         }
     }
 
@@ -362,8 +362,8 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.EqualTo(0));
-            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.EqualTo(0));
+            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.Zero);
+            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.Zero);
         }
     }
 
