@@ -130,7 +130,7 @@ public class CourseProvidersController : Controller
                     SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
                     Providers = []
                 };
-                locationCookieItem?.Location = string.Empty;
+                locationCookieItem.Location = string.Empty;
                 _locationCookieService.Update(Constants.LocationCookieName, locationCookieItem);
 
                 return View(invalidViewModel);

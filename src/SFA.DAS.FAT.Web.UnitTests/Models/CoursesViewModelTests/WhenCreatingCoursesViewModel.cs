@@ -398,6 +398,7 @@ public class WhenCreatingCoursesViewModel
 
         levels.Items.Should().HaveCount(1);
         var item = levels.Items[0];
+
         item.Value.Should().Be("4");
         item.DisplayText.Should().Be("Level 4");
         item.DisplayDescription.Should().Be($"Equal to {level.Name}");
@@ -456,6 +457,11 @@ public class WhenCreatingCoursesViewModel
             SelectedLevels = [10],
         };
 
+        // Act
+        sut.Categories = sut.SelectedRoutes;
+        sut.LearningTypes = sut.SelectedTrainingTypes;
+        sut.LevelCodes = sut.SelectedLevels;
+
         using (new AssertionScope())
         {
             sut.Categories.Should().Contain("1");
@@ -477,6 +483,34 @@ public class WhenCreatingCoursesViewModel
         {
             sut.Categories.Should().BeEmpty();
             sut.LearningTypes.Should().BeEmpty();
+            sut.LevelCodes.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenSelectedOptionsSetToNull_OptionsDefaultedToEmpty()
+    {
+        var sut = new CoursesViewModel()
+        {
+            SelectedRoutes = null,
+            SelectedTrainingTypes = null,
+            SelectedLevels = null,
+        };
+
+        // Act
+        sut.Categories = null;
+        sut.LearningTypes = null;
+        sut.LevelCodes = null;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            sut.SelectedRoutes.Should().NotBeNull();
+            sut.SelectedRoutes.Should().BeEmpty();
+            sut.Categories.Should().BeEmpty();
+            sut.SelectedTrainingTypes.Should().NotBeNull();
+            sut.SelectedTrainingTypes.Should().BeEmpty();
+            sut.LevelCodes.Should().NotBeNull();
             sut.LevelCodes.Should().BeEmpty();
         }
     }

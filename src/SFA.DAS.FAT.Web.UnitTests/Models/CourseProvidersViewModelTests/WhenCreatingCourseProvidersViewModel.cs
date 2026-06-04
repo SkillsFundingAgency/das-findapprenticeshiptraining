@@ -635,6 +635,11 @@ public class WhenCreatingCourseProvidersViewModel
             SelectedQarRatings = ["Above 70%"],
         };
 
+        sut.DeliveryModes = sut.SelectedDeliveryModes.ToList();
+        sut.EmployerApprovalRatings = sut.SelectedEmployerApprovalRatings.ToList();
+        sut.ApprenticeApprovalRatings = sut.SelectedApprenticeApprovalRatings.ToList();
+        sut.QarRatings = sut.SelectedQarRatings.ToList();
+
         using (new AssertionScope())
         {
             sut.DeliveryModes.Should().Contain("Online");
@@ -656,6 +661,34 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
+            sut.DeliveryModes.Should().BeEmpty();
+            sut.EmployerApprovalRatings.Should().BeEmpty();
+            sut.ApprenticeApprovalRatings.Should().BeEmpty();
+            sut.QarRatings.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenSelectedOptionsSetToNull_OptionsDefaultedToEmpty()
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            SelectedDeliveryModes = null,
+            SelectedEmployerApprovalRatings = null,
+            SelectedApprenticeApprovalRatings = null,
+            SelectedQarRatings = null,
+        };
+
+        // Act
+        sut.DeliveryModes = null;
+        sut.EmployerApprovalRatings = null;
+        sut.ApprenticeApprovalRatings = null;
+        sut.QarRatings = null;
+
+        // Assert
+        using (new AssertionScope())
+        {
+            sut.DeliveryModes.Should().NotBeNull();
             sut.DeliveryModes.Should().BeEmpty();
             sut.EmployerApprovalRatings.Should().BeEmpty();
             sut.ApprenticeApprovalRatings.Should().BeEmpty();
