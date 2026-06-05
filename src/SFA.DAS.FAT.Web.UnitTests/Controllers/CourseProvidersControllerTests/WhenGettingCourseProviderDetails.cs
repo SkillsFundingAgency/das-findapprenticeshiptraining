@@ -248,7 +248,7 @@ public class WhenGettingCourseProviderDetails
     }
 
     [Test, MoqAutoData]
-    public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_Null(
+    public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_DefaultDistance(
         string courseId,
         int providerId,
         string location,

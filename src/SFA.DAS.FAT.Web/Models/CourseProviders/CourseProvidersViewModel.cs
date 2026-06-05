@@ -27,19 +27,12 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public IEnumerable<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public IEnumerable<string> SelectedApprenticeApprovalRatings { get; set; } = [];
     public IEnumerable<string> SelectedQarRatings { get; set; } = [];
-    public string QarPeriod { get; set; } = string.Empty;
-    public string ReviewPeriod { get; set; } = string.Empty;
-    public string QarPeriodStartYear
-        => QarPeriod?.Length >= 2 ? $"20{QarPeriod.AsSpan(0, 2)}" : string.Empty;
-
-    public string QarPeriodEndYear
-        => QarPeriod?.Length >= 4 ? $"20{QarPeriod.AsSpan(2, 2)}" : string.Empty;
-
-    public string ReviewPeriodStartYear
-        => ReviewPeriod?.Length >= 2 ? $"20{ReviewPeriod.AsSpan(0, 2)}" : string.Empty;
-
-    public string ReviewPeriodEndYear
-        => ReviewPeriod?.Length >= 4 ? $"20{ReviewPeriod.AsSpan(2, 2)}" : string.Empty;
+    public string QarPeriod { get; set; }
+    public string ReviewPeriod { get; set; }
+    public string QarPeriodStartYear => $"20{QarPeriod.AsSpan(0, 2)}";
+    public string QarPeriodEndYear => $"20{QarPeriod.AsSpan(2, 2)}";
+    public string ReviewPeriodStartYear => $"20{ReviewPeriod.AsSpan(0, 2)}";
+    public string ReviewPeriodEndYear => $"20{ReviewPeriod.AsSpan(2, 2)}";
 
     public string ProviderReviewsHeading => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}";
     public string CourseAchievementRateHeading => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}";
