@@ -16,6 +16,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -32,6 +33,7 @@ public class CourseProvidersController : Controller
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
     private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
+    private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly IValidator<GetCourseQuery> _courseIdValidator;
     private readonly ISessionService _sessionService;
     private readonly IDateTimeService _dateTimeService;
@@ -40,6 +42,7 @@ public class CourseProvidersController : Controller
     public CourseProvidersController(
         IMediator mediator,
         IValidator<GetCourseProviderDetailsQuery> ukprnValidator,
+        IValidator<GetCourseLocationQuery> courseLocationValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IOptions<FindApprenticeshipTrainingWeb> config,
         ISessionService sessionService,
@@ -49,6 +52,7 @@ public class CourseProvidersController : Controller
     {
         _mediator = mediator;
         _ukprnValidator = ukprnValidator;
+        _courseLocationValidator = courseLocationValidator;
         _shortlistCookieService = shortlistCookieService;
         _sessionService = sessionService;
         _dateTimeService = dateTimeService;
@@ -221,6 +225,17 @@ public class CourseProvidersController : Controller
         if (!validationLarsCodeResult.IsValid)
         {
             return NotFound();
+        }
+
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location?.Trim() });
+
+        if (!validationLocationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationLocationResult.Errors);
+            (location, distance) = LocationCookieHelper.GetLocation(
+            _locationCookieService,
+            Request,
+            true);
         }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
