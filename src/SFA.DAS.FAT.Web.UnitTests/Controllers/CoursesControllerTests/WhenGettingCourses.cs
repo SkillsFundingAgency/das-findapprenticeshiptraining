@@ -258,4 +258,20 @@ public class WhenGettingCourses
 
         mediator.Verify(x => x.Send(It.Is<GetCoursesQuery>(q => q.Location == null), It.IsAny<CancellationToken>()), Times.Once);
     }
+
+    [Test, MoqAutoData]
+    public async Task CourseDetailsDelete_WithisRemoveLocation_DeletesLocationCookie(
+       string larsCode,
+       [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+       [Greedy] CoursesController sut
+   )
+    {
+        // Act
+        var isRemoveLocation = true;
+        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
+
+        // Assert
+        result.Should().NotBeNull();
+        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+    }
 }

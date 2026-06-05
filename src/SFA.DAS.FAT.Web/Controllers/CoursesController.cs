@@ -57,7 +57,7 @@ public class CoursesController : Controller
     public async Task<IActionResult> Courses(GetCoursesViewModel model, bool clearFilter = false)
     {
         var hasDeletedLocationCookie = false;
-        if (clearFilter)
+        if (clearFilter || Request.Query.ContainsKey(FilterService.ClearFilters))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;

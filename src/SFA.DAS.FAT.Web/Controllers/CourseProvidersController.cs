@@ -88,7 +88,7 @@ public class CourseProvidersController : Controller
         }
 
         var hasDeletedLocationCookie = false;
-        if (clearFilter)
+        if (clearFilter || Request.Query.ContainsKey(FilterService.ClearFilters))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;

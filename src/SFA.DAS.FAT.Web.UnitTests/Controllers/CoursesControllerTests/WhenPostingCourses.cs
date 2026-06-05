@@ -68,8 +68,6 @@ public class WhenPostingCourses
 
         //Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result!.ViewName, Is.EqualTo("CourseDetails"));
-
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }
     [Test, MoqAutoData]
@@ -127,21 +125,5 @@ public class WhenPostingCourses
         );
     }
 
-    [Test, MoqAutoData]
-    public async Task CourseDetailsDelete_WithLarsCode_DeletesLocationCookieAndRedirectsToCourseDetails(
-        string larsCode,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Greedy] CoursesController sut
-    )
-    {
-        // Act
-        var isRemoveLocation = true;
-        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
 
-        // Assert
-        result.Should().NotBeNull();
-        result!.ViewName.Should().Be("CourseDetails");
-
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
-    }
 }

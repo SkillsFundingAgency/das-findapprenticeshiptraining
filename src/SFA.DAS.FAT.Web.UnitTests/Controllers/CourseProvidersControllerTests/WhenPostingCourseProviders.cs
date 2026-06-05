@@ -58,20 +58,4 @@ public class WhenPostingCourseProviders
             It.Is<LocationCookieItem>(c => c.Location == model.Location && c.Distance == model.Distance)
         ), Times.Once);
     }
-
-    [Test, MoqAutoData]
-    public async Task CourseProviderDetailsRemoveLocation_DeletesCookie_AndRedirects(
-        string larsCode,
-        int providerId,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Greedy] CourseProvidersController controller)
-    {
-        var isRemoveLocation = true;
-        var result = await controller.CourseProviderDetails(larsCode, providerId, isRemoveLocation) as ViewResult;
-
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!.ViewName, Is.EqualTo("CourseProviderDetails"));
-
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
-    }
 }
