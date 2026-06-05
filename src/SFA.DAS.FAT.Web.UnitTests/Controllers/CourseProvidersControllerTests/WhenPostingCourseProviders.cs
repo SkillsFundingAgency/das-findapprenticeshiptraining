@@ -66,10 +66,11 @@ public class WhenPostingCourseProviders
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
-        var result = await controller.CourseProviderDetailsRemoveLocation(larsCode, providerId) as RedirectToRouteResult;
+        var isRemoveLocation = true;
+        var result = await controller.CourseProviderDetails(larsCode, providerId, isRemoveLocation) as ViewResult;
 
         Assert.That(result, Is.Not.Null);
-        Assert.That(result!.RouteName, Is.EqualTo(RouteNames.CourseProviderDetails));
+        Assert.That(result!.ViewName, Is.EqualTo("CourseProviderDetails"));
 
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }

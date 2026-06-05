@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -129,7 +128,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
     {
         if (!string.IsNullOrEmpty(_location))
         {
-            buildUrl += $"&location={HttpUtility.UrlEncode(_location)}";
+            buildUrl += $"&clearFilter=true";
         }
 
         return buildUrl;

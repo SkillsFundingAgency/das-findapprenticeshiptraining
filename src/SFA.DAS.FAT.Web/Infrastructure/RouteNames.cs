@@ -12,10 +12,8 @@ namespace SFA.DAS.FAT.Web.Infrastructure
 
         public const string Courses = "courses";
         public const string CourseDetails = "course-details";
-        public const string CourseDetailsRemoveLocation = "course-details-remove-location";
         public const string CourseProviders = "course-providers";
         public const string CourseProviderDetails = "course-provider-details";
-        public const string CourseProviderDetailsRemoveLocation = "course-provider-details-remove-location";
 
         public const string Provider = nameof(Provider);
 

@@ -57,17 +57,18 @@ public class WhenPostingCourses
     }
 
     [Test, MoqAutoData]
-    public void CourseDetailsDelete_DeletesLocationCookie_AndRedirects(
+    public async Task CourseDetailsDelete_DeletesLocationCookie_AndRedirects(
         string larsCode,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
     {
         //Act
-        var result = sut.CourseDetailsDelete(larsCode) as RedirectToRouteResult;
+        var isRemoveLocation = true;
+        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
 
         //Assert
         Assert.That(result, Is.Not.Null);
-        Assert.That(result!.RouteName, Is.EqualTo(RouteNames.CourseDetails));
+        Assert.That(result!.ViewName, Is.EqualTo("CourseDetails"));
 
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }
@@ -127,20 +128,19 @@ public class WhenPostingCourses
     }
 
     [Test, MoqAutoData]
-    public void CourseDetailsDelete_WithLarsCode_DeletesLocationCookieAndRedirectsToCourseDetails(
+    public async Task CourseDetailsDelete_WithLarsCode_DeletesLocationCookieAndRedirectsToCourseDetails(
         string larsCode,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut
     )
     {
         // Act
-        var result = sut.CourseDetailsDelete(larsCode) as RedirectToRouteResult;
+        var isRemoveLocation = true;
+        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
 
         // Assert
         result.Should().NotBeNull();
-        result!.RouteName.Should().Be(RouteNames.CourseDetails);
-        result.RouteValues.Should().ContainKey("larsCode");
-        result.RouteValues["larsCode"].Should().Be(larsCode);
+        result!.ViewName.Should().Be("CourseDetails");
 
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }

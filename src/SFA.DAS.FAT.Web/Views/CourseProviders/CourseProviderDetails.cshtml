@@ -48,9 +48,10 @@
                     You can
 
                     <a class="govuk-link govuk-link--no-visited-state"
-                           asp-route="@RouteNames.CourseProviderDetailsRemoveLocation"
+                           asp-route="@RouteNames.CourseProviderDetails"
                            asp-route-larsCode="@Model.LarsCode"
-                           asp-route-providerId="@Model.Ukprn">
+                           asp-route-providerId="@Model.Ukprn"
+                           asp-route-isRemoveLocation="true">
                         remove or change your location
                     </a>.
 

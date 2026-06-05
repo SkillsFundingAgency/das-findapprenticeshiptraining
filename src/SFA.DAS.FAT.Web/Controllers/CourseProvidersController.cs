@@ -16,7 +16,6 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
-using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -33,7 +32,6 @@ public class CourseProvidersController : Controller
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
     private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
-    private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly IValidator<GetCourseQuery> _courseIdValidator;
     private readonly ISessionService _sessionService;
     private readonly IDateTimeService _dateTimeService;
@@ -42,7 +40,6 @@ public class CourseProvidersController : Controller
     public CourseProvidersController(
         IMediator mediator,
         IValidator<GetCourseProviderDetailsQuery> ukprnValidator,
-        IValidator<GetCourseLocationQuery> courseLocationValidator,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
         IOptions<FindApprenticeshipTrainingWeb> config,
         ISessionService sessionService,
@@ -52,7 +49,6 @@ public class CourseProvidersController : Controller
     {
         _mediator = mediator;
         _ukprnValidator = ukprnValidator;
-        _courseLocationValidator = courseLocationValidator;
         _shortlistCookieService = shortlistCookieService;
         _sessionService = sessionService;
         _dateTimeService = dateTimeService;
@@ -81,7 +77,7 @@ public class CourseProvidersController : Controller
 
     [HttpGet]
     [Route("", Name = RouteNames.CourseProviders)]
-    public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
+    public async Task<IActionResult> CourseProviders(CourseProvidersRequest request, bool clearFilter = false)
     {
 
         var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
@@ -92,7 +88,7 @@ public class CourseProvidersController : Controller
         }
 
         var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey(FilterService.ClearFilters))
+        if (clearFilter)
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;
@@ -109,33 +105,6 @@ public class CourseProvidersController : Controller
 
         var requestLocation = locationCookieItem?.Location;
         var requestDistance = locationCookieItem?.Distance;
-
-        if (!string.IsNullOrWhiteSpace(requestLocation))
-        {
-            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
-            if (!validationLocationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationLocationResult.Errors);
-
-                CourseProvidersViewModel invalidViewModel = new CourseProvidersViewModel(_config)
-                {
-                    LarsCode = request.LarsCode,
-                    ShortlistCount = shortlistCount?.Count ?? 0,
-                    OrderBy = request.OrderBy,
-                    Location = requestLocation,
-                    Distance = requestDistance,
-                    SelectedDeliveryModes = request.DeliveryModes.Select(d => d.ToString()),
-                    SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()),
-                    SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()),
-                    SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
-                    Providers = []
-                };
-                locationCookieItem.Location = string.Empty;
-                _locationCookieService.Update(Constants.LocationCookieName, locationCookieItem);
-
-                return View(invalidViewModel);
-            }
-        }
 
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
@@ -242,17 +211,13 @@ public class CourseProvidersController : Controller
     }
 
     [HttpGet]
-    [Route("{providerId}/remove-location", Name = RouteNames.CourseProviderDetailsRemoveLocation)]
-    public async Task<IActionResult> CourseProviderDetailsRemoveLocation([FromRoute] string larsCode, [FromRoute] int providerId)
-    {
-        _locationCookieService.Delete(Constants.LocationCookieName);
-        return RedirectToRoute(RouteNames.CourseProviderDetails, new { providerId, larsCode });
-    }
-
-    [HttpGet]
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId)
+    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool isRemoveLocation = false)
     {
+        if (isRemoveLocation)
+        {
+            _locationCookieService.Delete(Constants.LocationCookieName);
+        }
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
 
         if (!validationUkprnResult.IsValid)
@@ -274,23 +239,6 @@ public class CourseProvidersController : Controller
 
         var location = locationCookieItem?.Location;
         var distance = locationCookieItem?.Distance;
-
-        if (!string.IsNullOrWhiteSpace(location))
-        {
-            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location });
-            if (!validationLocationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationLocationResult.Errors);
-                var cookie = new LocationCookieItem
-                {
-                    Location = string.Empty,
-                    Distance = DistanceService.TenMiles.ToString()
-                };
-                _locationCookieService.Update(Constants.LocationCookieName, cookie);
-                location = string.Empty;
-                distance = cookie.Distance;
-            }
-        }
 
         var query = new GetCourseProviderDetailsQuery
         {

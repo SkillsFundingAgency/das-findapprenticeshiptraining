@@ -123,7 +123,7 @@ public class WhenGettingCourseProviders
         if (page > 1) pageParam = $"&page={page}";
 
         //Assert
-        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&location={location}&" +
+        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&clearFilter=true&" +
               $"deliveryModes={string.Join("&deliveryModes=", deliveryModeTypes)}&employerProviderRatings=" +
               $"{string.Join("&employerProviderRatings=", employerProviderRatingTypes)}&" +
               $"apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatingTypes)}&" +
@@ -132,7 +132,7 @@ public class WhenGettingCourseProviders
 
     [TestCase(null, null, null, null, null, null, 1, null, "&pageSize=10")]
     [TestCase(5, null, null, null, null, null, 1, null, "&distance=5&pageSize=10")]
-    [TestCase(null, "loc", null, null, null, null, null, null, "&location=loc&pageSize=10")]
+    [TestCase(null, "loc", null, null, null, null, null, null, "&clearFilter=loc&pageSize=10")]
     [TestCase(null, null, ProviderDeliveryMode.Provider, null, null, null, null, null, "&deliveryModes=Provider&pageSize=10")]
     [TestCase(null, null, null, ProviderRating.VeryPoor, null, null, null, null, "&employerProviderRatings=VeryPoor&pageSize=10")]
     [TestCase(null, null, null, null, ProviderRating.VeryPoor, null, null, null, "&apprenticeProviderRatings=VeryPoor&pageSize=10")]
@@ -141,7 +141,7 @@ public class WhenGettingCourseProviders
     [TestCase(null, null, null, null, null, null, 10, null, "&page=10&pageSize=10")]
     [TestCase(null, null, null, null, null, null, null, "3f616821-64a2-4dda-97cd-138f428d26b5", "&pageSize=10&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
     [TestCase(5, "loc", ProviderDeliveryMode.DayRelease, ProviderRating.VeryPoor, ProviderRating.Good, QarRating.Good, 25, "3f616821-64a2-4dda-97cd-138f428d26b5",
-             "&distance=5&location=loc" +
+             "&distance=5&clearFilter=loc" +
              "&deliveryModes=DayRelease" +
              "&employerProviderRatings=VeryPoor" +
              "&apprenticeProviderRatings=Good" +

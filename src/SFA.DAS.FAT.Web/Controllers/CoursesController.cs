@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -10,7 +9,6 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
@@ -23,7 +21,6 @@ public class CoursesController : Controller
 {
     private readonly IMediator _mediator;
     private readonly FindApprenticeshipTrainingWeb _config;
-    private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
     private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
 
@@ -31,14 +28,12 @@ public class CoursesController : Controller
         IMediator mediator,
         IOptions<FindApprenticeshipTrainingWeb> config,
         ICookieStorageService<ShortlistCookieItem> shortlistCookieService,
-        ICookieStorageService<LocationCookieItem> locationCookieService,
-        IValidator<GetCourseLocationQuery> courseLocationValidator)
+        ICookieStorageService<LocationCookieItem> locationCookieService)
     {
         _mediator = mediator;
         _shortlistCookieService = shortlistCookieService;
         _locationCookieService = locationCookieService;
         _config = config.Value;
-        _courseLocationValidator = courseLocationValidator;
     }
 
     [HttpPost]
@@ -59,10 +54,10 @@ public class CoursesController : Controller
 
     [HttpGet]
     [Route("", Name = RouteNames.Courses)]
-    public async Task<IActionResult> Courses(GetCoursesViewModel model)
+    public async Task<IActionResult> Courses(GetCoursesViewModel model, bool clearFilter = false)
     {
         var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey(FilterService.ClearFilters))
+        if (clearFilter)
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;
@@ -109,14 +104,6 @@ public class CoursesController : Controller
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };
-        if (!string.IsNullOrWhiteSpace(requestLocation))
-        {
-            var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
-            if (!validationLocationResult.IsValid)
-            {
-                ModelState.AddValidationErrors(validationLocationResult.Errors);
-            }
-        }
 
         if (result.Standards.Count > 0)
         {
@@ -147,18 +134,15 @@ public class CoursesController : Controller
     }
 
     [HttpGet]
-    [Route("{larsCode}/remove-location", Name = RouteNames.CourseDetailsRemoveLocation)]
-    public IActionResult CourseDetailsDelete([FromRoute] string larsCode)
-    {
-        _locationCookieService.Delete(Constants.LocationCookieName);
-        return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
-    }
-
-    [HttpGet]
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
-    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode)
+    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool isRemoveLocation = false)
     {
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+        if (isRemoveLocation)
+        {
+            _locationCookieService.Delete(Constants.LocationCookieName);
+            locationCookieItem = null;
+        }
 
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 

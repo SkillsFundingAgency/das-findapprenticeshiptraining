@@ -71,7 +71,7 @@
                                asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
                                 View providers for this course
                             </a>
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetailsRemoveLocation" asp-route-larsCode="@Model.LarsCode">Remove location</a>
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-larsCode="@Model.LarsCode" asp-route-isRemoveLocation="true">Remove location</a>
                         </div>
                     </form>
                 </div>
