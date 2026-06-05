@@ -56,22 +56,13 @@ public class CoursesController : Controller
     [Route("", Name = RouteNames.Courses)]
     public async Task<IActionResult> Courses(GetCoursesViewModel model, bool clearFilter = false)
     {
-        var hasDeletedLocationCookie = false;
-        if (clearFilter || Request.Query.ContainsKey(FilterService.ClearFilters))
-        {
-            _locationCookieService.Delete(Constants.LocationCookieName);
-            hasDeletedLocationCookie = true;
-        }
-
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
-        if (hasDeletedLocationCookie)
-        {
-            locationCookieItem = null;
-        }
-        var requestLocation = locationCookieItem?.Location;
-        var requestDistance = locationCookieItem?.Distance;
+        var (requestLocation, requestDistance) = LocationCookieHelper.GetLocation(
+            _locationCookieService,
+            Request,
+            clearFilter
+        );
 
         int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);
         var result = await _mediator.Send(new GetCoursesQuery
@@ -137,27 +128,20 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool isRemoveLocation = false)
     {
-        var hasDeletedLocationCookie = false;
-        if (isRemoveLocation)
-        {
-            _locationCookieService.Delete(Constants.LocationCookieName);
-            hasDeletedLocationCookie = true;
-        }
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
-
-        if (hasDeletedLocationCookie)
-        {
-            locationCookieItem = null;
-        }
+        var (locationCookieLocation, locationCookieDistance) = LocationCookieHelper.GetLocation(
+            _locationCookieService,
+            Request,
+            isRemoveLocation
+        );
 
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 
-        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(locationCookieItem?.Distance, locationCookieItem?.Location);
+        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(locationCookieDistance, locationCookieLocation);
 
         var query = new GetCourseQuery()
         {
             LarsCode = larsCode,
-            Location = locationCookieItem?.Location,
+            Location = locationCookieLocation,
             Distance = convertedDistance
         };
 
@@ -169,7 +153,7 @@ public class CoursesController : Controller
         }
 
         var viewModel = (CourseViewModel)result;
-        viewModel.Location = locationCookieItem?.Location;
+        viewModel.Location = locationCookieLocation;
         viewModel.Distance = convertedDistance.ToString();
         viewModel.RequestApprenticeshipTrainingUrl = _config.RequestApprenticeshipTrainingUrl;
         viewModel.EmployerAccountsUrl = _config.EmployerAccountsUrl;

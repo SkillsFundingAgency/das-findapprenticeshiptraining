@@ -86,24 +86,15 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
-        var hasDeletedLocationCookie = false;
-        if (clearFilter || Request.Query.ContainsKey(FilterService.ClearFilters))
-        {
-            _locationCookieService.Delete(Constants.LocationCookieName);
-            hasDeletedLocationCookie = true;
-        }
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
-        if (hasDeletedLocationCookie)
-        {
-            locationCookieItem = null;
-        }
+        var (requestLocation, requestDistance) = LocationCookieHelper.GetLocation(
+            _locationCookieService,
+            Request,
+            clearFilter
+        );
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
-
-        var requestLocation = locationCookieItem?.Location;
-        var requestDistance = locationCookieItem?.Distance;
 
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
@@ -131,7 +122,6 @@ public class CourseProvidersController : Controller
                 Providers = []
             };
         }
-
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
@@ -213,12 +203,12 @@ public class CourseProvidersController : Controller
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool isRemoveLocation = false)
     {
-        var hasDeletedLocationCookie = false;
-        if (isRemoveLocation)
-        {
-            _locationCookieService.Delete(Constants.LocationCookieName);
-            hasDeletedLocationCookie = true;
-        }
+        var (location, distance) = LocationCookieHelper.GetLocation(
+            _locationCookieService,
+            Request,
+            isRemoveLocation
+        );
+
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
 
         if (!validationUkprnResult.IsValid)
@@ -236,13 +226,6 @@ public class CourseProvidersController : Controller
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
-        if (hasDeletedLocationCookie)
-        {
-            locationCookieItem = null;
-        }
-        var location = locationCookieItem?.Location;
-        var distance = locationCookieItem?.Distance;
 
         var query = new GetCourseProviderDetailsQuery
         {
@@ -293,6 +276,4 @@ public class CourseProvidersController : Controller
 
         return dropdown;
     }
-
-
 }
