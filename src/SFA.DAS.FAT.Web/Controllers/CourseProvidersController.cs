@@ -236,6 +236,7 @@ public class CourseProvidersController : Controller
             _locationCookieService,
             Request,
             true);
+            location = string.Empty;
         }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
