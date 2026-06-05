@@ -1,11 +1,9 @@
 ﻿using System.Threading;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
-using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
@@ -17,9 +15,7 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
     [HttpGet]
     public IActionResult Index()
     {
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
         SelectTrainingProviderViewModel model = new SelectTrainingProviderViewModel();
-        model.Location = locationCookieItem?.Location;
         return View(model);
     }
 
@@ -34,13 +30,9 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
             ModelState.AddValidationErrors(result.Errors);
             return View(model);
         }
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = DistanceService.TenMiles.ToString() });
-
-
         return RedirectToRoute(RouteNames.Provider, new
         {
             submitModel.Ukprn,
-            submitModel.Location
         });
     }
 }
