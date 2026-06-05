@@ -44,7 +44,7 @@ public class SearchCoursesController : Controller
             request.Keyword = submitModel.CourseTerm;
         }
 
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = DistanceService.TenMiles.ToString() });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = DistanceService.TenMiles.ToString() });
         return RedirectToRoute(RouteNames.Courses, request);
     }
 }

@@ -136,7 +136,7 @@ public sealed class WhenFilteringCourseProviders
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        var urlWithoutLocation = "?location=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
+        var urlWithoutLocation = "?clearFilters=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
 
         using (Assert.EnterMultipleScope())
         {

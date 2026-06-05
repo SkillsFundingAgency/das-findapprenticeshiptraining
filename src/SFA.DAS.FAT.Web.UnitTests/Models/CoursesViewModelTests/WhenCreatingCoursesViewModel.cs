@@ -1,5 +1,4 @@
 ﻿using FluentAssertions;
-using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models;
@@ -445,73 +444,5 @@ public class WhenCreatingCoursesViewModel
         var result = vm.ToQueryString();
 
         result.Should().BeEmpty();
-    }
-
-    [Test]
-    public void SelectedFilterOptionsAreNotEmpty_DoesHaveFilters()
-    {
-        var sut = new CoursesViewModel()
-        {
-            SelectedRoutes = ["1"],
-            SelectedTrainingTypes = [LearningType.Apprenticeship],
-            SelectedLevels = [10],
-        };
-
-        // Act
-        sut.Categories = sut.SelectedRoutes;
-        sut.LearningTypes = sut.SelectedTrainingTypes;
-        sut.LevelCodes = sut.SelectedLevels;
-
-        using (new AssertionScope())
-        {
-            sut.Categories.Should().Contain("1");
-            sut.LearningTypes.Should().Contain(LearningType.Apprenticeship);
-            sut.LevelCodes.Should().Contain(10);
-        }
-    }
-    [Test]
-    public void SelectedFilterOptionsNotEmpty_DoesNotHaveFilters()
-    {
-        var sut = new CoursesViewModel()
-        {
-            SelectedRoutes = [],
-            SelectedTrainingTypes = [],
-            SelectedLevels = [],
-        };
-
-        using (new AssertionScope())
-        {
-            sut.Categories.Should().BeEmpty();
-            sut.LearningTypes.Should().BeEmpty();
-            sut.LevelCodes.Should().BeEmpty();
-        }
-    }
-
-    [Test]
-    public void WhenSelectedOptionsSetToNull_OptionsDefaultedToEmpty()
-    {
-        var sut = new CoursesViewModel()
-        {
-            SelectedRoutes = null,
-            SelectedTrainingTypes = null,
-            SelectedLevels = null,
-        };
-
-        // Act
-        sut.Categories = null;
-        sut.LearningTypes = null;
-        sut.LevelCodes = null;
-
-        // Assert
-        using (new AssertionScope())
-        {
-            sut.SelectedRoutes.Should().NotBeNull();
-            sut.SelectedRoutes.Should().BeEmpty();
-            sut.Categories.Should().BeEmpty();
-            sut.SelectedTrainingTypes.Should().NotBeNull();
-            sut.SelectedTrainingTypes.Should().BeEmpty();
-            sut.LevelCodes.Should().NotBeNull();
-            sut.LevelCodes.Should().BeEmpty();
-        }
     }
 }

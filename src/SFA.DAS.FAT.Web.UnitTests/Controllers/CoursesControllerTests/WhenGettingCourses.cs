@@ -237,7 +237,7 @@ public class WhenGettingCourses
         controller.AddUrlHelperMock();
         CoursesViewModel model = new CoursesViewModel();
         queryResult.Standards = [];
-        controller.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location");
+        controller.ControllerContext.HttpContext.Request.QueryString = new QueryString("?clearFilters");
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
             .Returns(new LocationCookieItem { Location = "London", Distance = "10" });

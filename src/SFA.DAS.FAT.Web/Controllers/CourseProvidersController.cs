@@ -75,7 +75,7 @@ public class CourseProvidersController : Controller
             PageNumber = 1
         };
 
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = submitModel.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.CourseProviders, model);
     }
 
@@ -92,7 +92,7 @@ public class CourseProvidersController : Controller
         }
 
         var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey(FilterService.ClearLocationQueryParameter))
+        if (Request.Query.ContainsKey(FilterService.ClearFilters))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;
@@ -107,7 +107,7 @@ public class CourseProvidersController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        var requestLocation = locationCookieItem?.Location?.Trim();
+        var requestLocation = locationCookieItem?.Location;
         var requestDistance = locationCookieItem?.Distance;
 
         if (!string.IsNullOrWhiteSpace(requestLocation))
@@ -237,7 +237,7 @@ public class CourseProvidersController : Controller
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetailsPost(CourseProviderViewModel model, [FromRoute] string larsCode, [FromRoute] int providerId)
     {
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location, Distance = model.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location?.Trim(), Distance = model.Distance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { providerId, larsCode });
     }
 
@@ -272,7 +272,7 @@ public class CourseProvidersController : Controller
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
-        var location = locationCookieItem?.Location?.Trim();
+        var location = locationCookieItem?.Location;
         var distance = locationCookieItem?.Distance;
 
         if (!string.IsNullOrWhiteSpace(location))

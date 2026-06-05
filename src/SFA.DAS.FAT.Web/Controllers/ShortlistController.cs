@@ -157,7 +157,7 @@ public class ShortlistController : Controller
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand
         {
             Ukprn = request.Ukprn,
-            LocationName = locationCookieItem?.Location?.Trim(),
+            LocationName = locationCookieItem?.Location,
             LarsCode = request.LarsCode,
             ShortlistUserId = cookie.ShortlistUserId
         });

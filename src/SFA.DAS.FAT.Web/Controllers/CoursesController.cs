@@ -53,7 +53,7 @@ public class CoursesController : Controller
             LearningTypes = submitModel.LearningTypes,
             PageNumber = 1
         };
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location, Distance = submitModel.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.Courses, model);
     }
 
@@ -62,7 +62,7 @@ public class CoursesController : Controller
     public async Task<IActionResult> Courses(GetCoursesViewModel model)
     {
         var hasDeletedLocationCookie = false;
-        if (Request.Query.ContainsKey(FilterService.ClearLocationQueryParameter))
+        if (Request.Query.ContainsKey(FilterService.ClearFilters))
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             hasDeletedLocationCookie = true;
@@ -75,7 +75,7 @@ public class CoursesController : Controller
         {
             locationCookieItem = null;
         }
-        var requestLocation = locationCookieItem?.Location?.Trim();
+        var requestLocation = locationCookieItem?.Location;
         var requestDistance = locationCookieItem?.Distance;
 
         int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);
@@ -142,7 +142,7 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public IActionResult CourseDetailsPost(CoursesViewModel model, [FromRoute] string larsCode)
     {
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location, Distance = model.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location?.Trim(), Distance = model.Distance });
         return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
     }
 

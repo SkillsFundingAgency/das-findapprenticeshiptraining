@@ -408,7 +408,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return BuildDeliveryModeOptionViewModel()
             .Where(dm => dm.Description == filterValue)
             .Select(dm => dm.DeliveryItemChoice.ToString())
-            .FirstOrDefault() ?? filterValue;
+            .FirstOrDefault(filterValue);
     }
 
     private static string GetQarRatingsValue(string filterValue)
@@ -416,7 +416,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return BuildQarRatingsViewModel()
             .Where(qar => qar.Description == filterValue)
             .Select(qar => qar.QarRatingType.ToString())
-            .FirstOrDefault() ?? filterValue;
+            .FirstOrDefault(filterValue);
     }
 
     private static string GetProviderRatingsValue(string filterValue)
@@ -424,6 +424,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         return BuildEmployerProviderRatingsViewModel()
             .Where(rating => rating.Description == filterValue)
             .Select(rating => rating.ProviderRatingType.ToString())
-            .FirstOrDefault() ?? filterValue;
+            .FirstOrDefault(filterValue);
     }
 }

@@ -133,7 +133,7 @@ public sealed class WhenFilteringCourses
             Assert.That(accordionFilterSection.For, Is.EqualTo(string.Empty));
             Assert.That(accordionFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Accordion));
 
-            var levelsFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(_coursesViewModel.LevelCodes));
+            var levelsFilterSection = accordionFilterSection.Children.First(a => a.For == nameof(_coursesViewModel.Levels));
             Assert.That(levelsFilterSection, Is.TypeOf<CheckboxListFilterSectionViewModel>());
             Assert.That(levelsFilterSection.Id, Is.EqualTo("levels-filter"));
             Assert.That(levelsFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));

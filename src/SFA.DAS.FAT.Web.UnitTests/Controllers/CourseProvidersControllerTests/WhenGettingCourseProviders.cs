@@ -1183,7 +1183,7 @@ public class WhenGettingCourseProviders
         courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         sut.AddUrlHelperMock();
-        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?location=true");
+        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?clearFilters");
 
         var locationCookieItem = new LocationCookieItem { Location = "M1 1AA", Distance = "10" };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(locationCookieItem);
