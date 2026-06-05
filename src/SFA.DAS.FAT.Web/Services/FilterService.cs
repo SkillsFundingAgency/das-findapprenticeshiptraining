@@ -271,6 +271,7 @@ public static class FilterService
     private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
         StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
     {
+        // Location and distance are not included in the normal query params.
         if (param.Key == FilterType.Location || param.Key == FilterType.Distance)
         {
             if (param.Key == FilterType.Location && filterType == FilterType.Location)
@@ -281,38 +282,24 @@ public static class FilterService
             return;
         }
 
+        var values = param.Value ?? Enumerable.Empty<string>();
+
+        // When processing the same filter type, exclude the value being cleared.
         if (param.Key == filterType)
         {
-            var remaining = param.Value.Where(v => v != value).ToList();
-
-            if (remaining.Count != 0)
-            {
-                foreach (var val in remaining)
-                {
-                    var paramValue = GetClearVal(val, filterType, param.Key);
-
-                    if (string.IsNullOrWhiteSpace(paramValue))
-                    {
-                        continue;
-                    }
-
-                    AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
-                }
-            }
+            values = values.Where(v => v != value);
         }
-        else
+
+        foreach (var val in values)
         {
-            foreach (var val in param.Value)
+            var paramValue = GetClearVal(val, filterType, param.Key);
+
+            if (string.IsNullOrWhiteSpace(paramValue))
             {
-                var paramValue = GetClearVal(val, filterType, param.Key);
-
-                if (string.IsNullOrWhiteSpace(paramValue))
-                {
-                    continue;
-                }
-
-                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+                continue;
             }
+
+            AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
         }
     }
 
@@ -335,18 +322,13 @@ public static class FilterService
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string> overrideValueFunction = null)
     {
-        if (value != null && !string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value))
         {
-            var queryValue = overrideValueFunction == null
-                ? value
-                : overrideValueFunction(value);
-
-            builder
-                .Append(builder.Length > 0 ? '&' : '?')
-                .Append(key.ToString().ToLowerInvariant())
-                .Append('=')
-                .Append(queryValue);
+            return;
         }
+
+        var queryValue = overrideValueFunction?.Invoke(value) ?? value;
+        AppendQueryParam(builder, key.ToString().ToLowerInvariant(), queryValue);
     }
 
     private static void AppendQueryParam(StringBuilder builder, string key, string value)
