@@ -27,26 +27,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public IEnumerable<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public IEnumerable<string> SelectedApprenticeApprovalRatings { get; set; } = [];
     public IEnumerable<string> SelectedQarRatings { get; set; } = [];
-    public List<string> DeliveryModes
-    {
-        get => SelectedDeliveryModes.ToList();
-        set => SelectedDeliveryModes = value ?? new List<string>();
-    }
-    public List<string> EmployerApprovalRatings
-    {
-        get => SelectedEmployerApprovalRatings.ToList();
-        set => SelectedEmployerApprovalRatings = value ?? new List<string>();
-    }
-    public List<string> ApprenticeApprovalRatings
-    {
-        get => SelectedApprenticeApprovalRatings.ToList();
-        set => SelectedApprenticeApprovalRatings = value ?? new List<string>();
-    }
-    public List<string> QarRatings
-    {
-        get => SelectedQarRatings.ToList();
-        set => SelectedQarRatings = value ?? new List<string>();
-    }
     public string QarPeriod { get; set; } = string.Empty;
     public string ReviewPeriod { get; set; } = string.Empty;
     public string QarPeriodStartYear
@@ -110,13 +90,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             [
                 CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
-                CreateCheckboxListFilterSection("modes-filter", nameof(DeliveryModes), DeliveryModesSectionHeading, DeliveryModesSectionSubHeading, GenerateDeliveryModesFilterItems()),
+                CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DeliveryModesSectionHeading, DeliveryModesSectionSubHeading, GenerateDeliveryModesFilterItems()),
                 CreateAccordionGroupFilterSection(
                     "ratings-select",
                     nameof(FilterType.Reviews),
                     [
-                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(CourseProvidersRequest.EmployerProviderRatings), EmployerReviewsSectionHeading,null, GenerateEmployerReviewsFilterItems()),
-                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(CourseProvidersRequest.ApprenticeProviderRatings), ApprenticeReviewsSectionHeading,null, GenerateApprenticeReviewsFilterItems())
+                        CreateCheckboxListFilterSection("employer-ratings-filter", nameof(FilterType.EmployerProviderRatings), EmployerReviewsSectionHeading,null, GenerateEmployerReviewsFilterItems()),
+                        CreateCheckboxListFilterSection("apprentice-ratings-filter", nameof(FilterType.ApprenticeProviderRatings), ApprenticeReviewsSectionHeading,null, GenerateApprenticeReviewsFilterItems())
                     ],
                     ReviewSectionHeading,
                     $"From {ReviewPeriodStartYear} to {ReviewPeriodEndYear}"
@@ -127,7 +107,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
                     [
                         CreateCheckboxListFilterSection(
                             "qar-filter",
-                            nameof(QarRatings),
+                            nameof(FilterType.QarRatings),
                             QarSectionHeading,
                             $"From {QarPeriodStartYear} to {QarPeriodEndYear}",
                             GenerateQarFilterItems()
