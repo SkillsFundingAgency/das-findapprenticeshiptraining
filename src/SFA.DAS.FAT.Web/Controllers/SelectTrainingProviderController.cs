@@ -1,6 +1,5 @@
 ﻿using System.Threading;
 using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -8,10 +7,8 @@ using SFA.DAS.FAT.Web.Models;
 namespace SFA.DAS.FAT.Web.Controllers;
 
 [Route("selectProvider", Name = RouteNames.SelectProvider)]
-public class SelectTrainingProviderController(FluentValidation.IValidator<SelectTrainingProviderSubmitViewModel> _validator, ICookieStorageService<LocationCookieItem> locationCookieService) : Controller
+public class SelectTrainingProviderController(FluentValidation.IValidator<SelectTrainingProviderSubmitViewModel> _validator) : Controller
 {
-    private readonly ICookieStorageService<LocationCookieItem> _locationCookieService = locationCookieService;
-
     [HttpGet]
     public IActionResult Index()
     {
@@ -32,7 +29,7 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
         }
         return RedirectToRoute(RouteNames.Provider, new
         {
-            submitModel.Ukprn,
+            submitModel.Ukprn
         });
     }
 }
