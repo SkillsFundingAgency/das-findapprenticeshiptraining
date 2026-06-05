@@ -79,7 +79,6 @@ public class CourseProvidersController : Controller
     [Route("", Name = RouteNames.CourseProviders)]
     public async Task<IActionResult> CourseProviders(CourseProvidersRequest request, bool clearFilter = false)
     {
-
         var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
 
         if (!validationLarsCodeResult.IsValid)
@@ -214,9 +213,11 @@ public class CourseProvidersController : Controller
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool isRemoveLocation = false)
     {
+        var hasDeletedLocationCookie = false;
         if (isRemoveLocation)
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
+            hasDeletedLocationCookie = true;
         }
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
 
@@ -236,7 +237,10 @@ public class CourseProvidersController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
-
+        if (hasDeletedLocationCookie)
+        {
+            locationCookieItem = null;
+        }
         var location = locationCookieItem?.Location;
         var distance = locationCookieItem?.Distance;
 

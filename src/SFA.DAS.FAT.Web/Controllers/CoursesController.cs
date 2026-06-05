@@ -137,10 +137,16 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool isRemoveLocation = false)
     {
-        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+        var hasDeletedLocationCookie = false;
         if (isRemoveLocation)
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
+            hasDeletedLocationCookie = true;
+        }
+        var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
+
+        if (hasDeletedLocationCookie)
+        {
             locationCookieItem = null;
         }
 
