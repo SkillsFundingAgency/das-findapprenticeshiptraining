@@ -12,7 +12,7 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
-    public const string ClearFilters = "clearFilters";
+    public const string ClearFilter = "clearFilter";
 
     public const string KeywordSectionHeading = "Course";
     public const string KeywordSectionSubHeading = "Enter course, job or standard";
@@ -276,7 +276,7 @@ public static class FilterService
         {
             if (param.Key == FilterType.Location && filterType == FilterType.Location)
             {
-                AppendQueryParam(queryBuilder, ClearFilters, "true");
+                AppendQueryParam(queryBuilder, ClearFilter, "true");
             }
 
             return;

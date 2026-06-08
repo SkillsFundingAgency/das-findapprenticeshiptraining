@@ -132,11 +132,11 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void ClearFilters_Location_IncludesClearLink()
+    public void ClearFilter_Location_IncludesClearLink()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        var urlWithoutLocation = "?clearFilters=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
+        var urlWithoutLocation = "?clearFilter=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
 
         using (Assert.EnterMultipleScope())
         {
