@@ -9,6 +9,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourses;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
@@ -58,11 +59,13 @@ public class CoursesController : Controller
     {
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
-        var (requestLocation, requestDistance) = LocationCookieHelper.GetLocation(
-            _locationCookieService,
-            Request,
-            clearFilter
-        );
+        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        if (clearFilter)
+        {
+            _locationCookieService.Delete(Constants.LocationCookieName);
+            requestLocation = string.Empty;
+            requestDistance = DistanceService.TenMiles.ToString();
+        }
 
         int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);
         var result = await _mediator.Send(new GetCoursesQuery
@@ -128,20 +131,22 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool isRemoveLocation = false)
     {
-        var (locationCookieLocation, locationCookieDistance) = LocationCookieHelper.GetLocation(
-            _locationCookieService,
-            Request,
-            isRemoveLocation
-        );
-
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 
-        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(locationCookieDistance, locationCookieLocation);
+        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        if (isRemoveLocation)
+        {
+            _locationCookieService?.Delete(Constants.LocationCookieName);
+            requestLocation = string.Empty;
+            requestDistance = DistanceService.TenMiles.ToString();
+        }
+
+        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(requestDistance, requestLocation);
 
         var query = new GetCourseQuery()
         {
             LarsCode = larsCode,
-            Location = locationCookieLocation,
+            Location = requestLocation,
             Distance = convertedDistance
         };
 
@@ -153,7 +158,7 @@ public class CoursesController : Controller
         }
 
         var viewModel = (CourseViewModel)result;
-        viewModel.Location = locationCookieLocation;
+        viewModel.Location = requestLocation;
         viewModel.Distance = convertedDistance.ToString();
         viewModel.RequestApprenticeshipTrainingUrl = _config.RequestApprenticeshipTrainingUrl;
         viewModel.EmployerAccountsUrl = _config.EmployerAccountsUrl;

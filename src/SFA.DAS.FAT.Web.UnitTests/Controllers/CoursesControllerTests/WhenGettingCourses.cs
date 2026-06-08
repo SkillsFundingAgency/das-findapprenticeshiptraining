@@ -1,7 +1,6 @@
 ﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -234,10 +233,10 @@ public class WhenGettingCourses
     )
     {
         // Arrange
+        var clearFilter = true;
         controller.AddUrlHelperMock();
         CoursesViewModel model = new CoursesViewModel();
         queryResult.Standards = [];
-        controller.ControllerContext.HttpContext.Request.QueryString = new QueryString("?clearFilters");
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
             .Returns(new LocationCookieItem { Location = "London", Distance = "10" });
@@ -249,7 +248,7 @@ public class WhenGettingCourses
             .ReturnsAsync(queryResult);
 
         // Act
-        var result = await controller.Courses(request) as ViewResult;
+        var result = await controller.Courses(request, clearFilter) as ViewResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -266,8 +265,9 @@ public class WhenGettingCourses
        [Greedy] CoursesController sut
    )
     {
-        // Act
         var isRemoveLocation = true;
+
+        // Act
         var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
 
         // Assert

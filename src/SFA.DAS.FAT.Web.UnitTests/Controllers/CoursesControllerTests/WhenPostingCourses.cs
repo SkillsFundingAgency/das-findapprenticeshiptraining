@@ -70,6 +70,7 @@ public class WhenPostingCourses
         Assert.That(result, Is.Not.Null);
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }
+
     [Test, MoqAutoData]
     public void CoursesPost_WithSubmitModel_UpdatesLocationCookieAndRedirectsToCourses(
        GetCoursesViewModel submitModel,

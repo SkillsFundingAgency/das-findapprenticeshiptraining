@@ -4,7 +4,6 @@ using FluentAssertions.Execution;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Moq;
@@ -1185,9 +1184,6 @@ public class WhenGettingCourseProviders
 
         courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
-        sut.AddUrlHelperMock();
-        sut.ControllerContext.HttpContext.Request.QueryString = new QueryString("?clearFilters");
-
         var locationCookieItem = new LocationCookieItem { Location = "M1 1AA", Distance = "10" };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(locationCookieItem);
 
@@ -1195,7 +1191,7 @@ public class WhenGettingCourseProviders
         locationCookieService.Setup(x => x.Update(It.IsAny<string>(), It.IsAny<LocationCookieItem>()));
 
         // Act
-        var result = await sut.CourseProviders(request) as ViewResult;
+        var result = await sut.CourseProviders(request, true) as ViewResult;
 
         // Assert
         result.Should().NotBeNull();
@@ -1211,10 +1207,30 @@ public class WhenGettingCourseProviders
     public async Task CourseProviderDetails_WithIsRemoveLocation_DeletesCookie(
        string larsCode,
        int providerId,
+       [Frozen] Mock<IMediator> mediatorMock,
+       [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> providerValidatorMock,
+       [Frozen] Mock<IValidator<GetCourseQuery>> larsCodeValidatorMock,
+       [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CourseProvidersController controller)
     {
         var isRemoveLocation = true;
+
+        providerValidatorMock
+           .Setup(x => x.ValidateAsync(It.IsAny<GetCourseProviderDetailsQuery>(), It.IsAny<CancellationToken>()))
+           .ReturnsAsync(new ValidationResult());
+
+        larsCodeValidatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        locationValidatorMock
+            .Setup(v => v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
 
         var result = await controller.CourseProviderDetails(larsCode, providerId, isRemoveLocation) as ViewResult;
 
