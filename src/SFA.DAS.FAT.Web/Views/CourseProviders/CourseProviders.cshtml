@@ -186,7 +186,7 @@
                 </div>
             }
             <div class="govuk-!-margin-top-4">
-                @await Html.PartialAsync("_pagination", Model?.Pagination)
+                @await Html.PartialAsync("_pagination", Model.Pagination)
             </div>
 
             <div class="das-highlight" asp-show="@Model.CourseType == CourseType.Apprenticeship">
