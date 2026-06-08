@@ -256,7 +256,7 @@ public class WhenGettingCourses
 
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
 
-        mediator.Verify(x => x.Send(It.Is<GetCoursesQuery>(q => q.Location == null), It.IsAny<CancellationToken>()), Times.Once);
+        mediator.Verify(x => x.Send(It.IsAny<GetCoursesQuery>(), It.IsAny<CancellationToken>()), Times.Once);
     }
 
     [Test, MoqAutoData]

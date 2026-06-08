@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class LocationCookieHelper
 {
-    public static (string? Location, string? Distance) GetLocation(
+    public static (string Location, string Distance) GetLocation(
         ICookieStorageService<LocationCookieItem> cookieService,
         HttpRequest request,
         bool clearFilter)
@@ -27,6 +27,6 @@ public static class LocationCookieHelper
             locationCookieItem = null;
         }
 
-        return (locationCookieItem?.Location, locationCookieItem?.Distance);
+        return (locationCookieItem?.Location ?? string.Empty, locationCookieItem?.Distance ?? DistanceService.TenMiles.ToString());
     }
 }
