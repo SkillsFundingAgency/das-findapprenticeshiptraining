@@ -280,8 +280,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetAchievementRateInformation()
     {
-        if (Qar is null)
-            return string.Empty;
+        if (Qar is null) return string.Empty;
 
         string leaversText = Qar.Leavers ?? string.Empty;
 
@@ -307,8 +306,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetEmployerReviewsDisplayMessage()
     {
-        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.EmployerReviews))
-            return string.Empty;
+        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.EmployerReviews)) return string.Empty;
 
         if (int.TryParse(Reviews.EmployerReviews, out int employerReviewsCount))
         {
@@ -323,8 +321,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 
     private string GetApprenticeReviewsDisplayMessage()
     {
-        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.ApprenticeReviews))
-            return string.Empty;
+        if (Reviews is null || string.IsNullOrWhiteSpace(Reviews.ApprenticeReviews)) return string.Empty;
 
         if (int.TryParse(Reviews.ApprenticeReviews, out int apprenticeReviewsCount))
         {
