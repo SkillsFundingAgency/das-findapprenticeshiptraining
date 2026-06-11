@@ -55,7 +55,7 @@
                         @Model.ProviderCountDisplayMessage
                     </p>
 
-                    <form method="POST" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
+                    <form method="GET" asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
                         <h2 class="govuk-heading-s govuk-!-margin-bottom-2">
                             Learner's work location:
                             <span class="govuk-!-font-weight-regular">@Model.Location</span>
