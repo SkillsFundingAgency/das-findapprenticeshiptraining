@@ -1204,7 +1204,7 @@ public class WhenGettingCourseProviders
 
 
     [Test, MoqAutoData]
-    public async Task CourseProviderDetails_WithIsRemoveLocation_DeletesCookie(
+    public async Task CourseProviderDetails_WithClearLocation_DeletesCookie(
        string larsCode,
        int providerId,
        [Frozen] Mock<IMediator> mediatorMock,
@@ -1214,7 +1214,7 @@ public class WhenGettingCourseProviders
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CourseProvidersController controller)
     {
-        var isRemoveLocation = true;
+        var clearLocation = true;
 
         providerValidatorMock
            .Setup(x => x.ValidateAsync(It.IsAny<GetCourseProviderDetailsQuery>(), It.IsAny<CancellationToken>()))
@@ -1232,7 +1232,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await controller.CourseProviderDetails(larsCode, providerId, isRemoveLocation) as ViewResult;
+        var result = await controller.CourseProviderDetails(larsCode, providerId, clearLocation) as ViewResult;
 
         locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
     }

@@ -41,7 +41,7 @@ public class WhenPostingCourseProviders
         [Greedy] CourseProvidersController controller)
     {
         // Act
-        var result = await controller.CourseProviderDetailsPost(model, larsCode, providerId) as RedirectToRouteResult;
+        var result = await controller.ApplyLocation(model, larsCode, providerId) as RedirectToRouteResult;
 
         // Assert
         using (Assert.EnterMultipleScope())

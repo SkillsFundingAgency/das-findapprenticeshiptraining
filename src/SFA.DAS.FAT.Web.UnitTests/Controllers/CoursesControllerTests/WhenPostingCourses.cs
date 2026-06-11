@@ -63,8 +63,8 @@ public class WhenPostingCourses
         [Greedy] CoursesController sut)
     {
         //Act
-        var isRemoveLocation = true;
-        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
+        var clearLocation = true;
+        var result = await sut.CourseDetails(larsCode, clearLocation) as ViewResult;
 
         //Assert
         Assert.That(result, Is.Not.Null);

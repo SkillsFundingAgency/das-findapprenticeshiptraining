@@ -102,10 +102,6 @@ public class CoursesController : Controller
         if (result.Standards.Count > 0)
         {
             var paginationQueryParams = viewModel.ToQueryString();
-            paginationQueryParams.RemoveAll(q =>
-               string.Equals(q.Item1, nameof(CoursesViewModel.Location), System.StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(q.Item1, nameof(CoursesViewModel.Distance), System.StringComparison.OrdinalIgnoreCase)
-           );
             viewModel.Pagination = new PaginationViewModel(
                 result.Page,
                 result.TotalCount,
@@ -129,12 +125,12 @@ public class CoursesController : Controller
 
     [HttpGet]
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
-    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool isRemoveLocation = false)
+    public async Task<IActionResult> CourseDetails([FromRoute] string larsCode, bool clearLocation = false)
     {
         if (string.IsNullOrEmpty(larsCode)) return NotFound();
 
         var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
-        if (isRemoveLocation)
+        if (clearLocation)
         {
             _locationCookieService?.Delete(Constants.LocationCookieName);
             requestLocation = string.Empty;

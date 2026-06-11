@@ -259,16 +259,16 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task CourseDetailsDelete_WithisRemoveLocation_DeletesLocationCookie(
+    public async Task CourseDetailsDelete_WithClearLocation_DeletesLocationCookie(
        string larsCode,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CoursesController sut
    )
     {
-        var isRemoveLocation = true;
+        var clearLocation = true;
 
         // Act
-        var result = await sut.CourseDetails(larsCode, isRemoveLocation) as ViewResult;
+        var result = await sut.CourseDetails(larsCode, clearLocation) as ViewResult;
 
         // Assert
         result.Should().NotBeNull();

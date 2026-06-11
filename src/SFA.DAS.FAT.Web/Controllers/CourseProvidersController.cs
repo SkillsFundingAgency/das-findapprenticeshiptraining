@@ -178,10 +178,6 @@ public class CourseProvidersController : Controller
         if (result.Providers.Count > 0)
         {
             var paginationQueryParams = courseProvidersViewModel.ToQueryString();
-            paginationQueryParams.RemoveAll(q =>
-               string.Equals(q.Item1, nameof(CourseProvidersViewModel.Location), System.StringComparison.OrdinalIgnoreCase) ||
-               string.Equals(q.Item1, nameof(CourseProvidersViewModel.Distance), System.StringComparison.OrdinalIgnoreCase)
-           );
             courseProvidersViewModel.Pagination = new PaginationViewModel(
                 result.Page,
                 result.TotalCount,
@@ -197,15 +193,15 @@ public class CourseProvidersController : Controller
 
     [HttpPost]
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetailsPost(CourseProviderViewModel model, [FromRoute] string larsCode, [FromRoute] int providerId)
+    public async Task<IActionResult> ApplyLocation(CourseProviderViewModel submitModel, [FromRoute] string larsCode, [FromRoute] int providerId)
     {
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location?.Trim(), Distance = model.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { providerId, larsCode });
     }
 
     [HttpGet]
     [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool isRemoveLocation = false)
+    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool clearLocation = false)
     {
 
         var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
@@ -223,7 +219,7 @@ public class CourseProvidersController : Controller
         }
 
         var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
-        if (isRemoveLocation)
+        if (clearLocation)
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             requestLocation = string.Empty;
