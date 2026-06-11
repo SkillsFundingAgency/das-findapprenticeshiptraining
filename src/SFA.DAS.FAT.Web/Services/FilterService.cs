@@ -262,13 +262,13 @@ public static class FilterService
 
             var overrideValueFunction = overrideValueFunctions?.TryGetValue(param.Key, out var func) == true ? func : null;
 
-            AppendQueryParameters(filterType, value, param, queryBuilder, overrideValueFunction);
+            AppendQueryParametersToClearFilterLink(filterType, value, param, queryBuilder, overrideValueFunction);
         }
 
         return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
     }
 
-    private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
+    private static void AppendQueryParametersToClearFilterLink(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
         StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
     {
         // Location and distance are not included in the normal query params.

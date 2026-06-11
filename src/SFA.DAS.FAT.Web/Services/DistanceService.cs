@@ -102,16 +102,15 @@ public static class DistanceService
 
     public static int? GetConvertedDistanceForDetails(string distance, string location)
     {
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
-        {
-            return DefaultDistance;
-        }
-
         if (!IsValidDistance(distance))
         {
             return TenMiles;
         }
 
+        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        {
+            return DefaultDistance;
+        }
         return GetValidDistance(distance, location);
     }
 }
