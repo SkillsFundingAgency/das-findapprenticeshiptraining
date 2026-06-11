@@ -21,7 +21,7 @@ public class WhenGettingCourses
     [Test]
     [MoqAutoData]
     public async Task Courses_RequestIsValid_QueryIsSentAndViewIsReturned(
-        GetCoursesViewModel request,
+        CoursesSubmitModel request,
         GetCoursesQueryResult queryResult,
         ShortlistCookieItem cookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -70,7 +70,7 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_RequestContainsSearchFilters_ModelContainsMappedResults(
-        GetCoursesViewModel request,
+        CoursesSubmitModel request,
         GetCoursesQueryResult queryResult,
         Guid shortlistUrl,
         [Frozen] Mock<IMediator> mediator,
@@ -135,7 +135,7 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_ResultContainsStandards_PaginationIsPopulated(
-        GetCoursesViewModel request,
+        CoursesSubmitModel request,
         GetCoursesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
@@ -179,7 +179,7 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_ResultContainsNoStandards_PaginationIsNull(
-        GetCoursesViewModel request,
+        CoursesSubmitModel request,
         GetCoursesQueryResult response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
@@ -224,7 +224,7 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
-        GetCoursesViewModel request,
+        CoursesSubmitModel request,
         GetCoursesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,

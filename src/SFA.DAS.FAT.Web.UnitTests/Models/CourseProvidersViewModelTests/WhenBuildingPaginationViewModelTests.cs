@@ -39,7 +39,7 @@ public class WhenBuildingPaginationViewModelTests
     public void Then_Pagination_Single_Pages_Is_Set(
         int numberOfResults,
         [Frozen] Mock<FindApprenticeshipTrainingWeb> config,
-        CourseProvidersRequest request)
+        CourseProvidersSubmitModel request)
     {
         //Act
         var vm = new CourseProvidersViewModel(config.Object)
@@ -79,7 +79,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(20)]
     public void Then_Pagination_2_Pages_Page_1_Is_Set(
           int numberOfResults,
-          CourseProvidersRequest request,
+          CourseProvidersSubmitModel request,
           [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         //Act
@@ -141,7 +141,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(20)]
     public void Then_Pagination_2_Pages_Page_2_Is_Set(
      int numberOfResults,
-     CourseProvidersRequest request,
+     CourseProvidersSubmitModel request,
      [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         int pagesExpected = 3;
@@ -191,7 +191,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(71)]
     public void Then_Pagination_7_Pages_Page_5_Is_Set(
         int numberOfResults,
-     CourseProvidersRequest request,
+     CourseProvidersSubmitModel request,
      [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         int currentPage = 5;
@@ -264,7 +264,7 @@ public class WhenBuildingPaginationViewModelTests
     public void Then_Pagination_2_Pages_Page_1_Distance_Is_Set(
         string location,
         string distance,
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         var numberOfResults = 11;

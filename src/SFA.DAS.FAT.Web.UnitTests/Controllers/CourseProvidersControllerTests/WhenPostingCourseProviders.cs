@@ -15,12 +15,12 @@ public class WhenPostingCourseProviders
 {
     [Test, MoqAutoData]
     public void CourseProvidersPost_UpdatesLocationCookie_AndRedirects(
-        CourseProvidersRequest submitModel,
+        CourseProvidersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
         //Act
-        var result = controller.CourseProvidersPost(submitModel) as RedirectToRouteResult;
+        var result = controller.ApplyFilters(submitModel) as RedirectToRouteResult;
 
         //Assert
         Assert.That(result, Is.Not.Null);

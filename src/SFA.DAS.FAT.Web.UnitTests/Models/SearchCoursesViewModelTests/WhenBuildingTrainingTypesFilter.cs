@@ -17,7 +17,7 @@ public sealed class WhenBuildingTrainingTypesFilter
             LearningType.FoundationApprenticeship
         };
 
-        var sut = new SearchCoursesViewModel
+        var sut = new SearchCoursesSubmitModel
         {
             CourseTerm = "engineering",
             SelectedTypes = selectedTypes,
@@ -35,7 +35,7 @@ public sealed class WhenBuildingTrainingTypesFilter
             Assert.That(filter, Is.Not.Null);
             Assert.That(filter.Id, Is.EqualTo("training-types"));
             Assert.That(filter.Heading, Is.EqualTo("Training type"));
-            Assert.That(filter.For, Is.EqualTo(nameof(SearchCoursesViewModel.SelectedTypes)));
+            Assert.That(filter.For, Is.EqualTo(nameof(SearchCoursesSubmitModel.SelectedTypes)));
             Assert.That(filter.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.CheckboxList));
             Assert.That(filter.Link, Is.Null);
 
@@ -64,7 +64,7 @@ public sealed class WhenBuildingTrainingTypesFilter
             LearningType.Apprenticeship
         };
 
-        var sut = new SearchCoursesViewModel
+        var sut = new SearchCoursesSubmitModel
         {
             SelectedTypes = selectedTypes,
             TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems(selectedTypes)
@@ -87,7 +87,7 @@ public sealed class WhenBuildingTrainingTypesFilter
     [Test]
     public void TrainingTypesCheckboxListItems_WithEmptySelectedTypes_AreUnselected()
     {
-        var sut = new SearchCoursesViewModel
+        var sut = new SearchCoursesSubmitModel
         {
             TrainingTypesFilterItems = LearningTypesFilterHelper.BuildItems([])
         };

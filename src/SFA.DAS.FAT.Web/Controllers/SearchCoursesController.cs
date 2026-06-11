@@ -21,7 +21,7 @@ public class SearchCoursesController : Controller
     [HttpGet]
     public IActionResult Index()
     {
-        SearchCoursesViewModel model = new SearchCoursesViewModel
+        SearchCoursesSubmitModel model = new SearchCoursesSubmitModel
         {
             ShowSearchCrumb = false,
             ShowShortListLink = true,
@@ -32,9 +32,9 @@ public class SearchCoursesController : Controller
     }
 
     [HttpPost]
-    public IActionResult Index(SearchCoursesViewModel submitModel)
+    public IActionResult Index(SearchCoursesSubmitModel submitModel)
     {
-        var request = new GetCoursesViewModel
+        var request = new CoursesSubmitModel
         {
             LearningTypes = submitModel.SelectedTypes
         };

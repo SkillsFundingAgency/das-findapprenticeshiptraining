@@ -4,7 +4,7 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 namespace SFA.DAS.FAT.Web.Models;
 
-public class SearchCoursesViewModel : PageLinksViewModelBase
+public class SearchCoursesSubmitModel : PageLinksViewModelBase
 {
     public string CourseTerm { get; set; }
     public List<LearningType> SelectedTypes { get; set; } = [];

@@ -32,7 +32,7 @@ public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
     public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -143,7 +143,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoShortlistCookie_SendsQueryWithNullShortlistUserId(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -203,7 +203,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenCourseIdIsInvalid_ReturnsNotFound(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -258,7 +258,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -320,7 +320,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenDistanceIsNull_DefaultsToTenMiles(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -381,7 +381,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationEnteredForFirstTime_OrdersByDistance(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -430,7 +430,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationPreviouslyEntered_OrdersByUserChoice(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -478,7 +478,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoLocation_OrdersByAchievementRate(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -537,7 +537,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenDistanceIsProvided_UsesProvidedDistance(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -597,7 +597,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationIsNotSet_DefaultsDistanceAndOrderBy(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -652,7 +652,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenReviewPeriodProvided_SetsReviewPeriodDetails(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -709,7 +709,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenQarPeriodProvided_SetsQarPeriodDetails(
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -771,7 +771,7 @@ public class WhenGettingCourseProviders
     public async Task CourseProviders_WithVariousTotalCounts_SetsTotalMessageCorrectly(
         int totalCount,
         string expectedMessage,
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -832,7 +832,7 @@ public class WhenGettingCourseProviders
         string location,
         string distance,
         string expectedMessage,
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -895,7 +895,7 @@ public class WhenGettingCourseProviders
         bool achievementRateSelected,
         bool employerProviderRatingSelected,
         bool apprenticeProviderRatingSelected,
-        CourseProvidersRequest request,
+        CourseProvidersSubmitModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -1011,7 +1011,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
@@ -1044,7 +1044,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = "CV1 Coventry" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = "CV1 Coventry" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().Contain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -1072,7 +1072,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = string.Empty }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().NotContain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -1105,7 +1105,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
     }
@@ -1132,7 +1132,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersRequest() { LarsCode = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
     }
@@ -1165,7 +1165,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistsCount)null);
 
         // Act
-        var result = await sut.CourseProviders(new CourseProvidersRequest { LarsCode = "1" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersSubmitModel { LarsCode = "1" }) as ViewResult;
 
         // Assert
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(0);
@@ -1180,7 +1180,7 @@ public class WhenGettingCourseProviders
            [Greedy] CourseProvidersController sut)
     {
         // Arrange
-        var request = new CourseProvidersRequest { LarsCode = "123" };
+        var request = new CourseProvidersSubmitModel { LarsCode = "123" };
 
         courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 

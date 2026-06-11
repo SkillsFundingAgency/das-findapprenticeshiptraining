@@ -4,7 +4,7 @@ using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class CourseProvidersRequest
+public class CourseProvidersSubmitModel
 {
     public string LarsCode { get; set; }
     public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.Distance;

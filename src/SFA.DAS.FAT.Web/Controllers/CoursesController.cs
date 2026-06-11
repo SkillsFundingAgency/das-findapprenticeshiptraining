@@ -39,9 +39,9 @@ public class CoursesController : Controller
 
     [HttpPost]
     [Route("", Name = RouteNames.Courses)]
-    public IActionResult CoursesPost(GetCoursesViewModel submitModel)
+    public IActionResult ApplyFilters(CoursesSubmitModel submitModel)
     {
-        var model = new GetCoursesViewModel
+        var model = new CoursesSubmitModel
         {
             Keyword = submitModel.Keyword,
             Categories = submitModel.Categories,
@@ -55,7 +55,7 @@ public class CoursesController : Controller
 
     [HttpGet]
     [Route("", Name = RouteNames.Courses)]
-    public async Task<IActionResult> Courses(GetCoursesViewModel model, bool clearFilter = false)
+    public async Task<IActionResult> Courses(CoursesSubmitModel model, bool clearFilter = false)
     {
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 

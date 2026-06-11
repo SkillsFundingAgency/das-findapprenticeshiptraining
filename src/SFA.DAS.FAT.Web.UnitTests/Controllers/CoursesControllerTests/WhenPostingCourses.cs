@@ -16,12 +16,12 @@ public class WhenPostingCourses
 {
     [Test, MoqAutoData]
     public void CoursesPost_UpdatesLocationCookie_AndRedirects(
-        GetCoursesViewModel submitModel,
+        CoursesSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
     {
         //Act
-        var result = sut.CoursesPost(submitModel) as RedirectToRouteResult;
+        var result = sut.ApplyFilters(submitModel) as RedirectToRouteResult;
 
         //Assert
         Assert.That(result, Is.Not.Null);
@@ -73,22 +73,22 @@ public class WhenPostingCourses
 
     [Test, MoqAutoData]
     public void CoursesPost_WithSubmitModel_UpdatesLocationCookieAndRedirectsToCourses(
-       GetCoursesViewModel submitModel,
+       CoursesSubmitModel submitModel,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CoursesController sut
    )
     {
         // Act
-        var result = sut.CoursesPost(submitModel) as RedirectToRouteResult;
+        var result = sut.ApplyFilters(submitModel) as RedirectToRouteResult;
 
         // Assert
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.Courses);
 
-        result.RouteValues.Should().ContainKey(nameof(GetCoursesViewModel.Keyword));
-        result.RouteValues[nameof(GetCoursesViewModel.Keyword)].Should().Be(submitModel.Keyword);
-        result.RouteValues.Should().ContainKey(nameof(GetCoursesViewModel.Categories));
-        result.RouteValues[nameof(GetCoursesViewModel.PageNumber)].Should().Be(1);
+        result.RouteValues.Should().ContainKey(nameof(CoursesSubmitModel.Keyword));
+        result.RouteValues[nameof(CoursesSubmitModel.Keyword)].Should().Be(submitModel.Keyword);
+        result.RouteValues.Should().ContainKey(nameof(CoursesSubmitModel.Categories));
+        result.RouteValues[nameof(CoursesSubmitModel.PageNumber)].Should().Be(1);
 
         locationCookieService.Verify(
             x => x.Update(

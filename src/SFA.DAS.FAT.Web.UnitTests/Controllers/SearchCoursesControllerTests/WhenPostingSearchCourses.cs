@@ -21,7 +21,7 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesViewModel viewModel = new SearchCoursesViewModel();
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel();
 
         //Act
         var actual = controller.Index(viewModel);
@@ -49,7 +49,7 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesViewModel viewModel = new SearchCoursesViewModel { CourseTerm = courseTerm };
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { CourseTerm = courseTerm };
         //Act
         var actual = controller.Index(viewModel);
 
@@ -76,7 +76,7 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesViewModel viewModel = new SearchCoursesViewModel { Location = location };
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
                     .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.TenMiles.ToString() });
 
@@ -103,7 +103,7 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesViewModel viewModel = new SearchCoursesViewModel { Location = location, CourseTerm = courseTerm };
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location, CourseTerm = courseTerm };
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
                     .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.TenMiles.ToString() });

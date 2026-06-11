@@ -62,9 +62,9 @@ public class CourseProvidersController : Controller
     }
     [HttpPost]
     [Route("", Name = RouteNames.CourseProviders)]
-    public IActionResult CourseProvidersPost(CourseProvidersRequest submitModel)
+    public IActionResult ApplyFilters(CourseProvidersSubmitModel submitModel)
     {
-        var model = new CourseProvidersRequest
+        var model = new CourseProvidersSubmitModel
         {
             LarsCode = submitModel.LarsCode,
             OrderBy = submitModel.OrderBy,
@@ -81,7 +81,7 @@ public class CourseProvidersController : Controller
 
     [HttpGet]
     [Route("", Name = RouteNames.CourseProviders)]
-    public async Task<IActionResult> CourseProviders(CourseProvidersRequest request, bool clearFilter = false)
+    public async Task<IActionResult> CourseProviders(CourseProvidersSubmitModel request, bool clearFilter = false)
     {
         var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
 
@@ -105,8 +105,6 @@ public class CourseProvidersController : Controller
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
         var orderBy = string.IsNullOrEmpty(requestLocation) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
-
-        requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
         int? convertedDistance = DistanceService.GetValidDistanceNullable(requestDistance);
 
