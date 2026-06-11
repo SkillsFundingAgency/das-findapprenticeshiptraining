@@ -60,15 +60,7 @@ public class CookieStorageService<T> : ICookieStorageService<T>
 
     public void Delete(string cookieName)
     {
-        var options = new CookieOptions
-        {
-            Path = "/",
-            IsEssential = true,
-            HttpOnly = true,
-            Secure = true
-        };
-
-        _httpContext.HttpContext.Response.Cookies.Delete(cookieName, options);
+        _httpContext.HttpContext.Response.Cookies.Delete(cookieName);
     }
 
     public void Update(string cookieName, T item, int expiryDays = 1)
