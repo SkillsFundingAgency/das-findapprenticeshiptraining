@@ -10,87 +10,65 @@ public static class DistanceService
     public const int TenMiles = 10;
     public const string AcrossEnglandDisplayText = "across England";
 
-    private static readonly HashSet<int> _Distances = new() { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
-    public static IReadOnlyCollection<int> Distances => _Distances;
+    private static readonly HashSet<int> _distances = new() { 2, 5, 10, 15, 20, 30, 40, 50, 100 };
+    public static IReadOnlyCollection<int> Distances => _distances;
 
     public static int GetValidDistance(string distance)
     {
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        if (IsAcrossEngland(distance))
         {
             return DefaultDistance;
         }
 
-        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
-        {
-            return validDistance;
-        }
-
-        return DefaultDistance;
+        return TryGetConfiguredDistance(distance, out var validDistance)
+            ? validDistance
+            : DefaultDistance;
     }
 
     public static int GetValidDistance(string distance, string location)
     {
-        if (string.IsNullOrWhiteSpace(location) || !DistanceService.IsValidDistance(distance))
+        if (string.IsNullOrWhiteSpace(location))
         {
-            return DistanceService.TenMiles;
+            return TenMiles;
         }
 
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        if (IsAcrossEngland(distance))
         {
             return DefaultDistance;
         }
 
-        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
-        {
-            return string.IsNullOrWhiteSpace(location) ? DefaultDistance : validDistance;
-        }
-
-        return TenMiles;
+        return TryGetConfiguredDistance(distance, out var validDistance)
+            ? validDistance
+            : TenMiles;
     }
 
     public static int? GetValidDistanceNullable(string distance)
     {
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        if (IsAcrossEngland(distance))
         {
             return null;
         }
 
-        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
-        {
-            return validDistance;
-        }
-
-        return null;
+        return TryGetConfiguredDistance(distance, out var validDistance)
+            ? validDistance
+            : null;
     }
 
     public static string GetDistance(string distance, string location)
     {
-        if (string.IsNullOrWhiteSpace(location) || string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrWhiteSpace(location) || IsAcrossEngland(distance))
         {
             return AcrossEnglandFilterValue;
         }
 
-        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
-        {
-            return validDistance.ToString();
-        }
-
-        return AcrossEnglandFilterValue;
+        return TryGetConfiguredDistance(distance, out var validDistance)
+            ? validDistance.ToString()
+            : AcrossEnglandFilterValue;
     }
 
     public static bool IsValidDistance(string distance)
     {
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (int.TryParse(distance, out int validDistance) && _Distances.Contains(validDistance))
-        {
-            return true;
-        }
-
-        return false;
+        return IsAcrossEngland(distance) || TryGetConfiguredDistance(distance, out _);
     }
 
     public static string EnsureHasDefaultDistance(string distance)
@@ -107,10 +85,17 @@ public static class DistanceService
             return TenMiles;
         }
 
-        if (string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase))
+        if (IsAcrossEngland(distance))
         {
             return DefaultDistance;
         }
+
         return GetValidDistance(distance, location);
     }
+
+    private static bool IsAcrossEngland(string distance) =>
+        string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase);
+
+    private static bool TryGetConfiguredDistance(string distance, out int validDistance) =>
+        int.TryParse(distance, out validDistance) && _distances.Contains(validDistance);
 }
