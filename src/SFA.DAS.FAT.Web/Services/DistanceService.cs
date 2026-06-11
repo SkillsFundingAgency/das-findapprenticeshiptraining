@@ -42,7 +42,7 @@ public static class DistanceService
     {
         if (!HasLocation(location))
         {
-            return AcrossEnglandFilterValue;
+            return TenMiles.ToString();
         }
 
         return IsAcrossEngland(distance)

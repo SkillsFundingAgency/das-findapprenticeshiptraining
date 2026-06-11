@@ -82,15 +82,15 @@ public sealed class ValidDistancesTests
     }
 
     [Test]
-    public void GetDistanceQueryString_ShouldReturnAcrossEnglandFilterValue_WhenLocationIsEmpty()
+    public void GetDistanceQueryString_ShouldReturnReturnDefault_WhenLocationIsEmpty()
     {
-        Assert.That(DistanceService.GetDistance("40", string.Empty), Is.EqualTo(DistanceService.AcrossEnglandFilterValue));
+        Assert.That(DistanceService.GetDistance("40", string.Empty), Is.EqualTo(DistanceService.TenMiles.ToString()));
     }
 
     [Test]
-    public void GetDistanceQueryString_ShouldReturnAcrossEnglandFilterValue_WhenLocationIsNull()
+    public void GetDistanceQueryString_ShouldReturnReturnDefault_WhenLocationIsNull()
     {
-        Assert.That(DistanceService.GetDistance("40", null), Is.EqualTo(DistanceService.AcrossEnglandFilterValue));
+        Assert.That(DistanceService.GetDistance("40", null), Is.EqualTo(DistanceService.TenMiles.ToString()));
     }
 
     [Test]
