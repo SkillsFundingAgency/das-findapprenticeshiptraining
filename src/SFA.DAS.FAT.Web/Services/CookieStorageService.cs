@@ -32,8 +32,7 @@ public class CookieStorageService<T> : ICookieStorageService<T>
             IsEssential = true,
             HttpOnly = true,
             Secure = true,
-            Expires = DateTimeOffset.Now.AddDays(expiryDays),
-            Path = "/"
+            Expires = DateTimeOffset.Now.AddDays(expiryDays)
         };
 
         _httpContext.HttpContext.Response.Cookies.Append(cookieName, encodedContent, options);
@@ -60,7 +59,10 @@ public class CookieStorageService<T> : ICookieStorageService<T>
 
     public void Delete(string cookieName)
     {
-        _httpContext.HttpContext.Response.Cookies.Delete(cookieName);
+        if (_httpContext.HttpContext.Request.Cookies[cookieName] != null)
+        {
+            _httpContext.HttpContext.Response.Cookies.Delete(cookieName);
+        }
     }
 
     public void Update(string cookieName, T item, int expiryDays = 1)
