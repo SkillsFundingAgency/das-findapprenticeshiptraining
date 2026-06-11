@@ -193,7 +193,7 @@ public class CourseProvidersController : Controller
 
     [HttpPost]
     [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> ApplyLocation(CourseProviderViewModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
+    public async Task<IActionResult> ApplyLocation(CourseProviderSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
     {
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });

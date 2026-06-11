@@ -34,7 +34,7 @@ public class WhenPostingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviderDetailsPost_UpdatesLocationCookie_AndRedirects(
-        CourseProviderViewModel model,
+        CourseProviderSubmitModel model,
         string larsCode,
         int ukprn,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
