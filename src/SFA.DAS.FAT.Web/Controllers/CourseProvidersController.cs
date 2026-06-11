@@ -261,7 +261,7 @@ public class CourseProvidersController : Controller
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
         viewModel.Location = requestLocation;
-        viewModel.Distance = requestDistance ?? DistanceService.TenMiles.ToString();
+        viewModel.Distance = DistanceService.EnsureHasDefaultDistance(requestDistance);
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
         viewModel.ShowApprenticeTrainingCourseCrumb = true;
