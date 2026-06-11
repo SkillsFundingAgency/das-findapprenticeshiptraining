@@ -169,7 +169,7 @@ public class ShortlistController : Controller
             return RedirectToRoute(request.RouteName, new
             {
                 Id = request.LarsCode,
-                ProviderId = request.Ukprn,
+                Ukprn = request.Ukprn,
                 Added = string.IsNullOrEmpty(request.ProviderName) ? "" : WebEncoders.Base64UrlEncode(_protector.Protect(
                     System.Text.Encoding.UTF8.GetBytes($"{request.ProviderName}")))
             });
@@ -193,7 +193,7 @@ public class ShortlistController : Controller
             return RedirectToRoute(request.RouteName, new
             {
                 LarsCode = request.LarsCode,
-                ProviderId = request.Ukprn
+                Ukprn = request.Ukprn
             });
         }
 

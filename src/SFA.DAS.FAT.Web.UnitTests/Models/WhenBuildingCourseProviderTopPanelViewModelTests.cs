@@ -14,7 +14,7 @@ public class WhenBuildingCourseProviderTopPanelViewModelTests
         var expectedDictionary = new Dictionary<string, string>
         {
             {"larsCode", sut.LarsCode},
-            {"providerId", sut.Ukprn.ToString()}
+            {"ukprn", sut.Ukprn.ToString()}
         };
 
         sut.ProviderRouteData.Should().BeEquivalentTo(expectedDictionary);

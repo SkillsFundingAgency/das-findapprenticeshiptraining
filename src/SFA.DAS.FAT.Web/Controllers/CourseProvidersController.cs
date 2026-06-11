@@ -192,19 +192,19 @@ public class CourseProvidersController : Controller
     }
 
     [HttpPost]
-    [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> ApplyLocation(CourseProviderViewModel submitModel, [FromRoute] string larsCode, [FromRoute] int providerId)
+    [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
+    public async Task<IActionResult> ApplyLocation(CourseProviderViewModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
     {
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
-        return RedirectToRoute(RouteNames.CourseProviderDetails, new { providerId, larsCode });
+        return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });
     }
 
     [HttpGet]
-    [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, bool clearLocation = false)
+    [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
+    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int ukprn, bool clearLocation = false)
     {
 
-        var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
+        var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 
         if (!validationUkprnResult.IsValid)
         {
@@ -242,7 +242,7 @@ public class CourseProvidersController : Controller
 
         var query = new GetCourseProviderDetailsQuery
         {
-            Ukprn = providerId,
+            Ukprn = ukprn,
             LarsCode = larsCode,
             Location = requestLocation,
             Distance = string.IsNullOrWhiteSpace(requestLocation) ? null : DistanceService.DefaultDistance,

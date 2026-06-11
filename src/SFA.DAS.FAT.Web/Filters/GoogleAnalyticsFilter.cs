@@ -50,9 +50,9 @@ namespace SFA.DAS.FAT.Web.Filters
             }
 
 
-            if (context.RouteData.Values.TryGetValue("providerId", out var providerId))
+            if (context.RouteData.Values.TryGetValue("ukprn", out var ukprn))
             {
-                if (uint.TryParse(providerId.ToString(), out var ukprn))
+                if (uint.TryParse(ukprn.ToString(), out var parsedUkprn))
                 {
                     if (context.HttpContext.Request.Query.TryGetValue("data", out var data))
                     {
@@ -61,7 +61,7 @@ namespace SFA.DAS.FAT.Web.Filters
                             var base64EncodedBytes = WebEncoders.Base64UrlDecode(data);
                             var decoded = System.Text.Encoding.UTF8.GetString(_protector.Unprotect(base64EncodedBytes));
                             var decodedItems = decoded.Split("|").ToList();
-                            gaData.ProviderId = ukprn;
+                            gaData.Ukprn = parsedUkprn;
                             gaData.ProviderPlacement = Convert.ToInt32(decodedItems.FirstOrDefault());
                             gaData.ProviderTotal = Convert.ToInt32(decodedItems.LastOrDefault());
                         }

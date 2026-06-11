@@ -36,12 +36,12 @@ public class WhenPostingCourseProviders
     public async Task CourseProviderDetailsPost_UpdatesLocationCookie_AndRedirects(
         CourseProviderViewModel model,
         string larsCode,
-        int providerId,
+        int ukprn,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
         // Act
-        var result = await controller.ApplyLocation(model, larsCode, providerId) as RedirectToRouteResult;
+        var result = await controller.ApplyLocation(model, larsCode, ukprn) as RedirectToRouteResult;
 
         // Assert
         using (Assert.EnterMultipleScope())
@@ -49,7 +49,7 @@ public class WhenPostingCourseProviders
             Assert.That(result, Is.Not.Null);
             Assert.That(result!.RouteName, Is.EqualTo(RouteNames.CourseProviderDetails));
             Assert.That(result.RouteValues, Is.Not.Null);
-            Assert.That(result.RouteValues!["providerId"].ToString(), Is.EqualTo(providerId.ToString()));
+            Assert.That(result.RouteValues!["ukprn"].ToString(), Is.EqualTo(ukprn.ToString()));
             Assert.That(result.RouteValues!["larsCode"].ToString(), Is.EqualTo(larsCode));
         }
 

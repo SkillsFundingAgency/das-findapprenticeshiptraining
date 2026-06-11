@@ -19,7 +19,7 @@ public class CourseProviderTopPanelViewModel
             var providerRouteData = new Dictionary<string, string>
             {
                 { "larsCode", LarsCode },
-                { "providerId", Ukprn.ToString() },
+                { "ukprn", Ukprn.ToString() },
             };
 
             return providerRouteData;

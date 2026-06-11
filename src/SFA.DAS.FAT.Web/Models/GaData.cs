@@ -5,6 +5,6 @@
         public string Location { get; set; }
         public int ProviderPlacement { get; set; } = 0;
         public int ProviderTotal { get; set; } = 0;
-        public uint ProviderId { get ; set ; }
+        public uint Ukprn { get; set; }
     }
 }

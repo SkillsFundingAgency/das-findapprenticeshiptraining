@@ -98,8 +98,8 @@ public class WhenAddingAShortlistItemForUser
         actual.RouteName.Should().Be(request.RouteName);
         actual.RouteValues.Should().ContainKey("id");
         actual.RouteValues["id"].Should().Be(request.LarsCode);
-        actual.RouteValues.Should().ContainKey("providerId");
-        actual.RouteValues["providerId"].Should().Be(request.Ukprn);
+        actual.RouteValues.Should().ContainKey("ukprn");
+        actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
     }
 
     [Test, MoqAutoData]

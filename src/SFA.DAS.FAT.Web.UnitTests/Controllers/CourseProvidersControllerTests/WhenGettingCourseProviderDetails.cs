@@ -24,7 +24,7 @@ public class WhenGettingCourseProviderDetails
     [Test, MoqAutoData]
     public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(
         string larsCode,
-        int providerId,
+        int ukprn,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
@@ -45,7 +45,7 @@ public class WhenGettingCourseProviderDetails
         .Returns(shortlistCookieItem);
 
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
-                c.Ukprn.Equals(providerId) &&
+                c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DefaultDistance) &&
@@ -65,7 +65,7 @@ public class WhenGettingCourseProviderDetails
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviderDetails(larsCode, providerId);
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
 
         Assert.That(result, Is.Not.Null);
 
@@ -73,7 +73,7 @@ public class WhenGettingCourseProviderDetails
              a.Send(
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                         q.LarsCode == larsCode &&
-                        q.Ukprn == providerId &&
+                        q.Ukprn == ukprn &&
                         q.Location == location &&
                         q.Distance == DistanceService.DefaultDistance &&
                         q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
@@ -87,7 +87,7 @@ public class WhenGettingCourseProviderDetails
     [Test, MoqAutoData]
     public async Task When_Provider_Details_Are_Found_Then_Values_Are_Mapped_To_Model_Correctly(
         string larsCode,
-        int providerId,
+        int ukprn,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
@@ -110,7 +110,7 @@ public class WhenGettingCourseProviderDetails
         .Returns(shortlistCookieItem);
 
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
-                c.Ukprn.Equals(providerId) &&
+                c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DefaultDistance) &&
@@ -130,7 +130,7 @@ public class WhenGettingCourseProviderDetails
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviderDetails(larsCode, providerId);
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
 
         Assert.That(result, Is.Not.Null);
 
@@ -138,7 +138,7 @@ public class WhenGettingCourseProviderDetails
              a.Send(
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                      q.LarsCode == larsCode &&
-                     q.Ukprn == providerId &&
+                     q.Ukprn == ukprn &&
                      q.Location == location &&
                      q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
@@ -185,8 +185,8 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Location_Is_Set_Then_Distance_Defaults_To_One_Thousand_Miles(
-        string courseId,
-        int providerId,
+        string larsCode,
+        int ukprn,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
@@ -208,8 +208,8 @@ public class WhenGettingCourseProviderDetails
         .Returns(shortlistCookieItem);
 
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
-                c.Ukprn.Equals(providerId) &&
-                c.LarsCode.Equals(courseId) &&
+                c.Ukprn.Equals(ukprn) &&
+                c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
@@ -228,15 +228,15 @@ public class WhenGettingCourseProviderDetails
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviderDetails(courseId, providerId);
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
 
         Assert.That(result, Is.Not.Null);
 
         mediator.Verify(a =>
              a.Send(
                  It.Is<GetCourseProviderDetailsQuery>(q =>
-                     q.LarsCode == courseId &&
-                     q.Ukprn == providerId &&
+                     q.LarsCode == larsCode &&
+                     q.Ukprn == ukprn &&
                      q.Location == location &&
                      q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
@@ -249,8 +249,8 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_DefaultDistance(
-        string courseId,
-        int providerId,
+        string larsCode,
+        int ukprn,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
@@ -282,8 +282,8 @@ public class WhenGettingCourseProviderDetails
             )).ReturnsAsync(new ValidationResult());
 
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
-                c.Ukprn.Equals(providerId) &&
-                c.LarsCode.Equals(courseId) &&
+                c.Ukprn.Equals(ukprn) &&
+                c.LarsCode.Equals(larsCode) &&
                 c.Location.Equals(location) &&
                 c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
@@ -293,7 +293,7 @@ public class WhenGettingCourseProviderDetails
 
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
-        var result = await sut.CourseProviderDetails(courseId, providerId);
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
 
         var viewResult = result as ViewResult;
         Assert.That(viewResult, Is.Not.Null);
@@ -304,8 +304,8 @@ public class WhenGettingCourseProviderDetails
         mediator.Verify(a =>
              a.Send(
                  It.Is<GetCourseProviderDetailsQuery>(q =>
-                     q.LarsCode == courseId &&
-                     q.Ukprn == providerId &&
+                     q.LarsCode == larsCode &&
+                     q.Ukprn == ukprn &&
                      q.Location == location &&
                      q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
@@ -420,7 +420,7 @@ public class WhenGettingCourseProviderDetails
     [Test, MoqAutoData]
     public async Task When_Location_Validation_Fails_Then_Validation_Message_Shown(
         string larsCode,
-        int providerId,
+        int ukprn,
         string location,
         GetCourseProviderDetailsQuery query,
         GetCourseProviderQueryResult response,
@@ -459,7 +459,7 @@ public class WhenGettingCourseProviderDetails
         mediator.Setup(x => x.Send(It.IsAny<GetCourseProviderDetailsQuery>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(response);
 
-        var result = await sut.CourseProviderDetails(larsCode, providerId);
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
 
         Assert.That(result, Is.Not.Null);
 
@@ -467,7 +467,7 @@ public class WhenGettingCourseProviderDetails
                 a.Send(
                     It.Is<GetCourseProviderDetailsQuery>(q =>
                         q.LarsCode == larsCode &&
-                        q.Ukprn == providerId &&
+                        q.Ukprn == ukprn &&
                         q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                     ),
                     It.IsAny<CancellationToken>()
