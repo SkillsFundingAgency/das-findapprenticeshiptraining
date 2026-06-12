@@ -38,7 +38,6 @@ public class WhenGettingCourseProviders
         string shortlistUrl,
         string courseDetailsUrl,
         string location,
-        string distance,
         Guid shortlistUserId,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -48,6 +47,7 @@ public class WhenGettingCourseProviders
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
+
         //Arrange
         validatorMock
             .Setup(v => v.ValidateAsync(
@@ -56,6 +56,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
+        var distance = DistanceService.TenMiles;
 
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
@@ -81,7 +82,7 @@ public class WhenGettingCourseProviders
         It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)

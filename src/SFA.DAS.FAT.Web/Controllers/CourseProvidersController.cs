@@ -103,7 +103,10 @@ public class CourseProvidersController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        requestDistance = requestDistance ?? DistanceService.TenMiles.ToString();
+        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance))
+        {
+            requestDistance = DistanceService.TenMiles.ToString();
+        }
 
         var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
 
@@ -119,7 +122,7 @@ public class CourseProvidersController : Controller
                 ShortlistCount = shortlistCount?.Count ?? 0,
                 OrderBy = orderBy,
                 Location = requestLocation,
-                Distance = convertedDistance.ToString(),
+                Distance = requestDistance,
                 SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
                 SelectedEmployerApprovalRatings = requestModel.EmployerProviderRatings.Select(r => r.ToString()),
                 SelectedApprenticeApprovalRatings = requestModel.ApprenticeProviderRatings.Select(r => r.ToString()),

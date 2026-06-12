@@ -131,7 +131,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
+        if (!string.IsNullOrWhiteSpace(Location) && !DistanceService.IsAcrossEngland(Distance))
         {
             return LocationCoursesSubHeaderText;
         }

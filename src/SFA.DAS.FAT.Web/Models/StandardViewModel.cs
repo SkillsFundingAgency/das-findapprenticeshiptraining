@@ -99,7 +99,7 @@ public class StandardViewModel
     private string GetFindProvidersUrlDescription(string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || distance == DistanceService.AcrossEnglandFilterValue;
+        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || DistanceService.IsAcrossEngland(distance);
 
         string providerText = "training provider".ToQuantity(ProvidersCount);
 

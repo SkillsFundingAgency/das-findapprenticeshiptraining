@@ -155,7 +155,7 @@ public class CourseViewModel : PageLinksViewModelBase
                 : MultipleProviderOutsideDistanceMessage.Replace("{{TotalProvidersCount}}", TotalProvidersCount.ToString());
     }
     private string GetApprenticeCanTravelDisplayMessage() =>
-        Distance == DistanceService.AcrossEnglandFilterValue
+        DistanceService.IsAcrossEngland(Distance)
             ? DistanceService.AcrossEnglandDisplayText
             : $"{Distance} miles";
 
