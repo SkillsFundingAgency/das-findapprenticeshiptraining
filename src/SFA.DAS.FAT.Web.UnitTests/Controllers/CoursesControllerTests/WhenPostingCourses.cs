@@ -16,7 +16,7 @@ public class WhenPostingCourses
 {
     [Test, MoqAutoData]
     public void CoursesPost_UpdatesLocationCookie_AndRedirects(
-        CoursesSubmitModel submitModel,
+        CoursesFiltersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
     {
@@ -73,7 +73,7 @@ public class WhenPostingCourses
 
     [Test, MoqAutoData]
     public void CoursesPost_WithSubmitModel_UpdatesLocationCookieAndRedirectsToCourses(
-       CoursesSubmitModel submitModel,
+       CoursesFiltersSubmitModel submitModel,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CoursesController sut
    )
@@ -85,10 +85,10 @@ public class WhenPostingCourses
         result.Should().NotBeNull();
         result!.RouteName.Should().Be(RouteNames.Courses);
 
-        result.RouteValues.Should().ContainKey(nameof(CoursesSubmitModel.Keyword));
-        result.RouteValues[nameof(CoursesSubmitModel.Keyword)].Should().Be(submitModel.Keyword);
-        result.RouteValues.Should().ContainKey(nameof(CoursesSubmitModel.Categories));
-        result.RouteValues[nameof(CoursesSubmitModel.PageNumber)].Should().Be(1);
+        result.RouteValues.Should().ContainKey(nameof(CoursesFiltersSubmitModel.Keyword));
+        result.RouteValues[nameof(CoursesFiltersSubmitModel.Keyword)].Should().Be(submitModel.Keyword);
+        result.RouteValues.Should().ContainKey(nameof(CoursesFiltersSubmitModel.Categories));
+        result.RouteValues[nameof(CoursesFiltersSubmitModel.PageNumber)].Should().Be(1);
 
         locationCookieService.Verify(
             x => x.Update(

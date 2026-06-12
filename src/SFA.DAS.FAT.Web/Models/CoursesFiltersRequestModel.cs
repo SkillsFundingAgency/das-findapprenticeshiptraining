@@ -3,7 +3,7 @@ using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class CoursesSubmitModel
+public class CoursesFiltersRequestModel
 {
     public string Keyword { get; set; }
 

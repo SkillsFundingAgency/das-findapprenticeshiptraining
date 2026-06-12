@@ -34,7 +34,7 @@ public class SearchCoursesController : Controller
     [HttpPost]
     public IActionResult Index(SearchCoursesSubmitModel submitModel)
     {
-        var request = new CoursesSubmitModel
+        var request = new CoursesFiltersSubmitModel
         {
             LearningTypes = submitModel.SelectedTypes
         };

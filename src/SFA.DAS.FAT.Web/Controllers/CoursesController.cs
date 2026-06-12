@@ -39,9 +39,9 @@ public class CoursesController : Controller
 
     [HttpPost]
     [Route("", Name = RouteNames.Courses)]
-    public IActionResult ApplyFilters(CoursesSubmitModel submitModel)
+    public IActionResult ApplyFilters([FromForm] CoursesFiltersSubmitModel submitModel)
     {
-        var model = new CoursesSubmitModel
+        var model = new CoursesFiltersRequestModel
         {
             Keyword = submitModel.Keyword,
             Categories = submitModel.Categories,
@@ -55,7 +55,7 @@ public class CoursesController : Controller
 
     [HttpGet]
     [Route("", Name = RouteNames.Courses)]
-    public async Task<IActionResult> Courses(CoursesSubmitModel model, bool clearFilter = false)
+    public async Task<IActionResult> Courses(CoursesFiltersRequestModel requestModel, bool clearFilter = false)
     {
         var shortlistCookieItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 
@@ -70,31 +70,31 @@ public class CoursesController : Controller
         int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);
         var result = await _mediator.Send(new GetCoursesQuery
         {
-            Keyword = model.Keyword,
+            Keyword = requestModel.Keyword,
             Location = requestLocation,
             Distance = validatedDistance,
-            Routes = model.Categories,
-            Levels = model.Levels,
-            Page = model.PageNumber,
-            LearningTypes = model.LearningTypes,
-            OrderBy = string.IsNullOrWhiteSpace(model.Keyword) ? OrderBy.Title : OrderBy.Score,
+            Routes = requestModel.Categories,
+            Levels = requestModel.Levels,
+            Page = requestModel.PageNumber,
+            LearningTypes = requestModel.LearningTypes,
+            OrderBy = string.IsNullOrWhiteSpace(requestModel.Keyword) ? OrderBy.Title : OrderBy.Score,
             ShortlistUserId = shortlistCookieItem?.ShortlistUserId
         });
 
-        List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, model.Levels))];
+        List<LevelViewModel> levels = [.. result.Levels.Select(level => new LevelViewModel(level, requestModel.Levels))];
         var viewModel = new CoursesViewModel()
         {
             Standards = [.. result.Standards.Select(c => new StandardViewModel(c, requestLocation, requestDistance, _config, Url, levels))],
-            Routes = [.. result.Routes.Select(route => new RouteViewModel(route, model.Categories))],
+            Routes = [.. result.Routes.Select(route => new RouteViewModel(route, requestModel.Categories))],
             Total = result.TotalCount,
             TotalFiltered = result.TotalCount,
-            Keyword = model.Keyword,
-            SelectedRoutes = model.Categories,
-            SelectedLevels = model.Levels,
+            Keyword = requestModel.Keyword,
+            SelectedRoutes = requestModel.Categories,
+            SelectedLevels = requestModel.Levels,
             Levels = levels,
             Location = requestLocation ?? string.Empty,
             Distance = DistanceService.GetDistance(requestDistance, requestLocation),
-            SelectedTrainingTypes = model.LearningTypes,
+            SelectedTrainingTypes = requestModel.LearningTypes,
             ShowSearchCrumb = true,
             ShowShortListLink = true
         };
@@ -117,7 +117,7 @@ public class CoursesController : Controller
 
     [HttpPost]
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
-    public IActionResult CourseDetailsPost(CoursesViewModel model, [FromRoute] string larsCode)
+    public IActionResult CourseDetailsPost([FromForm] CoursesViewModel model, [FromRoute] string larsCode)
     {
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = model.Location?.Trim(), Distance = model.Distance });
         return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
