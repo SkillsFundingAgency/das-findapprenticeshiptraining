@@ -119,7 +119,7 @@ public class CoursesController : Controller
     [Route("{larsCode}", Name = RouteNames.CourseDetails)]
     public IActionResult CourseDetailsPost([FromForm] CourseLocationSubmitModel submitModel, [FromRoute] string larsCode)
     {
-        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        var (_, requestDistance) = _locationCookieService.GetLocation();
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = requestDistance });
         return RedirectToRoute(RouteNames.CourseDetails, new { larsCode });
     }

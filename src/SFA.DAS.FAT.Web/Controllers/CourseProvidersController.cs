@@ -103,7 +103,7 @@ public class CourseProvidersController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
+        requestDistance = requestDistance ?? DistanceService.TenMiles.ToString();
 
         var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
 
@@ -196,7 +196,7 @@ public class CourseProvidersController : Controller
     [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
     public async Task<IActionResult> ApplyLocation([FromForm] ProviderLocationSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
     {
-        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        var (_, requestDistance) = _locationCookieService.GetLocation();
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = requestDistance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });
     }
@@ -263,7 +263,7 @@ public class CourseProvidersController : Controller
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
         viewModel.Location = requestLocation;
-        viewModel.Distance = DistanceService.EnsureHasDefaultDistance(requestDistance);
+        viewModel.Distance = requestDistance ?? DistanceService.TenMiles.ToString();
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
         viewModel.ShowApprenticeTrainingCourseCrumb = true;
