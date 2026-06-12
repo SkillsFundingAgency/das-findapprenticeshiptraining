@@ -7,10 +7,6 @@ public class CoursesFiltersRequestModel
 {
     public string Keyword { get; set; }
 
-    public string Location { get; set; }
-
-    public string Distance { get; set; }
-
     public List<string> Categories { get; set; } = [];
 
     public List<int> Levels { get; set; } = [];

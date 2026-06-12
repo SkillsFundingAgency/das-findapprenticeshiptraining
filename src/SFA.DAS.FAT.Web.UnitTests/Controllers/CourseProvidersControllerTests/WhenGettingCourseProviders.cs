@@ -527,7 +527,6 @@ public class WhenGettingCourseProviders
         string shortlistUrl,
         string courseDetailsUrl,
         string location,
-        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -542,6 +541,8 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
+
+        string distance = DistanceService.TenMiles.ToString();
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
