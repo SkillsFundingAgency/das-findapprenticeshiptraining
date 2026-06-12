@@ -31,7 +31,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController sut
     )
     {
-        string distance = DistanceService.TenMiles.ToString();
+        var distance = DistanceService.TenMiles;
         sut.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
 
@@ -52,7 +52,7 @@ public class WhenGettingCourses
         .ReturnsAsync(queryResult);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
 
@@ -80,7 +80,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        string distance = DistanceService.TenMiles.ToString();
+        var distance = DistanceService.TenMiles;
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl.ToString());
@@ -105,7 +105,7 @@ public class WhenGettingCourses
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 
@@ -145,26 +145,26 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        string distance = DistanceService.TenMiles.ToString();
+        var distance = DistanceService.TenMiles;
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
         controller.AddUrlHelperMock();
 
         mediator.Setup(x =>
-            x.Send(
-                It.Is<GetCoursesQuery>(c =>
-                    c.Keyword.Equals(request.Keyword) &&
-                    c.Location.Equals(location) &&
-                    c.Distance.Equals(distance) &&
-                    c.Levels.SequenceEqual(request.Levels) &&
-                    c.Routes.SequenceEqual(request.Categories)
-                ),
-                It.IsAny<CancellationToken>()
-            )
-        )
-        .ReturnsAsync(queryResult);
+           x.Send(
+               It.Is<GetCoursesQuery>(c =>
+                   c.Keyword.Equals(request.Keyword) &&
+                   c.Location.Equals(location) &&
+                   c.Distance.Equals(distance) &&
+                   c.Levels.SequenceEqual(request.Levels) &&
+                   c.Routes.SequenceEqual(request.Categories)
+               ),
+               It.IsAny<CancellationToken>()
+           )
+       )
+       .ReturnsAsync(queryResult);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 
@@ -191,7 +191,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        string distance = DistanceService.TenMiles.ToString();
+        var distance = DistanceService.TenMiles;
         controller.AddUrlHelperMock();
 
         response.Standards = [];
@@ -211,7 +211,7 @@ public class WhenGettingCourses
         .ReturnsAsync(response);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 

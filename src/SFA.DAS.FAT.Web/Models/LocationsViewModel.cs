@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace SFA.DAS.FAT.Web.Models
+namespace SFA.DAS.FAT.Web.Models;
+
+public class LocationsViewModel
 {
-    public class LocationsViewModel
-    {
-        public List<LocationViewModel> Locations { get; set; }
-    }
+    public List<LocationViewModel> Locations { get; set; }
 }
