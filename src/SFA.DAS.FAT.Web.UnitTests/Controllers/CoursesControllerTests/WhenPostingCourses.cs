@@ -39,9 +39,8 @@ public class WhenPostingCourses
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
     {
-        CoursesViewModel model = new CoursesViewModel();
+        CourseLocationSubmitModel model = new CourseLocationSubmitModel();
         model.Location = "Test Location";
-        model.Distance = "10 miles";
 
         //Act
         var result = sut.CourseDetailsPost(model, larsCode) as RedirectToRouteResult;
@@ -52,7 +51,7 @@ public class WhenPostingCourses
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == model.Location && c.Distance == model.Distance)
+            It.Is<LocationCookieItem>(c => c.Location == model.Location)
         ), Times.Once);
     }
 
@@ -106,7 +105,8 @@ public class WhenPostingCourses
         [Greedy] CoursesController sut
     )
     {
-        CoursesViewModel model = new CoursesViewModel();
+        CourseLocationSubmitModel model = new CourseLocationSubmitModel();
+        model.Location = "Test Location";
 
         // Act
         var result = sut.CourseDetailsPost(model, larsCode) as RedirectToRouteResult;
@@ -120,7 +120,7 @@ public class WhenPostingCourses
         locationCookieService.Verify(
             x => x.Update(
                 Constants.LocationCookieName,
-                It.Is<LocationCookieItem>(c => c.Location == model.Location && c.Distance == model.Distance)
+                It.Is<LocationCookieItem>(c => c.Location == model.Location)
             ),
             Times.Once
         );

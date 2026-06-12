@@ -4,7 +4,7 @@ using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models;
 
-public class CourseProvidersSubmitModel
+public class CourseProvidersFiltersRequestModel
 {
     public string LarsCode { get; set; }
     public ProviderOrderBy OrderBy { get; set; } = ProviderOrderBy.Distance;
@@ -13,6 +13,4 @@ public class CourseProvidersSubmitModel
     public List<ProviderRating> ApprenticeProviderRatings { get; set; } = [];
     public List<QarRating> QarRatings { get; set; } = [];
     public int PageNumber { get; set; } = 1;
-    public string Location { get; set; } = string.Empty;
-    public string Distance { get; set; } = string.Empty;
 }

@@ -32,12 +32,13 @@ public class WhenGettingCourseProviders
 {
     [Test, MoqAutoData]
     public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
         string location,
+        string distance,
         Guid shortlistUserId,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -62,9 +63,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
 
-        request.Location = location;
-
-        request.Distance = "123";
 
         var qarStart = "21";
         var qarEnd = "22";
@@ -83,11 +81,11 @@ public class WhenGettingCourseProviders
         It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
-                 && c.Location.Equals(request.Location)
+                 && c.Location.Equals(location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Count == 3 ? Array.Empty<ProviderDeliveryMode>() : request.DeliveryModes)
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
@@ -104,7 +102,7 @@ public class WhenGettingCourseProviders
         foreach (var provider in expectedProviders)
         {
             provider.Distance = DistanceService.TenMiles.ToString();
-            provider.Location = request.Location;
+            provider.Location = location;
         }
 
         //Act
@@ -118,7 +116,7 @@ public class WhenGettingCourseProviders
             actualModel.Should().NotBeNull();
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.LarsCode.Should().Be(request.LarsCode.ToString());
-            actualModel.Location.Should().Be(request.Location ?? string.Empty);
+            actualModel.Location.Should().Be(location ?? string.Empty);
             actualModel.Distance.Should().Be(DistanceService.TenMiles.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
@@ -143,7 +141,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoShortlistCookie_SendsQueryWithNullShortlistUserId(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -163,14 +161,12 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
 
-        request.Location = location;
-        request.Distance = "123";
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
-                 && c.Location.Equals(request.Location)
+                 && c.Location.Equals(location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Count == 3 ? Array.Empty<ProviderDeliveryMode>() : request.DeliveryModes)
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
@@ -202,13 +198,14 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenCourseIdIsInvalid_ReturnsNotFound(
-        CourseProvidersSubmitModel request,
+    public async Task CourseProviders_WhenLarsCodeIsInvalid_ReturnsNotFound(
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
         string location,
+        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -221,8 +218,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
-        request.Location = location;
-        request.Distance = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -240,7 +235,7 @@ public class WhenGettingCourseProviders
         {
             Errors = new List<ValidationFailure>
             {
-                new("CourseId", GetCourseQueryValidator.CourseIdErrorMessage )
+                new("LarsCode", GetCourseQueryValidator.LarsCodeErrorMessage )
             }
         });
         //Act
@@ -258,7 +253,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -278,9 +273,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
-
-        request.Location = location;
-        request.Distance = null;
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
@@ -320,7 +312,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenDistanceIsNull_DefaultsToTenMiles(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -340,9 +332,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
-
-        request.Location = location;
-        request.Distance = null;
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
@@ -381,7 +370,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationEnteredForFirstTime_OrdersByDistance(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -430,7 +419,7 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenLocationPreviouslyEntered_OrdersByUserChoice(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -447,8 +436,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
-        request.Location = location;
-        request.Distance = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -478,12 +465,11 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoLocation_OrdersByAchievementRate(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
-        string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -498,8 +484,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
 
-        request.Location = null;
-        request.Distance = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -536,13 +520,14 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenDistanceIsProvided_UsesProvidedDistance(
-        CourseProvidersSubmitModel request,
+    public async Task CourseProviders_WhenDistanceExistsInLocationCookie_UsesProvidedDistance(
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
         string location,
+        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -558,14 +543,11 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
 
-        request.Location = location;
-        request.Distance = "5";
-
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -591,13 +573,13 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(request.Distance.ToString());
+            actualModel!.Distance.Should().Be(distance);
         }
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationIsNotSet_DefaultsDistanceAndOrderBy(
-        CourseProvidersSubmitModel request,
+    public async Task CourseProviders_WhenLocationIsCookie_DefaultsDistanceAndOrderBy(
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
@@ -615,9 +597,6 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
-
-        request.Location = null;
-        request.Distance = null;
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
@@ -652,8 +631,10 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenReviewPeriodProvided_SetsReviewPeriodDetails(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
+        string location,
+        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -673,7 +654,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -709,8 +690,10 @@ public class WhenGettingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenQarPeriodProvided_SetsQarPeriodDetails(
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
+        string location,
+        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -730,7 +713,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -771,7 +754,7 @@ public class WhenGettingCourseProviders
     public async Task CourseProviders_WithVariousTotalCounts_SetsTotalMessageCorrectly(
         int totalCount,
         string expectedMessage,
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -784,7 +767,6 @@ public class WhenGettingCourseProviders
         controller.TempData = tempDataMock.Object;
 
         response.TotalCount = totalCount;
-        request.Location = null;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
 
@@ -832,7 +814,7 @@ public class WhenGettingCourseProviders
         string location,
         string distance,
         string expectedMessage,
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -846,8 +828,6 @@ public class WhenGettingCourseProviders
         controller.TempData = tempDataMock.Object;
 
         response.TotalCount = totalCount;
-        request.Location = location;
-        request.Distance = distance;
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
@@ -895,8 +875,10 @@ public class WhenGettingCourseProviders
         bool achievementRateSelected,
         bool employerProviderRatingSelected,
         bool apprenticeProviderRatingSelected,
-        CourseProvidersSubmitModel request,
+        CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
+        string location,
+        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -914,7 +896,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = request.Location, Distance = request.Distance });
+            .Returns(new LocationCookieItem { Location = location, Distance = distance });
 
         locationValidatorMock
             .Setup(v => v.ValidateAsync(
@@ -1011,7 +993,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel() { LarsCode = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(shortlistCount);
     }
@@ -1044,7 +1026,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = "CV1 Coventry" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel() { LarsCode = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().Contain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -1072,7 +1054,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = string.Empty }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel() { LarsCode = "1" }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ProviderOrderOptions.Should().NotContain(c => c.ProviderOrderBy == ProviderOrderBy.Distance);
     }
@@ -1105,7 +1087,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             )).ReturnsAsync(new ValidationResult());
 
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = string.Empty, OrderBy = ProviderOrderBy.Distance }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel() { LarsCode = "1", OrderBy = ProviderOrderBy.Distance }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
     }
@@ -1132,7 +1114,7 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()
             ))
             .ReturnsAsync(new ValidationResult());
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel() { LarsCode = "1", Location = "CV1 Coventry", OrderBy = expectedOrderBy }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel() { LarsCode = "1", OrderBy = expectedOrderBy }) as ViewResult;
 
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().OrderBy.Should().Be(expectedOrderBy);
     }
@@ -1165,7 +1147,7 @@ public class WhenGettingCourseProviders
             .Returns((ShortlistsCount)null);
 
         // Act
-        var result = await sut.CourseProviders(new CourseProvidersSubmitModel { LarsCode = "1" }) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel { LarsCode = "1" }) as ViewResult;
 
         // Assert
         result.As<ViewResult>().Model.As<CourseProvidersViewModel>().ShortlistCount.Should().Be(0);
@@ -1180,7 +1162,7 @@ public class WhenGettingCourseProviders
            [Greedy] CourseProvidersController sut)
     {
         // Arrange
-        var request = new CourseProvidersSubmitModel { LarsCode = "123" };
+        var request = new CourseProvidersFiltersSubmitModel { LarsCode = "123" };
 
         courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
@@ -1191,7 +1173,7 @@ public class WhenGettingCourseProviders
         locationCookieService.Setup(x => x.Update(It.IsAny<string>(), It.IsAny<LocationCookieItem>()));
 
         // Act
-        var result = await sut.CourseProviders(request, true) as ViewResult;
+        var result = await sut.CourseProviders(new CourseProvidersFiltersRequestModel { LarsCode = "123" }, true) as ViewResult;
 
         // Assert
         result.Should().NotBeNull();

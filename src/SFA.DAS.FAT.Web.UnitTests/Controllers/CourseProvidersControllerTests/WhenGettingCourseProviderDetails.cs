@@ -401,7 +401,7 @@ public class WhenGettingCourseProviderDetails
         {
             Errors = new List<ValidationFailure>
             {
-                new(nameof(Ukprn), GetCourseQueryValidator.CourseIdErrorMessage )
+                new(nameof(Ukprn), GetCourseQueryValidator.LarsCodeErrorMessage )
             }
         });
 

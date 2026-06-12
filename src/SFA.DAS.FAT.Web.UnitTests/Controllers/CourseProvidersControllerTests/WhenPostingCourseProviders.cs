@@ -15,7 +15,7 @@ public class WhenPostingCourseProviders
 {
     [Test, MoqAutoData]
     public void CourseProvidersPost_UpdatesLocationCookie_AndRedirects(
-        CourseProvidersSubmitModel submitModel,
+        CourseProvidersFiltersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
@@ -34,7 +34,7 @@ public class WhenPostingCourseProviders
 
     [Test, MoqAutoData]
     public async Task CourseProviderDetailsPost_UpdatesLocationCookie_AndRedirects(
-        CourseProviderSubmitModel model,
+        ProviderLocationSubmitModel model,
         string larsCode,
         int ukprn,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
@@ -55,7 +55,7 @@ public class WhenPostingCourseProviders
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == model.Location && c.Distance == model.Distance)
+            It.Is<LocationCookieItem>(c => c.Location == model.Location)
         ), Times.Once);
     }
 }

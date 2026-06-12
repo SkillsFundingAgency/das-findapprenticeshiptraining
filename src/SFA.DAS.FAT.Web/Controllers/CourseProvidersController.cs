@@ -60,11 +60,12 @@ public class CourseProvidersController : Controller
         _config = config.Value;
         _locationCookieService = locationCookieService;
     }
+
     [HttpPost]
     [Route("", Name = RouteNames.CourseProviders)]
-    public IActionResult ApplyFilters(CourseProvidersSubmitModel submitModel)
+    public IActionResult ApplyFilters(CourseProvidersFiltersSubmitModel submitModel)
     {
-        var model = new CourseProvidersSubmitModel
+        var requestModel = new CourseProvidersFiltersRequestModel
         {
             LarsCode = submitModel.LarsCode,
             OrderBy = submitModel.OrderBy,
@@ -76,14 +77,14 @@ public class CourseProvidersController : Controller
         };
 
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
-        return RedirectToRoute(RouteNames.CourseProviders, model);
+        return RedirectToRoute(RouteNames.CourseProviders, requestModel);
     }
 
     [HttpGet]
     [Route("", Name = RouteNames.CourseProviders)]
-    public async Task<IActionResult> CourseProviders(CourseProvidersSubmitModel request, bool clearFilter = false)
+    public async Task<IActionResult> CourseProviders(CourseProvidersFiltersRequestModel requestModel, bool clearFilter = false)
     {
-        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = requestModel.LarsCode });
 
         if (!validationLarsCodeResult.IsValid)
         {
@@ -104,40 +105,40 @@ public class CourseProvidersController : Controller
 
         requestDistance = DistanceService.EnsureHasDefaultDistance(requestDistance);
 
-        var orderBy = string.IsNullOrEmpty(requestLocation) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
+        var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
 
         int? convertedDistance = DistanceService.GetValidDistanceNullable(requestDistance);
 
-        var deliveryModes = request.DeliveryModes.ToList();
+        var deliveryModes = requestModel.DeliveryModes.ToList();
 
         CourseProvidersViewModel CreateBaseCourseProvidersViewModel()
         {
             return new CourseProvidersViewModel(_config)
             {
-                LarsCode = request.LarsCode,
+                LarsCode = requestModel.LarsCode,
                 ShortlistCount = shortlistCount?.Count ?? 0,
                 OrderBy = orderBy,
                 Location = requestLocation,
                 Distance = convertedDistance.ToString(),
                 SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
-                SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()),
-                SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()),
-                SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
+                SelectedEmployerApprovalRatings = requestModel.EmployerProviderRatings.Select(r => r.ToString()),
+                SelectedApprenticeApprovalRatings = requestModel.ApprenticeProviderRatings.Select(r => r.ToString()),
+                SelectedQarRatings = requestModel.QarRatings.Select(q => q.ToString()),
                 Providers = []
             };
         }
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
-            LarsCode = request.LarsCode,
+            LarsCode = requestModel.LarsCode,
             Location = requestLocation,
             OrderBy = orderBy,
             Distance = convertedDistance,
             DeliveryModes = deliveryModes.Count == 3 ? [] : deliveryModes,
-            EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
-            ApprenticeProviderRatings = request.ApprenticeProviderRatings.ToList(),
-            Qar = request.QarRatings.ToList(),
-            Page = request.PageNumber,
+            EmployerProviderRatings = requestModel.EmployerProviderRatings.ToList(),
+            ApprenticeProviderRatings = requestModel.ApprenticeProviderRatings.ToList(),
+            Qar = requestModel.QarRatings.ToList(),
+            Page = requestModel.PageNumber,
             ShortlistUserId = shortlistUserId
         });
 
@@ -193,9 +194,10 @@ public class CourseProvidersController : Controller
 
     [HttpPost]
     [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> ApplyLocation([FromForm] CourseProviderSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
+    public async Task<IActionResult> ApplyLocation([FromForm] ProviderLocationSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
     {
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
+        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = requestDistance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });
     }
 
