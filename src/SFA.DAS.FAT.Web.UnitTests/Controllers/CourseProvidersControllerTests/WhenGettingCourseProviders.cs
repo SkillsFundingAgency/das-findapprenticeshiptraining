@@ -1188,7 +1188,7 @@ public class WhenGettingCourseProviders
 
 
     [Test, MoqAutoData]
-    public async Task CourseProviderDetails_WithClearLocation_DeletesCookie(
+    public async Task CourseProviderDetails_WithClearLocation_DeletesCookieLocationDistanceStillPresent(
        string larsCode,
        int ukprn,
        [Frozen] Mock<IMediator> mediatorMock,
@@ -1216,8 +1216,16 @@ public class WhenGettingCourseProviders
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(new LocationCookieItem { Location = "Some location", Distance = "20" });
+
         var result = await controller.CourseProviderDetails(larsCode, ukprn, clearLocation) as ViewResult;
 
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+        // Assert
+        locationCookieService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(i => i.Location == string.Empty && i.Distance == "20")), Times.Once);
+
+        var model = result!.Model as CourseProviderViewModel;
+        model.Should().NotBeNull();
+        model.Location.Should().BeEmpty();
+        model.Distance.Should().Be("20");
     }
 }

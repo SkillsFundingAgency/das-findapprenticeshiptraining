@@ -226,9 +226,8 @@ public class CourseProvidersController : Controller
         var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
         if (clearLocation)
         {
-            _locationCookieService.Delete(Constants.LocationCookieName);
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
             requestLocation = string.Empty;
-            requestDistance = DistanceService.TenMiles.ToString();
         }
 
         var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
