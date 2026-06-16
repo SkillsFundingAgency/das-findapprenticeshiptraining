@@ -133,12 +133,11 @@ public class CoursesController : Controller
         var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
         if (clearLocation)
         {
-            _locationCookieService?.Delete(Constants.LocationCookieName);
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
             requestLocation = string.Empty;
-            requestDistance = DistanceService.TenMiles.ToString();
         }
 
-        var convertedDistance = DistanceService.GetConvertedDistanceForDetails(requestDistance, requestLocation);
+        var convertedDistance = DistanceService.GetValidDistance(requestDistance);
 
         var query = new GetCourseQuery()
         {

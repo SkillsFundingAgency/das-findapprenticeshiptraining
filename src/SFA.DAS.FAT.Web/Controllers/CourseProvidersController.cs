@@ -235,9 +235,8 @@ public class CourseProvidersController : Controller
         if (!validationLocationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationLocationResult.Errors);
-            _locationCookieService.Delete(Constants.LocationCookieName);
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
             requestLocation = string.Empty;
-            requestDistance = DistanceService.TenMiles.ToString();
         }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);

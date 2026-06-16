@@ -56,21 +56,6 @@ public class WhenPostingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task CourseDetailsDelete_DeletesLocationCookie_AndRedirects(
-        string larsCode,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Greedy] CoursesController sut)
-    {
-        //Act
-        var clearLocation = true;
-        var result = await sut.CourseDetails(larsCode, clearLocation) as ViewResult;
-
-        //Assert
-        Assert.That(result, Is.Not.Null);
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
-    }
-
-    [Test, MoqAutoData]
     public void CoursesPost_WithSubmitModel_UpdatesLocationCookieAndRedirectsToCourses(
        CoursesFiltersSubmitModel submitModel,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,

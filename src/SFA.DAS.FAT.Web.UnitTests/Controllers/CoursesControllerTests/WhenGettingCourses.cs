@@ -265,19 +265,25 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task CourseDetailsDelete_WithClearLocation_DeletesLocationCookie(
-       string larsCode,
-       [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-       [Greedy] CoursesController sut
-   )
+    public async Task CourseDetails_WhenClearLocationIsTrue_DeletesLocationCookieDistanceStillPresent(
+        string larsCode,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CoursesController sut)
     {
-        var clearLocation = true;
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(new LocationCookieItem { Location = "Some location", Distance = "10" });
 
-        // Act
+        //Act
+        var clearLocation = true;
         var result = await sut.CourseDetails(larsCode, clearLocation) as ViewResult;
 
-        // Assert
-        result.Should().NotBeNull();
-        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(i => i.Location == string.Empty && i.Distance == "10")), Times.Once);
+
+        var model = result!.Model as CourseViewModel;
+        model.Should().NotBeNull();
+        model.Location.Should().BeEmpty();
+        model.Distance.Should().Be("10");
+
     }
 }

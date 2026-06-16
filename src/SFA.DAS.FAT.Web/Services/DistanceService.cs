@@ -69,21 +69,6 @@ public static class DistanceService
         IsAcrossEngland(distance) ||
         TryGetValidDistance(distance, out _);
 
-    public static int? GetConvertedDistanceForDetails(string distance, string location)
-    {
-        if (!IsValidDistance(distance))
-        {
-            return TenMiles;
-        }
-
-        if (IsAcrossEngland(distance))
-        {
-            return DefaultDistance;
-        }
-
-        return !string.IsNullOrWhiteSpace(location) ? GetValidDistance(distance) : TenMiles;
-    }
-
     public static bool IsAcrossEngland(string distance) =>
         string.Equals(distance, AcrossEnglandFilterValue, StringComparison.OrdinalIgnoreCase);
 
