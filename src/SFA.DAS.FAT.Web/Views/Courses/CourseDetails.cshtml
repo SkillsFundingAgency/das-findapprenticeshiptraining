@@ -68,13 +68,10 @@
 
                         <div class="govuk-button-group govuk-!-margin-bottom-0">
                             <a class="govuk-button govuk-!-margin-bottom-0"
-                               asp-route="@RouteNames.CourseProviders"
-                               asp-route-larsCode="@Model.LarsCode"
-                               asp-route-location="@Model.Location"
-                               asp-route-distance="@Model.Distance">
+                               asp-route="@RouteNames.CourseProviders" asp-route-larsCode="@Model.LarsCode">
                                 View providers for this course
                             </a>
-                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-distance="@Model.Distance">Remove location</a>
+                            <a class="govuk-link govuk-link--no-visited-state" asp-route="@RouteNames.CourseDetails" asp-route-larsCode="@Model.LarsCode" asp-route-clearLocation="true">Remove location</a>
                         </div>
                     </form>
                 </div>
@@ -84,14 +81,11 @@
                         @Model.ProviderCountDisplayMessage
                     </p>
 
-                    <form method="GET"
+                    <form method="POST"
                           id="course-location-form"
                           asp-route="@RouteNames.CourseDetails"
                           asp-route-larsCode="@Model.LarsCode"
-                          asp-route-location="@Model.Location"
-                          asp-route-distance="@Model.Distance"
                           class="govuk-!-width-three-quarters">
-                        <input type="hidden" name="distance" value="@Model.Distance" />
 
                         <div class="govuk-form-group">
                             <h2 class="govuk-heading-m">Learner's work location</h2>

@@ -1,6 +1,4 @@
 @using SFA.DAS.FAT.Web.Infrastructure
-@using SFA.DAS.FAT.Web.Models
-@using SFA.DAS.FAT.Web.Models.Providers
 @model IEnumerable<SFA.DAS.FAT.Web.Models.Providers.CourseGroupViewModel>
 
 <div class="govuk-body">
@@ -22,8 +20,7 @@
                         <a class="govuk-link govuk-link--no-visited-state"
                            asp-route="@RouteNames.CourseProviderDetails"
                            asp-route-larsCode="@course.LarsCode"
-                           asp-route-providerId="@courseGroup.Ukprn"
-                           asp-route-location="@courseGroup.Location">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
+                           asp-route-ukprn="@courseGroup.Ukprn">@course.CourseName <span class="das-no-wrap">(level @course.Level)</span></a>
                     </li>
                 }
             </ul>

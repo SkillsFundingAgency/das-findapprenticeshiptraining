@@ -21,16 +21,17 @@ public class WhenGettingCourses
     [Test]
     [MoqAutoData]
     public async Task Courses_RequestIsValid_QueryIsSentAndViewIsReturned(
-        GetCoursesViewModel request,
+        CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
         ShortlistCookieItem cookieItem,
+        string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut
     )
     {
-        request.Distance = "10";
-
+        var distance = DistanceService.TenMiles;
         sut.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
 
@@ -38,8 +39,8 @@ public class WhenGettingCourses
             x.Send(
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
-                    c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TenMiles) &&
+                    c.Location.Equals(location) &&
+                    c.Distance.Equals(distance) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber) &&
@@ -49,6 +50,9 @@ public class WhenGettingCourses
             )
         )
         .ReturnsAsync(queryResult);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
 
@@ -66,14 +70,17 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_RequestContainsSearchFilters_ModelContainsMappedResults(
-        GetCoursesViewModel request,
+        CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
+        string location,
         Guid shortlistUrl,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
+        var distance = DistanceService.TenMiles;
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl.ToString());
@@ -84,8 +91,8 @@ public class WhenGettingCourses
             x.Send(
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
-                    c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TenMiles) &&
+                    c.Location.Equals(location) &&
+                    c.Distance.Equals(distance) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories) &&
                     c.Page.Equals(request.PageNumber)
@@ -96,6 +103,9 @@ public class WhenGettingCourses
         .ReturnsAsync(queryResult);
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns((ShortlistCookieItem)null);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 
@@ -127,28 +137,34 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_ResultContainsStandards_PaginationIsPopulated(
-        GetCoursesViewModel request,
+        CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
+        string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
+        var distance = DistanceService.TenMiles;
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
         controller.AddUrlHelperMock();
 
         mediator.Setup(x =>
-            x.Send(
-                It.Is<GetCoursesQuery>(c =>
-                    c.Keyword.Equals(request.Keyword) &&
-                    c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TenMiles) &&
-                    c.Levels.SequenceEqual(request.Levels) &&
-                    c.Routes.SequenceEqual(request.Categories)
-                ),
-                It.IsAny<CancellationToken>()
-            )
-        )
-        .ReturnsAsync(queryResult);
+           x.Send(
+               It.Is<GetCoursesQuery>(c =>
+                   c.Keyword.Equals(request.Keyword) &&
+                   c.Location.Equals(location) &&
+                   c.Distance.Equals(distance) &&
+                   c.Levels.SequenceEqual(request.Levels) &&
+                   c.Routes.SequenceEqual(request.Categories)
+               ),
+               It.IsAny<CancellationToken>()
+           )
+       )
+       .ReturnsAsync(queryResult);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 
@@ -167,12 +183,15 @@ public class WhenGettingCourses
 
     [Test, MoqAutoData]
     public async Task Courses_ResultContainsNoStandards_PaginationIsNull(
-        GetCoursesViewModel request,
+        CoursesFiltersRequestModel request,
         GetCoursesQueryResult response,
+        string location,
         [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController controller
     )
     {
+        var distance = DistanceService.TenMiles;
         controller.AddUrlHelperMock();
 
         response.Standards = [];
@@ -181,8 +200,8 @@ public class WhenGettingCourses
             x.Send(
                 It.Is<GetCoursesQuery>(c =>
                     c.Keyword.Equals(request.Keyword) &&
-                    c.Location.Equals(request.Location) &&
-                    c.Distance.Equals(DistanceService.TenMiles) &&
+                    c.Location.Equals(location) &&
+                    c.Distance.Equals(distance) &&
                     c.Levels.SequenceEqual(request.Levels) &&
                     c.Routes.SequenceEqual(request.Categories)
                 ),
@@ -190,6 +209,9 @@ public class WhenGettingCourses
             )
         )
         .ReturnsAsync(response);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
 
         var _sut = await controller.Courses(request);
 
@@ -204,5 +226,64 @@ public class WhenGettingCourses
             Assert.That(model.Standards, Has.Count.EqualTo(0));
             Assert.That(model.Pagination, Is.Null);
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
+        CoursesFiltersRequestModel request,
+        GetCoursesQueryResult queryResult,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Greedy] CoursesController controller
+    )
+    {
+        // Arrange
+        var clearFilter = true;
+        controller.AddUrlHelperMock();
+        CoursesViewModel model = new CoursesViewModel();
+        queryResult.Standards = [];
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = "London", Distance = "10" });
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns((ShortlistCookieItem)null);
+
+        mediator.Setup(m => m.Send(It.IsAny<GetCoursesQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(queryResult);
+
+        // Act
+        var result = await controller.Courses(request, clearFilter) as ViewResult;
+
+        // Assert
+        result.Should().NotBeNull();
+
+        locationCookieService.Verify(x => x.Delete(Constants.LocationCookieName), Times.Once);
+
+        mediator.Verify(x => x.Send(It.IsAny<GetCoursesQuery>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task CourseDetails_WhenClearLocationIsTrue_DeletesLocationCookieDistanceStillPresent(
+        string larsCode,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CoursesController sut)
+    {
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(new LocationCookieItem { Location = "Some location", Distance = "10" });
+
+        //Act
+        var clearLocation = true;
+        var result = await sut.CourseDetails(larsCode, clearLocation) as ViewResult;
+
+        //Assert
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(i => i.Location == string.Empty && i.Distance == "10")), Times.Once);
+
+        var model = result!.Model as CourseViewModel;
+        model.Should().NotBeNull();
+        model.Location.Should().BeEmpty();
+        model.Distance.Should().Be("10");
+
     }
 }

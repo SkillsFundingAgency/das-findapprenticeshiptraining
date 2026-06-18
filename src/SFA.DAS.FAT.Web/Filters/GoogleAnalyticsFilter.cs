@@ -24,7 +24,7 @@ namespace SFA.DAS.FAT.Web.Filters
             _locationCookieStorageService = locationCookieStorageService;
             _logger = logger;
             _protector = provider.CreateProtector(Constants.GaDataProtectorName);
-            
+
         }
         public override void OnActionExecuting(ActionExecutingContext context)
         {
@@ -35,24 +35,24 @@ namespace SFA.DAS.FAT.Web.Filters
 
             var gaData = new GaData();
             var locationFromCookie = _locationCookieStorageService.Get(Constants.LocationCookieName);
-            
+
             if (context.HttpContext.Request.Query.TryGetValue("location", out var location))
             {
                 gaData.Location = location.ToString();
             }
             else if (locationFromCookie != null)
             {
-                if (!string.IsNullOrEmpty(locationFromCookie.Name) && locationFromCookie.Lat != 0 &&
-                    locationFromCookie.Lon != 0)
+                if (!string.IsNullOrEmpty(locationFromCookie.Location) && locationFromCookie.Latitude != 0 &&
+                    locationFromCookie.Longitude != 0)
                 {
-                    gaData.Location = locationFromCookie.Name;
+                    gaData.Location = locationFromCookie.Location;
                 }
             }
-            
-            
-            if (context.RouteData.Values.TryGetValue("providerId", out var providerId))
+
+
+            if (context.RouteData.Values.TryGetValue("ukprn", out var ukprn))
             {
-                if (uint.TryParse(providerId.ToString(), out var ukprn))
+                if (uint.TryParse(ukprn.ToString(), out var parsedUkprn))
                 {
                     if (context.HttpContext.Request.Query.TryGetValue("data", out var data))
                     {
@@ -61,7 +61,7 @@ namespace SFA.DAS.FAT.Web.Filters
                             var base64EncodedBytes = WebEncoders.Base64UrlDecode(data);
                             var decoded = System.Text.Encoding.UTF8.GetString(_protector.Unprotect(base64EncodedBytes));
                             var decodedItems = decoded.Split("|").ToList();
-                            gaData.ProviderId = ukprn;
+                            gaData.Ukprn = parsedUkprn;
                             gaData.ProviderPlacement = Convert.ToInt32(decodedItems.FirstOrDefault());
                             gaData.ProviderTotal = Convert.ToInt32(decodedItems.LastOrDefault());
                         }
@@ -73,7 +73,7 @@ namespace SFA.DAS.FAT.Web.Filters
                         {
                             _logger.LogInformation("Unable to unprotect GA data");
                         }
-                        
+
                     }
                 }
             }

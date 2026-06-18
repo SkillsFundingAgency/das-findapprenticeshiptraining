@@ -24,6 +24,7 @@ public class WhenGettingShortlistsForUser
 {
     private const string RatUrl = "https://rat.test.apprenticeships.org.uk";
     private Mock<ICookieStorageService<ShortlistCookieItem>> _shortlistCookieServiceMock;
+    private Mock<ICookieStorageService<LocationCookieItem>> _locationCookieServiceMock;
     private Mock<IMediator> _mediatorMock;
     private Mock<ITempDataDictionary> _tempDataMock;
     private Mock<IDataProtectionProvider> _dataProtectionProviderMock;
@@ -43,8 +44,9 @@ public class WhenGettingShortlistsForUser
         _dataProtectionProviderMock = new();
         _ratServiceMock = new();
         _sessionServiceMock = new();
+        _locationCookieServiceMock = new();
 
-        _sut = new(_mediatorMock.Object, _shortlistCookieServiceMock.Object, _dataProtectionProviderMock.Object, _ratServiceMock.Object, _sessionServiceMock.Object);
+        _sut = new(_mediatorMock.Object, _shortlistCookieServiceMock.Object, _dataProtectionProviderMock.Object, _ratServiceMock.Object, _sessionServiceMock.Object, _locationCookieServiceMock.Object);
         _sut.TempData = _tempDataMock.Object;
 
         _ratServiceMock.Setup(x => x.GetRequestApprenticeshipTrainingUrl(It.IsAny<string>(), It.IsAny<EntryPoint>(), It.IsAny<string>())).Returns(RatUrl);

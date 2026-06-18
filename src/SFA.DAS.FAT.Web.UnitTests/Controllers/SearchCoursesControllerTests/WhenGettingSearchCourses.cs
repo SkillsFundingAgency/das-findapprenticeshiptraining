@@ -17,7 +17,7 @@ public class WhenGettingSearchCourses
         var actual = controller.Index() as ViewResult;
 
         actual.Should().NotBeNull();
-        var model = actual!.Model as SearchCoursesViewModel;
+        var model = actual!.Model as SearchCoursesSubmitModel;
         model.Should().NotBeNull();
         model.ShowSearchCrumb.Should().BeFalse();
         model.ShowShortListLink.Should().BeTrue();
@@ -30,7 +30,7 @@ public class WhenGettingSearchCourses
         var actual = controller.Index() as ViewResult;
 
         actual.Should().NotBeNull();
-        var model = actual!.Model as SearchCoursesViewModel;
+        var model = actual!.Model as SearchCoursesSubmitModel;
         model.Should().NotBeNull();
 
         model.TrainingTypesFilterItems.Should().NotBeNull();

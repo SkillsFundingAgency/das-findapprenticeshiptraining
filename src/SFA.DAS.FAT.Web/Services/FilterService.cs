@@ -12,6 +12,7 @@ namespace SFA.DAS.FAT.Web.Services;
 
 public static class FilterService
 {
+    public const string ClearFilter = "clearFilter";
 
     public const string KeywordSectionHeading = "Course";
     public const string KeywordSectionSubHeading = "Enter course, job or standard";
@@ -29,7 +30,6 @@ public static class FilterService
     public const string LevelInformationUrl = "https://www.gov.uk/what-different-qualification-levels-mean/list-of-qualification-levels";
 
     public const string AcrossEnglandFilterText = "Across England";
-
 
     public const string DeliveryModesSectionHeading = "Training options";
     public const string DeliveryModesSectionSubHeading = "Select a training option";
@@ -262,42 +262,44 @@ public static class FilterService
 
             var overrideValueFunction = overrideValueFunctions?.TryGetValue(param.Key, out var func) == true ? func : null;
 
-            AppendQueryParameters(filterType, value, param, queryBuilder, overrideValueFunction);
+            AppendQueryParametersToClearFilterLink(filterType, value, param, queryBuilder, overrideValueFunction);
         }
 
         return queryBuilder.Length > 0 ? queryBuilder.ToString() : string.Empty;
     }
 
-    private static void AppendQueryParameters(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
+    private static void AppendQueryParametersToClearFilterLink(FilterType filterType, string value, KeyValuePair<FilterType, IEnumerable<string>> param,
         StringBuilder queryBuilder, Func<string, string> overrideValueFunction)
     {
+        // Location and distance are not included in the normal query params.
+        if (param.Key == FilterType.Location || param.Key == FilterType.Distance)
+        {
+            if (param.Key == FilterType.Location && filterType == FilterType.Location)
+            {
+                AppendQueryParam(queryBuilder, ClearFilter, "true");
+            }
+
+            return;
+        }
+
+        var values = param.Value ?? Enumerable.Empty<string>();
+
+        // When processing the same filter type, exclude the value being cleared.
         if (param.Key == filterType)
         {
-            foreach (var val in param.Value.Where(v => v != value))
-            {
-                var paramValue = GetClearVal(val, filterType, param.Key);
-
-                if (string.IsNullOrWhiteSpace(paramValue))
-                {
-                    continue;
-                }
-
-                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
-            }
+            values = values.Where(v => v != value);
         }
-        else
+
+        foreach (var val in values)
         {
-            foreach (var val in param.Value)
+            var paramValue = GetClearVal(val, filterType, param.Key);
+
+            if (string.IsNullOrWhiteSpace(paramValue))
             {
-                var paramValue = GetClearVal(val, filterType, param.Key);
-
-                if (string.IsNullOrWhiteSpace(paramValue))
-                {
-                    continue;
-                }
-
-                AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
+                continue;
             }
+
+            AppendQueryParam(queryBuilder, param.Key, paramValue, overrideValueFunction);
         }
     }
 
@@ -320,25 +322,34 @@ public static class FilterService
 
     private static void AppendQueryParam(StringBuilder builder, FilterType key, string value, Func<string, string> overrideValueFunction = null)
     {
-        if (!string.IsNullOrWhiteSpace(value))
+        if (string.IsNullOrWhiteSpace(value))
         {
-            var queryValue = overrideValueFunction == null
-                ? value
-                : overrideValueFunction(value);
-
-            builder
-                .Append(builder.Length > 0 ? '&' : '?')
-                .Append(key.ToString().ToLowerInvariant())
-                .Append('=')
-                .Append(queryValue);
+            return;
         }
+
+        var queryValue = overrideValueFunction?.Invoke(value) ?? value;
+        AppendQueryParam(builder, key.ToString().ToLowerInvariant(), queryValue);
+    }
+
+    private static void AppendQueryParam(StringBuilder builder, string key, string value)
+    {
+        if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        builder
+            .Append(builder.Length > 0 ? '&' : '?')
+            .Append(key)
+            .Append('=')
+            .Append(value);
     }
 
     public static void AddSelectedFilter(Dictionary<FilterType, IEnumerable<string>> filters, FilterType filterType, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
-            filters[filterType] = [value];
+            filters[filterType] = new[] { value };
         }
     }
 

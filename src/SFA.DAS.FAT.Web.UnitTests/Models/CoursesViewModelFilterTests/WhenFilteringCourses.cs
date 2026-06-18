@@ -236,11 +236,11 @@ public sealed class WhenFilteringCourses
 
             var levelThreeLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 3");
             Assert.That(levelThreeLink, Is.Not.Null);
-            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
+            Assert.That(levelThreeLink.ClearLink, Is.EqualTo("?keyword=Construction&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
 
             var levelFourLink = levelsClearLinks.Items.First(a => a.DisplayText == "Level 4");
             Assert.That(levelFourLink, Is.Not.Null);
-            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&categories=Construction&learningtypes=FoundationApprenticeship"));
+            Assert.That(levelFourLink.ClearLink, Is.EqualTo("?keyword=Construction&levels=3&categories=Construction&learningtypes=FoundationApprenticeship"));
         }
     }
 
@@ -255,7 +255,7 @@ public sealed class WhenFilteringCourses
             Assert.That(keywordClearLink, Is.Not.Null);
             Assert.That(keywordClearLink.Items, Has.Count.EqualTo(1));
             Assert.That(keywordClearLink.Items[0].DisplayText, Is.EqualTo("Construction"));
-            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?location=M60 7RA&distance=20&levels=3&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
+            Assert.That(keywordClearLink.Items[0].ClearLink, Is.EqualTo("?levels=3&levels=4&categories=Construction&learningtypes=FoundationApprenticeship"));
         }
     }
 
@@ -272,7 +272,7 @@ public sealed class WhenFilteringCourses
 
             var constructionCategoryClearLink = categoryClearLinks.Items.First(a => a.DisplayText == "Construction");
             Assert.That(constructionCategoryClearLink, Is.Not.Null);
-            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&location=M60 7RA&distance=20&levels=3&levels=4&learningtypes=FoundationApprenticeship"));
+            Assert.That(constructionCategoryClearLink.ClearLink, Is.EqualTo("?keyword=Construction&levels=3&levels=4&learningtypes=FoundationApprenticeship"));
         }
     }
 
@@ -377,9 +377,6 @@ public sealed class WhenFilteringCourses
         using (Assert.EnterMultipleScope())
         {
             Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Keyword) && kv.Item2 == "Construction"), Is.True);
-
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Location) && kv.Item2 == "M60 7RA"), Is.True);
-            Assert.That(qs.Any(kv => kv.Item1 == nameof(CoursesViewModel.Distance) && kv.Item2 == "20"), Is.True);
 
             Assert.That(qs.Count(kv => kv.Item1 == nameof(FilterService.FilterType.Levels)), Is.EqualTo(2));
             Assert.That(qs.Any(kv => kv.Item1 == nameof(FilterService.FilterType.Levels) && kv.Item2 == "3"), Is.True);

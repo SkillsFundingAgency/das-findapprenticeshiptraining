@@ -50,7 +50,8 @@
                     <a class="govuk-link govuk-link--no-visited-state"
                            asp-route="@RouteNames.CourseProviderDetails"
                            asp-route-larsCode="@Model.LarsCode"
-                           asp-route-providerId="@Model.Ukprn">
+                           asp-route-ukprn="@Model.Ukprn"
+                       asp-route-clearLocation="true">
                         remove or change your location
                     </a>.
 
@@ -67,9 +68,7 @@
                 <p class="govuk-body">If there are multiple training options, the learner may do a combination of these.</p>
             </div>
 
-            <form asp-show="@(!Model.HasLocation)" method="GET" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails">
-                <input type="hidden" name="Distance" value="@Model.Distance" />
-
+            <form asp-show="@(!Model.HasLocation)" method="POST" class="govuk-!-width-two-thirds" asp-route="@RouteNames.CourseProviderDetails" asp-route-ukprn="@Model.Ukprn" asp-route-larsCode="@Model.LarsCode">
                 <div class="search-wrapper govuk-form-group search-wrapper-das search-wrapper-das-small govuk-!-margin-bottom-0">
                     <div class="govuk-form-group @(!ViewContext.ModelState.IsValid ? "govuk-form-group--error" : "")">
                         <span asp-validation-for="Location" class="govuk-error-message"></span>

@@ -33,6 +33,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public string QarPeriodEndYear => $"20{QarPeriod.AsSpan(2, 2)}";
     public string ReviewPeriodStartYear => $"20{ReviewPeriod.AsSpan(0, 2)}";
     public string ReviewPeriodEndYear => $"20{ReviewPeriod.AsSpan(2, 2)}";
+
     public string ProviderReviewsHeading => $"Provider reviews in {ReviewPeriodStartYear} to {ReviewPeriodEndYear}";
     public string CourseAchievementRateHeading => $"Course achievement rate in {QarPeriodStartYear} to {QarPeriodEndYear}";
     public List<CoursesProviderViewModel> Providers { get; set; } = [];
@@ -136,18 +137,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         {
             switch (clearFilterSection.FilterType)
             {
-
-                case FilterType.Location:
-                    {
-                        result.Add(ValueTuple.Create(nameof(Location), Location));
-
-                        result.Add(!string.IsNullOrWhiteSpace(Distance)
-                            ? ValueTuple.Create(nameof(Distance), Distance)
-                            : ValueTuple.Create(nameof(Distance), DistanceService.AcrossEnglandFilterValue));
-                    }
-                    break;
-
-
                 case FilterType.DeliveryModes:
                     {
                         result.AddRange(SelectedDeliveryModes.Select(deliveryMode => ValueTuple.Create(nameof(FilterType.DeliveryModes), deliveryMode)));

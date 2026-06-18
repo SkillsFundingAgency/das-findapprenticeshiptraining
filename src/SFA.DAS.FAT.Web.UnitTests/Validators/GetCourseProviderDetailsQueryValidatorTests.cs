@@ -26,7 +26,7 @@ public class GetCourseProviderDetailsQueryValidatorTests
     [TestCase(111111)]
     [TestCase(9999999)]
     [TestCase(20000000)]
-    public void TestValidator_ProviderIdInvalid_ReturnsExpectedErrorMessage(int ukprn)
+    public void TestValidator_UkprnInvalid_ReturnsExpectedErrorMessage(int ukprn)
     {
         var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 
@@ -37,7 +37,7 @@ public class GetCourseProviderDetailsQueryValidatorTests
 
     [TestCase(10000000)]
     [TestCase(19999999)]
-    public void TestValidator_ProviderIdValid_ReturnsValid(int ukprn)
+    public void TestValidator_UkprnValid_ReturnsValid(int ukprn)
     {
         var result = _validator.TestValidate(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 

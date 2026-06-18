@@ -59,7 +59,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             //Assert
             var viewBag = controller.ViewBag.GaData as GaData;
             viewBag.Should().NotBeNull();
-            viewBag!.Location.Should().Be(location.Name);
+            viewBag!.Location.Should().Be(location.Location);
         }
         [Test, MoqAutoData]
         public async Task
@@ -100,10 +100,10 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
         }
 
         [Test, MoqAutoData]
-        public async Task Then_If_There_Is_A_ProviderId_Then_The_Data_Query_Param_Is_Checked_And_Decoded(
+        public async Task Then_If_There_Is_A_Ukprn_Then_The_Data_Query_Param_Is_Checked_And_Decoded(
             int providerPosition,
             int providerCount,
-            uint providerId,
+            uint ukprn,
             [Greedy] CoursesController controller,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
@@ -114,7 +114,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             var encodedData = Encoding.UTF8.GetBytes($"{providerPosition}|{providerCount}");
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
-            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), Convert.ToBase64String(encodedData));
+            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, ukprn.ToString(), Convert.ToBase64String(encodedData));
 
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
@@ -125,14 +125,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             viewBag.Should().NotBeNull();
             viewBag!.ProviderTotal.Should().Be(providerCount);
             viewBag.ProviderPlacement.Should().Be(providerPosition);
-            viewBag.ProviderId.Should().Be(providerId);
+            viewBag.Ukprn.Should().Be(ukprn);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_It_Is_Unable_To_Unprotect_The_Value_Then_Nothing_Is_Added(
             int providerPosition,
             int providerCount,
-            uint providerId,
+            uint ukprn,
             [Greedy] CoursesController controller,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
@@ -143,7 +143,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             var encodedData = Encoding.UTF8.GetBytes($"{providerPosition}|{providerCount}");
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Throws<CryptographicException>();
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
-            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), Convert.ToBase64String(encodedData));
+            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, ukprn.ToString(), Convert.ToBase64String(encodedData));
 
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
@@ -153,14 +153,14 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             viewBag.Should().NotBeNull();
             viewBag!.ProviderTotal.Should().Be(0);
             viewBag.ProviderPlacement.Should().Be(0);
-            viewBag.ProviderId.Should().Be(0);
+            viewBag.Ukprn.Should().Be(0);
         }
 
         [Test, MoqAutoData]
         public async Task Then_If_It_Is_An_Invalid_Base64_String_Then_Nothing_Is_Added(
             int providerPosition,
             int providerCount,
-            uint providerId,
+            uint ukprn,
             [Greedy] CoursesController controller,
             [Frozen] Mock<IDataProtector> protector,
             [Frozen] Mock<IDataProtectionProvider> provider,
@@ -172,7 +172,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             var encodedData = Encoding.UTF8.GetBytes(data);
             protector.Setup(sut => sut.Unprotect(It.IsAny<byte[]>())).Returns(encodedData);
             provider.Setup(x => x.CreateProtector(Constants.GaDataProtectorName)).Returns(protector.Object);
-            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, providerId.ToString(), data);
+            var context = SetupContextAndCookieLocations(controller, null, null, cookieStorageService, ukprn.ToString(), data);
 
             //Act
             await filter.OnActionExecutionAsync(context, Mock.Of<ActionExecutionDelegate>());
@@ -182,11 +182,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
             viewBag.Should().NotBeNull();
             viewBag!.ProviderTotal.Should().Be(0);
             viewBag.ProviderPlacement.Should().Be(0);
-            viewBag.ProviderId.Should().Be(0);
+            viewBag.Ukprn.Should().Be(0);
         }
 
         private static ActionExecutingContext SetupContextAndCookieLocations(CoursesController controller, string location,
-            LocationCookieItem cookieLocation, Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService, string providerId = "", string data = "")
+            LocationCookieItem cookieLocation, Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService, string ukprn = "", string data = "")
         {
             cookieStorageService.Setup(x => x.Get(Constants.LocationCookieName))
                 .Returns(cookieLocation);
@@ -199,9 +199,9 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters
                 queryString += $"?location={location}";
             }
 
-            if (!string.IsNullOrEmpty(providerId))
+            if (!string.IsNullOrEmpty(ukprn))
             {
-                routeData.Values.Add("providerId", providerId);
+                routeData.Values.Add("ukprn", ukprn);
                 if (!string.IsNullOrEmpty(data))
                 {
                     if (string.IsNullOrEmpty(queryString))

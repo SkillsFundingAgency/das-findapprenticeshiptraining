@@ -12,7 +12,7 @@
         <a class="das-search-results__link"
                larsCode="standard-@Model.LarsCode"
                asp-route="@RouteNames.CourseDetails"
-               asp-all-route-data="Model.CourseDetailsRouteValues">
+               asp-route-larsCode="@Model.LarsCode">
             @Model.Title <span class="das-no-wrap">(level @Model.Level)</span>
         </a>
     </h2>

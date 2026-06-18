@@ -43,7 +43,7 @@ public sealed class WhenFilteringCourseProviders
             ReviewPeriod = "2324"
         };
 
-        _fullQueryString = "?location=M60 7RA&distance=20&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
+        _fullQueryString = "?deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
     }
 
     [Test]
@@ -132,11 +132,11 @@ public sealed class WhenFilteringCourseProviders
     }
 
     [Test]
-    public void ClearFilters_Location_IncludesClearLink()
+    public void ClearFilter_Location_IncludesClearLink()
     {
         var sut = _viewModel.Filters.ClearFilterSections;
 
-        var urlWithoutLocation = _fullQueryString.Replace($"location={_viewModel.Location}&distance={_viewModel.Distance}&", "");
+        var urlWithoutLocation = "?clearFilter=true&deliverymodes=DayRelease&deliverymodes=BlockRelease&employerproviderratings=Excellent&employerproviderratings=Good&apprenticeproviderratings=Poor&apprenticeproviderratings=VeryPoor&qarratings=Excellent&qarratings=VeryPoor&orderby=Distance";
 
         using (Assert.EnterMultipleScope())
         {
@@ -185,9 +185,9 @@ public sealed class WhenFilteringCourseProviders
             Assert.That(clearLinks, Is.Not.Null);
             Assert.That(clearLinks.Items, Has.Count.EqualTo(_viewModel.SelectedDeliveryModes.Count() - 1));
 
-            var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("&deliverymodes=Provider", "");
-            var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("&deliverymodes=DayRelease", "");
-            var urlWithoutDeliveryModeBlockRelease = _fullQueryString.Replace("&deliverymodes=BlockRelease", "");
+            var urlWithoutDeliveryModeProvider = _fullQueryString.Replace("deliverymodes=Provider&", "");
+            var urlWithoutDeliveryModeDayRelease = _fullQueryString.Replace("deliverymodes=DayRelease&", "");
+            var urlWithoutDeliveryModeBlockRelease = _fullQueryString.Replace("deliverymodes=BlockRelease&", "");
 
             using (Assert.EnterMultipleScope())
             {

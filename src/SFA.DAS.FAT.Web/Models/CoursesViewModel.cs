@@ -56,7 +56,6 @@ public class CoursesViewModel : PageLinksViewModelBase
     public List<string> SelectedRoutes { get; set; } = [];
     public List<LearningType> SelectedTrainingTypes { get; set; } = [];
     public List<int> SelectedLevels { get; set; } = [];
-
     public int Total { get; set; }
 
     public int TotalFiltered { get; set; }
@@ -132,7 +131,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(Location) && Distance != DistanceService.AcrossEnglandFilterValue)
+        if (!string.IsNullOrWhiteSpace(Location) && !DistanceService.IsAcrossEngland(Distance))
         {
             return LocationCoursesSubHeaderText;
         }
@@ -253,16 +252,6 @@ public class CoursesViewModel : PageLinksViewModelBase
                 case FilterType.KeyWord:
                     {
                         result.Add(ValueTuple.Create(nameof(Keyword), Keyword!));
-                    }
-                    break;
-                case FilterType.Location:
-                    {
-                        result.Add(ValueTuple.Create(nameof(Location), Location));
-
-                        if (!string.IsNullOrWhiteSpace(Distance))
-                        {
-                            result.Add(ValueTuple.Create(nameof(Distance), Distance));
-                        }
                     }
                     break;
                 case FilterType.Levels:

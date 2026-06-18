@@ -29,9 +29,9 @@ namespace SFA.DAS.FAT.Web.Controllers;
 [Route("courses/{larsCode}/providers")]
 public class CourseProvidersController : Controller
 {
-    public const string LocationTempDataKey = "Location";
     private readonly IMediator _mediator;
     private readonly ICookieStorageService<ShortlistCookieItem> _shortlistCookieService;
+    private readonly ICookieStorageService<LocationCookieItem> _locationCookieService;
     private readonly IValidator<GetCourseProviderDetailsQuery> _ukprnValidator;
     private readonly IValidator<GetCourseLocationQuery> _courseLocationValidator;
     private readonly IValidator<GetCourseQuery> _courseIdValidator;
@@ -47,7 +47,8 @@ public class CourseProvidersController : Controller
         IOptions<FindApprenticeshipTrainingWeb> config,
         ISessionService sessionService,
         IDateTimeService dateTimeService,
-        IValidator<GetCourseQuery> courseIdValidator)
+        IValidator<GetCourseQuery> courseIdValidator,
+        ICookieStorageService<LocationCookieItem> locationCookieService)
     {
         _mediator = mediator;
         _ukprnValidator = ukprnValidator;
@@ -57,52 +58,90 @@ public class CourseProvidersController : Controller
         _dateTimeService = dateTimeService;
         _courseIdValidator = courseIdValidator;
         _config = config.Value;
+        _locationCookieService = locationCookieService;
+    }
+
+    [HttpPost]
+    [Route("", Name = RouteNames.CourseProviders)]
+    public IActionResult ApplyFilters(CourseProvidersFiltersSubmitModel submitModel)
+    {
+        var requestModel = new CourseProvidersFiltersRequestModel
+        {
+            LarsCode = submitModel.LarsCode,
+            OrderBy = submitModel.OrderBy,
+            DeliveryModes = submitModel.DeliveryModes,
+            EmployerProviderRatings = submitModel.EmployerProviderRatings,
+            ApprenticeProviderRatings = submitModel.ApprenticeProviderRatings,
+            QarRatings = submitModel.QarRatings,
+            PageNumber = 1
+        };
+
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
+        return RedirectToRoute(RouteNames.CourseProviders, requestModel);
     }
 
     [HttpGet]
     [Route("", Name = RouteNames.CourseProviders)]
-    public async Task<IActionResult> CourseProviders(CourseProvidersRequest request)
+    public async Task<IActionResult> CourseProviders(CourseProvidersFiltersRequestModel requestModel, bool clearFilter = false)
     {
-        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = request.LarsCode });
+        var validationLarsCodeResult = await _courseIdValidator.ValidateAsync(new GetCourseQuery { LarsCode = requestModel.LarsCode });
 
         if (!validationLarsCodeResult.IsValid)
         {
             return NotFound();
         }
 
-        string prevLocation = TempData[LocationTempDataKey]?.ToString();
-        TempData[LocationTempDataKey] = request.Location;
+        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        if (clearFilter)
+        {
+            _locationCookieService.Delete(Constants.LocationCookieName);
+            requestLocation = string.Empty;
+            requestDistance = DistanceService.TenMiles.ToString();
+        }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
-        var orderBy = string.IsNullOrEmpty(request.Location) && request.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : request.OrderBy;
 
-        if (string.IsNullOrEmpty(prevLocation) && !string.IsNullOrEmpty(request.Location))
+        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance))
         {
-            orderBy = ProviderOrderBy.Distance;
+            requestDistance = DistanceService.TenMiles.ToString();
         }
 
-        if (string.IsNullOrWhiteSpace(request.Distance) || !DistanceService.IsValidDistance(request.Distance))
+        var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
+
+        int? convertedDistance = DistanceService.GetValidDistanceNullable(requestDistance);
+
+        var deliveryModes = requestModel.DeliveryModes.ToList();
+
+        CourseProvidersViewModel CreateBaseCourseProvidersViewModel()
         {
-            request.Distance = DistanceService.TenMiles.ToString();
+            return new CourseProvidersViewModel(_config)
+            {
+                LarsCode = requestModel.LarsCode,
+                ShortlistCount = shortlistCount?.Count ?? 0,
+                OrderBy = orderBy,
+                Location = requestLocation,
+                Distance = requestDistance,
+                SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
+                SelectedEmployerApprovalRatings = requestModel.EmployerProviderRatings.Select(r => r.ToString()),
+                SelectedApprenticeApprovalRatings = requestModel.ApprenticeProviderRatings.Select(r => r.ToString()),
+                SelectedQarRatings = requestModel.QarRatings.Select(q => q.ToString()),
+                Providers = []
+            };
         }
-
-        int? convertedDistance = DistanceService.GetValidDistanceNullable(request.Distance);
-
-        var deliveryModes = request.DeliveryModes.ToList();
 
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
-            LarsCode = request.LarsCode,
-            Location = request.Location,
+            LarsCode = requestModel.LarsCode,
+            Location = requestLocation,
             OrderBy = orderBy,
             Distance = convertedDistance,
             DeliveryModes = deliveryModes.Count == 3 ? [] : deliveryModes,
-            EmployerProviderRatings = request.EmployerProviderRatings.ToList(),
-            ApprenticeProviderRatings = request.ApprenticeProviderRatings.ToList(),
-            Qar = request.QarRatings.ToList(),
-            Page = request.PageNumber,
+            EmployerProviderRatings = requestModel.EmployerProviderRatings.ToList(),
+            ApprenticeProviderRatings = requestModel.ApprenticeProviderRatings.ToList(),
+            Qar = requestModel.QarRatings.ToList(),
+            Page = requestModel.PageNumber,
             ShortlistUserId = shortlistUserId
         });
 
@@ -111,67 +150,66 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
-        var courseProvidersViewModel = new CourseProvidersViewModel(_config)
-        {
-            LarsCode = request.LarsCode,
-            ShortlistCount = shortlistCount?.Count ?? 0,
-            OrderBy = orderBy,
-            CourseTitleAndLevel = result.StandardName,
-            CourseType = result.CourseType,
-            LearningType = result.LearningType,
-            IsActiveAvailable = result.IsActiveAvailable,
-            Location = request.Location,
-            Distance = convertedDistance.ToString(),
-            SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
-            SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(r => r.ToString()),
-            SelectedApprenticeApprovalRatings = request.ApprenticeProviderRatings.Select(r => r.ToString()),
-            SelectedQarRatings = request.QarRatings.Select(q => q.ToString()),
-            ShowSearchCrumb = true,
-            ShowShortListLink = true,
-            ShowApprenticeTrainingCoursesCrumb = true,
-            ShowApprenticeTrainingCourseCrumb = true,
-            QarPeriod = result.QarPeriod,
-            ReviewPeriod = result.ReviewPeriod,
-            TotalCount = result.TotalCount,
-            Providers = []
-        };
+        var courseProvidersViewModel = CreateBaseCourseProvidersViewModel();
+
+        courseProvidersViewModel.CourseTitleAndLevel = result.StandardName;
+        courseProvidersViewModel.CourseType = result.CourseType;
+        courseProvidersViewModel.LearningType = result.LearningType;
+        courseProvidersViewModel.IsActiveAvailable = result.IsActiveAvailable;
+        courseProvidersViewModel.ShowSearchCrumb = true;
+        courseProvidersViewModel.ShowShortListLink = true;
+        courseProvidersViewModel.ShowApprenticeTrainingCoursesCrumb = true;
+        courseProvidersViewModel.ShowApprenticeTrainingCourseCrumb = true;
+        courseProvidersViewModel.QarPeriod = result.QarPeriod;
+        courseProvidersViewModel.ReviewPeriod = result.ReviewPeriod;
+        courseProvidersViewModel.TotalCount = result.TotalCount;
 
         var providers = result.Providers.Select(p => (CoursesProviderViewModel)p).ToList();
         foreach (var provider in providers)
         {
-            provider.Distance = request.Distance;
-            provider.Location = request.Location;
+            provider.Distance = requestDistance;
+            provider.Location = requestLocation;
         }
 
-        courseProvidersViewModel.ProviderOrderOptions = GenerateProviderOrderDropdown(orderBy, string.IsNullOrEmpty(request.Location));
+        courseProvidersViewModel.ProviderOrderOptions = GenerateProviderOrderDropdown(orderBy, string.IsNullOrEmpty(requestLocation));
 
         courseProvidersViewModel.Providers = providers;
 
         courseProvidersViewModel.Pagination = new PaginationViewModel(1, 0, Constants.DefaultPageSize,
-            Url, RouteNames.CourseProviders, new List<ValueTuple<string, string>>());
+            Url, RouteNames.CourseProviders, []);
 
 
         if (result.Providers.Count > 0)
         {
+            var paginationQueryParams = courseProvidersViewModel.ToQueryString();
             courseProvidersViewModel.Pagination = new PaginationViewModel(
                 result.Page,
                 result.TotalCount,
                 result.PageSize,
                 Url,
                 RouteNames.CourseProviders,
-                courseProvidersViewModel.ToQueryString()
+                paginationQueryParams
             );
         }
 
         return View(courseProvidersViewModel);
     }
 
+    [HttpPost]
+    [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
+    public async Task<IActionResult> ApplyLocation([FromForm] ProviderLocationSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
+    {
+        var (_, requestDistance) = _locationCookieService.GetLocation();
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = requestDistance });
+        return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });
+    }
+
     [HttpGet]
-    [Route("{providerId}", Name = RouteNames.CourseProviderDetails)]
-    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int providerId, [FromQuery] string location, [FromQuery] string distance)
+    [Route("{ukprn}", Name = RouteNames.CourseProviderDetails)]
+    public async Task<IActionResult> CourseProviderDetails([FromRoute] string larsCode, [FromRoute] int ukprn, bool clearLocation = false)
     {
 
-        var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = providerId });
+        var validationUkprnResult = await _ukprnValidator.ValidateAsync(new GetCourseProviderDetailsQuery { Ukprn = ukprn });
 
         if (!validationUkprnResult.IsValid)
         {
@@ -185,21 +223,32 @@ public class CourseProvidersController : Controller
             return NotFound();
         }
 
+        var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
+        if (clearLocation)
+        {
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
+            requestLocation = string.Empty;
+        }
+
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
+
+        if (!validationLocationResult.IsValid)
+        {
+            ModelState.AddValidationErrors(validationLocationResult.Errors);
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
+            requestLocation = string.Empty;
+        }
+
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        if (!string.IsNullOrWhiteSpace(location) && !DistanceService.IsValidDistance(distance))
-        {
-            distance = DistanceService.TenMiles.ToString();
-        }
-
         var query = new GetCourseProviderDetailsQuery
         {
-            Ukprn = providerId,
+            Ukprn = ukprn,
             LarsCode = larsCode,
-            Location = location?.Trim(),
-            Distance = string.IsNullOrWhiteSpace(location) ? null : DistanceService.DefaultDistance,
+            Location = requestLocation,
+            Distance = string.IsNullOrWhiteSpace(requestLocation) ? null : DistanceService.DefaultDistance,
             ShortlistUserId = shortlistUserId
         };
 
@@ -214,8 +263,8 @@ public class CourseProvidersController : Controller
         viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
-        viewModel.Location = location;
-        viewModel.Distance = distance ?? DistanceService.TenMiles.ToString();
+        viewModel.Location = requestLocation;
+        viewModel.Distance = requestDistance ?? DistanceService.TenMiles.ToString();
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
         viewModel.ShowApprenticeTrainingCourseCrumb = true;
@@ -223,14 +272,6 @@ public class CourseProvidersController : Controller
         viewModel.ShowShortListLink = true;
         viewModel.ShowSearchCrumb = true;
         viewModel.ShortlistCount = shortlistCount?.Count ?? 0;
-
-        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = location?.Trim() });
-
-        if (!validationLocationResult.IsValid)
-        {
-            viewModel.Location = string.Empty;
-            ModelState.AddValidationErrors(validationLocationResult.Errors);
-        }
 
         return View(viewModel);
     }

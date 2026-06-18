@@ -1,17 +1,16 @@
 ﻿using SFA.DAS.FAT.Domain;
 
-namespace SFA.DAS.FAT.Web.Models
-{
-    public class LocationViewModel
-    {
-        public string Name { get; set; }
+namespace SFA.DAS.FAT.Web.Models;
 
-        public static implicit operator LocationViewModel(Locations.LocationItem source)
+public class LocationViewModel
+{
+    public string Name { get; set; }
+
+    public static implicit operator LocationViewModel(Locations.LocationItem source)
+    {
+        return new LocationViewModel
         {
-            return new LocationViewModel
-            {
-                Name = source.Name
-            };
-        }
+            Name = source.Name
+        };
     }
 }

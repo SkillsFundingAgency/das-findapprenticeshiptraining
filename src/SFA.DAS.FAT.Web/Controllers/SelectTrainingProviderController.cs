@@ -27,11 +27,9 @@ public class SelectTrainingProviderController(FluentValidation.IValidator<Select
             ModelState.AddValidationErrors(result.Errors);
             return View(model);
         }
-
         return RedirectToRoute(RouteNames.Provider, new
         {
-            submitModel.Ukprn,
-            submitModel.Location
+            submitModel.Ukprn
         });
     }
 }

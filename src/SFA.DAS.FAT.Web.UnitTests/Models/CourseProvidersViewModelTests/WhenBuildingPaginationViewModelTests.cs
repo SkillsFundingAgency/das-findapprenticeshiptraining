@@ -39,7 +39,7 @@ public class WhenBuildingPaginationViewModelTests
     public void Then_Pagination_Single_Pages_Is_Set(
         int numberOfResults,
         [Frozen] Mock<FindApprenticeshipTrainingWeb> config,
-        CourseProvidersRequest request)
+        CourseProvidersFiltersSubmitModel request)
     {
         //Act
         var vm = new CourseProvidersViewModel(config.Object)
@@ -79,7 +79,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(20)]
     public void Then_Pagination_2_Pages_Page_1_Is_Set(
           int numberOfResults,
-          CourseProvidersRequest request,
+          CourseProvidersFiltersSubmitModel request,
           [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         //Act
@@ -127,7 +127,7 @@ public class WhenBuildingPaginationViewModelTests
 
             urlCheck.Should().Contain(TestConstants.DefaultUrl);
             urlCheck.Should().Contain($"OrderBy={request.OrderBy.ToString()}");
-            urlCheck.Should().Contain($"Location={request.Location}");
+            urlCheck.Should().NotContain($"Location={request.Location}");
             urlCheck.Should().Contain($"DeliveryModes={string.Join("&DeliveryModes=", request.DeliveryModes)}");
             urlCheck.Should().Contain($"EmployerProviderRatings={string.Join("&EmployerProviderRatings=", request.EmployerProviderRatings)}");
             urlCheck.Should().Contain($"ApprenticeProviderRatings={string.Join("&ApprenticeProviderRatings=", request.ApprenticeProviderRatings)}");
@@ -141,7 +141,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(20)]
     public void Then_Pagination_2_Pages_Page_2_Is_Set(
      int numberOfResults,
-     CourseProvidersRequest request,
+     CourseProvidersFiltersSubmitModel request,
      [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         int pagesExpected = 3;
@@ -191,7 +191,7 @@ public class WhenBuildingPaginationViewModelTests
     [MoqInlineAutoData(71)]
     public void Then_Pagination_7_Pages_Page_5_Is_Set(
         int numberOfResults,
-     CourseProvidersRequest request,
+     CourseProvidersFiltersSubmitModel request,
      [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         int currentPage = 5;
@@ -255,17 +255,16 @@ public class WhenBuildingPaginationViewModelTests
     }
 
     [Test]
-    [MoqInlineAutoData("Location 1", "5", true)]
-    [MoqInlineAutoData("location 1", "100", true)]
-    [MoqInlineAutoData("location 3", "All", true)]
-    [MoqInlineAutoData(null, "5", false)]
-    [MoqInlineAutoData(null, "100", false)]
-    [MoqInlineAutoData(null, "All", false)]
+    [MoqInlineAutoData("Location 1", "5")]
+    [MoqInlineAutoData("location 1", "100")]
+    [MoqInlineAutoData("location 3", "All")]
+    [MoqInlineAutoData(null, "5")]
+    [MoqInlineAutoData(null, "100")]
+    [MoqInlineAutoData(null, "All")]
     public void Then_Pagination_2_Pages_Page_1_Distance_Is_Set(
         string location,
         string distance,
-        bool isDistanceInPaginationUrl,
-        CourseProvidersRequest request,
+        CourseProvidersFiltersSubmitModel request,
         [Frozen] Mock<FindApprenticeshipTrainingWeb> config)
     {
         var numberOfResults = 11;
@@ -316,16 +315,6 @@ public class WhenBuildingPaginationViewModelTests
             var urlCheck = sut.Pages[2].Url;
 
             urlCheck.Should().Contain(TestConstants.DefaultUrl);
-            switch (isDistanceInPaginationUrl)
-            {
-                case true:
-                    urlCheck.Should().Contain($"Distance={distance}");
-                    break;
-                default:
-                    urlCheck.Should().NotContain($"Distance={distance}");
-                    break;
-            }
-
         }
     }
 }

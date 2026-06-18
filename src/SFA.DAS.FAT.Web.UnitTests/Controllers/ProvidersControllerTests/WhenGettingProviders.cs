@@ -8,9 +8,11 @@ using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Application.Providers.Query.GetProvider;
+using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Controllers;
+using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.FAT.Web.Validators;
 using SFA.DAS.Testing.AutoFixture;
@@ -26,16 +28,18 @@ public class WhenGettingProviders
         string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<IDateTimeService> dateTimeServiceMock,
         [Greedy] ProvidersController controller)
     {
         response.Ukprn = ukprn;
         response.AnnualEmployerFeedbackDetails = null;
         response.AnnualApprenticeFeedbackDetails = null;
-        mediator.Setup(x =>
-                x.Send(It.Is<GetProviderQuery>(c =>
-                    c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(response);
+        mediator.Setup(x => x.Send(It.Is<GetProviderQuery>(c =>
+                 c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>())).ReturnsAsync(response);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+           .Returns(new LocationCookieItem { Location = location, Distance = "10" });
 
         validatorMock.Setup(v =>
             v.ValidateAsync(
@@ -44,7 +48,7 @@ public class WhenGettingProviders
             )
         ).ReturnsAsync(new ValidationResult());
 
-        var actual = await controller.Index(ukprn, location);
+        var actual = await controller.Index(ukprn);
 
         actual.Should().NotBeNull();
 
@@ -101,7 +105,7 @@ public class WhenGettingProviders
             }
         });
 
-        var sut = await controller.Index(ukprn, location);
+        var sut = await controller.Index(ukprn);
 
         sut.Should().BeOfType<NotFoundResult>();
 

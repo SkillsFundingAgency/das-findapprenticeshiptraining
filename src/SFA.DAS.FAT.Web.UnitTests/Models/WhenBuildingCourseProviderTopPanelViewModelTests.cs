@@ -1,29 +1,20 @@
 ﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
-using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
 
 public class WhenBuildingCourseProviderTopPanelViewModelTests
 {
-    [Test]
-    [MoqInlineAutoData("10", "10")]
-    [MoqInlineAutoData("20", "20")]
-    [MoqInlineAutoData("50", "50")]
-    [MoqInlineAutoData(DistanceService.AcrossEnglandFilterValue, "")]
-    public void Then_Set_ProviderRouteData(string distance, string distanceExpected, CourseProviderTopPanelViewModel sut)
+    [Test, MoqAutoData]
+    public void Then_Set_ProviderRouteData(CourseProviderTopPanelViewModel sut)
     {
-
-        sut.Distance = distance;
 
         var expectedDictionary = new Dictionary<string, string>
         {
-            {"location", sut.Location},
             {"larsCode", sut.LarsCode},
-            {"providerId", sut.Ukprn.ToString()},
-            {"distance", distanceExpected}
+            {"ukprn", sut.Ukprn.ToString()}
         };
 
         sut.ProviderRouteData.Should().BeEquivalentTo(expectedDictionary);

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
@@ -10,26 +9,17 @@ public class CourseProviderTopPanelViewModel
     public string ProviderName { get; set; }
     public Guid? ShortlistId { get; set; }
     public int ShortlistCount { get; set; }
-    public string Location { get; set; }
     public string LarsCode { get; set; }
-    public string Distance { get; set; }
 
     public Dictionary<string, string> ProviderRouteData
     {
         get
         {
-            var distance = string.Empty;
-            if (!string.IsNullOrEmpty(Distance) && Distance != DistanceService.AcrossEnglandFilterValue)
-            {
-                distance = Distance;
-            }
 
             var providerRouteData = new Dictionary<string, string>
             {
-                { "location", Location },
                 { "larsCode", LarsCode },
-                { "providerId", Ukprn.ToString() },
-                { "distance", distance }
+                { "ukprn", Ukprn.ToString() },
             };
 
             return providerRouteData;

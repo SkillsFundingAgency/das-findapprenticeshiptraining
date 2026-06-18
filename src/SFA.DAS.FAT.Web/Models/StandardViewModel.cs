@@ -44,8 +44,6 @@ public class StandardViewModel
     public bool ShowNoProvidersRunThisCourseShortCourseMessage => !HasProviders && TotalProvidersCount == 0 && IsShortCourseType;
     public bool ShowNoProvidersBasedOnSearchShortCourseMessage => !HasProviders && TotalProvidersCount > 0 && IsShortCourseType;
 
-    public Dictionary<string, string> CourseDetailsRouteValues { get; init; } = new();
-
     public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels)
     {
         Ordering = source.Ordering;
@@ -67,9 +65,8 @@ public class StandardViewModel
         MaxFunding = source.MaxFunding.ToString("C0", new CultureInfo("en-GB"));
         LevelName = GetLevelName(levels);
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
-        FindProvidersUrl = GetFindProvidersUrl(urlHelper, location, distance);
+        FindProvidersUrl = GetFindProvidersUrl(urlHelper);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
-        GenerateStandardRouteValues(location, distance);
     }
 
     private string GetLevelName(List<LevelViewModel> levels)
@@ -79,16 +76,6 @@ public class StandardViewModel
         return $"{Level} - equal to {level.Name}";
     }
 
-    private void GenerateStandardRouteValues(string location, string distance)
-    {
-        CourseDetailsRouteValues.Add("larsCode", LarsCode);
-
-        if (!string.IsNullOrWhiteSpace(location))
-        {
-            CourseDetailsRouteValues.Add("location", location);
-            CourseDetailsRouteValues.Add("distance", distance.ToString());
-        }
-    }
 
     private string GetRequestApprenticeshipTrainingUrl(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, string location)
     {
@@ -103,16 +90,16 @@ public class StandardViewModel
         return $"{employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
 
-    private string GetFindProvidersUrl(IUrlHelper urlHelper, string location, string distance)
+    private string GetFindProvidersUrl(IUrlHelper urlHelper)
     {
         if (!HasProviders) return string.Empty;
-        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode, location, distance = distance == DistanceService.AcrossEnglandFilterValue ? DistanceService.AcrossEnglandFilterValue : distance })!;
+        return urlHelper.RouteUrl(RouteNames.CourseProviders, new { larsCode = LarsCode })!;
     }
 
     private string GetFindProvidersUrlDescription(string location, string distance)
     {
         if (!HasProviders) return string.Empty;
-        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || distance == DistanceService.AcrossEnglandFilterValue;
+        bool isNationalSearch = string.IsNullOrWhiteSpace(location) || DistanceService.IsAcrossEngland(distance);
 
         string providerText = "training provider".ToQuantity(ProvidersCount);
 
