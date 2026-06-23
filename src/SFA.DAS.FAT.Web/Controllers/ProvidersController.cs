@@ -42,6 +42,11 @@ public class ProvidersController : Controller
 
         var response = await _mediator.Send(new GetProviderQuery(ukprn));
 
+        if (response == null)
+        {
+            return NotFound();
+        }
+
         var viewModel = (ProviderDetailsViewModel)response;
         viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(response.AnnualEmployerFeedbackDetails,
             response.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
