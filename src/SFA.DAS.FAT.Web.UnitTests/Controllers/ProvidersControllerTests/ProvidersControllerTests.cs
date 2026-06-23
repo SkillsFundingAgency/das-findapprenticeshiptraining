@@ -19,17 +19,16 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ProvidersControllerTests;
 
-public class WhenGettingProviders
+public class ProvidersControllerTests
 {
     [Test, MoqAutoData]
-    public async Task Then_The_Query_Is_Sent_And_Data_Retrieved(
+    public async Task Index_WhenProviderExists_ReturnsProviderDetailsView(
         int ukprn,
         GetProviderQueryResponse response,
         string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Frozen] Mock<IDateTimeService> dateTimeServiceMock,
         [Greedy] ProvidersController controller)
     {
         response.Ukprn = ukprn;
@@ -75,13 +74,11 @@ public class WhenGettingProviders
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Invalid_Ukprn_Redirects_To_Shutter_Page(
+    public async Task Index_InvalidUkprn_ReturnsNotFound(
         int ukprn,
         GetProviderQueryResponse response,
-        string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
-        [Frozen] Mock<IDateTimeService> dateTimeServiceMock,
         [Greedy] ProvidersController controller)
     {
         response.Ukprn = ukprn;
@@ -114,5 +111,29 @@ public class WhenGettingProviders
                 It.IsAny<CancellationToken>()),
             Times.Never
         );
+    }
+
+    [Test, MoqAutoData]
+    public async Task Index_NullResponse_ReturnsNotFound(
+        int ukprn,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Greedy] ProvidersController controller)
+    {
+        mediator.Setup(x =>
+                x.Send(It.Is<GetProviderQuery>(c =>
+                    c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>()))
+            .ReturnsAsync((GetProviderQueryResponse)null);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        var sut = await controller.Index(ukprn);
+
+        sut.Should().BeOfType<NotFoundResult>();
     }
 }
