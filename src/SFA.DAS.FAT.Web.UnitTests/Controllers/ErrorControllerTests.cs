@@ -28,7 +28,7 @@ public class ErrorControllerTests
     }
 
     [Test, MoqAutoData]
-    public void ErrorInService_ExceptionFeaturePresent_LogsErrorAndReturnsDefaultView(
+    public void ErrorInService_ExceptionFeaturePresent_ReturnsErrorInServiceView(
        [Greedy] ErrorController sut)
     {
         var context = new DefaultHttpContext();
