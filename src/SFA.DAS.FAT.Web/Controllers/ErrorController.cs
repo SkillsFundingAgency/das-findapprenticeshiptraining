@@ -34,6 +34,6 @@ public class ErrorController : Controller
         var feature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
         _logger.LogError(feature.Error, "Unexpected error occurred during request to {Path}", feature.Path);
 
-        return View();
+        return View(ErrorInServiceViewName);
     }
 }

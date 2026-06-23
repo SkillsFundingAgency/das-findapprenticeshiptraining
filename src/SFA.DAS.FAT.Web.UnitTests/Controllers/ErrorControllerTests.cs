@@ -40,7 +40,6 @@ public class ErrorControllerTests
         var result = sut.ErrorInService() as ViewResult;
 
         result.Should().NotBeNull();
-        result!.ViewName.Should().BeNullOrEmpty();
-        result!.ViewName.Should().Be("ErrorInService");
+        result!.ViewName.Should().Be(ErrorController.ErrorInServiceViewName);
     }
 }
