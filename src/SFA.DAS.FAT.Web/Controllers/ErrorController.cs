@@ -1,22 +1,39 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using SFA.DAS.FAT.Web.Infrastructure;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace SFA.DAS.FAT.Web.Controllers;
 
 [Route("error")]
 public class ErrorController : Controller
 {
-    [HttpGet]
-    [Route("404", Name = RouteNames.Error404)]
-    public IActionResult PageNotFound()
+    public const string PageNotFoundViewName = "PageNotFound";
+    public const string ErrorInServiceViewName = "ErrorInService";
+    private readonly ILogger<ErrorController> _logger;
+
+    public ErrorController(ILogger<ErrorController> logger)
     {
-        return View();
+        _logger = logger;
     }
 
-    [HttpGet]
-    [Route("500", Name = RouteNames.Error500)]
-    public IActionResult ApplicationError()
+    [Route("{statuscode}")]
+    public IActionResult HttpStatusCodeHandler([FromRoute] int statusCode)
     {
-        return View();
+        _logger.LogError("Unexpected error occurred with status code: {StatusCode}", statusCode);
+
+        return statusCode switch
+        {
+            StatusCodes.Status404NotFound => View(PageNotFoundViewName),
+            _ => View(ErrorInServiceViewName)
+        };
+    }
+
+    public IActionResult ErrorInService()
+    {
+        var feature = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+        _logger.LogError(feature.Error, "Unexpected error occurred during request to {Path}", feature.Path);
+
+        return View(ErrorInServiceViewName);
     }
 }

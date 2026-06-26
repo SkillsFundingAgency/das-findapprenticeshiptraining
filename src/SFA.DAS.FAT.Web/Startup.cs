@@ -114,8 +114,8 @@ public class Startup
         else
         {
             app.UseHealthChecks();
-            app.UseExceptionHandler("/Error/500");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+            app.UseStatusCodePagesWithReExecute("/Error/{0}");
+            app.UseExceptionHandler("/error");
             app.UseHsts();
         }
 
@@ -139,8 +139,6 @@ public class Startup
         });
         app.UseCookiePolicy();
 
-        app.UseStatusCodePagesWithReExecute("/error/404");
-
         app.Use(async (context, next) =>
         {
             if (context.Response.Headers.ContainsKey("X-Frame-Options"))
@@ -151,6 +149,15 @@ public class Startup
             context.Response.Headers.Append("X-Frame-Options", "SAMEORIGIN");
 
             await next();
+
+            if (context.Response.StatusCode == 404 && !context.Response.HasStarted)
+            {
+                //Re-execute the request so the user gets the error page
+                var originalPath = context.Request.Path.Value;
+                context.Items["originalPath"] = originalPath;
+                context.Request.Path = "/error/404";
+                await next();
+            }
         });
 
         app.UseRouting();
