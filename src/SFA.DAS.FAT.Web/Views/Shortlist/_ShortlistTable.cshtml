@@ -21,17 +21,16 @@
     <tbody class="govuk-table__body">
         @foreach (var shortlistItem in Model.Providers)
         {
-            var routeData = new Dictionary<string, string>
-            {
-                {"larsCode",shortlistItem.LarsCode.ToString()},
-                {"ukprn",shortlistItem.Ukprn.ToString()}
-            };
-
             <tr class="govuk-table__row app-shortlist-table__row">
                 <th scope="row" class="govuk-table__header app-shortlist-table__header-cell">
                     <div class="das-highlight app-shortlist-table__highlight">
                         <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold govuk-!-margin-bottom-2">
-                            <a id="@shortlistItem.ShortlistId" asp-route="@RouteNames.CourseProviderDetails" asp-all-route-data="@routeData" class="govuk-link govuk-link--no-visited-state">@shortlistItem.ProviderName</a>
+                            <form method="POST" asp-route="@RouteNames.GetShortlistItemLocation">
+                                <input type="hidden" name="shortlistId" value="@shortlistItem.ShortlistId" />
+                                <input type="hidden" name="ukprn" value="@shortlistItem.Ukprn" />
+                                <input type="hidden" name="larsCode" value="@shortlistItem.LarsCode" />
+                                <button id="shortlistitem-@shortlistItem.ShortlistId" class="das-button--inline-link govuk-link govuk-link--no-visited-state" type="submit">@shortlistItem.ProviderName</button>
+                            </form>
                         </p>
                         <ul class="govuk-list govuk-!-margin-top-4 govuk-!-margin-bottom-0 govuk-!-font-size-16">
                             <li class="govuk-!-margin-bottom-2">
