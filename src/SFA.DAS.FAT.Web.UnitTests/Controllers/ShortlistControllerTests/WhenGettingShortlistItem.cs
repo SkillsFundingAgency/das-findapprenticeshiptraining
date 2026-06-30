@@ -84,7 +84,7 @@ public class WhenGettingShortlistItem
 
         // Assert
         mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Once);
-        locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.IsAny<LocationCookieItem>()), Times.Once);
+        locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(a => a.Location == string.Empty)), Times.Once);
         var redirect = result.As<RedirectToRouteResult>();
         redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
         redirect.RouteValues["LarsCode"].Should().Be(larsCode);
@@ -113,6 +113,7 @@ public class WhenGettingShortlistItem
             {
                 new ShortlistCourseModel
                 {
+                    LarsCode = larsCode,
                     Locations = new List<ShortlistLocationModel>
                     {
                         new ShortlistLocationModel
@@ -134,7 +135,7 @@ public class WhenGettingShortlistItem
         var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
-        locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.IsAny<LocationCookieItem>()), Times.Once);
+        locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(a => a.Location == locationDescription)), Times.Once);
 
         var redirect = result.As<RedirectToRouteResult>();
         redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
