@@ -226,7 +226,7 @@ public class ShortlistController : Controller
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem
         {
             Location = matchedLocation?.LocationDescription ?? string.Empty,
-            Distance = DistanceService.TenMiles.ToString()
+            Distance = DistanceService.DefaultDistance.ToString()
         });
 
         return RedirectToRoute(RouteNames.CourseProviderDetails, new

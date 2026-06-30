@@ -99,7 +99,7 @@ public class WhenGettingCourseDetails
 
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
-                    a.Distance.Equals(DistanceService.DefaultDistance) &&
+                    a.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
                     a.Location.Equals(location) &&
                     a.LarsCode.Equals(larsCode)
                 ), It.IsAny<CancellationToken>()
@@ -140,7 +140,7 @@ public class WhenGettingCourseDetails
 
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
-                    a.Distance.Equals(DistanceService.TenMiles) &&
+                    a.Distance.Equals(DistanceService.DefaultDistance) &&
                     a.Location.Equals(location) &&
                     a.LarsCode.Equals(larsCode)), It.IsAny<CancellationToken>()
             ), Times.Once

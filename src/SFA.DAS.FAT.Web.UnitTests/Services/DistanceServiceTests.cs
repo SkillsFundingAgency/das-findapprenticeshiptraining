@@ -42,7 +42,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void GetValidDistance_LocationOverload_ShouldReturnDefault_WhenLocationIsNotSet()
     {
-        Assert.That(DistanceService.GetValidDistance("40", ""), Is.EqualTo(DistanceService.TenMiles));
+        Assert.That(DistanceService.GetValidDistance("40", ""), Is.EqualTo(DistanceService.DefaultDistance));
     }
 
     [Test]
@@ -54,7 +54,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void GetValidDistance_LocationOverload_ShouldReturnDefault_WhenDistanceFilterIsAll()
     {
-        Assert.That(DistanceService.GetValidDistance("All", "location"), Is.EqualTo(DistanceService.DefaultDistance));
+        Assert.That(DistanceService.GetValidDistance("All", "location"), Is.EqualTo(DistanceService.AcrossEnglandDistance));
     }
 
     [Test]
@@ -66,7 +66,7 @@ public sealed class ValidDistancesTests
     [Test]
     public void GetValidDistance_ShouldReturnDefault_WhenDistanceIsNotValid()
     {
-        Assert.That(DistanceService.GetValidDistance("41"), Is.EqualTo(DistanceService.DefaultDistance));
+        Assert.That(DistanceService.GetValidDistance("41"), Is.EqualTo(DistanceService.AcrossEnglandDistance));
     }
 
     [Test]
@@ -84,13 +84,13 @@ public sealed class ValidDistancesTests
     [Test]
     public void GetDistanceQueryString_ShouldReturnReturnDefault_WhenLocationIsEmpty()
     {
-        Assert.That(DistanceService.GetDistance("40", string.Empty), Is.EqualTo(DistanceService.TenMiles.ToString()));
+        Assert.That(DistanceService.GetDistance("40", string.Empty), Is.EqualTo(DistanceService.DefaultDistance.ToString()));
     }
 
     [Test]
     public void GetDistanceQueryString_ShouldReturnReturnDefault_WhenLocationIsNull()
     {
-        Assert.That(DistanceService.GetDistance("40", null), Is.EqualTo(DistanceService.TenMiles.ToString()));
+        Assert.That(DistanceService.GetDistance("40", null), Is.EqualTo(DistanceService.DefaultDistance.ToString()));
     }
 
     [Test]

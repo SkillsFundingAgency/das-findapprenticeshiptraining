@@ -56,7 +56,7 @@ public class WhenGettingCourseProviders
             ))
             .ReturnsAsync(new ValidationResult());
 
-        var distance = DistanceService.TenMiles;
+        var distance = DistanceService.DefaultDistance;
 
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
@@ -102,7 +102,7 @@ public class WhenGettingCourseProviders
 
         foreach (var provider in expectedProviders)
         {
-            provider.Distance = DistanceService.TenMiles.ToString();
+            provider.Distance = DistanceService.DefaultDistance.ToString();
             provider.Location = location;
         }
 
@@ -118,7 +118,7 @@ public class WhenGettingCourseProviders
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.LarsCode.Should().Be(request.LarsCode.ToString());
             actualModel.Location.Should().Be(location ?? string.Empty);
-            actualModel.Distance.Should().Be(DistanceService.TenMiles.ToString());
+            actualModel.Distance.Should().Be(DistanceService.DefaultDistance.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
             actualModel.SelectedEmployerApprovalRatings.Should()
@@ -365,7 +365,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(DistanceService.TenMiles.ToString());
+            actualModel!.Distance.Should().Be(DistanceService.DefaultDistance.ToString());
         }
     }
 
@@ -543,7 +543,7 @@ public class WhenGettingCourseProviders
             .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
         controller.TempData = tempDataMock.Object;
 
-        string distance = DistanceService.TenMiles.ToString();
+        string distance = DistanceService.DefaultDistance.ToString();
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
@@ -626,7 +626,7 @@ public class WhenGettingCourseProviders
             sut.Should().NotBeNull();
             var actualModel = sut!.Model as CourseProvidersViewModel;
             actualModel.Should().NotBeNull();
-            actualModel!.Distance.Should().Be(DistanceService.TenMiles.ToString());
+            actualModel!.Distance.Should().Be(DistanceService.DefaultDistance.ToString());
             actualModel.OrderBy.Should().Be(ProviderOrderBy.AchievementRate);
         }
     }
