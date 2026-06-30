@@ -19,7 +19,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 
-public class WhenGettingCourseProviderDetails
+public class CourseProvidersControllerCourseProviderDetailsTests
 {
     [Test, MoqAutoData]
     public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(

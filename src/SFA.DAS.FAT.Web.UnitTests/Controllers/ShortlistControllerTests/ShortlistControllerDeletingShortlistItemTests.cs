@@ -42,7 +42,6 @@ public class ShortlistControllerDeletingShortlistItemTests
 
     [Test, MoqAutoData]
     public async Task RouteNameProvided_RedirectsToRouteWithLarsCodeAndUkprn(
-        Guid id,
         DeleteShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,
         Mock<ITempDataDictionary> tempDataMock,
@@ -53,7 +52,7 @@ public class ShortlistControllerDeletingShortlistItemTests
     {
         //Arrange
         sut.TempData = tempDataMock.Object;
-        request.ProviderName = string.Empty;
+        request.ProviderName = "Provider Name";
         mockShortlistCookieService
             .Setup(service => service.Get(Constants.ShortlistCookieName))
             .Returns(shortlistCookie);
@@ -69,6 +68,7 @@ public class ShortlistControllerDeletingShortlistItemTests
         actual.RouteValues["larsCode"].Should().Be(request.LarsCode);
         actual.RouteValues.Should().ContainKey("ukprn");
         actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
+        tempDataMock.VerifySet(x => x[ShortlistController.RemovedProviderNameTempDataKey] = request.ProviderName, Times.Once);
         protector.Verify(c => c.Protect(It.IsAny<byte[]>()), Times.Never);
     }
 }

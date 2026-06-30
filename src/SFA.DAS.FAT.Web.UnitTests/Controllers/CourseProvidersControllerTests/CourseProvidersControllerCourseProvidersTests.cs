@@ -28,7 +28,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 
-public class WhenGettingCourseProviders
+public class CourseProvidersControllerCourseProvidersTests
 {
     [Test, MoqAutoData]
     public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
