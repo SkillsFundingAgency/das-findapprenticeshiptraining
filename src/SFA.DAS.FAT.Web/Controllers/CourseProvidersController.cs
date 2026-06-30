@@ -103,7 +103,7 @@ public class CourseProvidersController : Controller
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance))
+        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance) || string.IsNullOrWhiteSpace(requestLocation))
         {
             requestDistance = DistanceService.TenMiles.ToString();
         }
@@ -111,6 +111,7 @@ public class CourseProvidersController : Controller
         var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
 
         int? convertedDistance = DistanceService.GetValidDistanceNullable(requestDistance);
+
 
         var deliveryModes = requestModel.DeliveryModes.ToList();
 
@@ -248,7 +249,7 @@ public class CourseProvidersController : Controller
             Ukprn = ukprn,
             LarsCode = larsCode,
             Location = requestLocation,
-            Distance = string.IsNullOrWhiteSpace(requestLocation) ? null : DistanceService.DefaultDistance,
+            Distance = string.IsNullOrWhiteSpace(requestLocation) ? DistanceService.TenMiles : DistanceService.DefaultDistance,
             ShortlistUserId = shortlistUserId
         };
 
