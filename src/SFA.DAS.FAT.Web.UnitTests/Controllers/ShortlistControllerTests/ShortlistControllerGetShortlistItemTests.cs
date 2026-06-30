@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class WhenGettingShortlistItem
+public class ShortlistControllerGetShortlistItemTests
 {
     [Test, MoqAutoData]
     public async Task RedirectsToCourseProviderDetails_WhenShortlistCookieNotFound(

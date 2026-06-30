@@ -16,10 +16,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class WhenDeletingShortlistItem
+public class ShortlistControllerDeletingShortlistItemTests
 {
     [Test, MoqAutoData]
-    public async Task And_Cookie_Exists_Then_Deletes_Shortlist_Item_For_User(
+    public async Task CookieExists_DeletesShortlistItemForUser(
         DeleteShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
@@ -41,7 +41,7 @@ public class WhenDeletingShortlistItem
     }
 
     [Test, MoqAutoData]
-    public async Task And_If_There_Is_A_RouteName_Then_It_Is_Redirected(
+    public async Task RouteNameProvided_RedirectsToRouteWithLarsCodeAndUkprn(
         Guid id,
         DeleteShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,

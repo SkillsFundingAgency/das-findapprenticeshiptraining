@@ -16,10 +16,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class WhenAddingAShortlistItemForUser
+public class ShortlistControllerCreateShortlistItemTests
 {
     [Test, MoqAutoData]
-    public async Task And_Cookie_Exists_Then_Adds_To_Shortlist_For_User(
+    public async Task CookieExists_AddsToShortlistForUser(
         Guid expectedId,
         CreateShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,
@@ -49,7 +49,7 @@ public class WhenAddingAShortlistItemForUser
     }
 
     [Test, MoqAutoData]
-    public async Task And_The_Cookie_Does_Not_Exist_Then_A_New_Cookie_Is_Created_And_Used_For_Shortlist(
+    public async Task CookieDoesNotExist_CreatesAndUsesNewCookieForShortlist(
         CreateShortlistItemRequest request,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
@@ -78,7 +78,7 @@ public class WhenAddingAShortlistItemForUser
     }
 
     [Test, MoqAutoData]
-    public async Task And_If_There_Is_A_Route_Name_Then_It_Is_Redirected(CreateShortlistItemRequest request,
+    public async Task RouteNameProvided_RedirectsToRouteWithIdAndUkprn(CreateShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
@@ -103,7 +103,7 @@ public class WhenAddingAShortlistItemForUser
     }
 
     [Test, MoqAutoData]
-    public async Task And_If_ProviderName_Is_In_The_Request_Is_Encoded_Using_The_Protector(
+    public async Task ProviderNameProvided_EncodesUsingProtector(
         CreateShortlistItemRequest request,
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
