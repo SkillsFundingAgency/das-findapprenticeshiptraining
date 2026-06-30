@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
+using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -123,5 +124,36 @@ public class ShortlistControllerCreateShortlistItemTests
         //Assert
         protector.Verify(c => c.Protect(It.Is<byte[]>(
             x => x[0].Equals(Encoding.UTF8.GetBytes($"{request.ProviderName}")[0]))), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task LocationCookieExists_SendsLocationNameInCreateCommand(
+        CreateShortlistItemRequest request,
+        ShortlistCookieItem shortlistCookie,
+        string locationName,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> mockLocationCookieService,
+        [Frozen] Mock<IMediator> mockMediator,
+        [Greedy] ShortlistController controller)
+    {
+        // Arrange
+        request.RouteName = string.Empty;
+        mockShortlistCookieService
+            .Setup(service => service.Get(Constants.ShortlistCookieName))
+            .Returns(shortlistCookie);
+        mockLocationCookieService
+            .Setup(service => service.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = locationName });
+
+        // Act
+        await controller.CreateShortlistItem(request);
+
+        // Assert
+        mockMediator.Verify(x => x.Send(It.Is<CreateShortlistItemForUserCommand>(c =>
+            c.ShortlistUserId == shortlistCookie.ShortlistUserId &&
+            c.Ukprn == request.Ukprn &&
+            c.LarsCode == request.LarsCode &&
+            c.LocationName == locationName),
+            It.IsAny<CancellationToken>()), Times.Once);
     }
 }

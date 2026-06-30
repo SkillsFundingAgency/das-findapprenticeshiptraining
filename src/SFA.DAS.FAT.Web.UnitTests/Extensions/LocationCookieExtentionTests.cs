@@ -24,9 +24,12 @@ public class LocationCookieExtentionTests
         // Act
         var result = cookieService.Object.GetLocation();
 
-        // Assert
-        Assert.That(result.Location, Is.EqualTo(string.Empty));
-        Assert.That(result.Distance, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Location, Is.EqualTo(string.Empty));
+            Assert.That(result.Distance, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
+        }
     }
 
     [Test, MoqAutoData]
@@ -47,8 +50,11 @@ public class LocationCookieExtentionTests
         // Act
         var result = cookieService.Object.GetLocation();
 
-        // Assert
-        Assert.That(result.Location, Is.EqualTo(cookieItem.Location));
-        Assert.That(result.Distance, Is.EqualTo(cookieItem.Distance));
+        using (Assert.EnterMultipleScope())
+        {
+            // Assert
+            Assert.That(result.Location, Is.EqualTo(cookieItem.Location));
+            Assert.That(result.Distance, Is.EqualTo(cookieItem.Distance));
+        }
     }
 }
