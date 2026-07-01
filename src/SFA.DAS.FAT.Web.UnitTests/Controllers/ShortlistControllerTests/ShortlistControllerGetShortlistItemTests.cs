@@ -19,11 +19,11 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 public class ShortlistControllerGetShortlistItemTests
 {
     [Test, MoqAutoData]
-    public async Task RedirectsToCourseProviderDetails_WhenShortlistCookieNotFound(
+    public async Task WhenShortlistCookieNotFound_RedirectsToCourseProviderDetails_(
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
         [Greedy] ShortlistController sut,
-           int ukprn,
+        int ukprn,
         string larsCode,
         string locationDescription)
     {
@@ -47,37 +47,19 @@ public class ShortlistControllerGetShortlistItemTests
     }
 
     [Test, MoqAutoData]
-    public async Task RedirectsToCourseProviderDetails_WhenNoMatchingProviderFound(
+    public async Task WhenNoMatchingProviderFound_RedirectsToCourseProviderDetails(
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieServiceMock,
         [Greedy] ShortlistController sut,
         int ukprn,
-        string larsCode)
+        string larsCode,
+        GetShortlistsForUserResponse response)
     {
         // Arrange
         var cookie = new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() };
         shortlistCookieServiceMock.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(cookie);
 
-        var response = new GetShortlistsForUserResponse
-        {
-            Courses = new List<ShortlistCourseModel>
-            {
-                new ShortlistCourseModel
-                {
-                    Locations = new List<ShortlistLocationModel>
-                    {
-                        new ShortlistLocationModel
-                        {
-                            Providers = new List<ShortlistProviderModel>
-                            {
-                                new ShortlistProviderModel { ShortlistId = Guid.NewGuid() }
-                            }
-                        }
-                    }
-                }
-            }
-        };
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default)).ReturnsAsync(response);
 
@@ -99,7 +81,7 @@ public class ShortlistControllerGetShortlistItemTests
     }
 
     [Test, MoqAutoData]
-    public async Task UpdateLocationCookieAndRedirects_WhenMatchingProviderFound(
+    public async Task WhenMatchingProviderFound_UpdateLocationCookieAndRedirects(
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieServiceMock,
