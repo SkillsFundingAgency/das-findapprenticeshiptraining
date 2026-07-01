@@ -141,7 +141,7 @@ public class ShortlistController : Controller
     }
 
     [HttpPost]
-    [Route("create", Name = RouteNames.CreateShortlistItem)]
+    [Route("", Name = RouteNames.CreateShortlistItem)]
     public async Task<IActionResult> CreateShortlistItem(CreateShortlistItemRequest request)
     {
         var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName) ?? new ShortlistCookieItem
@@ -197,8 +197,8 @@ public class ShortlistController : Controller
     }
 
     [HttpPost]
-    [Route("item", Name = RouteNames.GetShortlistItemLocation)]
-    public async Task<IActionResult> GetShortlistItem([FromForm] Guid shortlistId, [FromForm] int ukprn, [FromForm] string larsCode)
+    [Route("openShortlistItem", Name = RouteNames.OpenShortlistItem)]
+    public async Task<IActionResult> OpenShortlistItem([FromForm] Guid shortlistId, [FromForm] int ukprn, [FromForm] string larsCode)
     {
         var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
 

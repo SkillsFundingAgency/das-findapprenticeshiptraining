@@ -25,7 +25,7 @@
                 <th scope="row" class="govuk-table__header app-shortlist-table__header-cell">
                     <div class="das-highlight app-shortlist-table__highlight">
                         <p class="govuk-body govuk-!-font-size-24 govuk-!-font-weight-bold govuk-!-margin-bottom-2">
-                            <form method="POST" asp-route="@RouteNames.GetShortlistItemLocation">
+                            <form method="POST" asp-route="@RouteNames.OpenShortlistItem">
                                 <input type="hidden" name="shortlistId" value="@shortlistItem.ShortlistId" />
                                 <input type="hidden" name="ukprn" value="@shortlistItem.Ukprn" />
                                 <input type="hidden" name="larsCode" value="@shortlistItem.LarsCode" />

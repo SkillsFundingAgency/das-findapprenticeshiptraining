@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class ShortlistControllerGetShortlistItemTests
+public class ShortlistControllerOpenShortlistItemTests
 {
     [Test, MoqAutoData]
     public async Task WhenShortlistCookieNotFound_RedirectsToCourseProviderDetails_(
@@ -32,7 +32,7 @@ public class ShortlistControllerGetShortlistItemTests
         var shortlistId = Guid.NewGuid();
 
         // Act
-        var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
+        var result = await sut.OpenShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
         using (new AssertionScope())
@@ -66,7 +66,7 @@ public class ShortlistControllerGetShortlistItemTests
         var shortlistId = Guid.NewGuid(); // different id so no match
 
         // Act
-        var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
+        var result = await sut.OpenShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
         using (new AssertionScope())
@@ -121,7 +121,7 @@ public class ShortlistControllerGetShortlistItemTests
         mediatorMock.Setup(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default)).ReturnsAsync(response);
 
         // Act
-        var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
+        var result = await sut.OpenShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
         using (new AssertionScope())
