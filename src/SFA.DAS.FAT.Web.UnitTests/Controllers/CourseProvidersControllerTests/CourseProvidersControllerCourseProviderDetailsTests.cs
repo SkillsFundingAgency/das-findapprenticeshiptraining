@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class CourseProvidersControllerCourseProviderDetailsTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Mediator_Is_Called_With_The_Correct_Properties(
+    public async Task CourseProviderDetails_MediatorIsCalledWithCorrectProperties(
         string larsCode,
         int ukprn,
         string location,
@@ -85,19 +85,18 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Provider_Details_Are_Found_Then_Values_Are_Mapped_To_Model_Correctly(
+    public async Task ProviderDetailsFound_ValuesMappedToModelCorrectly(
         string larsCode,
         int ukprn,
         string location,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
-        [Frozen] Mock<IValidator<GetCourseLocationQuery>> validatorLocationMock,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> ukprnValidatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController sut
     )
     {
@@ -152,7 +151,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
 
         var model = viewResult.Model.Should().BeOfType<CourseProviderViewModel>().Subject;
 
-        var expectedCoursesAlphabetically = response.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
+        var expectedCoursesAlphabetically = response.Courses.OrderBy(c => c.CourseName).ThenBy(c => c.Level);
 
 
         using (Assert.EnterMultipleScope())
@@ -184,7 +183,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Location_Is_Set_Then_Distance_Defaults_To_One_Thousand_Miles(
+    public async Task LocationSet_DistanceDefaultsToOneThousandMiles(
         string larsCode,
         int ukprn,
         string location,
@@ -196,7 +195,6 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
-        [Frozen] Mock<ISessionService> sessionService,
         [Greedy] CourseProvidersController sut
     )
     {
@@ -248,7 +246,70 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Distance_Is_Across_England_Then_Distance_Defaults_To_DefaultDistance(
+    public async Task LocationtNotSet_DistanceDefaultsToTenMiles(
+    string larsCode,
+    int ukprn,
+    GetCourseProviderQueryResult response,
+    ShortlistCookieItem shortlistCookieItem,
+    [Frozen] Mock<IMediator> mediator,
+    [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> ukprnValidatorMock,
+    [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidatorMock,
+    [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+    [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+    [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
+    [Greedy] CourseProvidersController sut
+)
+    {
+        string location = string.Empty;
+        response.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
+        response.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
+
+        shortlistCookieServiceMock.Setup(x =>
+            x.Get(Constants.ShortlistCookieName))
+        .Returns(shortlistCookieItem);
+
+        mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
+                c.Ukprn.Equals(ukprn) &&
+                c.LarsCode.Equals(larsCode) &&
+                c.Location.Equals(location) &&
+                c.Distance.Equals(DistanceService.DefaultDistance) &&
+                c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
+            ),
+            It.IsAny<CancellationToken>()
+        )).ReturnsAsync(response);
+
+        SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { Location = location });
+
+        locationValidatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseLocationQuery>(),
+                It.IsAny<CancellationToken>()
+            )).ReturnsAsync(new ValidationResult());
+
+        var result = await sut.CourseProviderDetails(larsCode, ukprn);
+
+        Assert.That(result, Is.Not.Null);
+
+        mediator.Verify(a =>
+             a.Send(
+                 It.Is<GetCourseProviderDetailsQuery>(q =>
+                     q.LarsCode == larsCode &&
+                     q.Ukprn == ukprn &&
+                     q.Location == location &&
+                     q.Distance == DistanceService.DefaultDistance &&
+                     q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
+                 ),
+                 It.IsAny<CancellationToken>()
+             ),
+             Times.Once
+         );
+    }
+
+    [Test, MoqAutoData]
+    public async Task DistanceAcrossEngland_DistanceDefaultsToDefaultDistance(
         string larsCode,
         int ukprn,
         string location,
@@ -260,7 +321,6 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
-        [Frozen] Mock<ISessionService> sessionService,
         [Greedy] CourseProvidersController sut
     )
     {
@@ -319,9 +379,8 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Provider_Id_Validation_Fails_Then_Redirect_To_Error_Page(
+    public async Task ProviderIdValidationFails_RedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
-        GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> ukprnValidatorMock,
@@ -368,9 +427,8 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_CourseId_Validation_Fails_Then_Redirect_To_Error_Page(
+    public async Task CourseIdValidationFails_RedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
-        GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> ukprnValidatorMock,
@@ -418,11 +476,10 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Location_Validation_Fails_Then_Validation_Message_Shown(
+    public async Task LocationValidationFails_ValidationMessageShown(
         string larsCode,
         int ukprn,
         string location,
-        GetCourseProviderDetailsQuery query,
         GetCourseProviderQueryResult response,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -484,7 +541,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Response_Is_Null_Then_Result_Is_Redirect_To_Error_Page(
+    public async Task ResponseIsNull_ReturnsNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,

@@ -151,7 +151,6 @@ public class CourseProvidersControllerCourseProvidersTests
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -205,12 +204,9 @@ public class CourseProvidersControllerCourseProvidersTests
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
-        string location,
-        string distance,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
         //Arrange
@@ -255,7 +251,6 @@ public class CourseProvidersControllerCourseProvidersTests
     [Test, MoqAutoData]
     public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
         CourseProvidersFiltersRequestModel request,
-        CourseProvidersDetails response,
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
@@ -376,7 +371,6 @@ public class CourseProvidersControllerCourseProvidersTests
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
-        string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -425,7 +419,6 @@ public class CourseProvidersControllerCourseProvidersTests
         string serviceStartUrl,
         string shortlistUrl,
         string courseDetailsUrl,
-        string location,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
@@ -476,7 +469,6 @@ public class CourseProvidersControllerCourseProvidersTests
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
-        [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
         //Arrange
@@ -761,7 +753,6 @@ public class CourseProvidersControllerCourseProvidersTests
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
         [Greedy] CourseProvidersController controller)
     {
@@ -1159,8 +1150,6 @@ public class CourseProvidersControllerCourseProvidersTests
     public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndReturnsInvalidViewModel(
            [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidator,
            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-           [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
-           [Frozen] Mock<ISessionService> sessionService,
            [Greedy] CourseProvidersController sut)
     {
         // Arrange
@@ -1191,7 +1180,6 @@ public class CourseProvidersControllerCourseProvidersTests
     public async Task CourseProviderDetails_WithClearLocation_DeletesCookieLocationDistanceStillPresent(
        string larsCode,
        int ukprn,
-       [Frozen] Mock<IMediator> mediatorMock,
        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> providerValidatorMock,
        [Frozen] Mock<IValidator<GetCourseQuery>> larsCodeValidatorMock,
        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,

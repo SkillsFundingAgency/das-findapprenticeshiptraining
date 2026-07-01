@@ -35,16 +35,9 @@ public class CourseProvidersControllerPostCourseProvidersTests
     [Test, MoqAutoData]
     public void ApplyFilters_WhenLocationHasWhitespace_UpdatesCookieWithTrimmedLocation(
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
-        [Greedy] CourseProvidersController controller)
+        [Greedy] CourseProvidersController controller,
+        CourseProvidersFiltersSubmitModel submitModel)
     {
-        // Arrange
-        var submitModel = new CourseProvidersFiltersSubmitModel
-        {
-            LarsCode = "123",
-            Location = "  Leeds  ",
-            Distance = "10"
-        };
-
         // Act
         var result = controller.ApplyFilters(submitModel) as RedirectToRouteResult;
 
@@ -54,7 +47,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == "Leeds" && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location.Trim() && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
@@ -93,13 +86,13 @@ public class CourseProvidersControllerPostCourseProvidersTests
         [Greedy] CourseProvidersController controller)
     {
         // Arrange
-        var model = new ProviderLocationSubmitModel { Location = "  Manchester  " };
+        var submitModel = new ProviderLocationSubmitModel { Location = "  Manchester  " };
         locationCookieService
             .Setup(x => x.Get(Constants.LocationCookieName))
             .Returns(new LocationCookieItem { Location = "Old", Distance = "40" });
 
         // Act
-        var result = await controller.ApplyLocation(model, larsCode, ukprn) as RedirectToRouteResult;
+        var result = await controller.ApplyLocation(submitModel, larsCode, ukprn) as RedirectToRouteResult;
 
         // Assert
         Assert.That(result, Is.Not.Null);
