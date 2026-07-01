@@ -144,15 +144,10 @@ public class ShortlistController : Controller
     [Route("create", Name = RouteNames.CreateShortlistItem)]
     public async Task<IActionResult> CreateShortlistItem(CreateShortlistItemRequest request)
     {
-        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-
-        if (cookie == null)
+        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName) ?? new ShortlistCookieItem
         {
-            cookie = new ShortlistCookieItem
-            {
-                ShortlistUserId = Guid.NewGuid()
-            };
-        }
+            ShortlistUserId = Guid.NewGuid()
+        };
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand

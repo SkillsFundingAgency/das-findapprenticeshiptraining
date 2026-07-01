@@ -22,13 +22,13 @@ public class LocationCookieExtentionTests
             .Returns((LocationCookieItem)null);
 
         // Act
-        var result = cookieService.Object.GetLocation();
+        var (Location, Distance) = cookieService.Object.GetLocation();
 
         using (Assert.EnterMultipleScope())
         {
             // Assert
-            Assert.That(result.Location, Is.EqualTo(string.Empty));
-            Assert.That(result.Distance, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
+            Assert.That(Location, Is.EqualTo(string.Empty));
+            Assert.That(Distance, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
         }
     }
 
@@ -48,13 +48,13 @@ public class LocationCookieExtentionTests
             .Returns(cookieItem);
 
         // Act
-        var result = cookieService.Object.GetLocation();
+        var (Location, Distance) = cookieService.Object.GetLocation();
 
         using (Assert.EnterMultipleScope())
         {
             // Assert
-            Assert.That(result.Location, Is.EqualTo(cookieItem.Location));
-            Assert.That(result.Distance, Is.EqualTo(cookieItem.Distance));
+            Assert.That(Location, Is.EqualTo(cookieItem.Location));
+            Assert.That(Distance, Is.EqualTo(cookieItem.Distance));
         }
     }
 }
