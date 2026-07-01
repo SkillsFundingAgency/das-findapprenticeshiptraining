@@ -176,8 +176,11 @@ public class ShortlistControllerGetShortlistsForUserTests
         var result = await _sut.Index();
         //Assert
         var actual = result.As<ViewResult>().Model.As<ShortlistsViewModel>().Courses[0];
-        actual.LarsCode.Should().Be(expected.LarsCode);
-        actual.CourseTitle.Should().Be(expected.StandardName);
+        using (new AssertionScope())
+        {
+            actual.LarsCode.Should().Be(expected.LarsCode);
+            actual.CourseTitle.Should().Be(expected.StandardName);
+        }
     }
 
     [Test]

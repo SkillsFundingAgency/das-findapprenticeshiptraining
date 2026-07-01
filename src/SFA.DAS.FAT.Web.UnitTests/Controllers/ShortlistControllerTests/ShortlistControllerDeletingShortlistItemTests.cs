@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit4;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +25,7 @@ public class ShortlistControllerDeletingShortlistItemTests
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         //Arrange
         mockShortlistCookieService
@@ -33,7 +34,7 @@ public class ShortlistControllerDeletingShortlistItemTests
         request.RouteName = string.Empty;
 
         //Act
-        var actual = await controller.DeleteShortlistItemForUser(request) as AcceptedResult;
+        var actual = await sut.DeleteShortlistItemForUser(request) as AcceptedResult;
 
         //Assert
         actual.Should().NotBeNull();
@@ -62,13 +63,16 @@ public class ShortlistControllerDeletingShortlistItemTests
         var actual = await sut.DeleteShortlistItemForUser(request) as RedirectToRouteResult;
 
         //Assert
-        actual.Should().NotBeNull();
-        actual.RouteName.Should().Be(RouteNames.CourseProviders);
-        actual.RouteValues.Should().ContainKey("larsCode");
-        actual.RouteValues["larsCode"].Should().Be(request.LarsCode);
-        actual.RouteValues.Should().ContainKey("ukprn");
-        actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
-        tempDataMock.VerifySet(x => x[ShortlistController.RemovedProviderNameTempDataKey] = request.ProviderName, Times.Once);
-        protector.Verify(c => c.Protect(It.IsAny<byte[]>()), Times.Never);
+        using (new AssertionScope())
+        {
+            actual.Should().NotBeNull();
+            actual.RouteName.Should().Be(RouteNames.CourseProviders);
+            actual.RouteValues.Should().ContainKey("larsCode");
+            actual.RouteValues["larsCode"].Should().Be(request.LarsCode);
+            actual.RouteValues.Should().ContainKey("ukprn");
+            actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
+            tempDataMock.VerifySet(x => x[ShortlistController.RemovedProviderNameTempDataKey] = request.ProviderName, Times.Once);
+            protector.Verify(c => c.Protect(It.IsAny<byte[]>()), Times.Never);
+        }
     }
 }

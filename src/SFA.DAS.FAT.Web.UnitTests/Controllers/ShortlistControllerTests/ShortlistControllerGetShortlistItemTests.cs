@@ -1,5 +1,6 @@
 ﻿using AutoFixture.NUnit4;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -34,12 +35,15 @@ public class ShortlistControllerGetShortlistItemTests
         var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
-        shortlistCookieServiceMock.Verify(x => x.Get(Constants.ShortlistCookieName), Times.Once);
-        mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Never);
-        var redirect = result.As<RedirectToRouteResult>();
-        redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
-        redirect.RouteValues["LarsCode"].Should().Be(larsCode);
-        redirect.RouteValues["Ukprn"].Should().Be(ukprn);
+        using (new AssertionScope())
+        {
+            shortlistCookieServiceMock.Verify(x => x.Get(Constants.ShortlistCookieName), Times.Once);
+            mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Never);
+            var redirect = result.As<RedirectToRouteResult>();
+            redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
+            redirect.RouteValues["LarsCode"].Should().Be(larsCode);
+            redirect.RouteValues["Ukprn"].Should().Be(ukprn);
+        }
     }
 
     [Test, MoqAutoData]
@@ -83,12 +87,15 @@ public class ShortlistControllerGetShortlistItemTests
         var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
-        mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Once);
-        locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(a => a.Location == string.Empty)), Times.Once);
-        var redirect = result.As<RedirectToRouteResult>();
-        redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
-        redirect.RouteValues["LarsCode"].Should().Be(larsCode);
-        redirect.RouteValues["Ukprn"].Should().Be(ukprn);
+        using (new AssertionScope())
+        {
+            mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Once);
+            locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(a => a.Location == string.Empty)), Times.Once);
+            var redirect = result.As<RedirectToRouteResult>();
+            redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
+            redirect.RouteValues["LarsCode"].Should().Be(larsCode);
+            redirect.RouteValues["Ukprn"].Should().Be(ukprn);
+        }
     }
 
     [Test, MoqAutoData]
@@ -135,11 +142,14 @@ public class ShortlistControllerGetShortlistItemTests
         var result = await sut.GetShortlistItem(shortlistId, ukprn, larsCode);
 
         // Assert
-        locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(a => a.Location == locationDescription)), Times.Once);
+        using (new AssertionScope())
+        {
+            locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(a => a.Location == locationDescription)), Times.Once);
 
-        var redirect = result.As<RedirectToRouteResult>();
-        redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
-        redirect.RouteValues["larsCode"].Should().Be(larsCode);
-        redirect.RouteValues["ukprn"].Should().Be(ukprn);
+            var redirect = result.As<RedirectToRouteResult>();
+            redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
+            redirect.RouteValues["larsCode"].Should().Be(larsCode);
+            redirect.RouteValues["ukprn"].Should().Be(ukprn);
+        }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using AutoFixture.NUnit4;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +10,6 @@ using NUnit.Framework;
 using SFA.DAS.FAT.Application.Shortlist.Commands.CreateShortlistItemForUser;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
-using SFA.DAS.FAT.Domain.Shortlist;
 using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
@@ -26,7 +26,7 @@ public class ShortlistControllerCreateShortlistItemTests
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         //Arrange
         mockMediator.Setup(x => x.Send(It.Is<CreateShortlistItemForUserCommand>(c =>
@@ -40,7 +40,7 @@ public class ShortlistControllerCreateShortlistItemTests
         request.RouteName = string.Empty;
 
         //Act
-        var actual = await controller.CreateShortlistItem(request) as AcceptedResult;
+        var actual = await sut.CreateShortlistItem(request) as AcceptedResult;
 
         //Assert
         actual.Should().NotBeNull();
@@ -54,7 +54,7 @@ public class ShortlistControllerCreateShortlistItemTests
         CreateShortlistItemRequest request,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         //Arrange
         mockShortlistCookieService
@@ -63,7 +63,7 @@ public class ShortlistControllerCreateShortlistItemTests
         request.RouteName = string.Empty;
 
         //Act
-        var actual = await controller.CreateShortlistItem(request) as AcceptedResult;
+        var actual = await sut.CreateShortlistItem(request) as AcceptedResult;
 
         //Assert
         actual.Should().NotBeNull();
@@ -83,7 +83,7 @@ public class ShortlistControllerCreateShortlistItemTests
         ShortlistCookieItem shortlistCookie,
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         //Arrange
         mockShortlistCookieService
@@ -92,15 +92,18 @@ public class ShortlistControllerCreateShortlistItemTests
         request.RouteName = RouteNames.CourseProviders;
 
         //Act
-        var actual = await controller.CreateShortlistItem(request) as RedirectToRouteResult;
+        var actual = await sut.CreateShortlistItem(request) as RedirectToRouteResult;
 
         //Assert
-        actual.Should().NotBeNull();
-        actual.RouteName.Should().Be(request.RouteName);
-        actual.RouteValues.Should().ContainKey("id");
-        actual.RouteValues["id"].Should().Be(request.LarsCode);
-        actual.RouteValues.Should().ContainKey("ukprn");
-        actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
+        using (new AssertionScope())
+        {
+            actual.Should().NotBeNull();
+            actual.RouteName.Should().Be(request.RouteName);
+            actual.RouteValues.Should().ContainKey("id");
+            actual.RouteValues["id"].Should().Be(request.LarsCode);
+            actual.RouteValues.Should().ContainKey("ukprn");
+            actual.RouteValues["ukprn"].Should().Be(request.Ukprn);
+        }
     }
 
     [Test, MoqAutoData]
@@ -110,7 +113,7 @@ public class ShortlistControllerCreateShortlistItemTests
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<IDataProtector> protector,
         [Frozen] Mock<IDataProtectionProvider> provider,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         //Arrange
         mockShortlistCookieService
@@ -119,7 +122,7 @@ public class ShortlistControllerCreateShortlistItemTests
         request.RouteName = RouteNames.CourseProviders;
 
         //Act
-        await controller.CreateShortlistItem(request);
+        await sut.CreateShortlistItem(request);
 
         //Assert
         protector.Verify(c => c.Protect(It.Is<byte[]>(
@@ -134,7 +137,7 @@ public class ShortlistControllerCreateShortlistItemTests
         [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> mockShortlistCookieService,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> mockLocationCookieService,
         [Frozen] Mock<IMediator> mockMediator,
-        [Greedy] ShortlistController controller)
+        [Greedy] ShortlistController sut)
     {
         // Arrange
         request.RouteName = string.Empty;
@@ -146,7 +149,7 @@ public class ShortlistControllerCreateShortlistItemTests
             .Returns(new LocationCookieItem { Location = locationName });
 
         // Act
-        await controller.CreateShortlistItem(request);
+        await sut.CreateShortlistItem(request);
 
         // Assert
         mockMediator.Verify(x => x.Send(It.Is<CreateShortlistItemForUserCommand>(c =>
