@@ -22,7 +22,7 @@ public class LocationCookieExtentionTests
             .Returns((LocationCookieItem)null);
 
         // Act
-        var (Location, Distance) = cookieService.Object.GetLocation();
+        var (Location, Distance) = LocationCookieExtention.GetLocation(cookieService.Object);
 
         using (Assert.EnterMultipleScope())
         {
@@ -48,7 +48,7 @@ public class LocationCookieExtentionTests
             .Returns(cookieItem);
 
         // Act
-        var (Location, Distance) = cookieService.Object.GetLocation();
+        var (Location, Distance) = LocationCookieExtention.GetLocation(cookieService.Object);
 
         using (Assert.EnterMultipleScope())
         {
