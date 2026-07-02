@@ -34,15 +34,9 @@ public class LocationCookieExtentionTests
 
     [Test, MoqAutoData]
     public void GetLocation_WhenCookiePresent_ReturnsCookieLocationAndDistance(
-        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieService)
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieService,
+        LocationCookieItem cookieItem)
     {
-        // Arrange
-        var cookieItem = new LocationCookieItem
-        {
-            Location = "Bristol",
-            Distance = "20"
-        };
-
         cookieService
             .Setup(x => x.Get(Constants.LocationCookieName))
             .Returns(cookieItem);
