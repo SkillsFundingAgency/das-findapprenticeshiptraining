@@ -233,7 +233,7 @@ public static class FilterService
                     selectedDistance,
                     DistanceService.AcrossEnglandFilterValue,
                     StringComparison.OrdinalIgnoreCase
-                ) || validDistance == DistanceService.DefaultDistance
+                ) || validDistance == DistanceService.AcrossEnglandDistance
         });
 
         return distanceFilterItems;

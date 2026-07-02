@@ -17,10 +17,11 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Services;
+using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ShortlistControllerTests;
 
-public class WhenGettingShortlistsForUser
+public class ShortlistControllerGetShortlistsForUserTests
 {
     private const string RatUrl = "https://rat.test.apprenticeships.org.uk";
     private Mock<ICookieStorageService<ShortlistCookieItem>> _shortlistCookieServiceMock;
@@ -113,7 +114,7 @@ public class WhenGettingShortlistsForUser
     [TestCase(null, false)]
     [TestCase(49, false)]
     [TestCase(50, true)]
-    public async Task ThenSetsHasMaxedOutShortlistsFlag(int? count, bool expected)
+    public async Task ShortlistsCount_Various_SetsHasMaxedOutShortlistsFlag(int? count, bool expected)
     {
         ShortlistsCount shortlistCount = count is null ? null : new() { Count = count.GetValueOrDefault() };
         _sessionServiceMock.Setup(x => x.Get<ShortlistsCount>(SessionKeys.ShortlistCount)).Returns(shortlistCount);
@@ -124,7 +125,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test]
-    public async Task ThenInvokesMediatorToGetShortlistsForUser()
+    public async Task Index_GetsShortlistCookie()
     {
         //Act
         await _sut.Index();
@@ -133,7 +134,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test, AutoData]
-    public async Task ThenGetsRemovedProviderNameFromTempData(string providerName)
+    public async Task RemovedProviderNameInTempData_SetsRemovedProviderNameOnViewModel(string providerName)
     {
         _tempDataMock.SetupGet(t => t[ShortlistController.RemovedProviderNameTempDataKey]).Returns(providerName);
         //Act
@@ -144,7 +145,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test]
-    public async Task ThenReturnsEmptyRemovedProviderName()
+    public async Task NoRemovedProviderNameInTempData_RemovedProviderNameIsNullOnViewModel()
     {
         _tempDataMock.SetupGet(t => t[ShortlistController.RemovedProviderNameTempDataKey]).Returns(null);
         //Act
@@ -155,7 +156,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test, AutoData]
-    public async Task ThenSetsShortlistExpiryDate(DateTime expiryDate)
+    public async Task ShortlistsExpiryDateProvided_SetsExpiryDateText(DateTime expiryDate)
     {
         //Arrange
         _mediatorResponse.ShortlistsExpiryDate = expiryDate;
@@ -167,7 +168,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test]
-    public async Task ThenAddsCourses()
+    public async Task MediatorReturnsCourses_AddsCoursesToViewModel()
     {
         //Arrange
         var expected = _mediatorResponse.Courses[0];
@@ -175,12 +176,15 @@ public class WhenGettingShortlistsForUser
         var result = await _sut.Index();
         //Assert
         var actual = result.As<ViewResult>().Model.As<ShortlistsViewModel>().Courses[0];
-        actual.LarsCode.Should().Be(expected.LarsCode);
-        actual.CourseTitle.Should().Be(expected.StandardName);
+        using (new AssertionScope())
+        {
+            actual.LarsCode.Should().Be(expected.LarsCode);
+            actual.CourseTitle.Should().Be(expected.StandardName);
+        }
     }
 
     [Test]
-    public async Task ThenAddsLocationForEachCourse()
+    public async Task MediatorReturnsLocations_PopulatesLocationDetailsAndRatUrl()
     {
         //Arrange
         var expected = _mediatorResponse.Courses[0].Locations[0];
@@ -199,7 +203,7 @@ public class WhenGettingShortlistsForUser
     }
 
     [Test]
-    public async Task ThenAddsProvidersForEachLocation()
+    public async Task MediatorReturnsProviders_PopulatesProviderDetailsOnViewModel()
     {
         //Arrange
         var expectedCourse = _mediatorResponse.Courses[0];
@@ -236,5 +240,22 @@ public class WhenGettingShortlistsForUser
             actualProvider.ApprenticeReviews.Stars.Should().Be(expectedProvider.ApprenticeStars);
             actualProvider.ApprenticeReviews.ProviderRating.Should().Be(Enum.Parse<ProviderRating>(expectedProvider.ApprenticeRating));
         }
+    }
+
+    [Test, MoqAutoData]
+    public async Task NoShortlistCookie_ReturnsEmptyViewModel(
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieServiceMock,
+        [Frozen] Mock<IMediator> mediatorMock,
+        [Greedy] ShortlistController sut,
+        Mock<ITempDataDictionary> tempDataMock)
+    {
+        //Arrange
+        shortlistCookieServiceMock.Setup(s => s.Get(Constants.ShortlistCookieName)).Returns(() => null);
+        //Act
+        var response = await sut.Index();
+        //Assert
+        shortlistCookieServiceMock.Verify(x => x.Get(Constants.ShortlistCookieName), Times.Once);
+        mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Never);
+        response.As<ViewResult>().Model.As<ShortlistsViewModel>().HasShortlistItems.Should().BeFalse();
     }
 }

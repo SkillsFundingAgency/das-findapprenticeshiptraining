@@ -78,7 +78,7 @@ public class WhenPostingSearchCourses
         //Arrange
         SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.TenMiles.ToString() });
+                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.DefaultDistance.ToString() });
 
         //Act
         var actual = controller.Index(viewModel);
@@ -106,7 +106,7 @@ public class WhenPostingSearchCourses
         SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location, CourseTerm = courseTerm };
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.TenMiles.ToString() });
+                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.DefaultDistance.ToString() });
 
         //Act
         var actual = controller.Index(viewModel);

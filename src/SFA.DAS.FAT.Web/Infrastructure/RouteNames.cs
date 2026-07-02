@@ -20,6 +20,7 @@ namespace SFA.DAS.FAT.Web.Infrastructure
         public const string ShortLists = "shortlist";
         public const string CreateShortlistItem = "create-shortlist";
         public const string DeleteShortlistItem = "delete-shortlist";
+        public const string OpenShortlistItem = "open-shortlist-item";
 
         public const string AccessibilityStatement = "accessibility-statement";
 
