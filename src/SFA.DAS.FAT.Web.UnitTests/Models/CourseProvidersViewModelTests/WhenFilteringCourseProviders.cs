@@ -92,13 +92,13 @@ public sealed class WhenFilteringCourseProviders
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.Distance, Is.EqualTo(DistanceService.TenMiles.ToString()));
+            Assert.That(viewModel.Distance, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
             Assert.That(sut.Any(a => a.For == nameof(_viewModel.Distance)), Is.True);
 
             var distanceFilterSection = sut.First(a => a.For == nameof(_viewModel.Distance));
             var dropdownFilter = ((DropdownFilterSectionViewModel)distanceFilterSection);
             var selectedDistanceValue = dropdownFilter.Items.First(a => a.IsSelected);
-            Assert.That(selectedDistanceValue.Value, Is.EqualTo(DistanceService.TenMiles.ToString()));
+            Assert.That(selectedDistanceValue.Value, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
         }
     }
 

@@ -64,7 +64,7 @@ public class CoursesController : Controller
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             requestLocation = string.Empty;
-            requestDistance = DistanceService.TenMiles.ToString();
+            requestDistance = DistanceService.DefaultDistance.ToString();
         }
 
         int validatedDistance = DistanceService.GetValidDistance(requestDistance, requestLocation);

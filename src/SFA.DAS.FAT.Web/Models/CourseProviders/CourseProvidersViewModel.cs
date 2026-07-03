@@ -325,7 +325,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {
-            Distance = DistanceService.TenMiles.ToString();
+            Distance = DistanceService.DefaultDistance.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))

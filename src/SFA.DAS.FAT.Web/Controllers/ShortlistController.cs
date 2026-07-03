@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.DataProtection;
@@ -143,15 +144,10 @@ public class ShortlistController : Controller
     [Route("", Name = RouteNames.CreateShortlistItem)]
     public async Task<IActionResult> CreateShortlistItem(CreateShortlistItemRequest request)
     {
-        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
-
-        if (cookie == null)
+        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName) ?? new ShortlistCookieItem
         {
-            cookie = new ShortlistCookieItem
-            {
-                ShortlistUserId = Guid.NewGuid()
-            };
-        }
+            ShortlistUserId = Guid.NewGuid()
+        };
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand
@@ -198,6 +194,41 @@ public class ShortlistController : Controller
         }
 
         return Accepted();
+    }
+
+    [HttpPost]
+    [Route("openShortlistItem", Name = RouteNames.OpenShortlistItem)]
+    public async Task<IActionResult> OpenShortlistItem([FromForm] Guid shortlistId, [FromForm] int ukprn, [FromForm] string larsCode)
+    {
+        var cookie = _shortlistCookieService.Get(Constants.ShortlistCookieName);
+
+        if (cookie == default)
+        {
+            return RedirectToRoute(RouteNames.CourseProviderDetails, new
+            {
+                larsCode,
+                ukprn
+            });
+        }
+
+        GetShortlistsForUserResponse result = await _mediator.Send(new GetShortlistsForUserQuery(cookie.ShortlistUserId));
+
+        ShortlistLocationModel matchedLocation = result?.Courses.Where(c => c.LarsCode == larsCode).SelectMany(l => l.Locations)
+                                             .FirstOrDefault(s => s.Providers.Any(x => x.ShortlistId == shortlistId));
+
+
+
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem
+        {
+            Location = matchedLocation?.LocationDescription ?? string.Empty,
+            Distance = DistanceService.DefaultDistance.ToString()
+        });
+
+        return RedirectToRoute(RouteNames.CourseProviderDetails, new
+        {
+            larsCode,
+            ukprn
+        });
     }
 
     /// <summary>

@@ -96,21 +96,22 @@ public class CourseProvidersController : Controller
         {
             _locationCookieService.Delete(Constants.LocationCookieName);
             requestLocation = string.Empty;
-            requestDistance = DistanceService.TenMiles.ToString();
+            requestDistance = DistanceService.DefaultDistance.ToString();
         }
 
         var shortlistItem = _shortlistCookieService.Get(Constants.ShortlistCookieName);
         var shortlistUserId = shortlistItem?.ShortlistUserId;
         var shortlistCount = _sessionService.Get<ShortlistsCount>(SessionKeys.ShortlistCount);
 
-        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance))
+        if (string.IsNullOrWhiteSpace(requestDistance) || !DistanceService.IsValidDistance(requestDistance) || string.IsNullOrWhiteSpace(requestLocation))
         {
-            requestDistance = DistanceService.TenMiles.ToString();
+            requestDistance = DistanceService.DefaultDistance.ToString();
         }
 
         var orderBy = string.IsNullOrEmpty(requestLocation) && requestModel.OrderBy == ProviderOrderBy.Distance ? ProviderOrderBy.AchievementRate : requestModel.OrderBy;
 
         int? convertedDistance = DistanceService.GetValidDistanceNullable(requestDistance);
+
 
         var deliveryModes = requestModel.DeliveryModes.ToList();
 
@@ -248,7 +249,7 @@ public class CourseProvidersController : Controller
             Ukprn = ukprn,
             LarsCode = larsCode,
             Location = requestLocation,
-            Distance = string.IsNullOrWhiteSpace(requestLocation) ? null : DistanceService.DefaultDistance,
+            Distance = string.IsNullOrWhiteSpace(requestLocation) ? DistanceService.DefaultDistance : DistanceService.AcrossEnglandDistance,
             ShortlistUserId = shortlistUserId
         };
 
@@ -264,7 +265,7 @@ public class CourseProvidersController : Controller
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
         viewModel.Location = requestLocation;
-        viewModel.Distance = requestDistance ?? DistanceService.TenMiles.ToString();
+        viewModel.Distance = requestDistance ?? DistanceService.DefaultDistance.ToString();
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;
         viewModel.ShowApprenticeTrainingCourseCrumb = true;

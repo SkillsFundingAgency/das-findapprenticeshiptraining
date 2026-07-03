@@ -188,7 +188,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         AddSelectedFilter(selectedFilters, FilterType.Location, Location);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
-            Distance = DistanceService.TenMiles.ToString();
+            Distance = DistanceService.DefaultDistance.ToString();
         }
 
         if (DistanceService.IsValidDistance(Distance))
