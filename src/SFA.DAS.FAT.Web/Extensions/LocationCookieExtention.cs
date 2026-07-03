@@ -12,6 +12,6 @@ public static class LocationCookieExtention
     {
         var locationCookieItem = cookieService.Get(Constants.LocationCookieName);
 
-        return (locationCookieItem?.Location ?? string.Empty, locationCookieItem?.Distance ?? DistanceService.TenMiles.ToString());
+        return (locationCookieItem?.Location ?? string.Empty, locationCookieItem?.Distance ?? DistanceService.DefaultDistance.ToString());
     }
 }

@@ -300,7 +300,7 @@ public sealed class WhenFilteringCourses
             Assert.That(distanceFilterSection, Is.Not.Null);
 
             var selectedItem = ((DropdownFilterSectionViewModel)distanceFilterSection).Items.First(a => a.IsSelected);
-            Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.TenMiles.ToString()));
+            Assert.That(selectedItem.Value, Is.EqualTo(DistanceService.DefaultDistance.ToString()));
         }
     }
 

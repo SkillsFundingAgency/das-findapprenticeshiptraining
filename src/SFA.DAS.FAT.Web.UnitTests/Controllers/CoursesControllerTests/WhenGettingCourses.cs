@@ -31,7 +31,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController sut
     )
     {
-        var distance = DistanceService.TenMiles;
+        var distance = DistanceService.DefaultDistance;
         sut.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString());
 
@@ -80,7 +80,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        var distance = DistanceService.TenMiles;
+        var distance = DistanceService.DefaultDistance;
         controller.AddUrlHelperMock()
             .AddUrlForRoute(RouteNames.ServiceStart, Guid.NewGuid().ToString())
             .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl.ToString());
@@ -145,7 +145,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        var distance = DistanceService.TenMiles;
+        var distance = DistanceService.DefaultDistance;
         queryResult.Standards.ForEach(S => S.Level = queryResult.Levels.First().Code);
         controller.AddUrlHelperMock();
 
@@ -191,7 +191,7 @@ public class WhenGettingCourses
         [Greedy] CoursesController controller
     )
     {
-        var distance = DistanceService.TenMiles;
+        var distance = DistanceService.DefaultDistance;
         controller.AddUrlHelperMock();
 
         response.Standards = [];
