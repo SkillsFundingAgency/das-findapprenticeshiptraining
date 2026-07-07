@@ -59,7 +59,9 @@ public class Startup
         {
             // This lambda determines whether user consent for non-essential cookies is needed for a given request.
             options.CheckConsentNeeded = context => true;
-            options.MinimumSameSitePolicy = SameSiteMode.Strict;
+            // Allow essential cookies on top-level cross-site navigation (for example from GOV.UK)
+            // so shortlist count  is available on the first page users land on from GOV.UK.
+            options.MinimumSameSitePolicy = SameSiteMode.Lax;
         });
 
         services.AddOptions();

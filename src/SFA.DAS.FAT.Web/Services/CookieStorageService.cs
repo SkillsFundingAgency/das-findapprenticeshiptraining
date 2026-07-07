@@ -32,6 +32,7 @@ public class CookieStorageService<T> : ICookieStorageService<T>
             IsEssential = true,
             HttpOnly = true,
             Secure = true,
+            SameSite = SameSiteMode.Lax,
             Expires = DateTimeOffset.Now.AddDays(expiryDays)
         };
 
