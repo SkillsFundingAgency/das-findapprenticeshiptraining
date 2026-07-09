@@ -36,17 +36,9 @@ namespace SFA.DAS.FAT.Web.Filters
             var gaData = new GaData();
             var locationFromCookie = _locationCookieStorageService.Get(Constants.LocationCookieName);
 
-            if (context.HttpContext.Request.Query.TryGetValue("location", out var location))
+            if (locationFromCookie != null && !string.IsNullOrEmpty(locationFromCookie.Location))
             {
-                gaData.Location = location.ToString();
-            }
-            else if (locationFromCookie != null)
-            {
-                if (!string.IsNullOrEmpty(locationFromCookie.Location) && locationFromCookie.Latitude != 0 &&
-                    locationFromCookie.Longitude != 0)
-                {
-                    gaData.Location = locationFromCookie.Location;
-                }
+                gaData.Location = locationFromCookie.Location;
             }
 
 
