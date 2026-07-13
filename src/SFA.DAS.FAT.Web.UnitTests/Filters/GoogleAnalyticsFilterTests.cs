@@ -23,7 +23,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Filters;
 public class GoogleAnalyticsFilterTests
 {
     [Test, MoqAutoData]
-    public async Task WhenExecutingGoogleAnalyticsFilterAndHasLocationCookie_ThenAddsLocationToViewBag(
+    public async Task WhenExecutingGoogleAnalyticsFilter_AndHasLocationCookie_ThenAddsLocationToViewBag(
         LocationCookieItem locationCookie,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
         [Greedy] CoursesController controller,
@@ -44,7 +44,7 @@ public class GoogleAnalyticsFilterTests
 
     [Test, MoqAutoData]
     public async Task
-        WhenExecutingGoogleAnalyticsFilterAndHasNoLocationCookie_ThenNoLocationAddedToViewBag(
+        WhenExecutingGoogleAnalyticsFilter_AndHasNoLocationCookie_ThenNoLocationAddedToViewBag(
             LocationCookieItem locationCookie,
             [Frozen] Mock<ICookieStorageService<LocationCookieItem>> cookieStorageService,
             [Greedy] CoursesController controller,
@@ -64,7 +64,7 @@ public class GoogleAnalyticsFilterTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenExecutingGoogleAnalyticsFilterAndUkprnPresent_ThenDataQueryParamIsCheckedAndDecoded(
+    public async Task WhenExecutingGoogleAnalyticsFilter_AndUkprnPresent_ThenDataQueryParamIsCheckedAndDecoded(
         int providerPosition,
         int providerCount,
         uint ukprn,
@@ -93,7 +93,7 @@ public class GoogleAnalyticsFilterTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenExecutingGoogleAnalyticsFilterAndUnprotectThrows_ThenNoGaDataAdded(
+    public async Task WhenExecutingGoogleAnalyticsFilter_AndUnprotectThrows_ThenNoGaDataAdded(
         int providerPosition,
         int providerCount,
         uint ukprn,
@@ -121,7 +121,7 @@ public class GoogleAnalyticsFilterTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenExecutingGoogleAnalyticsFilterAndInvalidBase64Data_ThenNoGaDataAdded(
+    public async Task WhenExecutingGoogleAnalyticsFilter_AndInvalidBase64Data_ThenNoGaDataAdded(
         int providerPosition,
         int providerCount,
         uint ukprn,
