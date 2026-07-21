@@ -3,6 +3,7 @@ using AutoFixture.NUnit4;
 using Microsoft.Extensions.Options;
 using Moq;
 using NUnit.Framework;
+using SFA.DAS.FAT.Application.Services;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
@@ -25,7 +26,7 @@ public class CourseServiceCourseProviderDetailsTests
         CourseProviderDetailsModel CourseProviderDetailsResponse,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> findApprenticeshipTrainingApiConfigurationMock,
         [Frozen] Mock<IApiClient> mockApiClient,
-        Application.Services.CourseService sut
+        CourseService sut
     )
     {
         mockApiClient.Setup(x => x.Get<CourseProviderDetailsModel>(
@@ -79,7 +80,7 @@ public class CourseServiceCourseProviderDetailsTests
         Guid shortlistUserId,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> findApprenticeshipTrainingApiConfigurationMock,
         [Frozen] Mock<IApiClient> mockApiClient,
-        Application.Services.CourseService sut
+        CourseService sut
     )
     {
         mockApiClient.Setup(x => x.Get<CourseProviderDetailsModel>(
@@ -114,7 +115,7 @@ public class CourseServiceCourseProviderDetailsTests
         Guid shortlistUserId,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> findApprenticeshipTrainingApiConfigurationMock,
         [Frozen] Mock<IApiClient> mockApiClient,
-        Application.Services.CourseService sut
+        CourseService sut
     )
     {
         mockApiClient.Setup(x => x.Get<CourseProviderDetailsModel>(
