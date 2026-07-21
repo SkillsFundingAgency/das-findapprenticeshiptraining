@@ -11,7 +11,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 
-public class CourseProvidersControllerPostCourseProvidersTests
+public class CourseProvidersControllerPostTests
 {
     [Test, MoqAutoData]
     public void WhenPostingCourseProviders_ThenUpdatesLocationCookieAndRedirects(
@@ -103,4 +103,43 @@ public class CourseProvidersControllerPostCourseProvidersTests
             It.Is<LocationCookieItem>(c => c.LocationName == "Manchester" && c.Distance == "40")
         ), Times.Once);
     }
+
+    [Test, MoqAutoData]
+    public void WhenApplyingFilters_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        CourseProvidersFiltersSubmitModel submitModel,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        submitModel.LocationName = null;
+
+        var result = controller.ApplyFilters(submitModel) as RedirectToRouteResult;
+
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null && c.Distance == submitModel.Distance)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenApplyingLocation_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        string larsCode,
+        int ukprn,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        var submitModel = new ProviderLocationSubmitModel { LocationName = null };
+        locationCookieService
+            .Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { LocationName = "Old", Distance = "40" });
+
+        var result = await controller.ApplyLocation(submitModel, larsCode, ukprn) as RedirectToRouteResult;
+
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null && c.Distance == "40")
+        ), Times.Once);
+    }
 }
+

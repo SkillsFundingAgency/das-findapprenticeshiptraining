@@ -111,5 +111,38 @@ public class CoursesControllerPostTests
         );
     }
 
+    [Test, MoqAutoData]
+    public void WhenPostingCourses_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        CoursesFiltersSubmitModel submitModel,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CoursesController sut)
+    {
+        submitModel.LocationName = null;
 
+        var result = sut.ApplyFilters(submitModel) as RedirectToRouteResult;
+
+        result.Should().NotBeNull();
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null && c.Distance == submitModel.Distance)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public void WhenPostingCourseDetails_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        string larsCode,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CoursesController sut)
+    {
+        var model = new CourseLocationSubmitModel { LocationName = null };
+
+        var result = sut.CourseDetailsPost(model, larsCode) as RedirectToRouteResult;
+
+        result.Should().NotBeNull();
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null)
+        ), Times.Once);
+    }
 }
+
