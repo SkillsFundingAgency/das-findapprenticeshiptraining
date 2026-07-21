@@ -13,7 +13,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.CourseProviders;
 public class GetCourseProvidersQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_ValidRequest_ReturnsExpectedDetails(
+    public async Task WhenHandling_AndRequestIsValid_ThenReturnsExpectedDetails(
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
         CourseProvidersDetails courseProvidersDetails,
@@ -58,7 +58,7 @@ public class GetCourseProvidersQueryHandlerTests
     [InlineAutoData(ProviderOrderBy.AchievementRate)]
     [InlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
     [InlineAutoData(ProviderOrderBy.EmployerProviderRating)]
-    public async Task Handle_OrderByProvided_CallsCourseServiceWithMatchingParameters(
+    public async Task WhenHandling_AndOrderByProvided_ThenCallsCourseServiceWithMatchingParameters(
         ProviderOrderBy orderBy,
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
@@ -98,7 +98,7 @@ public class GetCourseProvidersQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_CourseServiceReturnsNull_ReturnsNull(
+    public async Task WhenHandling_AndCourseServiceReturnsNull_ThenReturnsNull(
         GetCourseProvidersQuery query,
         [Frozen] Mock<ICourseService> mockCourseService,
         [Frozen] Mock<IAcademicYearsService> mockAcademicYearsService)

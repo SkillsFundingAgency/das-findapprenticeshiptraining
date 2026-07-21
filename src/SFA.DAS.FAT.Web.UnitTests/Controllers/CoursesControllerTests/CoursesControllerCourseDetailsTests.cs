@@ -20,7 +20,7 @@ public class CoursesControllerCourseDetailsTests
 {
     [Test]
     [MoqAutoData]
-    public async Task And_Valid_Request_Then_Course_Details_Returns_Valid_View_Model(
+    public async Task WhenGettingCourseDetails_AndRequestIsValid_ThenReturnsValidViewModel(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
@@ -66,7 +66,7 @@ public class CoursesControllerCourseDetailsTests
 
     [Test]
     [MoqAutoData]
-    public async Task And_Distance_Filter_Is_Across_England_Then_API_Is_Called_With_Default_Distance_Value(
+    public async Task WhenGettingCourseDetails_AndDistanceFilterIsAcrossEngland_ThenApiIsCalledWithDefaultDistanceValue(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
@@ -109,7 +109,7 @@ public class CoursesControllerCourseDetailsTests
 
     [Test]
     [MoqAutoData]
-    public async Task And_Distance_Is_Invalid_Then_Distance_Defaults_To_Ten_Miles(
+    public async Task WhenGettingCourseDetails_AndDistanceIsInvalid_ThenDistanceDefaultsToTenMiles(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
@@ -149,7 +149,7 @@ public class CoursesControllerCourseDetailsTests
 
     [Test]
     [MoqAutoData]
-    public async Task And_Distance_Is_Valid_Then_Converted_Distance_Is_Used_In_Request(
+    public async Task WhenGettingCourseDetails_AndDistanceIsValid_ThenConvertedDistanceIsUsedInRequest(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> sut,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,
@@ -191,7 +191,7 @@ public class CoursesControllerCourseDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Lars_Code_Is_Empty_Then_Redirects_To_Shutter_Page(
+    public async Task WhenGettingCourseDetails_AndLarsCodeIsEmpty_ThenRedirectsToShutterPage(
         string location,
         [Frozen] Mock<IMediator> mediator,
         [Greedy] CoursesController sut
@@ -206,7 +206,7 @@ public class CoursesControllerCourseDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task When_Lars_Code_Is_Invalid_Then_Redirects_To_Shutter_Page(
+    public async Task WhenGettingCourseDetails_AndLarsCodeIsInvalid_ThenRedirectsToShutterPage(
         string larsCode,
         string location,
         [Frozen] Mock<IMediator> mediator,
@@ -225,7 +225,7 @@ public class CoursesControllerCourseDetailsTests
 
     [Test]
     [MoqAutoData]
-    public async Task When_Course_Not_Found_Then_Redirects_To_404(
+    public async Task WhenGettingCourseDetails_AndCourseNotFound_ThenRedirectsTo404(
         GetCourseQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseQuery>> validator,

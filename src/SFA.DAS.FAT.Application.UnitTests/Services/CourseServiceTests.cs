@@ -23,7 +23,7 @@ public class CourseServiceTests
     private const string BaseUrl = "BaseUrl";
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WithValidParameters_CallsApiClientWithCorrectUrl(
+    public async Task WhenGettingCourseProviders_AndParametersAreValid_ThenCallsApiClientWithCorrectUrl(
         GetCourseProvidersQuery query,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -52,7 +52,7 @@ public class CourseServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WhenApiReturnsData_ReturnsProviderDetails(
+    public async Task WhenGettingCourseProviders_AndApiReturnsData_ThenReturnsProviderDetails(
         GetCourseProvidersQuery query,
         CourseProvidersDetails providersFromApi,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -84,7 +84,7 @@ public class CourseServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WhenApiReturns404_ReturnsNull(
+    public async Task WhenGettingCourseProviders_AndApiReturns404_ThenReturnsNull(
         [Frozen] Mock<IApiClient> mockApiClient,
         CourseService service)
     {
@@ -100,7 +100,7 @@ public class CourseServiceTests
     }
 
     [Test, AutoData]
-    public void GetUrl_WithAllParameters_ConstructsUrlCorrectly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
+    public void WhenGettingUrl_AndAllParametersProvided_ThenConstructsUrlCorrectly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
         List<QarRating> qarRatings,
         int page, Guid shortlistUserId)
     {
@@ -150,7 +150,7 @@ public class CourseServiceTests
              "&qar=Good" +
              "&page=25&pageSize=10" +
              "&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
-    public void GetUrl_WithVariousParameterCombinations_ConstructsUrlCorrectly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
+    public void WhenGettingUrl_AndVariousParameterCombinationsProvided_ThenConstructsUrlCorrectly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
          QarRating? qarRating,
          int? page, Guid? shortlistUserId, string expectedUrl)
     {
@@ -196,7 +196,7 @@ public class CourseServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourse_WhenApiClientIsCalledWithRequest_ReturnsExpectedResponse(
+    public async Task WhenGettingCourse_AndApiClientIsCalledWithRequest_ThenReturnsExpectedResponse(
         string larsCode,
         string location,
         int? distance,
@@ -218,7 +218,7 @@ public class CourseServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourse_WhenApiReturns404_ReturnsNull(
+    public async Task WhenGettingCourse_AndApiReturns404_ThenReturnsNull(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> config,
         [Frozen] Mock<IApiClient> apiClient,
         CourseService courseService)

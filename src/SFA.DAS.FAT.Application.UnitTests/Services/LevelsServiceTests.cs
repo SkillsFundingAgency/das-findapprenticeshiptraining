@@ -18,7 +18,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Services;
 public sealed class LevelsServiceTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Levels_Are_Returned_From_Session_If_Present(
+    public async Task WhenGettingLevels_AndPresentInSession_ThenReturnsFromSession(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -37,7 +37,7 @@ public sealed class LevelsServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Levels_Are_Returned_From_Cache_If_Session_Empty(
+    public async Task WhenGettingLevels_AndSessionIsEmpty_ThenReturnsFromCache(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -63,7 +63,7 @@ public sealed class LevelsServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Levels_Are_Returned_From_Api_And_Cached_If_Session_And_Cache_Empty(
+    public async Task WhenGettingLevels_AndSessionAndCacheAreEmpty_ThenReturnsFromApiAndCaches(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -109,7 +109,7 @@ public sealed class LevelsServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Exception_Is_Thrown_If_All_Sources_Fail(
+    public async Task WhenGettingLevels_AndAllSourcesFail_ThenThrows(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -143,7 +143,7 @@ public sealed class LevelsServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Exception_Is_Thrown_If_ApiResponse_Levels_Is_Empty(
+    public async Task WhenGettingLevels_AndApiResponseLevelsIsEmpty_ThenThrows(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,

@@ -11,7 +11,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
 public class SearchCoursesControllerGetTests
 {
     [Test, MoqAutoData]
-    public void Index_CookieMissing_BuildsViewModel(
+    public void WhenGettingIndex_AndCookieMissing_ThenBuildsViewModel(
         [Greedy] SearchCoursesController controller)
     {
         var actual = controller.Index() as ViewResult;
@@ -24,7 +24,7 @@ public class SearchCoursesControllerGetTests
     }
 
     [Test, MoqAutoData]
-    public void Index_GetRequest_PopulatesTrainingTypesFilterItemsWithBold(
+    public void WhenGettingIndex_ThenPopulatesTrainingTypesFilterItemsWithBold(
         [Greedy] SearchCoursesController controller)
     {
         var actual = controller.Index() as ViewResult;

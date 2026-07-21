@@ -1,4 +1,4 @@
-using AutoFixture.NUnit4;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ProvidersControllerTests;
 public class ProvidersControllerTests
 {
     [Test, MoqAutoData]
-    public async Task Index_WhenProviderExists_ReturnsProviderDetailsView(
+    public async Task WhenGettingIndex_AndProviderExists_ThenReturnsProviderDetailsView(
         int ukprn,
         GetProviderQueryResponse response,
         string location,
@@ -74,7 +74,7 @@ public class ProvidersControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Index_InvalidUkprn_ReturnsNotFound(
+    public async Task WhenGettingIndex_AndUkprnIsInvalid_ThenReturnsNotFound(
         int ukprn,
         GetProviderQueryResponse response,
         [Frozen] Mock<IMediator> mediator,
@@ -114,7 +114,7 @@ public class ProvidersControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Index_NullResponse_ReturnsNotFound(
+    public async Task WhenGettingIndex_AndResponseIsNull_ThenReturnsNotFound(
         int ukprn,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,

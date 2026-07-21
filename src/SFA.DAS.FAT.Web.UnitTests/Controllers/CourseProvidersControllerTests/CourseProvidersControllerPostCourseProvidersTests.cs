@@ -1,4 +1,4 @@
-using AutoFixture.NUnit4;
+﻿using AutoFixture.NUnit4;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -14,7 +14,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class CourseProvidersControllerPostCourseProvidersTests
 {
     [Test, MoqAutoData]
-    public void CourseProvidersPost_UpdatesLocationCookie_AndRedirects(
+    public void WhenPostingCourseProviders_ThenUpdatesLocationCookieAndRedirects(
         CourseProvidersFiltersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
@@ -33,7 +33,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public void ApplyFilters_WhenLocationHasWhitespace_UpdatesCookieWithTrimmedLocation(
+    public void WhenApplyingFilters_AndLocationHasWhitespace_ThenUpdatesCookieWithTrimmedLocation(
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller,
         CourseProvidersFiltersSubmitModel submitModel)
@@ -52,7 +52,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviderDetailsPost_UpdatesLocationCookie_AndRedirects(
+    public async Task WhenPostingCourseProviderDetails_ThenUpdatesLocationCookieAndRedirects(
         ProviderLocationSubmitModel model,
         string larsCode,
         int ukprn,
@@ -79,7 +79,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task ApplyLocation_WhenCookieContainsDistance_PreservesDistanceAndTrimsLocation(
+    public async Task WhenApplyingLocation_AndCookieContainsDistance_ThenPreservesDistanceAndTrimsLocation(
         string larsCode,
         int ukprn,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,

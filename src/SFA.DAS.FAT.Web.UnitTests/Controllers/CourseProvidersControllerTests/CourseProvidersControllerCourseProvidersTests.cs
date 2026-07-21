@@ -1,4 +1,4 @@
-using AutoFixture.NUnit4;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentValidation;
@@ -31,7 +31,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class CourseProvidersControllerCourseProvidersTests
 {
     [Test, MoqAutoData]
-    public async Task CourseProviders_WithValidRequest_ReturnsViewWithCorrectData(
+    public async Task WhenGettingCourseProviders_AndRequestIsValid_ThenReturnsViewWithCorrectData(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -141,7 +141,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenNoShortlistCookie_SendsQueryWithNullShortlistUserId(
+    public async Task WhenGettingCourseProviders_AndNoShortlistCookie_ThenSendsQueryWithNullShortlistUserId(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -198,7 +198,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLarsCodeIsInvalid_ReturnsNotFound(
+    public async Task WhenGettingCourseProviders_AndLarsCodeIsInvalid_ThenReturnsNotFound(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -249,7 +249,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenNoCourseProvidersExist_ReturnsNotFound(
+    public async Task WhenGettingCourseProviders_AndNoCourseProvidersExist_ThenReturnsNotFound(
         CourseProvidersFiltersRequestModel request,
         string serviceStartUrl,
         string shortlistUrl,
@@ -307,7 +307,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenDistanceIsNull_DefaultsToTenMiles(
+    public async Task WhenGettingCourseProviders_AndDistanceIsNull_ThenDefaultsToTenMiles(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -365,7 +365,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationEnteredForFirstTime_OrdersByDistance(
+    public async Task WhenGettingCourseProviders_AndLocationEnteredForFirstTime_ThenOrdersByDistance(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -413,7 +413,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationPreviouslyEntered_OrdersByUserChoice(
+    public async Task WhenGettingCourseProviders_AndLocationPreviouslyEntered_ThenOrdersByUserChoice(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -458,7 +458,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenNoLocation_OrdersByAchievementRate(
+    public async Task WhenGettingCourseProviders_AndNoLocation_ThenOrdersByAchievementRate(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -513,7 +513,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenDistanceExistsInLocationCookie_UsesProvidedDistance(
+    public async Task WhenGettingCourseProviders_AndDistanceExistsInLocationCookie_ThenUsesProvidedDistance(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -572,7 +572,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationIsCookie_DefaultsDistanceAndOrderBy(
+    public async Task WhenGettingCourseProviders_AndLocationIsCookie_ThenDefaultsDistanceAndOrderBy(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -624,7 +624,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenReviewPeriodProvided_SetsReviewPeriodDetails(
+    public async Task WhenGettingCourseProviders_AndReviewPeriodProvided_ThenSetsReviewPeriodDetails(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string location,
@@ -683,7 +683,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenQarPeriodProvided_SetsQarPeriodDetails(
+    public async Task WhenGettingCourseProviders_AndQarPeriodProvided_ThenSetsQarPeriodDetails(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string location,
@@ -745,7 +745,7 @@ public class CourseProvidersControllerCourseProvidersTests
     [MoqInlineAutoData(1, "1 result")]
     [MoqInlineAutoData(2, "2 results")]
     [MoqInlineAutoData(-1, "No results")]
-    public async Task CourseProviders_WithVariousTotalCounts_SetsTotalMessageCorrectly(
+    public async Task WhenGettingCourseProviders_AndVariousTotalCountsProvided_ThenSetsTotalMessageCorrectly(
         int totalCount,
         string expectedMessage,
         CourseProvidersFiltersRequestModel request,
@@ -802,7 +802,7 @@ public class CourseProvidersControllerCourseProvidersTests
     [MoqInlineAutoData(2, "Coventry", "20", "2 results within 20 miles")]
     [MoqInlineAutoData(2, "Coventry", DistanceService.AcrossEnglandFilterValue, "2 results")]
     [MoqInlineAutoData(2, "Coventry", "", "2 results within 10 miles")]
-    public async Task CourseProviders_WithLocationAndDistance_SetsTotalMessageWithDistanceDetails(
+    public async Task WhenGettingCourseProviders_AndLocationAndDistanceProvided_ThenSetsTotalMessageWithDistanceDetails(
         int totalCount,
         string location,
         string distance,
@@ -862,7 +862,7 @@ public class CourseProvidersControllerCourseProvidersTests
     [MoqInlineAutoData(ProviderOrderBy.AchievementRate, false, true, false, false)]
     [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating, false, false, true, false)]
     [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating, false, false, false, true)]
-    public async Task CourseProviders_WithVariousOrderByOptions_SetsProviderOrderDropdownCorrectly(
+    public async Task WhenGettingCourseProviders_AndVariousOrderByOptionsProvided_ThenSetsProviderOrderDropdownCorrectly(
         ProviderOrderBy orderBy,
         bool distanceSelected,
         bool achievementRateSelected,
@@ -953,7 +953,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenShortlistCountInSession_PopulatesShortlistCount(
+    public async Task WhenGettingCourseProviders_AndShortlistCountInSession_ThenPopulatesShortlistCount(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -992,7 +992,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationProvided_IncludesDistanceInOrderByOptions(
+    public async Task WhenGettingCourseProviders_AndLocationProvided_ThenIncludesDistanceInOrderByOptions(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -1025,7 +1025,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenLocationIsEmpty_ExcludesDistanceFromOrderByOptions(
+    public async Task WhenGettingCourseProviders_AndLocationIsEmpty_ThenExcludesDistanceFromOrderByOptions(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -1053,7 +1053,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_WhenOrderByIsDistanceAndLocationMissing_DefaultsToAchievementRate(
+    public async Task WhenGettingCourseProviders_AndOrderByIsDistanceAndLocationMissing_ThenDefaultsToAchievementRate(
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
         [Frozen] Mock<ITempDataDictionary> tempDataMock,
@@ -1089,7 +1089,7 @@ public class CourseProvidersControllerCourseProvidersTests
     [MoqInlineAutoData(ProviderOrderBy.AchievementRate)]
     [MoqInlineAutoData(ProviderOrderBy.EmployerProviderRating)]
     [MoqInlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
-    public async Task CourseProviders_WhenLocationProvided_MaintainsSelectedOrderBy(
+    public async Task WhenGettingCourseProviders_AndLocationProvided_ThenMaintainsSelectedOrderBy(
         ProviderOrderBy expectedOrderBy,
         [Frozen] Mock<IMediator> mediatorMock,
         [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -1113,7 +1113,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviders_ShortlistCountMissingFromSession_DefaultsToZero(
+    public async Task WhenGettingCourseProviders_AndShortlistCountMissingFromSession_ThenDefaultsToZero(
     [Frozen] Mock<ISessionService> sessionServiceMock,
     [Frozen] Mock<IMediator> mediatorMock,
     [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
@@ -1147,7 +1147,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndReturnsInvalidViewModel(
+    public async Task WhenClearLocationQueryParameterPresent_ThenDeletesLocationCookieAndReturnsInvalidViewModel(
            [Frozen] Mock<IValidator<GetCourseQuery>> courseIdValidator,
            [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
            [Greedy] CourseProvidersController sut)
@@ -1177,7 +1177,7 @@ public class CourseProvidersControllerCourseProvidersTests
 
 
     [Test, MoqAutoData]
-    public async Task CourseProviderDetails_WithClearLocation_DeletesCookieLocationDistanceStillPresent(
+    public async Task WhenGettingCourseProviderDetails_AndClearLocation_ThenDeletesCookieLocationDistanceStillPresent(
        string larsCode,
        int ukprn,
        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> providerValidatorMock,

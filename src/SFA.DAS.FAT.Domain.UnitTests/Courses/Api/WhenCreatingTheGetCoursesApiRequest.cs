@@ -1,4 +1,4 @@
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
@@ -7,7 +7,7 @@ namespace SFA.DAS.FAT.Domain.UnitTests.Courses.Api;
 public class WhenCreatingTheGetCoursesApiRequest
 {
     [Test]
-    public void Constructor_WhenInitialized_ShouldSetProperties()
+    public void WhenConstructing_AndInitialized_ThenSetsProperties()
     {
         var _sut = new GetCoursesApiRequest
         {
@@ -37,7 +37,7 @@ public class WhenCreatingTheGetCoursesApiRequest
     }
 
     [Test]
-    public void GetUrl_WhenAllParametersProvided_ShouldConstructCorrectUrl()
+    public void WhenGettingUrl_AndAllParametersProvided_ThenConstructsCorrectUrl()
     {
         var _sut = new GetCoursesApiRequest
         {
@@ -56,7 +56,7 @@ public class WhenCreatingTheGetCoursesApiRequest
     }
 
     [Test]
-    public void GetUrl_WhenOptionalParametersAreEmpty_ShouldExcludeEmptyParameters()
+    public void WhenGettingUrl_AndOptionalParametersAreEmpty_ThenExcludesEmptyParameters()
     {
         var _sut = new GetCoursesApiRequest
         {

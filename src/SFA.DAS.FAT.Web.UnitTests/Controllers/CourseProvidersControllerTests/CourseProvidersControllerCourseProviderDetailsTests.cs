@@ -1,4 +1,4 @@
-using AutoFixture.NUnit4;
+﻿using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class CourseProvidersControllerCourseProviderDetailsTests
 {
     [Test, MoqAutoData]
-    public async Task CourseProviderDetails_MediatorIsCalledWithCorrectProperties(
+    public async Task WhenGettingCourseProviderDetails_ThenMediatorIsCalledWithCorrectProperties(
         string larsCode,
         int ukprn,
         string location,
@@ -85,7 +85,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task ProviderDetailsFound_ValuesMappedToModelCorrectly(
+    public async Task WhenGettingCourseProviderDetails_AndProviderDetailsFound_ThenValuesMappedToModelCorrectly(
         string larsCode,
         int ukprn,
         string location,
@@ -183,7 +183,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationSet_DistanceDefaultsToOneThousandMiles(
+    public async Task WhenGettingCourseProviderDetails_AndLocationSet_ThenDistanceDefaultsToOneThousandMiles(
         string larsCode,
         int ukprn,
         string location,
@@ -246,7 +246,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationtNotSet_DistanceDefaultsToTenMiles(
+    public async Task WhenGettingCourseProviderDetails_AndLocationNotSet_ThenDistanceDefaultsToTenMiles(
     string larsCode,
     int ukprn,
     GetCourseProviderQueryResult response,
@@ -309,7 +309,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task DistanceAcrossEngland_DistanceDefaultsToDefaultDistance(
+    public async Task WhenGettingCourseProviderDetails_AndDistanceIsAcrossEngland_ThenDistanceDefaultsToDefaultDistance(
         string larsCode,
         int ukprn,
         string location,
@@ -379,7 +379,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task ProviderIdValidationFails_RedirectsToNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndProviderIdValidationFails_ThenRedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -427,7 +427,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseIdValidationFails_RedirectsToNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndCourseIdValidationFails_ThenRedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -476,7 +476,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationValidationFails_ValidationMessageShown(
+    public async Task WhenGettingCourseProviderDetails_AndLocationValidationFails_ThenValidationMessageShown(
         string larsCode,
         int ukprn,
         string location,
@@ -541,7 +541,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task ResponseIsNull_ReturnsNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndResponseIsNull_ThenReturnsNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,

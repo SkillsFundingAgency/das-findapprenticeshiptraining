@@ -17,7 +17,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
 public class SearchCoursesControllerPostTests
 {
     [Test, MoqAutoData]
-    public void And_Post_Redirects_to_Courses_With_No_RouteValues_Set(
+    public void WhenPosting_ThenRedirectsToCoursesWithNoRouteValuesSet(
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
@@ -43,7 +43,7 @@ public class SearchCoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void And_Post_Redirects_to_Courses_With_CourseTerm_In_RouteValues(
+    public void WhenPosting_ThenRedirectsToCoursesWithCourseTermInRouteValues(
         string courseTerm,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] SearchCoursesController controller)
@@ -70,7 +70,7 @@ public class SearchCoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void And_Post_Redirects_to_Courses_Without_Location_And_Distance_In_RouteValues(
+    public void WhenPosting_ThenRedirectsToCoursesWithoutLocationAndDistanceInRouteValues(
         string location,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] SearchCoursesController controller)
@@ -96,7 +96,7 @@ public class SearchCoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void And_Post_Redirects_to_Courses_With_Course_Term_In_Route_Values(
+    public void WhenPosting_AndLocationCookieHasDefaultDistance_ThenRedirectsToCoursesWithCourseTermInRouteValues(
         string location,
         string courseTerm,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,

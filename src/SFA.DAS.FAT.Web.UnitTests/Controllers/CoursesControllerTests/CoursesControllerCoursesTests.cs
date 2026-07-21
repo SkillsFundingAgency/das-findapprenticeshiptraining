@@ -20,7 +20,7 @@ public class CoursesControllerCoursesTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Courses_RequestIsValid_QueryIsSentAndViewIsReturned(
+    public async Task WhenGettingCourses_AndRequestIsValid_ThenQueryIsSentAndViewIsReturned(
         CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
         ShortlistCookieItem cookieItem,
@@ -69,7 +69,7 @@ public class CoursesControllerCoursesTests
     }
 
     [Test, MoqAutoData]
-    public async Task Courses_RequestContainsSearchFilters_ModelContainsMappedResults(
+    public async Task WhenGettingCourses_AndRequestContainsSearchFilters_ThenModelContainsMappedResults(
         CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
         string location,
@@ -136,7 +136,7 @@ public class CoursesControllerCoursesTests
     }
 
     [Test, MoqAutoData]
-    public async Task Courses_ResultContainsStandards_PaginationIsPopulated(
+    public async Task WhenGettingCourses_AndResultContainsStandards_ThenPaginationIsPopulated(
         CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
         string location,
@@ -182,7 +182,7 @@ public class CoursesControllerCoursesTests
     }
 
     [Test, MoqAutoData]
-    public async Task Courses_ResultContainsNoStandards_PaginationIsNull(
+    public async Task WhenGettingCourses_AndResultContainsNoStandards_ThenPaginationIsNull(
         CoursesFiltersRequestModel request,
         GetCoursesQueryResult response,
         string location,
@@ -229,7 +229,7 @@ public class CoursesControllerCoursesTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenClearLocationQueryParameterPresent_DeletesLocationCookie_AndQueryUsesNoLocation(
+    public async Task WhenClearLocationQueryParameterPresent_ThenDeletesLocationCookieAndQueryUsesNoLocation(
         CoursesFiltersRequestModel request,
         GetCoursesQueryResult queryResult,
         [Frozen] Mock<IMediator> mediator,
@@ -265,7 +265,7 @@ public class CoursesControllerCoursesTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseDetails_WhenClearLocationIsTrue_DeletesLocationCookieDistanceStillPresent(
+    public async Task WhenGettingCourseDetails_AndClearLocationIsTrue_ThenDeletesLocationCookieDistanceStillPresent(
         string larsCode,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)

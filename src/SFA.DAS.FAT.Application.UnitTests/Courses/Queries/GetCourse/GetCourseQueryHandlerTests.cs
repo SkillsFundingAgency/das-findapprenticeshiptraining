@@ -1,4 +1,4 @@
-using FluentAssertions;
+﻿using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
@@ -26,7 +26,7 @@ public sealed class GetCourseQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task Then_Handler_Maps_To_Response_Correctly(
+    public async Task WhenHandling_ThenMapsToResponseCorrectly(
         GetCourseResponse courseResponse,
         IEnumerable<Level> levels
     )
@@ -87,7 +87,7 @@ public sealed class GetCourseQueryHandlerTests
 
     [Test]
     [MoqAutoData]
-    public async Task And_CourseService_Returns_Null_Then_Handler_Returns_Null()
+    public async Task WhenHandling_AndCourseServiceReturnsNull_ThenReturnsNull()
     {
         _levelsServiceMock.Setup(x => x.GetLevelsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(new List<Level>());
 

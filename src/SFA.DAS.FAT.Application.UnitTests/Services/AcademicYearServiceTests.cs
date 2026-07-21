@@ -17,7 +17,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Services;
 public sealed class AcademicYearServiceTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Returns_From_Session_When_Valid(
+    public async Task WhenGettingAcademicYearsLatest_AndSessionIsValid_ThenReturnsFromSession(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -44,7 +44,7 @@ public sealed class AcademicYearServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Returns_From_Cache_If_Session_Empty(
+    public async Task WhenGettingAcademicYearsLatest_AndSessionIsEmpty_ThenReturnsFromCache(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -77,7 +77,7 @@ public sealed class AcademicYearServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Returns_From_Api_If_Not_In_Session_Or_Cache(
+    public async Task WhenGettingAcademicYearsLatest_AndNotInSessionOrCache_ThenReturnsFromApi(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -126,7 +126,7 @@ public sealed class AcademicYearServiceTests
 
 
     [Test, MoqAutoData]
-    public async Task Then_Throws_If_All_Sources_Fail(
+    public async Task WhenGettingAcademicYearsLatest_AndAllSourcesFail_ThenThrows(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -157,7 +157,7 @@ public sealed class AcademicYearServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Throws_If_Api_Returns_Invalid_Data(
+    public async Task WhenGettingAcademicYearsLatest_AndApiReturnsInvalidData_ThenThrows(
     [Frozen] Mock<ISessionService> sessionServiceMock,
     [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
     [Frozen] Mock<IApiClient> apiClientMock,

@@ -15,7 +15,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests;
 public class CoursesControllerPostTests
 {
     [Test, MoqAutoData]
-    public void CoursesPost_UpdatesLocationCookie_AndRedirects(
+    public void WhenPostingCourses_ThenUpdatesLocationCookieAndRedirects(
         CoursesFiltersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
@@ -34,7 +34,7 @@ public class CoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void CourseDetailsPost_UpdatesLocationCookie_AndRedirects(
+    public void WhenPostingCourseDetails_ThenUpdatesLocationCookieAndRedirects(
         string larsCode,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut)
@@ -56,7 +56,7 @@ public class CoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void CoursesPost_WithSubmitModel_UpdatesLocationCookieAndRedirectsToCourses(
+    public void WhenPostingCourses_AndSubmitModelProvided_ThenUpdatesLocationCookieAndRedirectsToCourses(
        CoursesFiltersSubmitModel submitModel,
        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
        [Greedy] CoursesController sut
@@ -84,7 +84,7 @@ public class CoursesControllerPostTests
     }
 
     [Test, MoqAutoData]
-    public void CourseDetailsPost_WithModel_UpdatesLocationCookieAndRedirectsToCourseDetails(
+    public void WhenPostingCourseDetails_AndModelProvided_ThenUpdatesLocationCookieAndRedirectsToCourseDetails(
         string larsCode,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CoursesController sut

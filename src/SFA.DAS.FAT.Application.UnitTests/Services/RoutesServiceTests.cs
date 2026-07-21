@@ -18,7 +18,7 @@ namespace SFA.DAS.FAT.Application.UnitTests.Services;
 public sealed class RoutesServiceTests
 {
     [Test, MoqAutoData]
-    public async Task Then_Routes_Are_Returned_From_The_Session(
+    public async Task WhenGettingRoutes_AndPresentInSession_ThenReturnsFromSession(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -45,7 +45,7 @@ public sealed class RoutesServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Routes_Are_Returned_From_The_Cache_If_Not_In_Session(
+    public async Task WhenGettingRoutes_AndNotInSession_ThenReturnsFromCache(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -75,7 +75,7 @@ public sealed class RoutesServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Routes_Are_Returned_From_The_Api_If_Not_In_Session_Or_Cache(
+    public async Task WhenGettingRoutes_AndNotInSessionOrCache_ThenReturnsFromApi(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
@@ -114,7 +114,7 @@ public sealed class RoutesServiceTests
     }
 
     [Test, MoqAutoData]
-    public async Task Then_Exception_Is_Thrown_If_All_Sources_Empty(
+    public async Task WhenGettingRoutes_AndAllSourcesEmpty_ThenThrows(
         [Frozen] Mock<ISessionService> sessionServiceMock,
         [Frozen] Mock<IDistributedCacheService> distributedCacheServiceMock,
         [Frozen] Mock<IApiClient> apiClientMock,
