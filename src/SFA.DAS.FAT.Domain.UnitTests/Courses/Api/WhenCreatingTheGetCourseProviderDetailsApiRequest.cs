@@ -12,6 +12,6 @@ public class WhenCreatingTheGetCourseProviderDetailsApiRequest
     {
         var actual = new GetCourseProviderDetailsApiRequest(baseUrl, larsCode, ukprn, location, distance, shortlistUserId);
 
-        actual.GetUrl.Should().Be($"{baseUrl}courses/{larsCode}/providers/{ukprn}?location={location}&distance={distance}&shortlistUserId={shortlistUserId}");
+        actual.GetUrl.Should().Be($"{baseUrl}courses/{larsCode}/providers/{ukprn}?locationName={location}&distance={distance}&shortlistUserId={shortlistUserId}");
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
@@ -28,7 +28,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
@@ -47,7 +47,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location.Trim() && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName.Trim() && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
@@ -74,7 +74,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == model.Location)
+            It.Is<LocationCookieItem>(c => c.LocationName == model.LocationName)
         ), Times.Once);
     }
 
@@ -86,10 +86,10 @@ public class CourseProvidersControllerPostCourseProvidersTests
         [Greedy] CourseProvidersController controller)
     {
         // Arrange
-        var submitModel = new ProviderLocationSubmitModel { Location = "  Manchester  " };
+        var submitModel = new ProviderLocationSubmitModel { LocationName = "  Manchester  " };
         locationCookieService
             .Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = "Old", Distance = "40" });
+            .Returns(new LocationCookieItem { LocationName = "Old", Distance = "40" });
 
         // Act
         var result = await controller.ApplyLocation(submitModel, larsCode, ukprn) as RedirectToRouteResult;
@@ -100,7 +100,7 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == "Manchester" && c.Distance == "40")
+            It.Is<LocationCookieItem>(c => c.LocationName == "Manchester" && c.Distance == "40")
         ), Times.Once);
     }
 }

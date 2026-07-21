@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 
@@ -13,6 +13,6 @@ public class CourseProvidersFiltersSubmitModel
     public List<ProviderRating> ApprenticeProviderRatings { get; set; } = [];
     public List<QarRating> QarRatings { get; set; } = [];
     public int PageNumber { get; set; } = 1;
-    public string Location { get; set; } = string.Empty;
+    public string LocationName { get; set; } = string.Empty;
     public string Distance { get; set; } = string.Empty;
 }

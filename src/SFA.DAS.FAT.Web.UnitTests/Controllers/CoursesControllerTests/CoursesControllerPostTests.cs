@@ -12,7 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests;
 
-public class WhenPostingCourses
+public class CoursesControllerPostTests
 {
     [Test, MoqAutoData]
     public void CoursesPost_UpdatesLocationCookie_AndRedirects(
@@ -29,7 +29,7 @@ public class WhenPostingCourses
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
@@ -40,7 +40,7 @@ public class WhenPostingCourses
         [Greedy] CoursesController sut)
     {
         CourseLocationSubmitModel model = new CourseLocationSubmitModel();
-        model.Location = "Test Location";
+        model.LocationName = "Test Location";
 
         //Act
         var result = sut.CourseDetailsPost(model, larsCode) as RedirectToRouteResult;
@@ -51,7 +51,7 @@ public class WhenPostingCourses
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == model.Location)
+            It.Is<LocationCookieItem>(c => c.LocationName == model.LocationName)
         ), Times.Once);
     }
 
@@ -77,7 +77,7 @@ public class WhenPostingCourses
         locationCookieService.Verify(
             x => x.Update(
                 Constants.LocationCookieName,
-                It.Is<LocationCookieItem>(c => c.Location == submitModel.Location && c.Distance == submitModel.Distance)
+                It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName && c.Distance == submitModel.Distance)
             ),
             Times.Once
         );
@@ -91,7 +91,7 @@ public class WhenPostingCourses
     )
     {
         CourseLocationSubmitModel model = new CourseLocationSubmitModel();
-        model.Location = "Test Location";
+        model.LocationName = "Test Location";
 
         // Act
         var result = sut.CourseDetailsPost(model, larsCode) as RedirectToRouteResult;
@@ -105,7 +105,7 @@ public class WhenPostingCourses
         locationCookieService.Verify(
             x => x.Update(
                 Constants.LocationCookieName,
-                It.Is<LocationCookieItem>(c => c.Location == model.Location)
+                It.Is<LocationCookieItem>(c => c.LocationName == model.LocationName)
             ),
             Times.Once
         );

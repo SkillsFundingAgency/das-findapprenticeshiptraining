@@ -8,21 +8,21 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetProviderDetails;
 
-public class WhenGettingCourseProviderDetails
+public class GetCourseProviderQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Then_If_The_Query_Is_Valid_The_Service_Is_Called_And_The_Response_Is_Mapped_Correctly(
-        Application.Courses.Queries.GetCourseProviderDetails.GetCourseProviderDetailsQuery query,
+        GetCourseProviderDetailsQuery query,
         CourseProviderDetailsModel CourseProviderDetailsResponse,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Greedy] GetCourseProviderQueryHandler sut
     )
     {
-        courseServiceMock.Setup(x => 
+        courseServiceMock.Setup(x =>
             x.GetCourseProvider(
-                query.Ukprn, 
-                query.LarsCode, 
-                query.Location,
+                query.Ukprn,
+                query.LarsCode,
+                query.LocationName,
                 query.Distance,
                 query.ShortlistUserId.Value
             )
@@ -30,14 +30,14 @@ public class WhenGettingCourseProviderDetails
 
         GetCourseProviderQueryResult result = await sut.Handle(query, CancellationToken.None);
 
-        courseServiceMock.Verify(x => 
+        courseServiceMock.Verify(x =>
             x.GetCourseProvider(
-                query.Ukprn, 
-                query.LarsCode, 
-                query.Location, 
+                query.Ukprn,
+                query.LarsCode,
+                query.LocationName,
                 query.Distance,
                 query.ShortlistUserId.Value
-            ), 
+            ),
             Times.Once
         );
 
@@ -65,7 +65,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test, MoqAutoData]
     public async Task Then_If_There_Is_No_Course_Provider_Then_Service_Returns_Null(
-        Application.Courses.Queries.GetCourseProviderDetails.GetCourseProviderDetailsQuery query,
+        GetCourseProviderDetailsQuery query,
         [Frozen] Mock<ICourseService> courseServiceMock,
         [Greedy] GetCourseProviderQueryHandler sut
 )
@@ -74,7 +74,7 @@ public class WhenGettingCourseProviderDetails
             x.GetCourseProvider(
                 query.Ukprn,
                 query.LarsCode,
-                query.Location,
+                query.LocationName,
                 query.Distance,
                 query.ShortlistUserId.Value
             )
@@ -86,7 +86,7 @@ public class WhenGettingCourseProviderDetails
             x.GetCourseProvider(
                 query.Ukprn,
                 query.LarsCode,
-                query.Location,
+                query.LocationName,
                 query.Distance,
                 query.ShortlistUserId.Value
             ),

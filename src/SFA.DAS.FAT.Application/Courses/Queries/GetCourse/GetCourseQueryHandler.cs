@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -12,7 +12,7 @@ public class GetCourseQueryHandler(ICourseService courseService, ILevelsService 
     {
         var levelsResponse = await levelsService.GetLevelsAsync(cancellationToken);
 
-        var courseResponse = await courseService.GetCourse(query.LarsCode, query.Location, query.Distance);
+        var courseResponse = await courseService.GetCourse(query.LarsCode, query.LocationName, query.Distance);
 
         if (courseResponse == null)
         {

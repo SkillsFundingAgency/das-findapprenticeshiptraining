@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation;
 using FluentValidation.Results;
@@ -38,7 +38,7 @@ public class ProvidersControllerTests
                  c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>())).ReturnsAsync(response);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-           .Returns(new LocationCookieItem { Location = location, Distance = "10" });
+           .Returns(new LocationCookieItem { LocationName = location, Distance = "10" });
 
         validatorMock.Setup(v =>
             v.ValidateAsync(
@@ -70,7 +70,7 @@ public class ProvidersControllerTests
 
         model!.ShowSearchCrumb.Should().Be(true);
         model.ShowShortListLink.Should().Be(true);
-        model.Location.Should().Be(location);
+        model.LocationName.Should().Be(location);
     }
 
     [Test, MoqAutoData]

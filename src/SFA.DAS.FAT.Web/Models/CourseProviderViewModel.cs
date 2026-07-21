@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,11 +73,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CoursesDeliveredCountDisplay => CoursesDeliveredDisplayText();
     public string ShortlistClass => GetShortlistClass();
     public bool HasMatchingRegionalLocationOrNational => Locations.Any(l => (l.LocationType == LocationType.National) || (l.LocationType == LocationType.Regional && l.AtEmployer));
-    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    public bool HasLocation => !string.IsNullOrWhiteSpace(LocationName);
     public bool ShowMultipleProvidersForCourse => TotalProvidersCount > 1;
     public TrainingOptionsTableViewModel TrainingOptions => new()
     {
-        Location = Location,
+        LocationName = LocationName,
         ShowOnlineOption = ShowOnlineOption,
         ShowLearnerWorkplaceOption = ShowLearnerWorkplaceOption,
         AtLearnerWorkplaceWithNoLocationDisplayMessage = AtLearnerWorkplaceWithNoLocationDisplayMessage,
@@ -125,7 +125,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         LarsCode = LarsCode,
         Ukprn = Ukprn,
         ProviderName = ProviderName,
-        Location = Location,
+        LocationName = LocationName,
         ShortlistId = ShortlistId,
         ShowMultipleProvidersForCourse = ShowMultipleProvidersForCourse,
         TotalProvidersCount = TotalProvidersCount,

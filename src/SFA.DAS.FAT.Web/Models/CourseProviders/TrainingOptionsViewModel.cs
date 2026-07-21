@@ -1,4 +1,4 @@
-﻿using SFA.DAS.FAT.Web.Services;
+using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
@@ -17,13 +17,13 @@ public class TrainingOptionsViewModel
 
 
     public string Distance { get; set; }
-    public string Location { get; set; }
+    public string LocationName { get; set; }
 
     public string DistanceDetails
     {
         get
         {
-            if (string.IsNullOrEmpty(Location))
+            if (string.IsNullOrEmpty(LocationName))
             {
                 return string.Empty;
             }
@@ -37,5 +37,5 @@ public class TrainingOptionsViewModel
         }
     }
 
-    public bool ShowDistanceDetails => !string.IsNullOrEmpty(Location);
+    public bool ShowDistanceDetails => !string.IsNullOrEmpty(LocationName);
 }

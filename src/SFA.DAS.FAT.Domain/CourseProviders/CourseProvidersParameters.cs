@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Courses;
@@ -10,7 +10,7 @@ public class CourseProvidersParameters
     public string LarsCode { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public int? Distance { get; set; }
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public List<ProviderDeliveryMode> DeliveryModeTypes { get; set; } = [];
 
     public List<ProviderRating> EmployerProviderRatingTypes { get; set; } = [];

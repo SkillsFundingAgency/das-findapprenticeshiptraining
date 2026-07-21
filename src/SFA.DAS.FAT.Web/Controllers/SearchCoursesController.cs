@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Web.Infrastructure;
@@ -44,7 +44,7 @@ public class SearchCoursesController : Controller
             request.Keyword = submitModel.CourseTerm;
         }
 
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = DistanceService.DefaultDistance.ToString() });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { LocationName = submitModel.LocationName?.Trim(), Distance = DistanceService.DefaultDistance.ToString() });
         return RedirectToRoute(RouteNames.Courses, request);
     }
 }

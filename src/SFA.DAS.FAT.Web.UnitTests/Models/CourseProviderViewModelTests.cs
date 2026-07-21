@@ -9,7 +9,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
 
-public class WhenCreatingCourseProviderViewModel
+public class CourseProviderViewModelTests
 {
     [Test, MoqAutoData]
     public void ImplicitOperator_FromGetCourseProviderQueryResult_MapsPropertiesCorrectly(GetCourseProviderQueryResult source)
@@ -335,7 +335,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = string.Empty,
+            LocationName = string.Empty,
             Locations = new List<LocationModel>
             {
                 new LocationModel { AtEmployer = true, LocationType = LocationType.National }
@@ -350,7 +350,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = string.Empty,
+            LocationName = string.Empty,
             Locations = new List<LocationModel>
             {
                 new LocationModel { LocationType = LocationType.Regional }
@@ -365,7 +365,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = string.Empty,
+            LocationName = string.Empty,
             Locations = new List<LocationModel>
             {
                 new LocationModel { LocationType = LocationType.National }
@@ -1069,7 +1069,7 @@ public class WhenCreatingCourseProviderViewModel
         var sut = new CourseProviderViewModel
         {
             CourseType = CourseType.ShortCourse,
-            Location = "Leeds",
+            LocationName = "Leeds",
             Locations = new List<LocationModel>
             {
                 new LocationModel { LocationType = LocationType.Online },
@@ -1082,7 +1082,7 @@ public class WhenCreatingCourseProviderViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.LocationName, Is.EqualTo("Leeds"));
             Assert.That(result.ShowOnlineOption, Is.True);
             Assert.That(result.ShowLearnerWorkplaceOption, Is.True);
             Assert.That(result.HasMatchingRegionalLocationOrNational, Is.True);
@@ -1230,7 +1230,7 @@ public class WhenCreatingCourseProviderViewModel
             LarsCode = "123",
             Ukprn = 10000001,
             ProviderName = "Provider A",
-            Location = "Leeds",
+            LocationName = "Leeds",
             ShortlistId = shortlistId,
             TotalProvidersCount = 2,
             CourseName = "Software developer",
@@ -1245,7 +1245,7 @@ public class WhenCreatingCourseProviderViewModel
             Assert.That(result.LarsCode, Is.EqualTo("123"));
             Assert.That(result.Ukprn, Is.EqualTo(10000001));
             Assert.That(result.ProviderName, Is.EqualTo("Provider A"));
-            Assert.That(result.Location, Is.EqualTo("Leeds"));
+            Assert.That(result.LocationName, Is.EqualTo("Leeds"));
             Assert.That(result.ShortlistId, Is.EqualTo(shortlistId));
             Assert.That(result.ShowMultipleProvidersForCourse, Is.True);
             Assert.That(result.TotalProvidersCount, Is.EqualTo(2));
@@ -1303,7 +1303,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = "   "
+            LocationName = "   "
         };
 
         Assert.That(sut.HasLocation, Is.False);
@@ -1314,7 +1314,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = null
+            LocationName = null
         };
 
         Assert.That(sut.HasLocation, Is.False);
@@ -1325,7 +1325,7 @@ public class WhenCreatingCourseProviderViewModel
     {
         var sut = new CourseProviderViewModel
         {
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         Assert.That(sut.HasLocation, Is.True);

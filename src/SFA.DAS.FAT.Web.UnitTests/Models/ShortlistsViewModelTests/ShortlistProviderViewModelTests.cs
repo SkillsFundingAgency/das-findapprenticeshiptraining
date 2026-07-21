@@ -5,7 +5,7 @@ using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistsViewModelTests;
 
-public class WhenCreatingShortlistProviderViewModel
+public class ShortlistProviderViewModelTests
 {
     [TestCase(true, true, true, 3)]
     [TestCase(true, false, true, 2)]
@@ -57,11 +57,11 @@ public class WhenCreatingShortlistProviderViewModel
     [TestCase("location desc", true)]
     [TestCase("", false)]
     [TestCase(null, false)]
-    public void ThenHasLocationIsAsExpected(string locationDescription, bool expected)
+    public void ThenHasLocationIsAsExpected(string LocationName, bool expected)
     {
         ShortlistProviderViewModel sut = new()
         {
-            LocationDescription = locationDescription
+            LocationName = LocationName
         };
         sut.HasLocation.Should().Be(expected);
     }

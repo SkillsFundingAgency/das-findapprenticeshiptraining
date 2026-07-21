@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Text;
 using AutoFixture.NUnit4;
 using FluentAssertions;
@@ -39,7 +39,7 @@ public class GoogleAnalyticsFilterTests
         //Assert
         var viewBag = controller.ViewBag.GaData as GaData;
         viewBag.Should().NotBeNull();
-        viewBag!.Location.Should().Be(locationCookie.Location);
+        viewBag!.LocationName.Should().Be(locationCookie.LocationName);
     }
 
     [Test, MoqAutoData]
@@ -60,7 +60,7 @@ public class GoogleAnalyticsFilterTests
         //Assert
         var viewBag = controller.ViewBag.GaData as GaData;
         viewBag.Should().NotBeNull();
-        viewBag!.Location.Should().BeNull();
+        viewBag!.LocationName.Should().BeNull();
     }
 
     [Test, MoqAutoData]

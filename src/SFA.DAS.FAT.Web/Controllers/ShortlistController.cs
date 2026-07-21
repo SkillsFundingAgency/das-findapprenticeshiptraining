@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
@@ -91,13 +91,13 @@ public class ShortlistController : Controller
             {
                 ShortlistLocationViewModel locationModel = new()
                 {
-                    Description = location.LocationDescription,
+                    Description = location.LocationName,
                     QarPeriod = $"20{result.QarPeriod.AsSpan(0, 2)} to 20{result.QarPeriod.AsSpan(2, 2)}",
                     ReviewPeriod = $"20{result.ReviewPeriod.AsSpan(0, 2)} to 20{result.ReviewPeriod.AsSpan(2, 2)}",
                     RequestApprenticeshipTraining = new()
                     {
                         CourseTitle = course.StandardName,
-                        Url = _requestApprenticeshipTrainingService.GetRequestApprenticeshipTrainingUrl(course.LarsCode, EntryPoint.Shortlist, location.LocationDescription)
+                        Url = _requestApprenticeshipTrainingService.GetRequestApprenticeshipTrainingUrl(course.LarsCode, EntryPoint.Shortlist, location.LocationName)
                     }
                 };
                 foreach (var provider in location.Providers)
@@ -107,7 +107,7 @@ public class ShortlistController : Controller
                         LarsCode = course.LarsCode,
                         CourseType = course.CourseType,
                         LearningType = course.LearningType,
-                        LocationDescription = location.LocationDescription,
+                        LocationName = location.LocationName,
                         ShortlistId = provider.ShortlistId,
                         Ukprn = provider.Ukprn,
                         ProviderName = provider.ProviderName,
@@ -153,7 +153,7 @@ public class ShortlistController : Controller
         var result = await _mediator.Send(new CreateShortlistItemForUserCommand
         {
             Ukprn = request.Ukprn,
-            LocationName = locationCookieItem?.Location,
+            LocationName = locationCookieItem?.LocationName,
             LarsCode = request.LarsCode,
             ShortlistUserId = cookie.ShortlistUserId
         });
@@ -220,7 +220,7 @@ public class ShortlistController : Controller
 
         _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem
         {
-            Location = matchedLocation?.LocationDescription ?? string.Empty,
+            LocationName = matchedLocation?.LocationName ?? string.Empty,
             Distance = DistanceService.DefaultDistance.ToString()
         });
 

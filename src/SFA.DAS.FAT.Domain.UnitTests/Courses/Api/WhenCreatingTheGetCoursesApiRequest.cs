@@ -1,4 +1,4 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Requests;
 
@@ -13,7 +13,7 @@ public class WhenCreatingTheGetCoursesApiRequest
         {
             BaseUrl = "https://api.test/",
             Keyword = "test",
-            Location = "London",
+            LocationName = "London",
             Distance = 10,
             RouteIds = new List<int> { 1, 2 },
             LearningTypes = [LearningType.FoundationApprenticeship],
@@ -26,7 +26,7 @@ public class WhenCreatingTheGetCoursesApiRequest
         {
             Assert.That(_sut.BaseUrl, Is.EqualTo("https://api.test/"));
             Assert.That(_sut.Keyword, Is.EqualTo("test"));
-            Assert.That(_sut.Location, Is.EqualTo("London"));
+            Assert.That(_sut.LocationName, Is.EqualTo("London"));
             Assert.That(_sut.Distance, Is.EqualTo(10));
             Assert.That(_sut.RouteIds, Is.EquivalentTo(new List<int> { 1, 2 }));
             Assert.That(_sut.LearningTypes, Is.EqualTo([LearningType.FoundationApprenticeship]));
@@ -43,7 +43,7 @@ public class WhenCreatingTheGetCoursesApiRequest
         {
             BaseUrl = "https://api.test/",
             Keyword = "test",
-            Location = "London",
+            LocationName = "London",
             Distance = 10,
             RouteIds = new List<int> { 1, 2 },
             LearningTypes = [LearningType.FoundationApprenticeship],
@@ -51,7 +51,7 @@ public class WhenCreatingTheGetCoursesApiRequest
             Page = 1,
             OrderBy = OrderBy.Title
         };
-        var expectedUrl = "https://api.test/courses?orderby=Title&keyword=test&location=London&distance=10&learningTypes=FoundationApprenticeship&routeIds=1&routeIds=2&levels=3&levels=4&Page=1";
+        var expectedUrl = "https://api.test/courses?orderby=Title&keyword=test&locationName=London&distance=10&learningTypes=FoundationApprenticeship&routeIds=1&routeIds=2&levels=3&levels=4&Page=1";
         Assert.That(_sut.GetUrl, Is.EqualTo(expectedUrl));
     }
 
@@ -62,7 +62,7 @@ public class WhenCreatingTheGetCoursesApiRequest
         {
             BaseUrl = "https://api.test/",
             Keyword = null,
-            Location = null,
+            LocationName = null,
             Distance = null,
             RouteIds = [],
             LearningTypes = [],

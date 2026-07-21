@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
@@ -34,12 +34,12 @@ public sealed class GetCourseQueryHandlerTests
         var query = new GetCourseQuery
         {
             LarsCode = "123",
-            Location = "London",
+            LocationName = "London",
             Distance = 20
         };
 
         _courseServiceMock
-            .Setup(cs => cs.GetCourse(query.LarsCode, query.Location, query.Distance))
+            .Setup(cs => cs.GetCourse(query.LarsCode, query.LocationName, query.Distance))
             .ReturnsAsync(courseResponse);
 
         _levelsServiceMock
@@ -71,7 +71,7 @@ public sealed class GetCourseQueryHandlerTests
         _courseServiceMock.Verify(cs =>
             cs.GetCourse(
                 query.LarsCode,
-                query.Location,
+                query.LocationName,
                 query.Distance
             ),
             Times.Once

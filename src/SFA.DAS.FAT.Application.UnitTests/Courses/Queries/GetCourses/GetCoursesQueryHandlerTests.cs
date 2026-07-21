@@ -12,7 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses;
 
-public class WhenGettingCourses
+public class GetCoursesQueryHandlerTests
 {
     private Mock<IApiClient> _apiClientMock;
     private Mock<ILevelsService> _levelsServiceMock;
@@ -39,7 +39,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery()
         {
             Keyword = "test",
-            Location = "London",
+            LocationName = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
             LearningTypes = new List<LearningType> { LearningType.FoundationApprenticeship, LearningType.Apprenticeship },
@@ -94,7 +94,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesApiRequest>(r =>
                     r.BaseUrl == BaseUrl &&
                     r.Keyword == query.Keyword &&
-                    r.Location == query.Location &&
+                    r.LocationName == query.LocationName &&
                     r.Distance == query.Distance &&
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
@@ -117,7 +117,7 @@ public class WhenGettingCourses
         _apiClientMock.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
                 r.Keyword == query.Keyword &&
-                r.Location == query.Location &&
+                r.LocationName == query.LocationName &&
                 r.Distance == query.Distance &&
                 r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                 r.Levels.SequenceEqual(query.Levels) &&
@@ -335,7 +335,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Keyword = null,
-            Location = null,
+            LocationName = null,
             Distance = null,
             Routes = new List<string>(),
             LearningTypes = new List<LearningType>(),
@@ -358,7 +358,7 @@ public class WhenGettingCourses
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
                 r.Keyword == null &&
-                r.Location == null &&
+                r.LocationName == null &&
                 r.Distance == null)
         ), Times.Once);
     }

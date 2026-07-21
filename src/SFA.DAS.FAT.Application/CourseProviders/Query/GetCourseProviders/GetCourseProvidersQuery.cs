@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using MediatR;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -11,7 +11,7 @@ public class GetCourseProvidersQuery : IRequest<CourseProvidersDetails>
     public string LarsCode { get; set; }
     public ProviderOrderBy? OrderBy { get; set; }
     public int? Distance { get; set; }
-    public string Location { get; set; } = string.Empty;
+    public string LocationName { get; set; } = string.Empty;
     public List<ProviderDeliveryMode> DeliveryModes { get; set; } = [];
     public List<ProviderRating> EmployerProviderRatings { get; set; } = [];
     public List<ProviderRating> ApprenticeProviderRatings { get; set; } = [];

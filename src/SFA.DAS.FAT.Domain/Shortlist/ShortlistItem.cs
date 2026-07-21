@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Shortlist
@@ -9,7 +9,7 @@ namespace SFA.DAS.FAT.Domain.Shortlist
         public Guid ShortlistUserId { get; set; }
         public Provider Provider { get; set; }
         public Course Course { get; set; }
-        public string LocationDescription { get; set; }
+        public string LocationName { get; set; }
         public DateTime CreatedDate { get; set; }
     }
 }

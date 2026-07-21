@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.Interfaces;
@@ -19,7 +19,7 @@ public class GetCoursesApiRequest : IGetApiRequest
 
     public int? Distance { get; init; }
 
-    public string Location { get; init; }
+    public string LocationName { get; init; }
 
     public int Page { get; init; }
 
@@ -40,9 +40,9 @@ public class GetCoursesApiRequest : IGetApiRequest
             queryParams.Add($"keyword={Uri.EscapeDataString(Keyword)}");
         }
 
-        if (!string.IsNullOrWhiteSpace(Location))
+        if (!string.IsNullOrWhiteSpace(LocationName))
         {
-            queryParams.Add($"location={Uri.EscapeDataString(Location)}");
+            queryParams.Add($"locationName={Uri.EscapeDataString(LocationName)}");
         }
 
         if (Distance.HasValue)

@@ -1,4 +1,4 @@
-﻿@if (!ViewData.ModelState.IsValid)
+@if (!ViewData.ModelState.IsValid)
 {
     <div class="govuk-error-summary" role="alert" data-valmsg-summary="true" tabindex="-1">
         <h2 class="govuk-error-summary__title">
@@ -11,7 +11,7 @@
                     foreach (var property in explorer.Properties)
                     {
                         var propertyName = property.Metadata.PropertyName;
-                        var propertyNameLink = propertyName == "Location" ? "search-location" : propertyName;
+                        var propertyNameLink = propertyName == "LocationName" ? "search-location" : propertyName;
                         var state = ViewData.ModelState[propertyName!];
                         var errors = state?.Errors ?? null;
                         if (errors != null)

@@ -10,7 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.CourseProviders;
 
-public class WhenGettingCourseProviders
+public class GetCourseProvidersQueryHandlerTests
 {
     [Test, MoqAutoData]
     public async Task Handle_ValidRequest_ReturnsExpectedDetails(
@@ -86,7 +86,7 @@ public class WhenGettingCourseProviders
             c => c.LarsCode == query.LarsCode
             && c.OrderBy == orderBy
             && c.Distance == query.Distance
-            && c.Location == query.Location
+            && c.LocationName == query.LocationName
             && c.DeliveryModeTypes == query.DeliveryModes
             && c.EmployerProviderRatingTypes == query.EmployerProviderRatings
             && c.ApprenticeProviderRatingTypes == query.ApprenticeProviderRatings
@@ -121,7 +121,7 @@ public class WhenGettingCourseProviders
             LarsCode = request.LarsCode,
             OrderBy = request.OrderBy ?? ProviderOrderBy.Distance,
             Distance = request.Distance,
-            Location = request.Location,
+            LocationName = request.LocationName,
             DeliveryModeTypes = request.DeliveryModes,
             EmployerProviderRatingTypes = request.EmployerProviderRatings,
             ApprenticeProviderRatingTypes = request.ApprenticeProviderRatings,

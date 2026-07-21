@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentValidation;
@@ -82,11 +82,11 @@ public class CourseProvidersControllerCourseProvidersTests
         It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance.ToString() });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance.ToString() });
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
-                 && c.Location.Equals(location)
+                 && c.LocationName.Equals(location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Count == 3 ? Array.Empty<ProviderDeliveryMode>() : request.DeliveryModes)
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
@@ -103,7 +103,7 @@ public class CourseProvidersControllerCourseProvidersTests
         foreach (var provider in expectedProviders)
         {
             provider.Distance = DistanceService.DefaultDistance.ToString();
-            provider.Location = location;
+            provider.LocationName = location;
         }
 
         //Act
@@ -117,7 +117,7 @@ public class CourseProvidersControllerCourseProvidersTests
             actualModel.Should().NotBeNull();
             actualModel!.CourseTitleAndLevel.Should().Be(response.StandardName);
             actualModel.LarsCode.Should().Be(request.LarsCode.ToString());
-            actualModel.Location.Should().Be(location ?? string.Empty);
+            actualModel.LocationName.Should().Be(location ?? string.Empty);
             actualModel.Distance.Should().Be(DistanceService.DefaultDistance.ToString());
             actualModel.SelectedDeliveryModes = request.DeliveryModes.Where(dm => dm != ProviderDeliveryMode.Provider)
                 .Select(d => d.ToString()).ToList();
@@ -166,7 +166,7 @@ public class CourseProvidersControllerCourseProvidersTests
 
         mediator.Setup(x => x.Send(
                 It.Is<GetCourseProvidersQuery>(c => c.LarsCode.Equals(request.LarsCode)
-                 && c.Location.Equals(location)
+                 && c.LocationName.Equals(location)
                  && c.OrderBy.Equals(request.OrderBy)
                  && c.DeliveryModes.SequenceEqual(request.DeliveryModes.Count == 3 ? Array.Empty<ProviderDeliveryMode>() : request.DeliveryModes)
                  && c.EmployerProviderRatings.SequenceEqual(request.EmployerProviderRatings)
@@ -274,7 +274,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = null });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -333,7 +333,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = null });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -481,7 +481,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = string.Empty, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = string.Empty, Distance = null });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -541,7 +541,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -596,7 +596,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = null, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = null, Distance = null });
 
         mediator.Setup(x => x.Send(
                 It.IsAny<GetCourseProvidersQuery>(),
@@ -648,7 +648,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -707,7 +707,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -787,7 +787,7 @@ public class CourseProvidersControllerCourseProvidersTests
             // Derive expected message from the returned model to match current production formatting
             var totalToUse = actualModel!.TotalCount <= 0 ? "No" : actualModel.TotalCount.ToString();
             var expectedMessageFromModel = $"{totalToUse} result{(actualModel.TotalCount == 1 ? string.Empty : "s")}";
-            if (!string.IsNullOrEmpty(actualModel.Location) && !string.IsNullOrEmpty(actualModel.Distance) &&
+            if (!string.IsNullOrEmpty(actualModel.LocationName) && !string.IsNullOrEmpty(actualModel.Distance) &&
                 actualModel.Distance != DistanceService.AcrossEnglandFilterValue)
             {
                 expectedMessageFromModel = $"{expectedMessageFromModel} within {actualModel.Distance} miles";
@@ -824,7 +824,7 @@ public class CourseProvidersControllerCourseProvidersTests
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns((ShortlistCookieItem)null);
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock
             .Setup(v => v.ValidateAsync(
@@ -889,7 +889,7 @@ public class CourseProvidersControllerCourseProvidersTests
             .Returns((ShortlistCookieItem)null);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock
             .Setup(v => v.ValidateAsync(
@@ -1011,7 +1011,7 @@ public class CourseProvidersControllerCourseProvidersTests
             ))
             .ReturnsAsync(new ValidationResult());
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = "CV1 Coventry", Distance = "10" });
+            .Returns(new LocationCookieItem { LocationName = "CV1 Coventry", Distance = "10" });
 
         locationValidatorMock
             .Setup(v => v.ValidateAsync(
@@ -1037,7 +1037,7 @@ public class CourseProvidersControllerCourseProvidersTests
         sut.TempData = tempDataMock.Object;
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = string.Empty, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = string.Empty, Distance = null });
 
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
         validatorMock
@@ -1068,7 +1068,7 @@ public class CourseProvidersControllerCourseProvidersTests
         mediatorMock.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(mediatorResult);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = string.Empty, Distance = null });
+            .Returns(new LocationCookieItem { LocationName = string.Empty, Distance = null });
 
         locationValidatorMock.Setup(v => v.ValidateAsync(
                 It.IsAny<GetCourseLocationQuery>(),
@@ -1157,7 +1157,7 @@ public class CourseProvidersControllerCourseProvidersTests
 
         courseIdValidator.Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>())).ReturnsAsync(new ValidationResult());
 
-        var locationCookieItem = new LocationCookieItem { Location = "M1 1AA", Distance = "10" };
+        var locationCookieItem = new LocationCookieItem { LocationName = "M1 1AA", Distance = "10" };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(locationCookieItem);
 
         locationCookieService.Setup(x => x.Delete(It.IsAny<string>()));
@@ -1172,7 +1172,7 @@ public class CourseProvidersControllerCourseProvidersTests
         model.Should().NotBeNull();
         model.Providers.Should().BeEmpty();
         locationCookieService.Verify(x => x.Delete(It.IsAny<string>()), Times.Once);
-        locationCookieService.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(i => i == null || i.Location == string.Empty)), Times.Never);
+        locationCookieService.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(i => i == null || i.LocationName == string.Empty)), Times.Never);
     }
 
 
@@ -1204,16 +1204,16 @@ public class CourseProvidersControllerCourseProvidersTests
                 It.IsAny<CancellationToken>()))
             .ReturnsAsync(new ValidationResult());
 
-        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(new LocationCookieItem { Location = "Some location", Distance = "20" });
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName)).Returns(new LocationCookieItem { LocationName = "Some location", Distance = "20" });
 
         var result = await controller.CourseProviderDetails(larsCode, ukprn, clearLocation) as ViewResult;
 
         // Assert
-        locationCookieService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(i => i.Location == string.Empty && i.Distance == "20")), Times.Once);
+        locationCookieService.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(i => i.LocationName == string.Empty && i.Distance == "20")), Times.Once);
 
         var model = result!.Model as CourseProviderViewModel;
         model.Should().NotBeNull();
-        model.Location.Should().BeEmpty();
+        model.LocationName.Should().BeEmpty();
         model.Distance.Should().Be("20");
     }
 }

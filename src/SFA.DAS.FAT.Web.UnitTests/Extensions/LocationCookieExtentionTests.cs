@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using Moq;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -47,7 +47,7 @@ public class LocationCookieExtentionTests
         using (Assert.EnterMultipleScope())
         {
             // Assert
-            Assert.That(Location, Is.EqualTo(cookieItem.Location));
+            Assert.That(Location, Is.EqualTo(cookieItem.LocationName));
             Assert.That(Distance, Is.EqualTo(cookieItem.Distance));
         }
     }

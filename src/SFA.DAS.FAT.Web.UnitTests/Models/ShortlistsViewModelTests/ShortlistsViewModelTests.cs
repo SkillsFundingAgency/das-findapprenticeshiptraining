@@ -5,7 +5,7 @@ using SFA.DAS.FAT.Web.Models;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ShortlistsViewModelTests;
 
-public class WhenCreatingShortlistsViewModel
+public class ShortlistsViewModelTests
 {
     [TestCase("provider name", true)]
     [TestCase("", false)]

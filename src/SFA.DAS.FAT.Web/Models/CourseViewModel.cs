@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -100,7 +100,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public string HelpFindingCourseUrl => GetHelpFindingCourseUrl();
     public string ProviderCountDisplayMessage => GetProviderCountDisplayMessage();
     public string ApprenticeCanTravelDisplayMessage => GetApprenticeCanTravelDisplayMessage();
-    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    public bool HasLocation => !string.IsNullOrWhiteSpace(LocationName);
     private string GetLevelEquivalentToDisplayText()
     {
         if (Levels.Count == 0)
@@ -124,7 +124,7 @@ public class CourseViewModel : PageLinksViewModelBase
     private string GetHelpFindingCourseUrl()
     {
         var redirectUri = $"{RequestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
-        var locationQueryParam = HasLocation ? $"&location={Location}" : string.Empty;
+        var locationQueryParam = HasLocation ? $"&location={LocationName}" : string.Empty;
 
         return $"{EmployerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }

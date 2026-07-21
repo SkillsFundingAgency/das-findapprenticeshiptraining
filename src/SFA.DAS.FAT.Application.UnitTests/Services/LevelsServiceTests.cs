@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Services;
 
-public sealed class WhenGettingLevels
+public sealed class LevelsServiceTests
 {
     [Test, MoqAutoData]
     public async Task Then_Levels_Are_Returned_From_Session_If_Present(

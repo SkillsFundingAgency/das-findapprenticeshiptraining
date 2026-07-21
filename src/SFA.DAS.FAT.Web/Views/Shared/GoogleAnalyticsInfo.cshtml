@@ -1,4 +1,4 @@
-﻿@using SFA.DAS.FAT.Web.Models
+@using SFA.DAS.FAT.Web.Models
 
 <script>
     @if (ViewBag.GaData == null)
@@ -7,7 +7,7 @@
     }
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
-        'location': '@ViewBag.GaData.Location',
+        'location': '@ViewBag.GaData.LocationName',
         'providerPositionInList': '@ViewBag.GaData.ProviderPlacement',
         'totalProviders':'@ViewBag.GaData.ProviderTotal',
         'providerId':'@ViewBag.GaData.Ukprn'

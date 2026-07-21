@@ -1,12 +1,11 @@
-﻿using System.Collections.Generic;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
 
-public class WhenCreatingTrainingOptionsTableViewModel
+public class TrainingOptionsTableViewModelTests
 {
     [TestCase(null, false)]
     [TestCase("", false)]
@@ -16,7 +15,7 @@ public class WhenCreatingTrainingOptionsTableViewModel
     {
         var sut = new TrainingOptionsTableViewModel
         {
-            Location = location,
+            LocationName = location,
         };
 
         sut.HasLocation.Should().Be(expectedHasLocation);
@@ -32,7 +31,7 @@ public class WhenCreatingTrainingOptionsTableViewModel
 
         var sut = new TrainingOptionsTableViewModel
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             ShowBlockReleaseOption = true,
             HasMultipleBlockReleaseLocations = true,
             ClosestBlockReleaseLocationDistanceDisplay = "10.5",
@@ -64,7 +63,7 @@ public class WhenCreatingTrainingOptionsTableViewModel
 
         var sut = new TrainingOptionsTableViewModel
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             ShowDayReleaseOption = true,
             HasMultipleDayReleaseLocations = true,
             ClosestDayReleaseLocationDistanceDisplay = "7.2",

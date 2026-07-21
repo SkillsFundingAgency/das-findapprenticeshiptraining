@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Services;
 
-public sealed class WhenGettingRoutes
+public sealed class RoutesServiceTests
 {
     [Test, MoqAutoData]
     public async Task Then_Routes_Are_Returned_From_The_Session(

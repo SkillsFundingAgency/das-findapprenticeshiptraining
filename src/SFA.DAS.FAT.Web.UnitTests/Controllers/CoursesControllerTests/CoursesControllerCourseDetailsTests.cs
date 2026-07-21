@@ -16,7 +16,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CoursesControllerTests;
 
-public class WhenGettingCourseDetails
+public class CoursesControllerCourseDetailsTests
 {
     [Test]
     [MoqAutoData]
@@ -40,7 +40,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         mediator
             .Setup(m => m.Send(
@@ -59,7 +59,7 @@ public class WhenGettingCourseDetails
             var viewModel = result.Model as CourseViewModel;
             Assert.That(viewModel, Is.Not.Null);
             Assert.That(viewModel.Title, Is.EqualTo(queryResult.Title));
-            Assert.That(viewModel.Location, Is.EqualTo(location));
+            Assert.That(viewModel.LocationName, Is.EqualTo(location));
             Assert.That(viewModel.Distance, Is.EqualTo(distance));
         }
     }
@@ -86,7 +86,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -100,7 +100,7 @@ public class WhenGettingCourseDetails
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
-                    a.Location.Equals(location) &&
+                    a.LocationName.Equals(location) &&
                     a.LarsCode.Equals(larsCode)
                 ), It.IsAny<CancellationToken>()
             ), Times.Once
@@ -127,7 +127,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -141,7 +141,7 @@ public class WhenGettingCourseDetails
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(DistanceService.DefaultDistance) &&
-                    a.Location.Equals(location) &&
+                    a.LocationName.Equals(location) &&
                     a.LarsCode.Equals(larsCode)), It.IsAny<CancellationToken>()
             ), Times.Once
         );
@@ -169,7 +169,7 @@ public class WhenGettingCourseDetails
             .ReturnsAsync(new ValidationResult());
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         sut.Setup(m => m.Send(
                 It.IsAny<GetCourseQuery>(),
@@ -183,7 +183,7 @@ public class WhenGettingCourseDetails
         sut.Verify(x =>
             x.Send(It.Is<GetCourseQuery>(a =>
                     a.Distance.Equals(Convert.ToInt32(distance)) &&
-                    a.Location.Equals(location) &&
+                    a.LocationName.Equals(location) &&
                     a.LarsCode.Equals(courseId)
                 ), It.IsAny<CancellationToken>()
             ), Times.Once

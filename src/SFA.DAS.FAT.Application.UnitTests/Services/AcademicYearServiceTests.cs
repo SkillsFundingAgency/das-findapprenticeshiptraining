@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Services;
 
-public sealed class WhenGettingAcademicYearsLatest
+public sealed class AcademicYearServiceTests
 {
     [Test, MoqAutoData]
     public async Task Then_Returns_From_Session_When_Valid(

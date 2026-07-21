@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Interfaces;
 
@@ -10,7 +10,7 @@ public class GetCourseLocationQueryValidator : AbstractValidator<GetCourseLocati
 
     public GetCourseLocationQueryValidator(ILocationService locationService)
     {
-        RuleFor(s => s.Location)
+        RuleFor(s => s.LocationName)
             .Cascade(CascadeMode.Stop)
             .MustAsync(async (location, cancellation) =>
             {

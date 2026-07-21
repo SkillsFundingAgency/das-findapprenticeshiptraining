@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Models.CourseProviders;
@@ -25,8 +25,8 @@ public class TrainingOptionsTableViewModel
     public const string DayReleaseMultipleLocations = "Day release at multiple locations.";
     public const string ViewAllDayReleaseLocations = "View all day release locations";
 
-    public string Location { get; set; }
-    public bool HasLocation => !string.IsNullOrWhiteSpace(Location);
+    public string LocationName { get; set; }
+    public bool HasLocation => !string.IsNullOrWhiteSpace(LocationName);
     public bool ShowOnlineOption { get; set; }
     public bool ShowLearnerWorkplaceOption { get; set; }
     public string AtLearnerWorkplaceWithNoLocationDisplayMessage { get; set; }

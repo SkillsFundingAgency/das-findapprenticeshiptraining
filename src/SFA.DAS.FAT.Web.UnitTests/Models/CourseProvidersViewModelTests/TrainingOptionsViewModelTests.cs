@@ -4,7 +4,8 @@ using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
-public class WhenLoadingTrainingOptionsViewModel
+
+public class TrainingOptionsViewModelTests
 {
     [TestCase("", "", "", false)]
     [TestCase("10", "", "", false)]
@@ -21,7 +22,7 @@ public class WhenLoadingTrainingOptionsViewModel
             IsDayReleaseAvailable = true,
             IsDayReleaseMultiple = true,
             Distance = distance,
-            Location = location
+            LocationName = location
         };
 
         sut.DistanceDetails.Should().Be(expectedDistanceDetails);

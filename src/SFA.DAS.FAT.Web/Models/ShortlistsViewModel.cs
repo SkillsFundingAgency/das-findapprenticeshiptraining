@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
@@ -67,7 +67,7 @@ public class ShortlistProviderViewModel
     public string AchievementRate { get; set; }
     public ProviderRatingViewModel EmployerReviews { get; set; }
     public ProviderRatingViewModel ApprenticeReviews { get; set; }
-    public string LocationDescription { get; set; }
+    public string LocationName { get; set; }
 
     public int NoOfDeliveryOptions()
     {
@@ -77,7 +77,7 @@ public class ShortlistProviderViewModel
     }
     public bool HasMultipleDeliveryOptions => NoOfDeliveryOptions() > 1;
     public bool HasAchievementRate => decimal.TryParse(AchievementRate, out var _);
-    public bool HasLocation => !string.IsNullOrEmpty(LocationDescription);
+    public bool HasLocation => !string.IsNullOrEmpty(LocationName);
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;
 
     public const string ApprenticeShortCourseRatingDescription = "Achievement rate data isn’t available for apprenticeship units";

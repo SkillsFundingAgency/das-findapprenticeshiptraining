@@ -11,6 +11,6 @@ public class WhenCreatingTheGetCourseApiRequest
     public void Then_The_Get_Url_Is_Constructed_Correctly(string baseUrl, string id, string locationName, int? distance)
     {
         var actual = new GetCourseApiRequest(baseUrl, id, locationName, distance);
-        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}?location={locationName}&distance={distance}");
+        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}?locationName={locationName}&distance={distance}");
     }
 }

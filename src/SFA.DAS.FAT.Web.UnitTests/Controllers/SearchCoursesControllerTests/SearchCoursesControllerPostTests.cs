@@ -14,7 +14,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
 
-public class WhenPostingSearchCourses
+public class SearchCoursesControllerPostTests
 {
     [Test, MoqAutoData]
     public void And_Post_Redirects_to_Courses_With_No_RouteValues_Set(
@@ -35,8 +35,8 @@ public class WhenPostingSearchCourses
             result.RouteName.Should().Be(RouteNames.Courses);
             result.RouteValues.Should().ContainKey("Keyword");
             result.RouteValues!["Keyword"].Should().BeNull();
-            result.RouteValues.Should().ContainKey("Location");
-            result.RouteValues!["Location"].Should().BeNull();
+            result.RouteValues.Should().ContainKey("LocationName");
+            result.RouteValues!["LocationName"].Should().BeNull();
             result.RouteValues.Should().ContainKey("Distance");
             result.RouteValues!["Distance"].Should().BeNull();
         }
@@ -62,8 +62,8 @@ public class WhenPostingSearchCourses
             result.RouteName.Should().Be(RouteNames.Courses);
             result.RouteValues.Should().ContainKey("Keyword");
             result.RouteValues!["Keyword"].Should().Be(courseTerm);
-            result.RouteValues.Should().ContainKey("Location");
-            result.RouteValues!["Location"].Should().BeNull();
+            result.RouteValues.Should().ContainKey("LocationName");
+            result.RouteValues!["LocationName"].Should().BeNull();
             result.RouteValues.Should().ContainKey("Distance");
             result.RouteValues!["Distance"].Should().BeNull();
         }
@@ -76,9 +76,9 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location };
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { LocationName = location };
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.DefaultDistance.ToString() });
+                    .Returns(new LocationCookieItem { LocationName = viewModel.LocationName, Distance = DistanceService.DefaultDistance.ToString() });
 
         //Act
         var actual = controller.Index(viewModel);
@@ -103,10 +103,10 @@ public class WhenPostingSearchCourses
         [Greedy] SearchCoursesController controller)
     {
         //Arrange
-        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { Location = location, CourseTerm = courseTerm };
+        SearchCoursesSubmitModel viewModel = new SearchCoursesSubmitModel { LocationName = location, CourseTerm = courseTerm };
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-                    .Returns(new LocationCookieItem { Location = viewModel.Location, Distance = DistanceService.DefaultDistance.ToString() });
+                    .Returns(new LocationCookieItem { LocationName = viewModel.LocationName, Distance = DistanceService.DefaultDistance.ToString() });
 
         //Act
         var actual = controller.Index(viewModel);
@@ -120,7 +120,7 @@ public class WhenPostingSearchCourses
             result!.RouteName.Should().Be(RouteNames.Courses);
             result.RouteValues.Should().ContainKey("Keyword");
             result.RouteValues!["Keyword"].Should().Be(courseTerm);
-            result.RouteValues.Should().ContainKey("Location");
+            result.RouteValues.Should().ContainKey("LocationName");
         }
     }
 }

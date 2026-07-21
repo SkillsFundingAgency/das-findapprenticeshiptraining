@@ -8,7 +8,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.SearchCoursesControllerTests;
 
-public class WhenGettingSearchCourses
+public class SearchCoursesControllerGetTests
 {
     [Test, MoqAutoData]
     public void Index_CookieMissing_BuildsViewModel(

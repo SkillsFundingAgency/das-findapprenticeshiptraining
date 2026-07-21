@@ -10,7 +10,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
 
-public class WhenCreatingCourseProvidersViewModel
+public class CourseProvidersViewModelTests
 {
     private FindApprenticeshipTrainingWeb _config;
 
@@ -126,7 +126,7 @@ public class WhenCreatingCourseProvidersViewModel
         var sut = new CourseProvidersViewModel(_config)
         {
             TotalCount = totalCount,
-            Location = location,
+            LocationName = location,
             Distance = distance
         };
 
@@ -140,7 +140,7 @@ public class WhenCreatingCourseProvidersViewModel
         var sut = new CourseProvidersViewModel(_config)
         {
             TotalCount = totalCount,
-            Location = location,
+            LocationName = location,
             Distance = DistanceService.AcrossEnglandFilterValue
         };
 
@@ -155,7 +155,7 @@ public class WhenCreatingCourseProvidersViewModel
         var sut = new CourseProvidersViewModel(_config)
         {
             LarsCode = larsCode,
-            Location = location
+            LocationName = location
         };
 
         var result = sut.HelpFindingCourseUrl;
@@ -198,7 +198,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             Distance = "10",
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -208,7 +208,7 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            result.Should().NotContain(x => x.Item1 == "Location" && x.Item2 == "Coventry");
+            result.Should().NotContain(x => x.Item1 == "LocationName" && x.Item2 == "Coventry");
             result.Should().NotContain(x => x.Item1 == "Distance" && x.Item2 == "10");
         }
     }
@@ -218,7 +218,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             SelectedDeliveryModes = new List<string> { "DayRelease", "BlockRelease" },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -238,7 +238,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             SelectedEmployerApprovalRatings = new List<string> { "Excellent", "Good" },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -258,7 +258,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             SelectedApprenticeApprovalRatings = new List<string> { "Excellent", "Good" },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -278,7 +278,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Coventry",
+            LocationName = "Coventry",
             SelectedQarRatings = new List<string> { "Excellent", "Good" },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -398,7 +398,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config);
 
-        sut.Location = "Manchester";
+        sut.LocationName = "Manchester";
         sut.Distance = "15";
         sut.SelectedDeliveryModes = new List<string> { "Online", "Workplace" };
         sut.SelectedApprenticeApprovalRatings = new List<string> { "Good" };
@@ -425,7 +425,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = location,
+            LocationName = location,
             Distance = distance,
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -435,7 +435,7 @@ public class WhenCreatingCourseProvidersViewModel
 
         using (new AssertionScope())
         {
-            result.Should().NotContain(x => x.Item1 == "Location" && x.Item2 == location);
+            result.Should().NotContain(x => x.Item1 == "LocationName" && x.Item2 == location);
             var distanceEntries = result.Where(x => x.Item1 == "Distance").ToList();
             (distanceEntries.Count == 0 || distanceEntries.Any(x => x.Item2 == DistanceService.AcrossEnglandFilterValue)).Should().BeTrue();
         }
@@ -446,7 +446,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Leeds",
+            LocationName = "Leeds",
             SelectedDeliveryModes = new List<string>(),
             SelectedEmployerApprovalRatings = new List<string>(),
             SelectedApprenticeApprovalRatings = new List<string>(),
@@ -471,7 +471,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Cambridge",
+            LocationName = "Cambridge",
             SelectedDeliveryModes = new List<string> { "Online", "Workplace", "Provider" },
             QarPeriod = "2223",
             ReviewPeriod = "2324"
@@ -509,7 +509,7 @@ public class WhenCreatingCourseProvidersViewModel
         var sut = new CourseProvidersViewModel(_config)
         {
             TotalCount = 3,
-            Location = string.Empty,
+            LocationName = string.Empty,
             Distance = "10"
         };
 
@@ -523,7 +523,7 @@ public class WhenCreatingCourseProvidersViewModel
         var sut = new CourseProvidersViewModel(_config)
         {
             LarsCode = larsCode,
-            Location = "   "
+            LocationName = "   "
         };
 
         var result = sut.HelpFindingCourseUrl;
@@ -539,7 +539,7 @@ public class WhenCreatingCourseProvidersViewModel
         {
             CourseType = CourseType.Apprenticeship,
             OrderBy = ProviderOrderBy.AchievementRate,
-            Location = null,
+            LocationName = null,
             Distance = " ",
             SelectedDeliveryModes = [],
             SelectedEmployerApprovalRatings = [],
@@ -559,7 +559,7 @@ public class WhenCreatingCourseProvidersViewModel
     {
         var sut = new CourseProvidersViewModel(_config)
         {
-            Location = "Leeds",
+            LocationName = "Leeds",
             Distance = "10",
             CourseType = CourseType.Apprenticeship,
             OrderBy = ProviderOrderBy.AchievementRate,

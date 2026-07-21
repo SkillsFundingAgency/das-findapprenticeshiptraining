@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -52,7 +52,7 @@ public class ProvidersController : Controller
             response.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         var locationCookieItem = _locationCookieService.Get(Constants.LocationCookieName);
 
-        viewModel.Location = locationCookieItem?.Location;
+        viewModel.LocationName = locationCookieItem?.LocationName;
         return View(viewModel);
     }
 }
