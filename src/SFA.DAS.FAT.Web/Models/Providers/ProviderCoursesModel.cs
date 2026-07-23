@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using Humanizer;
 using SFA.DAS.FAT.Domain.Courses;
@@ -11,7 +11,7 @@ public class ProviderCoursesModel
     public List<ProviderCourseDetails> Courses { get; set; } = new();
 
     public int Ukprn { get; set; }
-    public string Location { get; set; }
+    public string LocationName { get; set; }
 
     public int CourseCount => Courses.Count;
     public IList<CourseGroupViewModel> CourseGroups => GetCourseGroups();
@@ -78,7 +78,7 @@ public class ProviderCoursesModel
         return new CourseGroupViewModel
         {
             Ukprn = Ukprn,
-            Location = Location,
+            LocationName = LocationName,
             LearningType = learningType,
             DisplayNameHeader = pluralDisplayName,
             DisplayName = coursesByType.Count > 1 ? pluralDisplayName : learningTypeDisplayName,

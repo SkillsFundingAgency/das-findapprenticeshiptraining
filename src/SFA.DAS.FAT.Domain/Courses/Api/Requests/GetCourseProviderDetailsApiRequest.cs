@@ -23,5 +23,5 @@ public class GetCourseProviderDetailsApiRequest : IGetApiRequest
     }
 
     public string BaseUrl { get; }
-    public string GetUrl => $"{BaseUrl}courses/{_larsCode}/providers/{_ukprn}?location={HttpUtility.UrlEncode(_location)}&distance={_distance}&shortlistUserId={_shortlistUserId}";
+    public string GetUrl => $"{BaseUrl}courses/{_larsCode}/providers/{_ukprn}?locationName={HttpUtility.UrlEncode(_location)}&distance={_distance}&shortlistUserId={_shortlistUserId}";
 }

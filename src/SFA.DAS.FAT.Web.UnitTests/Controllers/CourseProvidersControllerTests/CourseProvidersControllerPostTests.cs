@@ -11,10 +11,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 
-public class CourseProvidersControllerPostCourseProvidersTests
+public class CourseProvidersControllerPostTests
 {
     [Test, MoqAutoData]
-    public void CourseProvidersPost_UpdatesLocationCookie_AndRedirects(
+    public void WhenPostingCourseProviders_ThenUpdatesLocationCookieAndRedirects(
         CourseProvidersFiltersSubmitModel submitModel,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
@@ -28,12 +28,12 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public void ApplyFilters_WhenLocationHasWhitespace_UpdatesCookieWithTrimmedLocation(
+    public void WhenApplyingFilters_AndLocationHasWhitespace_ThenUpdatesCookieWithTrimmedLocation(
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller,
         CourseProvidersFiltersSubmitModel submitModel)
@@ -47,12 +47,12 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == submitModel.Location.Trim() && c.Distance == submitModel.Distance)
+            It.Is<LocationCookieItem>(c => c.LocationName == submitModel.LocationName.Trim() && c.Distance == submitModel.Distance)
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task CourseProviderDetailsPost_UpdatesLocationCookie_AndRedirects(
+    public async Task WhenPostingCourseProviderDetails_ThenUpdatesLocationCookieAndRedirects(
         ProviderLocationSubmitModel model,
         string larsCode,
         int ukprn,
@@ -74,22 +74,22 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == model.Location)
+            It.Is<LocationCookieItem>(c => c.LocationName == model.LocationName)
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task ApplyLocation_WhenCookieContainsDistance_PreservesDistanceAndTrimsLocation(
+    public async Task WhenApplyingLocation_AndCookieContainsDistance_ThenPreservesDistanceAndTrimsLocation(
         string larsCode,
         int ukprn,
         [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
         [Greedy] CourseProvidersController controller)
     {
         // Arrange
-        var submitModel = new ProviderLocationSubmitModel { Location = "  Manchester  " };
+        var submitModel = new ProviderLocationSubmitModel { LocationName = "  Manchester  " };
         locationCookieService
             .Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = "Old", Distance = "40" });
+            .Returns(new LocationCookieItem { LocationName = "Old", Distance = "40" });
 
         // Act
         var result = await controller.ApplyLocation(submitModel, larsCode, ukprn) as RedirectToRouteResult;
@@ -100,7 +100,46 @@ public class CourseProvidersControllerPostCourseProvidersTests
 
         locationCookieService.Verify(x => x.Update(
             Constants.LocationCookieName,
-            It.Is<LocationCookieItem>(c => c.Location == "Manchester" && c.Distance == "40")
+            It.Is<LocationCookieItem>(c => c.LocationName == "Manchester" && c.Distance == "40")
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public void WhenApplyingFilters_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        CourseProvidersFiltersSubmitModel submitModel,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        submitModel.LocationName = null;
+
+        var result = controller.ApplyFilters(submitModel) as RedirectToRouteResult;
+
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null && c.Distance == submitModel.Distance)
+        ), Times.Once);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenApplyingLocation_AndLocationNameIsNull_ThenUpdatesCookieWithNullLocation(
+        string larsCode,
+        int ukprn,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] CourseProvidersController controller)
+    {
+        var submitModel = new ProviderLocationSubmitModel { LocationName = null };
+        locationCookieService
+            .Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { LocationName = "Old", Distance = "40" });
+
+        var result = await controller.ApplyLocation(submitModel, larsCode, ukprn) as RedirectToRouteResult;
+
+        Assert.That(result, Is.Not.Null);
+        locationCookieService.Verify(x => x.Update(
+            Constants.LocationCookieName,
+            It.Is<LocationCookieItem>(c => c.LocationName == null && c.Distance == "40")
         ), Times.Once);
     }
 }
+

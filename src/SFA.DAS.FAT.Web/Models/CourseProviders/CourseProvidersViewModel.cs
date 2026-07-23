@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Configuration;
@@ -81,7 +81,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             Route = RouteNames.CourseProviders,
             FilterSections =
             [
-                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
+                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(LocationName), LocationName),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
                 CreateCheckboxListFilterSection("modes-filter", nameof(FilterType.DeliveryModes), DeliveryModesSectionHeading, DeliveryModesSectionSubHeading, GenerateDeliveryModesFilterItems()),
                 CreateAccordionGroupFilterSection(
@@ -117,7 +117,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     {
         var redirectUri = $"{_requestApprenticeshipTrainingUrl}/accounts/{{{{hashedAccountId}}}}/employer-requests/overview?standardId={LarsCode}&requestType={EntryPoint.CourseDetail}";
 
-        var locationQueryParam = !string.IsNullOrEmpty(Location) ? $"&location={Location}" : string.Empty;
+        var locationQueryParam = !string.IsNullOrEmpty(LocationName) ? $"&location={LocationName}" : string.Empty;
 
         return $"{_employerAccountsUrl}/service/?redirectUri={Uri.EscapeDataString(redirectUri + locationQueryParam)}";
     }
@@ -169,7 +169,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
         var totalToUse = TotalCount <= 0 ? "No" : TotalCount.ToString();
         var totalMessage = $"{totalToUse} result{(TotalCount == 1 ? string.Empty : "s")}";
 
-        if (!string.IsNullOrEmpty(Location) && !string.IsNullOrEmpty(Distance) &&
+        if (!string.IsNullOrEmpty(LocationName) && !string.IsNullOrEmpty(Distance) &&
             Distance != DistanceService.AcrossEnglandFilterValue)
         {
             totalMessage = $"{totalMessage} within {Distance} miles";
@@ -321,7 +321,7 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
 
     private void AddLocationAndDistanceFilters(Dictionary<FilterType, IEnumerable<string>> selectedFilters)
     {
-        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+        AddSelectedFilter(selectedFilters, FilterType.Location, LocationName);
 
         if (!selectedFilters.ContainsKey(FilterType.Location) && string.IsNullOrEmpty(Distance))
         {

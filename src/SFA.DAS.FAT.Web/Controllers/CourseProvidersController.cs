@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -76,7 +76,7 @@ public class CourseProvidersController : Controller
             PageNumber = 1
         };
 
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = submitModel.Distance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { LocationName = submitModel.LocationName?.Trim(), Distance = submitModel.Distance });
         return RedirectToRoute(RouteNames.CourseProviders, requestModel);
     }
 
@@ -122,7 +122,7 @@ public class CourseProvidersController : Controller
                 LarsCode = requestModel.LarsCode,
                 ShortlistCount = shortlistCount?.Count ?? 0,
                 OrderBy = orderBy,
-                Location = requestLocation,
+                LocationName = requestLocation,
                 Distance = requestDistance,
                 SelectedDeliveryModes = deliveryModes.Select(d => d.ToString()),
                 SelectedEmployerApprovalRatings = requestModel.EmployerProviderRatings.Select(r => r.ToString()),
@@ -135,7 +135,7 @@ public class CourseProvidersController : Controller
         var result = await _mediator.Send(new GetCourseProvidersQuery
         {
             LarsCode = requestModel.LarsCode,
-            Location = requestLocation,
+            LocationName = requestLocation,
             OrderBy = orderBy,
             Distance = convertedDistance,
             DeliveryModes = deliveryModes.Count == 3 ? [] : deliveryModes,
@@ -169,7 +169,7 @@ public class CourseProvidersController : Controller
         foreach (var provider in providers)
         {
             provider.Distance = requestDistance;
-            provider.Location = requestLocation;
+            provider.LocationName = requestLocation;
         }
 
         courseProvidersViewModel.ProviderOrderOptions = GenerateProviderOrderDropdown(orderBy, string.IsNullOrEmpty(requestLocation));
@@ -201,7 +201,7 @@ public class CourseProvidersController : Controller
     public async Task<IActionResult> ApplyLocation([FromForm] ProviderLocationSubmitModel submitModel, [FromRoute] string larsCode, [FromRoute] int ukprn)
     {
         var (_, requestDistance) = _locationCookieService.GetLocation();
-        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = submitModel.Location?.Trim(), Distance = requestDistance });
+        _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { LocationName = submitModel.LocationName?.Trim(), Distance = requestDistance });
         return RedirectToRoute(RouteNames.CourseProviderDetails, new { ukprn, larsCode });
     }
 
@@ -227,16 +227,16 @@ public class CourseProvidersController : Controller
         var (requestLocation, requestDistance) = _locationCookieService.GetLocation();
         if (clearLocation)
         {
-            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { LocationName = string.Empty, Distance = requestDistance });
             requestLocation = string.Empty;
         }
 
-        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { Location = requestLocation });
+        var validationLocationResult = await _courseLocationValidator.ValidateAsync(new GetCourseLocationQuery { LocationName = requestLocation });
 
         if (!validationLocationResult.IsValid)
         {
             ModelState.AddValidationErrors(validationLocationResult.Errors);
-            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { Location = string.Empty, Distance = requestDistance });
+            _locationCookieService.Update(Constants.LocationCookieName, new LocationCookieItem { LocationName = string.Empty, Distance = requestDistance });
             requestLocation = string.Empty;
         }
 
@@ -248,7 +248,7 @@ public class CourseProvidersController : Controller
         {
             Ukprn = ukprn,
             LarsCode = larsCode,
-            Location = requestLocation,
+            LocationName = requestLocation,
             Distance = string.IsNullOrWhiteSpace(requestLocation) ? DistanceService.DefaultDistance : DistanceService.AcrossEnglandDistance,
             ShortlistUserId = shortlistUserId
         };
@@ -264,7 +264,7 @@ public class CourseProvidersController : Controller
         viewModel.FeedbackSurvey = FeedbackSurveyViewModel.ProcessFeedbackDetails(result.AnnualEmployerFeedbackDetails,
             result.AnnualApprenticeFeedbackDetails, _dateTimeService.GetDateTime());
         viewModel.LarsCode = larsCode;
-        viewModel.Location = requestLocation;
+        viewModel.LocationName = requestLocation;
         viewModel.Distance = requestDistance ?? DistanceService.DefaultDistance.ToString();
         viewModel.ShortlistId = result.ShortlistId;
         viewModel.ShowApprenticeTrainingCourseProvidersCrumb = true;

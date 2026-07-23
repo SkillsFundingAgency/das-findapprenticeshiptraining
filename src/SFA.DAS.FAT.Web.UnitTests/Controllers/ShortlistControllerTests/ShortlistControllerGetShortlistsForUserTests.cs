@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
@@ -75,7 +75,7 @@ public class ShortlistControllerGetShortlistsForUserTests
                 {
                     new ShortlistLocationModel
                     {
-                        LocationDescription = "Location 1",
+                        LocationName = "Location 1",
                         Providers = new List<ShortlistProviderModel>
                         {
                             new ShortlistProviderModel
@@ -194,7 +194,7 @@ public class ShortlistControllerGetShortlistsForUserTests
         using (new AssertionScope())
         {
             var actual = result.As<ViewResult>().Model.As<ShortlistsViewModel>().Courses[0].Locations[0];
-            actual.Description.Should().Be(expected.LocationDescription);
+            actual.Description.Should().Be(expected.LocationName);
             actual.QarPeriod.Should().Be($"20{_mediatorResponse.QarPeriod.AsSpan(0, 2)} to 20{_mediatorResponse.QarPeriod.AsSpan(2, 2)}");
             actual.ReviewPeriod.Should().Be($"20{_mediatorResponse.ReviewPeriod.AsSpan(0, 2)} to 20{_mediatorResponse.ReviewPeriod.AsSpan(2, 2)}");
             actual.RequestApprenticeshipTraining.CourseTitle.Should().Be(_mediatorResponse.Courses[0].StandardName);
@@ -215,7 +215,7 @@ public class ShortlistControllerGetShortlistsForUserTests
         {
             var actualProvider = result.As<ViewResult>().Model.As<ShortlistsViewModel>().Courses[0].Locations[0].Providers[0];
             actualProvider.LarsCode.Should().Be(expectedCourse.LarsCode);
-            actualProvider.LocationDescription.Should().Be(expectedCourse.Locations[0].LocationDescription);
+            actualProvider.LocationName.Should().Be(expectedCourse.Locations[0].LocationName);
             actualProvider.ShortlistId.Should().Be(expectedProvider.ShortlistId);
             actualProvider.Ukprn.Should().Be(expectedProvider.Ukprn);
             actualProvider.ProviderName.Should().Be(expectedProvider.ProviderName);

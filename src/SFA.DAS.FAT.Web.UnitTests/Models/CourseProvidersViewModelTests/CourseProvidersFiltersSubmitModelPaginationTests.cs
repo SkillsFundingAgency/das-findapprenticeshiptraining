@@ -15,7 +15,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
 
-public class WhenBuildingPaginationViewModelTests
+public class CourseProvidersFiltersSubmitModelPaginationTests
 {
     private readonly Mock<IUrlHelper> _urlHelperMock = new();
 
@@ -44,7 +44,7 @@ public class WhenBuildingPaginationViewModelTests
         //Act
         var vm = new CourseProvidersViewModel(config.Object)
         {
-            Location = request.Location,
+            LocationName = request.LocationName,
             Distance = request.Distance,
             SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
@@ -85,7 +85,7 @@ public class WhenBuildingPaginationViewModelTests
         //Act
         var vm = new CourseProvidersViewModel(config.Object)
         {
-            Location = request.Location,
+            LocationName = request.LocationName,
             Distance = request.Distance,
             SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
@@ -127,7 +127,7 @@ public class WhenBuildingPaginationViewModelTests
 
             urlCheck.Should().Contain(TestConstants.DefaultUrl);
             urlCheck.Should().Contain($"OrderBy={request.OrderBy.ToString()}");
-            urlCheck.Should().NotContain($"Location={request.Location}");
+            urlCheck.Should().NotContain($"location={request.LocationName}");
             urlCheck.Should().Contain($"DeliveryModes={string.Join("&DeliveryModes=", request.DeliveryModes)}");
             urlCheck.Should().Contain($"EmployerProviderRatings={string.Join("&EmployerProviderRatings=", request.EmployerProviderRatings)}");
             urlCheck.Should().Contain($"ApprenticeProviderRatings={string.Join("&ApprenticeProviderRatings=", request.ApprenticeProviderRatings)}");
@@ -148,7 +148,7 @@ public class WhenBuildingPaginationViewModelTests
 
         var vm = new CourseProvidersViewModel(config.Object)
         {
-            Location = request.Location,
+            LocationName = request.LocationName,
             Distance = request.Distance,
             SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
@@ -199,7 +199,7 @@ public class WhenBuildingPaginationViewModelTests
 
         var vm = new CourseProvidersViewModel(config.Object)
         {
-            Location = request.Location,
+            LocationName = request.LocationName,
             Distance = request.Distance,
             SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),
@@ -269,12 +269,12 @@ public class WhenBuildingPaginationViewModelTests
     {
         var numberOfResults = 11;
         request.Distance = distance;
-        request.Location = location;
+        request.LocationName = location;
 
         //Act
         var vm = new CourseProvidersViewModel(config.Object)
         {
-            Location = request.Location,
+            LocationName = request.LocationName,
             Distance = request.Distance,
             SelectedDeliveryModes = request.DeliveryModes.Select(x => x.ToString()),
             SelectedEmployerApprovalRatings = request.EmployerProviderRatings.Select(x => x.ToString()),

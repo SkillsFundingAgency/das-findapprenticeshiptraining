@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -34,7 +34,7 @@ public class GetCoursesQueryHandler(
             {
                 BaseUrl = _config.Value.BaseUrl,
                 Keyword = query.Keyword,
-                Location = query.Location,
+                LocationName = query.LocationName,
                 Distance = query.Distance,
                 RouteIds = routeIds,
                 LearningTypes = learningTypes,

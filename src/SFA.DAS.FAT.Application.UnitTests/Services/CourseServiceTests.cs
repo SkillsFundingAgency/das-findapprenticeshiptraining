@@ -11,17 +11,19 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.CourseProviders.Api;
 using SFA.DAS.FAT.Domain.Courses;
+using SFA.DAS.FAT.Domain.Courses.Api.Requests;
+using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Services;
 
-public class WhenGettingCourseProviders
+public class CourseServiceTests
 {
     private const string BaseUrl = "BaseUrl";
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WithValidParameters_CallsApiClientWithCorrectUrl(
+    public async Task WhenGettingCourseProviders_AndParametersAreValid_ThenCallsApiClientWithCorrectUrl(
         GetCourseProvidersQuery query,
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -32,7 +34,7 @@ public class WhenGettingCourseProviders
             LarsCode = query.LarsCode,
             OrderBy = ProviderOrderBy.Distance,
             Distance = query.Distance,
-            Location = query.Location,
+            LocationName = query.LocationName,
             DeliveryModeTypes = query.DeliveryModes.ToList(),
             EmployerProviderRatingTypes = query.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatingTypes = query.ApprenticeProviderRatings.ToList(),
@@ -50,7 +52,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WhenApiReturnsData_ReturnsProviderDetails(
+    public async Task WhenGettingCourseProviders_AndApiReturnsData_ThenReturnsProviderDetails(
         GetCourseProvidersQuery query,
         CourseProvidersDetails providersFromApi,
         [Frozen] Mock<IApiClient> mockApiClient,
@@ -66,7 +68,7 @@ public class WhenGettingCourseProviders
             LarsCode = query.LarsCode,
             OrderBy = ProviderOrderBy.Distance,
             Distance = query.Distance,
-            Location = query.Location,
+            LocationName = query.LocationName,
             DeliveryModeTypes = query.DeliveryModes?.ToList(),
             EmployerProviderRatingTypes = query.EmployerProviderRatings.ToList(),
             ApprenticeProviderRatingTypes = query.ApprenticeProviderRatings.ToList(),
@@ -82,7 +84,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, MoqAutoData]
-    public async Task GetCourseProviders_WhenApiReturns404_ReturnsNull(
+    public async Task WhenGettingCourseProviders_AndApiReturns404_ThenReturnsNull(
         [Frozen] Mock<IApiClient> mockApiClient,
         CourseService service)
     {
@@ -98,7 +100,7 @@ public class WhenGettingCourseProviders
     }
 
     [Test, AutoData]
-    public void GetUrl_WithAllParameters_ConstructsUrlCorrectly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
+    public void WhenGettingUrl_AndAllParametersProvided_ThenConstructsUrlCorrectly(string baseUrl, string id, ProviderOrderBy orderBy, int distance, string location, List<ProviderDeliveryMode> deliveryModeTypes, List<ProviderRating> employerProviderRatingTypes, List<ProviderRating> apprenticeProviderRatingTypes,
         List<QarRating> qarRatings,
         int page, Guid shortlistUserId)
     {
@@ -108,7 +110,7 @@ public class WhenGettingCourseProviders
             LarsCode = id,
             OrderBy = orderBy,
             Distance = distance,
-            Location = location,
+            LocationName = location,
             DeliveryModeTypes = deliveryModeTypes,
             EmployerProviderRatingTypes = employerProviderRatingTypes,
             ApprenticeProviderRatingTypes = apprenticeProviderRatingTypes,
@@ -123,7 +125,7 @@ public class WhenGettingCourseProviders
         if (page > 1) pageParam = $"&page={page}";
 
         //Assert
-        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&location={location}&" +
+        actual.GetUrl.Should().Be($"{baseUrl}courses/{id}/providers?orderBy={orderBy}&distance={distance}&locationName={location}&" +
               $"deliveryModes={string.Join("&deliveryModes=", deliveryModeTypes)}&employerProviderRatings=" +
               $"{string.Join("&employerProviderRatings=", employerProviderRatingTypes)}&" +
               $"apprenticeProviderRatings={string.Join("&apprenticeProviderRatings=", apprenticeProviderRatingTypes)}&" +
@@ -132,7 +134,7 @@ public class WhenGettingCourseProviders
 
     [TestCase(null, null, null, null, null, null, 1, null, "&pageSize=10")]
     [TestCase(5, null, null, null, null, null, 1, null, "&distance=5&pageSize=10")]
-    [TestCase(null, "loc", null, null, null, null, null, null, "&location=loc&pageSize=10")]
+    [TestCase(null, "loc", null, null, null, null, null, null, "&locationName=loc&pageSize=10")]
     [TestCase(null, null, ProviderDeliveryMode.Provider, null, null, null, null, null, "&deliveryModes=Provider&pageSize=10")]
     [TestCase(null, null, null, ProviderRating.VeryPoor, null, null, null, null, "&employerProviderRatings=VeryPoor&pageSize=10")]
     [TestCase(null, null, null, null, ProviderRating.VeryPoor, null, null, null, "&apprenticeProviderRatings=VeryPoor&pageSize=10")]
@@ -141,14 +143,14 @@ public class WhenGettingCourseProviders
     [TestCase(null, null, null, null, null, null, 10, null, "&page=10&pageSize=10")]
     [TestCase(null, null, null, null, null, null, null, "3f616821-64a2-4dda-97cd-138f428d26b5", "&pageSize=10&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
     [TestCase(5, "loc", ProviderDeliveryMode.DayRelease, ProviderRating.VeryPoor, ProviderRating.Good, QarRating.Good, 25, "3f616821-64a2-4dda-97cd-138f428d26b5",
-             "&distance=5&location=loc" +
+             "&distance=5&locationName=loc" +
              "&deliveryModes=DayRelease" +
              "&employerProviderRatings=VeryPoor" +
              "&apprenticeProviderRatings=Good" +
              "&qar=Good" +
              "&page=25&pageSize=10" +
              "&shortlistUserId=3f616821-64a2-4dda-97cd-138f428d26b5")]
-    public void GetUrl_WithVariousParameterCombinations_ConstructsUrlCorrectly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
+    public void WhenGettingUrl_AndVariousParameterCombinationsProvided_ThenConstructsUrlCorrectly(int? distance, string? location, ProviderDeliveryMode? deliveryModeType, ProviderRating? employerProviderRating, ProviderRating? apprenticeProviderRating,
          QarRating? qarRating,
          int? page, Guid? shortlistUserId, string expectedUrl)
     {
@@ -179,7 +181,7 @@ public class WhenGettingCourseProviders
             LarsCode = id,
             OrderBy = orderBy,
             Distance = distance,
-            Location = location,
+            LocationName = location,
             DeliveryModeTypes = deliveryModeTypes,
             EmployerProviderRatingTypes = employerProviderRatings,
             ApprenticeProviderRatingTypes = apprenticeProviderRatings,
@@ -191,6 +193,43 @@ public class WhenGettingCourseProviders
 
         //Assert
         actual.GetUrl.Should().Be($"{expectedFullUrl}");
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingCourse_AndApiClientIsCalledWithRequest_ThenReturnsExpectedResponse(
+        string larsCode,
+        string location,
+        int? distance,
+        string baseUrl,
+        GetCourseResponse response,
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> config,
+        [Frozen] Mock<IApiClient> apiClient,
+        CourseService courseService
+    )
+    {
+        var courseApiRequest = new GetCourseApiRequest(config.Object.Value.BaseUrl, larsCode, location, distance);
+        apiClient.Setup(x =>
+            x.Get<GetCourseResponse>(
+                It.Is<GetCourseApiRequest>(request => request.GetUrl.Equals(courseApiRequest.GetUrl)))).ReturnsAsync(response);
+
+        var sut = await courseService.GetCourse(larsCode, location, distance);
+
+        sut.Should().BeEquivalentTo(response);
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingCourse_AndApiReturns404_ThenReturnsNull(
+        [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> config,
+        [Frozen] Mock<IApiClient> apiClient,
+        CourseService courseService)
+    {
+        HttpRequestException exception = new HttpRequestException("message", null, HttpStatusCode.NotFound);
+        apiClient.Setup(x => x.Get<GetCourseResponse>(It.IsAny<GetCourseApiRequest>()))
+            .ThrowsAsync(exception);
+
+        var sut = await courseService.GetCourse("1", "", 1);
+
+        sut.Should().BeNull();
     }
 }
 

@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.CourseProvidersControllerTests;
 public class CourseProvidersControllerCourseProviderDetailsTests
 {
     [Test, MoqAutoData]
-    public async Task CourseProviderDetails_MediatorIsCalledWithCorrectProperties(
+    public async Task WhenGettingCourseProviderDetails_ThenMediatorIsCalledWithCorrectProperties(
         string larsCode,
         int ukprn,
         string location,
@@ -47,7 +47,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
-                c.Location.Equals(location) &&
+                c.LocationName.Equals(location) &&
                 c.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
@@ -57,7 +57,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -74,7 +74,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                         q.LarsCode == larsCode &&
                         q.Ukprn == ukprn &&
-                        q.Location == location &&
+                        q.LocationName == location &&
                         q.Distance == DistanceService.AcrossEnglandDistance &&
                         q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
@@ -85,7 +85,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task ProviderDetailsFound_ValuesMappedToModelCorrectly(
+    public async Task WhenGettingCourseProviderDetails_AndProviderDetailsFound_ThenValuesMappedToModelCorrectly(
         string larsCode,
         int ukprn,
         string location,
@@ -111,7 +111,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
-                c.Location.Equals(location) &&
+                c.LocationName.Equals(location) &&
                 c.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
@@ -121,7 +121,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -138,7 +138,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                      q.LarsCode == larsCode &&
                      q.Ukprn == ukprn &&
-                     q.Location == location &&
+                     q.LocationName == location &&
                      q.Distance == DistanceService.AcrossEnglandDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
@@ -172,7 +172,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
             Assert.That(model.Locations, Is.EqualTo(response.Locations));
             Assert.That(model.Courses, Is.EqualTo(expectedCoursesAlphabetically));
             Assert.That(model.LarsCode, Is.EqualTo(larsCode));
-            Assert.That(model.Location, Is.EqualTo(location));
+            Assert.That(model.LocationName, Is.EqualTo(location));
             Assert.That(model.Distance, Is.EqualTo(distance.ToString()));
             Assert.That(model.ShowApprenticeTrainingCourseProvidersCrumb, Is.True);
             Assert.That(model.ShowApprenticeTrainingCourseCrumb, Is.True);
@@ -183,7 +183,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationSet_DistanceDefaultsToOneThousandMiles(
+    public async Task WhenGettingCourseProviderDetails_AndLocationSet_ThenDistanceDefaultsToOneThousandMiles(
         string larsCode,
         int ukprn,
         string location,
@@ -208,7 +208,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
-                c.Location.Equals(location) &&
+                c.LocationName.Equals(location) &&
                 c.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
@@ -218,7 +218,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -235,7 +235,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                      q.LarsCode == larsCode &&
                      q.Ukprn == ukprn &&
-                     q.Location == location &&
+                     q.LocationName == location &&
                      q.Distance == DistanceService.AcrossEnglandDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
@@ -246,7 +246,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationtNotSet_DistanceDefaultsToTenMiles(
+    public async Task WhenGettingCourseProviderDetails_AndLocationNotSet_ThenDistanceDefaultsToTenMiles(
     string larsCode,
     int ukprn,
     GetCourseProviderQueryResult response,
@@ -271,7 +271,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
-                c.Location.Equals(location) &&
+                c.LocationName.Equals(location) &&
                 c.Distance.Equals(DistanceService.DefaultDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
@@ -281,7 +281,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -298,7 +298,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                      q.LarsCode == larsCode &&
                      q.Ukprn == ukprn &&
-                     q.Location == location &&
+                     q.LocationName == location &&
                      q.Distance == DistanceService.DefaultDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
@@ -309,7 +309,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task DistanceAcrossEngland_DistanceDefaultsToDefaultDistance(
+    public async Task WhenGettingCourseProviderDetails_AndDistanceIsAcrossEngland_ThenDistanceDefaultsToDefaultDistance(
         string larsCode,
         int ukprn,
         string location,
@@ -333,7 +333,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         .Returns(shortlistCookieItem);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location, Distance = distance });
+            .Returns(new LocationCookieItem { LocationName = location, Distance = distance });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -344,7 +344,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
         mediator.Setup(x => x.Send(It.Is<GetCourseProviderDetailsQuery>(c =>
                 c.Ukprn.Equals(ukprn) &&
                 c.LarsCode.Equals(larsCode) &&
-                c.Location.Equals(location) &&
+                c.LocationName.Equals(location) &&
                 c.Distance.Equals(DistanceService.AcrossEnglandDistance) &&
                 c.ShortlistUserId.Equals(shortlistCookieItem.ShortlistUserId)
             ),
@@ -366,7 +366,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
                  It.Is<GetCourseProviderDetailsQuery>(q =>
                      q.LarsCode == larsCode &&
                      q.Ukprn == ukprn &&
-                     q.Location == location &&
+                     q.LocationName == location &&
                      q.Distance == DistanceService.AcrossEnglandDistance &&
                      q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
                  ),
@@ -379,7 +379,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task ProviderIdValidationFails_RedirectsToNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndProviderIdValidationFails_ThenRedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -427,7 +427,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task CourseIdValidationFails_RedirectsToNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndCourseIdValidationFails_ThenRedirectsToNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -476,7 +476,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
     }
 
     [Test, MoqAutoData]
-    public async Task LocationValidationFails_ValidationMessageShown(
+    public async Task WhenGettingCourseProviderDetails_AndLocationValidationFails_ThenValidationMessageShown(
         string larsCode,
         int ukprn,
         string location,
@@ -496,7 +496,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
             .Returns(shortlistCookieItem);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = location });
+            .Returns(new LocationCookieItem { LocationName = location });
 
         SetupValidators(ukprnValidatorMock, courseIdValidatorMock);
 
@@ -537,11 +537,11 @@ public class CourseProvidersControllerCourseProviderDetailsTests
 
         var model = viewResult!.Model as CourseProviderViewModel;
         model.Should().NotBeNull();
-        model.Location.Should().Be(string.Empty);
+        model.LocationName.Should().Be(string.Empty);
     }
 
     [Test, MoqAutoData]
-    public async Task ResponseIsNull_ReturnsNotFound(
+    public async Task WhenGettingCourseProviderDetails_AndResponseIsNull_ThenReturnsNotFound(
         GetCourseProviderDetailsQuery query,
         ShortlistCookieItem shortlistCookieItem,
         [Frozen] Mock<IMediator> mediator,
@@ -559,7 +559,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
 
         locationCookieService
             .Setup(x => x.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = query.Location });
+            .Returns(new LocationCookieItem { LocationName = query.LocationName });
 
         locationValidatorMock.Setup(v =>
             v.ValidateAsync(
@@ -582,7 +582,7 @@ public class CourseProvidersControllerCourseProviderDetailsTests
             It.Is<GetCourseProviderDetailsQuery>(q =>
                 q.LarsCode == query.LarsCode &&
                 q.Ukprn == query.Ukprn &&
-                q.Location == query.Location &&
+                q.LocationName == query.LocationName &&
                 q.Distance == DistanceService.AcrossEnglandDistance &&
                 q.ShortlistUserId == shortlistCookieItem.ShortlistUserId
             ),

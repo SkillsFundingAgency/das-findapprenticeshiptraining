@@ -12,7 +12,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseProvidersViewModelTests;
 
-public sealed class WhenFilteringCourseProviders
+public sealed class CourseProvidersViewModelFilterTests
 {
     private CourseProvidersViewModel _viewModel;
 
@@ -33,7 +33,7 @@ public sealed class WhenFilteringCourseProviders
 
         _viewModel = new CourseProvidersViewModel(_findApprenticeshipTrainingWebConfiguration)
         {
-            Location = "M60 7RA",
+            LocationName = "M60 7RA",
             Distance = "20",
             SelectedDeliveryModes = new List<string> { ProviderDeliveryMode.Provider.ToString(), ProviderDeliveryMode.DayRelease.ToString(), ProviderDeliveryMode.BlockRelease.ToString() },
             SelectedEmployerApprovalRatings = new List<string>() { ProviderRating.Good.ToString(), ProviderRating.Excellent.ToString() },
@@ -53,14 +53,14 @@ public sealed class WhenFilteringCourseProviders
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(sut.Any(a => a.For == nameof(_viewModel.Location)), Is.True);
+            Assert.That(sut.Any(a => a.For == nameof(_viewModel.LocationName)), Is.True);
 
-            var locationFilterSection = sut.First(a => a.For == nameof(_viewModel.Location));
+            var locationFilterSection = sut.First(a => a.For == nameof(_viewModel.LocationName));
             Assert.That(locationFilterSection, Is.TypeOf<SearchFilterSectionViewModel>());
             Assert.That(locationFilterSection.Id, Is.EqualTo("search-location"));
-            Assert.That(locationFilterSection.For, Is.EqualTo(nameof(_viewModel.Location)));
+            Assert.That(locationFilterSection.For, Is.EqualTo(nameof(_viewModel.LocationName)));
             Assert.That(locationFilterSection.FilterComponentType, Is.EqualTo(FilterService.FilterComponentType.Search));
-            Assert.That(((SearchFilterSectionViewModel)locationFilterSection).InputValue, Is.EqualTo(_viewModel.Location));
+            Assert.That(((SearchFilterSectionViewModel)locationFilterSection).InputValue, Is.EqualTo(_viewModel.LocationName));
             Assert.That(locationFilterSection.Heading, Is.EqualTo(FilterService.LocationSectionHeading));
             Assert.That(locationFilterSection.SubHeading, Is.EqualTo(FilterService.LocationSectionSubHeading));
         }
@@ -78,7 +78,7 @@ public sealed class WhenFilteringCourseProviders
 
         CourseProvidersViewModel viewModel = new CourseProvidersViewModel(findApprenticeshipTrainingWebConfiguration)
         {
-            Location = null,
+            LocationName = null,
             Distance = null,
             SelectedDeliveryModes = new List<string> { ProviderDeliveryMode.Provider.ToString(), ProviderDeliveryMode.DayRelease.ToString(), ProviderDeliveryMode.BlockRelease.ToString() },
             SelectedEmployerApprovalRatings = new List<string>() { ProviderRating.Good.ToString(), ProviderRating.Excellent.ToString() },
@@ -143,7 +143,7 @@ public sealed class WhenFilteringCourseProviders
             var locationClearLink = sut.First(a => a.FilterType == FilterService.FilterType.Location);
             Assert.That(locationClearLink, Is.Not.Null);
             Assert.That(locationClearLink.Title, Is.EqualTo("Learner's work location"));
-            Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_viewModel.Location} (within {_viewModel.Distance} miles)"));
+            Assert.That(locationClearLink.Items[0].DisplayText, Is.EqualTo($"{_viewModel.LocationName} (within {_viewModel.Distance} miles)"));
             Assert.That(locationClearLink.Items[0].ClearLink, Is.EqualTo(urlWithoutLocation));
         }
     }

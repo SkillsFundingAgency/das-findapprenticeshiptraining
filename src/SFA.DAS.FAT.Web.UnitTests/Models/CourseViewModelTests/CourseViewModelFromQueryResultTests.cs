@@ -9,7 +9,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 
-public class WhenBuildingCourseViewModelFromQueryResult
+public class CourseViewModelFromQueryResultTests
 {
     [Test, MoqAutoData]
     public void ExplicitCastOperator_QueryResultProvided_MapsModelCorrectly(GetCourseQueryResult source, LearningType learningType)

@@ -7,7 +7,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CourseViewModelTests;
 
-public sealed class WhenCreatingCourseViewModel
+public sealed class CourseViewModelTests
 {
     [TestCase(LearningType.Apprenticeship, "govuk-tag--blue")]
     [TestCase(LearningType.FoundationApprenticeship, "govuk-tag--pink")]
@@ -81,7 +81,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var model = new CourseViewModel()
         {
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         var sut = model.ProviderCountDisplayMessage;
@@ -94,7 +94,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var model = new CourseViewModel()
         {
-            Location = "SW1",
+            LocationName = "SW1",
             ProvidersCountWithinDistance = 1
         };
 
@@ -108,7 +108,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var model = new CourseViewModel()
         {
-            Location = "SW1",
+            LocationName = "SW1",
             ProvidersCountWithinDistance = 2
         };
 
@@ -122,7 +122,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var model = new CourseViewModel()
         {
-            Location = string.Empty,
+            LocationName = string.Empty,
             TotalProvidersCount = 1
         };
 
@@ -136,7 +136,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var model = new CourseViewModel()
         {
-            Location = string.Empty,
+            LocationName = string.Empty,
             TotalProvidersCount = 2
         };
 
@@ -216,7 +216,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var sut = new CourseViewModel
         {
-            Location = "   "
+            LocationName = "   "
         };
 
         Assert.That(sut.HasLocation, Is.False);
@@ -227,7 +227,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var sut = new CourseViewModel
         {
-            Location = null
+            LocationName = null
         };
 
         Assert.That(sut.HasLocation, Is.False);
@@ -238,7 +238,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var sut = new CourseViewModel
         {
-            Location = "SW1"
+            LocationName = "SW1"
         };
 
         Assert.That(sut.HasLocation, Is.True);
@@ -274,7 +274,7 @@ public sealed class WhenCreatingCourseViewModel
         var _sut = new CourseViewModel()
         {
             LarsCode = "1",
-            Location = "SW1",
+            LocationName = "SW1",
             RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
             EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
@@ -294,7 +294,7 @@ public sealed class WhenCreatingCourseViewModel
         var _sut = new CourseViewModel()
         {
             LarsCode = "1",
-            Location = string.Empty,
+            LocationName = string.Empty,
             RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
             EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
@@ -314,7 +314,7 @@ public sealed class WhenCreatingCourseViewModel
         var sut = new CourseViewModel()
         {
             LarsCode = "1",
-            Location = "   ",
+            LocationName = "   ",
             RequestApprenticeshipTrainingUrl = findApprenticeshipTrainingWebConfiguration.RequestApprenticeshipTrainingUrl,
             EmployerAccountsUrl = findApprenticeshipTrainingWebConfiguration.EmployerAccountsUrl
         };
@@ -331,7 +331,7 @@ public sealed class WhenCreatingCourseViewModel
     {
         var sut = new CourseViewModel
         {
-            Location = "   ",
+            LocationName = "   ",
             TotalProvidersCount = 3
         };
 

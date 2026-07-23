@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using MediatR;
@@ -25,7 +25,7 @@ public class ShortlistControllerOpenShortlistItemTests
         [Greedy] ShortlistController sut,
         int ukprn,
         string larsCode,
-        string locationDescription)
+        string LocationName)
     {
         // Arrange
         shortlistCookieServiceMock.Setup(x => x.Get(Constants.ShortlistCookieName)).Returns(() => null);
@@ -72,7 +72,7 @@ public class ShortlistControllerOpenShortlistItemTests
         using (new AssertionScope())
         {
             mediatorMock.Verify(x => x.Send(It.IsAny<GetShortlistsForUserQuery>(), default), Times.Once);
-            locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(a => a.Location == string.Empty)), Times.Once);
+            locationCookieServiceMock.Verify(x => x.Update(It.IsAny<string>(), It.Is<LocationCookieItem>(a => a.LocationName == string.Empty)), Times.Once);
             var redirect = result.As<RedirectToRouteResult>();
             redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);
             redirect.RouteValues["LarsCode"].Should().Be(larsCode);
@@ -88,7 +88,7 @@ public class ShortlistControllerOpenShortlistItemTests
         [Greedy] ShortlistController sut,
         int ukprn,
         string larsCode,
-        string locationDescription)
+        string LocationName)
     {
         // Arrange
         var cookie = new ShortlistCookieItem { ShortlistUserId = Guid.NewGuid() };
@@ -107,7 +107,7 @@ public class ShortlistControllerOpenShortlistItemTests
                     {
                         new ShortlistLocationModel
                         {
-                            LocationDescription = locationDescription,
+                            LocationName = LocationName,
                             Providers = new List<ShortlistProviderModel>
                             {
                                 new ShortlistProviderModel { ShortlistId = shortlistId }
@@ -126,7 +126,7 @@ public class ShortlistControllerOpenShortlistItemTests
         // Assert
         using (new AssertionScope())
         {
-            locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(a => a.Location == locationDescription)), Times.Once);
+            locationCookieServiceMock.Verify(x => x.Update(Constants.LocationCookieName, It.Is<LocationCookieItem>(a => a.LocationName == LocationName)), Times.Once);
 
             var redirect = result.As<RedirectToRouteResult>();
             redirect.RouteName.Should().Be(RouteNames.CourseProviderDetails);

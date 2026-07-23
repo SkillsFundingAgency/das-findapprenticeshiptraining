@@ -22,7 +22,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Controllers.ProvidersControllerTests;
 public class ProvidersControllerTests
 {
     [Test, MoqAutoData]
-    public async Task Index_WhenProviderExists_ReturnsProviderDetailsView(
+    public async Task WhenGettingIndex_AndProviderExists_ThenReturnsProviderDetailsView(
         int ukprn,
         GetProviderQueryResponse response,
         string location,
@@ -38,7 +38,7 @@ public class ProvidersControllerTests
                  c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>())).ReturnsAsync(response);
 
         locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
-           .Returns(new LocationCookieItem { Location = location, Distance = "10" });
+           .Returns(new LocationCookieItem { LocationName = location, Distance = "10" });
 
         validatorMock.Setup(v =>
             v.ValidateAsync(
@@ -70,11 +70,44 @@ public class ProvidersControllerTests
 
         model!.ShowSearchCrumb.Should().Be(true);
         model.ShowShortListLink.Should().Be(true);
-        model.Location.Should().Be(location);
+        model.LocationName.Should().Be(location);
     }
 
     [Test, MoqAutoData]
-    public async Task Index_InvalidUkprn_ReturnsNotFound(
+    public async Task WhenGettingIndex_AndLocationCookieIsNull_ThenSetsLocationNameToNull(
+        int ukprn,
+        GetProviderQueryResponse response,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Greedy] ProvidersController controller)
+    {
+        response.Ukprn = ukprn;
+        response.AnnualEmployerFeedbackDetails = null;
+        response.AnnualApprenticeFeedbackDetails = null;
+        mediator.Setup(x => x.Send(It.Is<GetProviderQuery>(c =>
+                 c.Ukprn.Equals(ukprn)), It.IsAny<CancellationToken>())).ReturnsAsync(response);
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+           .Returns((LocationCookieItem)null);
+
+        validatorMock.Setup(v =>
+            v.ValidateAsync(
+                It.IsAny<GetCourseProviderDetailsQuery>(),
+                It.IsAny<CancellationToken>()
+            )
+        ).ReturnsAsync(new ValidationResult());
+
+        var actual = await controller.Index(ukprn) as ViewResult;
+
+        actual.Should().NotBeNull();
+        var model = actual!.Model as ProviderDetailsViewModel;
+        model.Should().NotBeNull();
+        model!.LocationName.Should().BeNull();
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingIndex_AndUkprnIsInvalid_ThenReturnsNotFound(
         int ukprn,
         GetProviderQueryResponse response,
         [Frozen] Mock<IMediator> mediator,
@@ -114,7 +147,7 @@ public class ProvidersControllerTests
     }
 
     [Test, MoqAutoData]
-    public async Task Index_NullResponse_ReturnsNotFound(
+    public async Task WhenGettingIndex_AndResponseIsNull_ThenReturnsNotFound(
         int ukprn,
         [Frozen] Mock<IMediator> mediator,
         [Frozen] Mock<IValidator<GetCourseProviderDetailsQuery>> validatorMock,

@@ -10,10 +10,10 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.CourseProviders;
 
-public class WhenGettingCourseProviders
+public class GetCourseProvidersQueryHandlerTests
 {
     [Test, MoqAutoData]
-    public async Task Handle_ValidRequest_ReturnsExpectedDetails(
+    public async Task WhenHandling_AndRequestIsValid_ThenReturnsExpectedDetails(
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
         CourseProvidersDetails courseProvidersDetails,
@@ -58,7 +58,7 @@ public class WhenGettingCourseProviders
     [InlineAutoData(ProviderOrderBy.AchievementRate)]
     [InlineAutoData(ProviderOrderBy.ApprenticeProviderRating)]
     [InlineAutoData(ProviderOrderBy.EmployerProviderRating)]
-    public async Task Handle_OrderByProvided_CallsCourseServiceWithMatchingParameters(
+    public async Task WhenHandling_AndOrderByProvided_ThenCallsCourseServiceWithMatchingParameters(
         ProviderOrderBy orderBy,
         GetCourseProvidersQuery query,
         GetAcademicYearsLatestResponse academicYearsLatestResponse,
@@ -86,7 +86,7 @@ public class WhenGettingCourseProviders
             c => c.LarsCode == query.LarsCode
             && c.OrderBy == orderBy
             && c.Distance == query.Distance
-            && c.Location == query.Location
+            && c.LocationName == query.LocationName
             && c.DeliveryModeTypes == query.DeliveryModes
             && c.EmployerProviderRatingTypes == query.EmployerProviderRatings
             && c.ApprenticeProviderRatingTypes == query.ApprenticeProviderRatings
@@ -98,7 +98,7 @@ public class WhenGettingCourseProviders
 
     [Test]
     [MoqAutoData]
-    public async Task Handle_CourseServiceReturnsNull_ReturnsNull(
+    public async Task WhenHandling_AndCourseServiceReturnsNull_ThenReturnsNull(
         GetCourseProvidersQuery query,
         [Frozen] Mock<ICourseService> mockCourseService,
         [Frozen] Mock<IAcademicYearsService> mockAcademicYearsService)
@@ -121,7 +121,7 @@ public class WhenGettingCourseProviders
             LarsCode = request.LarsCode,
             OrderBy = request.OrderBy ?? ProviderOrderBy.Distance,
             Distance = request.Distance,
-            Location = request.Location,
+            LocationName = request.LocationName,
             DeliveryModeTypes = request.DeliveryModes,
             EmployerProviderRatingTypes = request.EmployerProviderRatings,
             ApprenticeProviderRatingTypes = request.ApprenticeProviderRatings,

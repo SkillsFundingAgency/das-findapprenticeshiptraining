@@ -7,7 +7,7 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.CoursesViewModelTests;
 
-public class WhenCreatingCoursesViewModel
+public class CoursesViewModelTests
 {
     [Test]
     public void CreateFilters_LocationNotSelected_DistanceDefaultsToTenMilesAndNotInClearFilters()
@@ -15,7 +15,7 @@ public class WhenCreatingCoursesViewModel
         var _sut = new CoursesViewModel()
         {
             Keyword = string.Empty,
-            Location = string.Empty,
+            LocationName = string.Empty,
             SelectedLevels = [],
             SelectedRoutes = []
         };
@@ -36,7 +36,7 @@ public class WhenCreatingCoursesViewModel
         var _sut = new CoursesViewModel()
         {
             Keyword = "test",
-            Location = "SW1",
+            LocationName = "SW1",
             Distance = "10",
             SelectedTrainingTypes = [LearningType.Apprenticeship],
             Levels = [new LevelViewModel(new Level { Code = 2, Name = "GCSE" }, [])],
@@ -142,7 +142,7 @@ public class WhenCreatingCoursesViewModel
         var _sut = new CoursesViewModel()
         {
             Distance = "10",
-            Location = "SW1",
+            LocationName = "SW1",
             Total = 10
         };
 
@@ -155,7 +155,7 @@ public class WhenCreatingCoursesViewModel
         var _sut = new CoursesViewModel()
         {
             Distance = "All",
-            Location = "SW1",
+            LocationName = "SW1",
             Total = 10
         };
 
@@ -205,7 +205,7 @@ public class WhenCreatingCoursesViewModel
     {
         var viewModel = new CoursesViewModel()
         {
-            Location = "SW1",
+            LocationName = "SW1",
             Distance = "10"
         };
 
@@ -213,7 +213,7 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(_sut.Count(a => a.Item1 == "Location"), Is.Zero);
+            Assert.That(_sut.Count(a => a.Item1 == "LocationName"), Is.Zero);
             Assert.That(_sut.Count(a => a.Item1 == "Distance"), Is.Zero);
         }
     }
@@ -354,7 +354,7 @@ public class WhenCreatingCoursesViewModel
     {
         var viewModel = new CoursesViewModel()
         {
-            Location = "SW1A 1AA",
+            LocationName = "SW1A 1AA",
             Distance = " "
         };
 
@@ -362,7 +362,7 @@ public class WhenCreatingCoursesViewModel
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Location)), Is.Zero);
+            Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.LocationName)), Is.Zero);
             Assert.That(result.Count(x => x.Item1 == nameof(CoursesViewModel.Distance)), Is.Zero);
         }
     }

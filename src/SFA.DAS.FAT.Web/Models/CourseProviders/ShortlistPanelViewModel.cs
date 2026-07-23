@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
@@ -8,7 +8,7 @@ public class ShortlistPanelViewModel
     public string LarsCode { get; set; }
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public Guid? ShortlistId { get; set; }
     public bool ShowMultipleProvidersForCourse { get; set; }
     public int TotalProvidersCount { get; set; }

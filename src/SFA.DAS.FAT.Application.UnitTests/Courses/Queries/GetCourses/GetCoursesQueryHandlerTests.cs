@@ -12,7 +12,7 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Courses.Queries.GetCourses;
 
-public class WhenGettingCourses
+public class GetCoursesQueryHandlerTests
 {
     private Mock<IApiClient> _apiClientMock;
     private Mock<ILevelsService> _levelsServiceMock;
@@ -34,12 +34,12 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenQueryHasFilters_ReturnsCorrectResponse()
+    public async Task WhenHandling_AndQueryHasFilters_ThenReturnsCorrectResponse()
     {
         var query = new GetCoursesQuery()
         {
             Keyword = "test",
-            Location = "London",
+            LocationName = "London",
             Distance = 10,
             Routes = new List<string> { "Route1" },
             LearningTypes = new List<LearningType> { LearningType.FoundationApprenticeship, LearningType.Apprenticeship },
@@ -94,7 +94,7 @@ public class WhenGettingCourses
                 It.Is<GetCoursesApiRequest>(r =>
                     r.BaseUrl == BaseUrl &&
                     r.Keyword == query.Keyword &&
-                    r.Location == query.Location &&
+                    r.LocationName == query.LocationName &&
                     r.Distance == query.Distance &&
                     r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                     r.Levels.SequenceEqual(query.Levels) &&
@@ -117,7 +117,7 @@ public class WhenGettingCourses
         _apiClientMock.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
                 r.Keyword == query.Keyword &&
-                r.Location == query.Location &&
+                r.LocationName == query.LocationName &&
                 r.Distance == query.Distance &&
                 r.RouteIds.SequenceEqual(new List<int>() { 1 }) &&
                 r.Levels.SequenceEqual(query.Levels) &&
@@ -143,7 +143,7 @@ public class WhenGettingCourses
     [MoqInlineAutoData(LearningType.FoundationApprenticeship, LearningType.FoundationApprenticeship)]
     [MoqInlineAutoData(LearningType.Apprenticeship, LearningType.Apprenticeship)]
     [MoqInlineAutoData(LearningType.ApprenticeshipUnit, LearningType.ApprenticeshipUnit)]
-    public async Task Handle_WhenOnlyOneLearningTypeSelected_CallsWithExpectedLearningType(
+    public async Task WhenHandling_AndOnlyOneLearningTypeSelected_ThenCallsWithExpectedLearningType(
      LearningType selectedLearningType,
      LearningType requestLearningType,
      [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
@@ -197,7 +197,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenMultipleRoutesSelected_FiltersRouteIdsCorrectly(
+    public async Task WhenHandling_AndMultipleRoutesSelected_ThenFiltersRouteIdsCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -242,7 +242,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenNoRoutesSpecified_PassesEmptyRouteIds(
+    public async Task WhenHandling_AndNoRoutesSpecified_ThenPassesEmptyRouteIds(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -285,7 +285,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenPageSpecified_PassesPageParameterCorrectly(
+    public async Task WhenHandling_AndPageSpecified_ThenPassesPageParameterCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -322,7 +322,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenKeywordAndLocationNotSpecified_PassesNullKeywordAndLocation(
+    public async Task WhenHandling_AndKeywordAndLocationNotSpecified_ThenPassesNullKeywordAndLocation(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -335,7 +335,7 @@ public class WhenGettingCourses
         var query = new GetCoursesQuery
         {
             Keyword = null,
-            Location = null,
+            LocationName = null,
             Distance = null,
             Routes = new List<string>(),
             LearningTypes = new List<LearningType>(),
@@ -358,13 +358,13 @@ public class WhenGettingCourses
         mockApiClient.Verify(x => x.Get<GetCoursesResponse>(
             It.Is<GetCoursesApiRequest>(r =>
                 r.Keyword == null &&
-                r.Location == null &&
+                r.LocationName == null &&
                 r.Distance == null)
         ), Times.Once);
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenHandlingQuery_CallsLevelsServiceAndRoutesService(
+    public async Task WhenHandling_ThenCallsLevelsServiceAndRoutesService(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,
@@ -400,7 +400,7 @@ public class WhenGettingCourses
     }
 
     [Test, MoqAutoData]
-    public async Task Handle_WhenLevelsSpecified_PassesAllLevelsCorrectly(
+    public async Task WhenHandling_AndLevelsSpecified_ThenPassesAllLevelsCorrectly(
         [Frozen] Mock<IOptions<FindApprenticeshipTrainingApi>> mockConfig,
         [Frozen] Mock<IApiClient> mockApiClient,
         [Frozen] Mock<ILevelsService> mockLevelsService,

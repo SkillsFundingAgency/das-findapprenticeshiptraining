@@ -18,5 +18,5 @@ public class GetCourseApiRequest : IGetApiRequest
 
     public string BaseUrl { get; }
 
-    public string GetUrl => $"{BaseUrl}courses/{_larsCode}?location={_location}&distance={_distance}";
+    public string GetUrl => $"{BaseUrl}courses/{_larsCode}?locationName={_location}&distance={_distance}";
 }

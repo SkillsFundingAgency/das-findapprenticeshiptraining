@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.DataProtection;
@@ -36,9 +36,9 @@ namespace SFA.DAS.FAT.Web.Filters
             var gaData = new GaData();
             var locationFromCookie = _locationCookieStorageService.Get(Constants.LocationCookieName);
 
-            if (locationFromCookie != null && !string.IsNullOrEmpty(locationFromCookie.Location))
+            if (locationFromCookie != null && !string.IsNullOrEmpty(locationFromCookie.LocationName))
             {
-                gaData.Location = locationFromCookie.Location;
+                gaData.LocationName = locationFromCookie.LocationName;
             }
 
 

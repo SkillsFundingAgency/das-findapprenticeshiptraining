@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -72,7 +72,7 @@ public class CoursesProviderViewModel
     }
 
 
-    public string Location { get; set; }
+    public string LocationName { get; set; }
     public string Distance { get; set; } = "All";
 
     public string Leavers { get; set; }
@@ -99,7 +99,7 @@ public class CoursesProviderViewModel
                 IsBlockReleaseMultiple = IsBlockReleaseMultiple,
                 NearestBlockRelease = NearestBlockRelease,
                 Distance = Distance,
-                Location = Location
+                LocationName = LocationName
             };
         }
     }
@@ -119,7 +119,7 @@ public class CoursesProviderViewModel
                 EmployerLocationDisplayDescription = FilterService.DeliveryModesSectionWorkplaceDisplayDescription,
                 ProviderLocationDisplayDescription = FilterService.DeliveryModesSectionProviderDisplayDescription,
                 Distance = Distance,
-                Location = Location
+                LocationName = LocationName
             };
         }
     }

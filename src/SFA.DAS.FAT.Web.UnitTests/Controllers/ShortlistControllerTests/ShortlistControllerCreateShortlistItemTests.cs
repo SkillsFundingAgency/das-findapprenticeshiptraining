@@ -1,4 +1,4 @@
-﻿using System.Text;
+using System.Text;
 using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -146,7 +146,7 @@ public class ShortlistControllerCreateShortlistItemTests
             .Returns(shortlistCookie);
         mockLocationCookieService
             .Setup(service => service.Get(Constants.LocationCookieName))
-            .Returns(new LocationCookieItem { Location = locationName });
+            .Returns(new LocationCookieItem { LocationName = locationName });
 
         // Act
         await sut.CreateShortlistItem(request);

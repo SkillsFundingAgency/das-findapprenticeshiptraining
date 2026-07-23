@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
@@ -20,7 +20,7 @@ public class GetCourseProviderQueryHandler : IRequestHandler<GetCourseProviderDe
         return await _courseService.GetCourseProvider(
             query.Ukprn, 
             query.LarsCode, 
-            query.Location, 
+            query.LocationName, 
             query.Distance,
             query.ShortlistUserId ?? Guid.Empty
         );

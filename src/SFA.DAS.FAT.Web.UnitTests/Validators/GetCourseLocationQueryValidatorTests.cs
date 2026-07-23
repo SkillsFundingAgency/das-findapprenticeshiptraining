@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentValidation.TestHelper;
 using Moq;
@@ -21,9 +21,9 @@ public class GetCourseLocationQueryValidatorTests
         )
     {
         locationServiceMock.Setup(x => x.IsLocationValid(location)).ReturnsAsync(false);
-        var result = await validator.TestValidateAsync(new GetCourseLocationQuery { Location = location });
+        var result = await validator.TestValidateAsync(new GetCourseLocationQuery { LocationName = location });
         result.IsValid.Should().BeFalse();
-        result.ShouldHaveValidationErrorFor(c => c.Location)
+        result.ShouldHaveValidationErrorFor(c => c.LocationName)
             .WithErrorMessage(GetCourseLocationQueryValidator.LocationErrorMessage);
         locationServiceMock.Verify(x => x.IsLocationValid(It.IsAny<string>()), Times.Once);
     }
@@ -39,9 +39,9 @@ public class GetCourseLocationQueryValidatorTests
         [Greedy] GetCourseLocationQueryValidator validator
     )
     {
-        var result = await validator.TestValidateAsync(new GetCourseLocationQuery { Location = location });
+        var result = await validator.TestValidateAsync(new GetCourseLocationQuery { LocationName = location });
         result.IsValid.Should().BeTrue();
-        result.ShouldNotHaveValidationErrorFor(c => c.Location);
+        result.ShouldNotHaveValidationErrorFor(c => c.LocationName);
         locationServiceMock.Verify(x => x.GetLocations(It.IsAny<string>()), Times.Never);
     }
 }

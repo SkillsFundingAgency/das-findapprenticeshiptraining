@@ -1,4 +1,4 @@
-﻿
+
 // AUTOCOMPLETE
 
 let $locationInput = $('#search-location');
@@ -38,7 +38,7 @@ if ($locationInput.length > 0) {
     accessibleAutocomplete({
         element: container,
         id: 'search-location',
-        name: 'location',
+        name: 'LocationName',
         displayMenu: 'overlay',
         showNoOptionsFound: false,
         minLength: 3,

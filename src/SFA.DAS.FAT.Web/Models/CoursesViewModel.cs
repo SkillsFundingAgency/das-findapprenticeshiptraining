@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
@@ -101,7 +101,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             FilterSections =
             [
                 CreateInputFilterSection("keyword-input", KeywordSectionHeading, KeywordSectionSubHeading, nameof(Keyword), Keyword),
-                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(Location), Location),
+                CreateSearchFilterSection("search-location", LocationSectionHeading, LocationSectionSubHeading, nameof(LocationName), LocationName),
                 CreateDropdownFilterSection("distance-filter", nameof(Distance), DistanceSectionHeading, DistanceSectionSubHeading, GetDistanceFilterValues(Distance).ToList()),
                 CreateAccordionFilterSection(
                 "multi-select",
@@ -131,7 +131,7 @@ public class CoursesViewModel : PageLinksViewModelBase
             return string.Empty;
         }
 
-        if (!string.IsNullOrWhiteSpace(Location) && !DistanceService.IsAcrossEngland(Distance))
+        if (!string.IsNullOrWhiteSpace(LocationName) && !DistanceService.IsAcrossEngland(Distance))
         {
             return LocationCoursesSubHeaderText;
         }
@@ -185,7 +185,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         var selectedFilters = new Dictionary<FilterType, IEnumerable<string>>();
 
         AddSelectedFilter(selectedFilters, FilterType.KeyWord, Keyword);
-        AddSelectedFilter(selectedFilters, FilterType.Location, Location);
+        AddSelectedFilter(selectedFilters, FilterType.Location, LocationName);
         if (!selectedFilters.ContainsKey(FilterType.Location))
         {
             Distance = DistanceService.DefaultDistance.ToString();

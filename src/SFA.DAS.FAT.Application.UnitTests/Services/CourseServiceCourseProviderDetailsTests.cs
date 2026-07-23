@@ -12,11 +12,11 @@ using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Application.UnitTests.Services;
 
-public class WhenGettingCourseProviderDetails
+public class CourseServiceCourseProviderDetailsTests
 {
     [Test]
     [MoqAutoData]
-    public async Task Then_The_Correct_Response_Is_Returned_From_The_Api(
+    public async Task WhenGettingCourseProvider_ThenReturnsCorrectResponseFromApi(
         string baseUrl,
         int ukprn,
         string larsCode,
@@ -71,7 +71,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test]
     [MoqAutoData]
-    public async Task When_Api_Response_Is_Null_Then_Null_Is_Returned_From_The_Service(
+    public async Task WhenGettingCourseProvider_AndApiResponseIsNull_ThenReturnsNull(
         string baseUrl,
         int ukprn,
         string larsCode,
@@ -106,7 +106,7 @@ public class WhenGettingCourseProviderDetails
 
     [Test]
     [MoqAutoData]
-    public async Task When_Api_Response_Is_NotFound_Then_Null_Is_Returned_From_The_Service(
+    public async Task WhenGettingCourseProvider_AndApiResponseIsNotFound_ThenReturnsNull(
         string baseUrl,
         int ukprn,
         string larsCode,

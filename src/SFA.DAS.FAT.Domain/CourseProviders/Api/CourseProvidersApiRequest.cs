@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -29,7 +29,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
         _larsCode = courseProvidersParameters.LarsCode;
         _orderBy = courseProvidersParameters.OrderBy;
         _distance = courseProvidersParameters.Distance;
-        _location = courseProvidersParameters.Location;
+        _location = courseProvidersParameters.LocationName;
         _deliveryModeTypes = courseProvidersParameters.DeliveryModeTypes;
         _employerProviderRatingTypes = courseProvidersParameters.EmployerProviderRatingTypes;
         _apprenticeProviderRatingTypes = courseProvidersParameters.ApprenticeProviderRatingTypes;
@@ -129,7 +129,7 @@ public class CourseProvidersApiRequest : IGetApiRequest
     {
         if (!string.IsNullOrEmpty(_location))
         {
-            buildUrl += $"&location={HttpUtility.UrlEncode(_location)}";
+            buildUrl += $"&locationName={HttpUtility.UrlEncode(_location)}";
         }
 
         return buildUrl;

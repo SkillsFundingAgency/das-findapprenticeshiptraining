@@ -1,6 +1,6 @@
-﻿namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
+namespace SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 
 public class GetCourseLocationQuery
 {
-    public required string Location { get; set; }
+    public required string LocationName { get; set; }
 }

@@ -1,4 +1,4 @@
-﻿using System.Threading;
+using System.Threading;
 using System.Threading.Tasks;
 using MediatR;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -24,7 +24,7 @@ public class GetCourseProvidersQueryHandler : IRequestHandler<GetCourseProviders
             LarsCode = request.LarsCode,
             OrderBy = request.OrderBy ?? ProviderOrderBy.Distance,
             Distance = request.Distance,
-            Location = request.Location,
+            LocationName = request.LocationName,
             DeliveryModeTypes = request.DeliveryModes,
             EmployerProviderRatingTypes = request.EmployerProviderRatings,
             ApprenticeProviderRatingTypes = request.ApprenticeProviderRatings,

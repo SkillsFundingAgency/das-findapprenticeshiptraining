@@ -4,9 +4,9 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models.Providers;
 
-namespace SFA.DAS.FAT.Web.UnitTests.Models.Providers.ProviderCoursesModelTests;
+namespace SFA.DAS.FAT.Web.UnitTests.Models.Providers;
 
-public class WhenWorkingWithProviderCoursesModel
+public class ProviderCoursesModelTests
 {
     [Test]
     public void CourseCount_WhenProviderCoursesModelCreated_ReturnsZero()
@@ -138,7 +138,7 @@ public class WhenWorkingWithProviderCoursesModel
         {
             Courses = courses,
             Ukprn = 123456,
-            Location = "TestLocation"
+            LocationName = "TestLocation"
         };
 
         var groups = sut.CourseGroups;
@@ -146,7 +146,7 @@ public class WhenWorkingWithProviderCoursesModel
         groups.Should().NotBeNull();
         groups.Should().HaveCount(2);
         groups.All(g => g.Ukprn == 123456).Should().BeTrue();
-        groups.All(g => g.Location == "TestLocation").Should().BeTrue();
+        groups.All(g => g.LocationName == "TestLocation").Should().BeTrue();
     }
 
     [Test]
