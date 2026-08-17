@@ -65,7 +65,15 @@
         },
         "deployPrivateLinkedScopedResource": {
             "type": "bool"
+        },
+        "logAnalyticsSubscriptionId": {
+            "type": "string",
+            "defaultValue": "[subscription().subscriptionId]"
+        },
+        "logAnalyticsWorkspaceName": {
+            "type": "string"
         }
+
     },
     "variables": {
         "deploymentUrlBase": "https://raw.githubusercontent.com/SkillsFundingAgency/das-platform-building-blocks/master/templates/",
@@ -125,6 +133,9 @@
                     },
                     "attachedService": {
                         "value": "[variables('uiAppServiceName')]"
+                    },
+                    "logAnalyticsWorkspaceId": {
+                        "value": "[resourceId(parameters('logAnalyticsSubscriptionId'),parameters('sharedManagementResourceGroup'),'Microsoft.OperationalInsights/workspaces',parameters('logAnalyticsWorkspaceName'))]"
                     }
                 }
             }
@@ -237,8 +248,8 @@
                                     "value": "[parameters('configurationStorageConnectionString')]"
                                 },
                                 {
-                                    "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
-                                    "value": "[reference(concat('ui-application-insights-', parameters('utcValue'))).outputs.InstrumentationKey.value]"
+                                    "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+                                    "value": "[reference(concat('ui-application-insights-', parameters('utcValue'))).outputs.ConnectionString.value]"
                                 }
                             ]
                         }
