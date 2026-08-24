@@ -23,8 +23,6 @@ public class WhenCreatingFeedbackSurveyTabs
 
     private static IEnumerable<object[]> _tabCases()
     {
-        var LastYearValue = DateTime.UtcNow.AddYears(-1).Year;
-
         var NextYear = DateTime.UtcNow.AddYears(1).ToString("yy");
         var ThisYear = DateTime.UtcNow.ToString("yy");
         var LastYear = DateTime.UtcNow.AddYears(-1).ToString("yy");
@@ -36,70 +34,70 @@ public class WhenCreatingFeedbackSurveyTabs
 
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 1, $"20{LastYear} to today", $"1 August 20{LastYear} to today",
+            new DateTime(2025, 07, 31), 1, $"20{LastYear} to today", $"1 August 20{LastYear} to today",
             FeedbackSurveyViewModel.EmployerMostRecentReviewsText, $"AY{LastYear}{ThisYear}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 2, $"20{TwoYearsAgo} to 20{LastYear}",
+            new DateTime(2025, 07, 31), 2, $"20{TwoYearsAgo} to 20{LastYear}",
             $"1 August 20{TwoYearsAgo} to 31 July 20{LastYear}",
             FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear, $"AY{TwoYearsAgo}{LastYear}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 3, $"20{ThreeYearsAgo} to 20{TwoYearsAgo}",
+            new DateTime(2025, 07, 31), 3, $"20{ThreeYearsAgo} to 20{TwoYearsAgo}",
             $"1 August 20{ThreeYearsAgo} to 31 July 20{TwoYearsAgo}",
             FeedbackSurveyViewModel.AllCoursesDeliveredText, $"AY{ThreeYearsAgo}{TwoYearsAgo}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 4, $"20{FourYearsAgo} to 20{ThreeYearsAgo}",
+            new DateTime(2025, 07, 31), 4, $"20{FourYearsAgo} to 20{ThreeYearsAgo}",
             $"1 August 20{FourYearsAgo} to 31 July 20{ThreeYearsAgo}",
             FeedbackSurveyViewModel.AllCoursesDeliveredText, $"AY{FourYearsAgo}{ThreeYearsAgo}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 5, $"20{FiveYearsAgo} to 20{FourYearsAgo}",
+            new DateTime(2025, 07, 31), 5, $"20{FiveYearsAgo} to 20{FourYearsAgo}",
             $"1 August 20{FiveYearsAgo} to 31 July 20{FourYearsAgo}",
             FeedbackSurveyViewModel.AllCoursesDeliveredText, $"AY{FiveYearsAgo}{FourYearsAgo}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 07, 31), 6, "Overall reviews", $"1 August 20{FiveYearsAgo} to today",
+            new DateTime(2025, 07, 31), 6, "Overall reviews", $"1 August 20{FiveYearsAgo} to today",
             FeedbackSurveyViewModel.EmployerReviewsOverallText, "All"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 1, $"20{ThisYear} to today", $"1 August 20{ThisYear} to today",
+            new DateTime(2025, 08, 01), 1, $"20{ThisYear} to today", $"1 August 20{ThisYear} to today",
             FeedbackSurveyViewModel.EmployerMostRecentReviewsText, $"AY{ThisYear}{NextYear}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 2, $"20{LastYear} to 20{ThisYear}",
+            new DateTime(2025, 08, 01), 2, $"20{LastYear} to 20{ThisYear}",
             $"1 August 20{LastYear} to 31 July 20{ThisYear}",
             FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear, $"AY{LastYear}{ThisYear}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 3, $"20{TwoYearsAgo} to 20{LastYear}",
+            new DateTime(2025, 08, 01), 3, $"20{TwoYearsAgo} to 20{LastYear}",
             $"1 August 20{TwoYearsAgo} to 31 July 20{LastYear}", FeedbackSurveyViewModel.AllCoursesDeliveredText,
             $"AY{TwoYearsAgo}{LastYear}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 4, $"20{ThreeYearsAgo} to 20{TwoYearsAgo}",
+            new DateTime(2025, 08, 01), 4, $"20{ThreeYearsAgo} to 20{TwoYearsAgo}",
             $"1 August 20{ThreeYearsAgo} to 31 July 20{TwoYearsAgo}",
             FeedbackSurveyViewModel.AllCoursesDeliveredText, $"AY{ThreeYearsAgo}{TwoYearsAgo}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 5, $"20{FourYearsAgo} to 20{ThreeYearsAgo}",
+            new DateTime(2025, 08, 01), 5, $"20{FourYearsAgo} to 20{ThreeYearsAgo}",
             $"1 August 20{FourYearsAgo} to 31 July 20{ThreeYearsAgo}",
             FeedbackSurveyViewModel.AllCoursesDeliveredText, $"AY{FourYearsAgo}{ThreeYearsAgo}"
         ];
         yield return
         [
-            new DateTime(LastYearValue, 08, 01), 6, "Overall reviews", $"1 August 20{FourYearsAgo} to today",
+            new DateTime(2025, 08, 01), 6, "Overall reviews", $"1 August 20{FourYearsAgo} to today",
             FeedbackSurveyViewModel.EmployerReviewsOverallText, "All"
         ];
     }
