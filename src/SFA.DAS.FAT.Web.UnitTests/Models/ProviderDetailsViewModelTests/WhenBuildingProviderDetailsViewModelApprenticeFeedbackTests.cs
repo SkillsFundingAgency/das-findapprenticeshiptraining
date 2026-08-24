@@ -8,13 +8,29 @@ using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
+
 public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
 {
-
-    public const string TimePeriod1 = "AY2526";
-    public const string TimePeriod2 = "AY2425";
+    public string ThisYear;
+    public string LastYear;
+    public string TwoYearsAgo;
+    public string FiveYearsAgo;
+    public string TimePeriod1;
+    public string TimePeriod2;
     public const string TimePeriodAll = "All";
     public DateTime DateToCheck = new(2025, 4, 28);
+
+    [SetUp]
+    public void Setup()
+    {
+        ThisYear = DateTime.UtcNow.ToString("yy");
+        LastYear = DateTime.UtcNow.AddYears(-1).ToString("yy");
+        TwoYearsAgo = DateTime.UtcNow.AddYears(-2).ToString("yy");
+        FiveYearsAgo = DateTime.UtcNow.AddYears(-5).ToString("yy");
+
+        TimePeriod1 = $"AY{LastYear}{ThisYear}";
+        TimePeriod2 = $"AY{TwoYearsAgo}{LastYear}";
+    }
 
     [Test, MoqInlineAutoData]
     public void Then_Apprentice_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int agree, int disagree, int reviewCount, int stars)
@@ -38,8 +54,8 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
             firstItem.IsMostRecentYear.Should().Be(true);
             firstItem.EndYear.Should().Be(2026);
             firstItem.StartYear.Should().Be(2025);
-            firstItem.Heading.Should().Be("2025 to today");
-            firstItem.SubHeading.Should().Be("1 August 2025 to today");
+            firstItem.Heading.Should().Be($"20{LastYear} to today");
+            firstItem.SubHeading.Should().Be($"1 August 20{LastYear} to today");
             firstItem.MainText.Should()
                 .Be(FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
             firstItem.NoApprenticeReviewsText.Should()
@@ -77,8 +93,8 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
             firstItem.IsMostRecentYear.Should().Be(true);
             firstItem.EndYear.Should().Be(2026);
             firstItem.StartYear.Should().Be(2025);
-            firstItem.Heading.Should().Be("2025 to today");
-            firstItem.SubHeading.Should().Be("1 August 2025 to today");
+            firstItem.Heading.Should().Be($"20{LastYear} to today");
+            firstItem.SubHeading.Should().Be($"1 August 20{LastYear} to today");
             firstItem.MainText.Should()
                 .Be(FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
             firstItem.NoApprenticeReviewsText.Should()
@@ -114,8 +130,8 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(2025);
         feedbackTab.StartYear.Should().Be(2024);
-        feedbackTab.Heading.Should().Be("2024 to 2025");
-        feedbackTab.SubHeading.Should().Be("1 August 2024 to 31 July 2025");
+        feedbackTab.Heading.Should().Be($"20{TwoYearsAgo} to 20{LastYear}");
+        feedbackTab.SubHeading.Should().Be($"1 August 20{TwoYearsAgo} to 31 July 20{LastYear}");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear);
         feedbackTab.NoApprenticeReviewsText.Should().Be(FeedbackSurveyViewModel.ApprenticeNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
@@ -149,7 +165,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
-        feedbackTab.SubHeading.Should().Be("1 August 2021 to today");
+        feedbackTab.SubHeading.Should().Be($"1 August 20{FiveYearsAgo} to today");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
         feedbackTab.NoApprenticeReviewsText.Should().Be(FeedbackSurveyViewModel.ApprenticeNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(false);
@@ -163,7 +179,7 @@ public class WhenBuildingProviderDetailsViewModelApprenticeFeedbackTests
         feedbackDetail.DisagreePerc.Should().Be(expectedDisagreePerc);
     }
 
-    private static List<ApprenticeFeedbackAnnualSummaries> GetApprenticeAnnualSummaries(string feedbackName, int agree, int disagree, int reviewCount, int stars)
+    private List<ApprenticeFeedbackAnnualSummaries> GetApprenticeAnnualSummaries(string feedbackName, int agree, int disagree, int reviewCount, int stars)
     {
         var annualSummaryItem = new AttributeResultModel { Name = feedbackName, Agree = agree, Disagree = disagree };
         var annualSummaryItem2 = new AttributeResultModel { Name = feedbackName + "2", Agree = agree + 1, Disagree = disagree - 1 };
