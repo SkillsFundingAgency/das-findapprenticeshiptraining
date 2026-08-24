@@ -7,13 +7,29 @@ using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models.ProviderDetailsViewModelTests;
+
 public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
 {
-
-    public const string TimePeriod1 = "AY2526";
-    public const string TimePeriod2 = "AY2425";
+    public string ThisYear;
+    public string LastYear;
+    public string TwoYearsAgo;
+    public string FiveYearsAgo;
+    public string TimePeriod1;
+    public string TimePeriod2;
     public const string TimePeriodAll = "All";
     public DateTime DateToCheck = new(2025, 4, 28);
+
+    [SetUp]
+    public void Setup()
+    {
+        ThisYear = DateTime.UtcNow.ToString("yy");
+        LastYear = DateTime.UtcNow.AddYears(-1).ToString("yy");
+        TwoYearsAgo = DateTime.UtcNow.AddYears(-2).ToString("yy");
+        FiveYearsAgo = DateTime.UtcNow.AddYears(-5).ToString("yy");
+
+        TimePeriod1 = $"AY{LastYear}{ThisYear}";
+        TimePeriod2 = $"AY{TwoYearsAgo}{LastYear}";
+    }
 
     [Test, MoqInlineAutoData]
     public void Then_Employer_Feedback_Details_As_Expected_First_Tag(GetProviderQueryResponse response, string feedbackName, int strength, int weakness, int reviewCount, int stars)
@@ -37,8 +53,8 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
             firstItem.IsMostRecentYear.Should().Be(true);
             firstItem.EndYear.Should().Be(2026);
             firstItem.StartYear.Should().Be(2025);
-            firstItem.Heading.Should().Be("2025 to today");
-            firstItem.SubHeading.Should().Be("1 August 2025 to today");
+            firstItem.Heading.Should().Be($"20{LastYear} to today");
+            firstItem.SubHeading.Should().Be($"1 August 20{LastYear} to today");
             firstItem.MainText.Should()
                 .Be(
                    FeedbackSurveyViewModel.EmployerMostRecentReviewsText);
@@ -75,8 +91,8 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.IsMostRecentYear.Should().Be(false);
         feedbackTab.EndYear.Should().Be(2025);
         feedbackTab.StartYear.Should().Be(2024);
-        feedbackTab.Heading.Should().Be("2024 to 2025");
-        feedbackTab.SubHeading.Should().Be("1 August 2024 to 31 July 2025");
+        feedbackTab.Heading.Should().Be($"20{TwoYearsAgo} to 20{LastYear}");
+        feedbackTab.SubHeading.Should().Be($"1 August 20{TwoYearsAgo} to 31 July 20{LastYear}");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.AllCoursesDeliveredTextLastFullYear);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
@@ -110,7 +126,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackTab.EndYear.Should().Be(0);
         feedbackTab.StartYear.Should().Be(0);
         feedbackTab.Heading.Should().Be("Overall reviews");
-        feedbackTab.SubHeading.Should().Be("1 August 2021 to today");
+        feedbackTab.SubHeading.Should().Be($"1 August 20{FiveYearsAgo} to today");
         feedbackTab.MainText.Should().Be(FeedbackSurveyViewModel.EmployerReviewsOverallText);
         feedbackTab.NoEmployerReviewsText.Should().Be(FeedbackSurveyViewModel.EmployersNoResultsPastTab);
         feedbackTab.ShowEmployerFeedbackStars.Should().Be(true);
@@ -124,7 +140,7 @@ public class WhenBuildingProviderDetailsViewModelEmployerFeedbackTests
         feedbackDetail.WeaknessPerc.Should().Be(expectedWeaknessPerc);
     }
 
-    private static List<EmployerFeedbackAnnualSummaries> GetEmployerAnnualSummaries(string feedbackName, int strength, int weakness, int reviewCount, int stars)
+    private List<EmployerFeedbackAnnualSummaries> GetEmployerAnnualSummaries(string feedbackName, int strength, int weakness, int reviewCount, int stars)
     {
         var annualSummaryItem = new AnnualSummaryItem { Name = feedbackName, Strength = strength, Weakness = weakness };
         var annualSummaryItem2 = new AnnualSummaryItem { Name = feedbackName + "2", Strength = strength + 1, Weakness = weakness - 1 };
