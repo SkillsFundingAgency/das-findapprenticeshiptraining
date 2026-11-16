@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Configuration;
+using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.Courses.Api.Responses;
 
@@ -32,4 +33,5 @@ public sealed class StandardModel
 
     public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
+    public StandardDates CourseDates { get; set; }
 }

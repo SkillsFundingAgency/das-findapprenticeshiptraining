@@ -43,7 +43,7 @@ public sealed class CourseViewModelTests
     }
 
     [Test]
-    public void LevelEquivalentToDisplayText_WhenLevelFound_ReturnsEqualToLevelName()
+    public void LevelEquivalentToDisplayText_WhenLevelFound_ReturnsSimilarToLevelName()
     {
         var sut = new CourseViewModel()
         {
@@ -51,7 +51,7 @@ public sealed class CourseViewModelTests
             Levels = new List<Level>() { new Level() { Code = 2, Name = "Level 2" } }
         };
 
-        Assert.That(sut.LevelEquivalentToDisplayText, Is.EqualTo("Equal to Level 2"));
+        Assert.That(sut.LevelEquivalentToDisplayText, Is.EqualTo("Similar to Level 2"));
     }
 
     [Test]

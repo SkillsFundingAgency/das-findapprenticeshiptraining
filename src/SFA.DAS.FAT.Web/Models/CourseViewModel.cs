@@ -110,7 +110,7 @@ public class CourseViewModel : PageLinksViewModelBase
 
         var equivalentLevel = Levels.Find(a => a.Code == Level);
 
-        return equivalentLevel is null ? string.Empty : $"Equal to {equivalentLevel.Name}";
+        return equivalentLevel is null ? string.Empty : $"Similar to {equivalentLevel.Name}";
     }
     private string[] GetTypicalJobTitles()
     {
