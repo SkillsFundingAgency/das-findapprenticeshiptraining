@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
@@ -120,7 +120,7 @@ public class CoursesViewModel : PageLinksViewModelBase
                         "levels-filter",
                         nameof(Levels),
                         LevelsSectionHeading,
-                        "We use levels to reflect the knowledge, skills and understanding needed to complete training.",
+                        LevelsSectionSubHeading,
                         GenerateLevelFilterItems(),
                         LevelInformationDisplayText,
                         LevelInformationUrl

@@ -24,6 +24,7 @@ public static class FilterService
     public const string DistanceSectionSubHeading = "Distance learner can travel";
 
     public const string LevelsSectionHeading = "Training level";
+    public const string LevelsSectionSubHeading = "We use levels to reflect the knowledge, skills and understanding needed to complete training.";
     public const string CategoriesSectionHeading = "Job categories";
 
     public const string LevelInformationDisplayText = "Find out more about training levels (opens in new tab)";
