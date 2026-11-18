@@ -572,6 +572,11 @@
     margin-left: 15px;
 }
 
+.app-course-status-warning {
+    background: #f3f2f1;
+    padding: 16px;
+}
+
 .app-search-courses-training-types .govuk-checkboxes__input + .govuk-checkboxes__label::before {
     background-color: #fff;
 }

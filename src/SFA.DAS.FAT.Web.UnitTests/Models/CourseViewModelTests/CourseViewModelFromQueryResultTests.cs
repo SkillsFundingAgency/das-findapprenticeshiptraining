@@ -181,4 +181,96 @@ public class CourseViewModelFromQueryResultTests
             Assert.That(sut.RelatedOccupations, Is.EqualTo(source.RelatedOccupations));
         }
     }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDatesAreForClosingCourse_ThenMapsCourseAvailabilityInformation()
+    {
+        var source = new GetCourseQueryResult
+        {
+            Ksbs = [],
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("Closing to new learners soon");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--orange");
+            sut.CourseStatusDescription.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDatesAreForNewCourse_ThenMapsCourseAvailabilityInformation()
+    {
+        var source = new GetCourseQueryResult
+        {
+            Ksbs = [],
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("New course");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
+            sut.CourseStatusDescription.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDatesAreForClosedCourse_ThenMapsCourseAvailabilityInformation()
+    {
+        var source = new GetCourseQueryResult
+        {
+            Ksbs = [],
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2026, 6, 30, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("Closed to new learners");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--grey");
+            sut.CourseStatusDescription.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDatesAreNull_ThenDoesNotMapCourseAvailabilityInformation()
+    {
+        var source = new GetCourseQueryResult
+        {
+            Ksbs = [],
+            CourseDates = null
+        };
+
+        var sut = (CourseViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeFalse();
+            sut.CourseStatusTagText.Should().BeEmpty();
+            sut.CourseStatusTagClass.Should().BeEmpty();
+            sut.CourseStatusDescription.Should().BeEmpty();
+        }
+    }
 }
