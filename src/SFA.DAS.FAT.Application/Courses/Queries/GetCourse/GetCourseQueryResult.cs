@@ -29,7 +29,6 @@ public class GetCourseQueryResult
 
     public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
-    public bool IsActiveAvailable { get; set; }
     public StandardDates CourseDates { get; set; }
 
     public List<Level> Levels { get; set; } = [];
