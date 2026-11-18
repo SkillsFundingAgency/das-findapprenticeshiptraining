@@ -32,4 +32,5 @@ public sealed class StandardModel
 
     public LearningType LearningType { get; set; }
     public CourseType CourseType { get; set; }
+    public StandardDates CourseDates { get; set; }
 }

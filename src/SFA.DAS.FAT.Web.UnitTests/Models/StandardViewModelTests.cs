@@ -127,6 +127,7 @@ public class StandardViewModelTests
     public void ImplicitOperator_FromStandardModel_MapsAllFields(StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = 1;
+        standardModel.CourseDates = new StandardDates();
         StandardViewModel sut = new StandardViewModel(standardModel, string.Empty, string.Empty, config, Mock.Of<IUrlHelper>(), Levels);
 
         using (new AssertionScope())
@@ -147,6 +148,7 @@ public class StandardViewModelTests
             sut.TypicalDuration.Should().Be(standardModel.TypicalDuration);
             sut.LearningType.Should().Be(standardModel.LearningType);
             sut.CourseType.Should().Be(standardModel.CourseType);
+            sut.HasCourseStatusTag.Should().BeFalse();
         }
     }
 
@@ -161,8 +163,8 @@ public class StandardViewModelTests
         Assert.That(sut.MaxFunding, Is.EqualTo("£10,000"));
     }
 
-    [InlineAutoData(1, "1 - equal to GCSE")]
-    [InlineAutoData(2, "2 - equal to A Level")]
+    [InlineAutoData(1, "1 - similar to GCSE")]
+    [InlineAutoData(2, "2 - similar to A Level")]
     public void LevelName_WithExistingLevel_ReturnsFormattedName(int level, string expectedLevelName, StandardModel standardModel, FindApprenticeshipTrainingWeb config)
     {
         standardModel.Level = level;
@@ -268,6 +270,98 @@ public class StandardViewModelTests
         var sut = new StandardViewModel(standard, location, distance, config, Mock.Of<IUrlHelper>(), Levels);
 
         Assert.That(sut.FindProvidersUrlDescription, Is.EqualTo(expectedDescription));
+    }
+
+    [Test]
+    public void WhenCreatingStandardViewModel_AndLastDateStartsEqualsEffectiveFrom_ThenShowsNewCourseTag()
+    {
+        var standard = new StandardModel
+        {
+            Level = 1,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = new StandardViewModel(standard, string.Empty, string.Empty, new FindApprenticeshipTrainingWeb(), Mock.Of<IUrlHelper>(), Levels, new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("New course");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
+        }
+    }
+
+    [Test]
+    public void WhenCreatingStandardViewModel_AndLastDateStartsIsInFutureAndDiffersFromEffectiveFrom_ThenShowsClosingSoonTag()
+    {
+        var standard = new StandardModel
+        {
+            Level = 1,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2026, 12, 01, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = new StandardViewModel(standard, string.Empty, string.Empty, new FindApprenticeshipTrainingWeb(), Mock.Of<IUrlHelper>(), Levels, new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("Closing to new learners soon");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--orange");
+        }
+    }
+
+    [Test]
+    public void WhenCreatingStandardViewModel_AndLastDateStartsIsInPastAndDiffersFromEffectiveFrom_ThenShowsClosedTag()
+    {
+        var standard = new StandardModel
+        {
+            Level = 1,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = new DateTime(2026, 10, 31, 0, 0, 0, DateTimeKind.Utc),
+                EffectiveFrom = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = new StandardViewModel(standard, string.Empty, string.Empty, new FindApprenticeshipTrainingWeb(), Mock.Of<IUrlHelper>(), Levels, new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeTrue();
+            sut.CourseStatusTagText.Should().Be("Closed to new learners");
+            sut.CourseStatusTagClass.Should().Be("govuk-tag--grey");
+        }
+    }
+
+    [Test]
+    public void WhenCreatingStandardViewModel_AndLastDateStartsIsNull_ThenDoesNotShowCourseStatusTag()
+    {
+        var standard = new StandardModel
+        {
+            Level = 1,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = null,
+                EffectiveFrom = new DateTime(2026, 01, 01, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = new StandardViewModel(standard, string.Empty, string.Empty, new FindApprenticeshipTrainingWeb(), Mock.Of<IUrlHelper>(), Levels, new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        using (new AssertionScope())
+        {
+            sut.HasCourseStatusTag.Should().BeFalse();
+            sut.CourseStatusTagText.Should().BeEmpty();
+            sut.CourseStatusTagClass.Should().BeEmpty();
+        }
     }
 
     [InlineAutoData(CourseType.ShortCourse, 0)] //Does not apply to short courses

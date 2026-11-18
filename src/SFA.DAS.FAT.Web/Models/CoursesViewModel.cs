@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Courses;
@@ -116,7 +116,15 @@ public class CoursesViewModel : PageLinksViewModelBase
                         TrainingTypeFindOutMoreText,
                         TrainingTypeFindOutMoreLink
                     ),
-                    CreateCheckboxListFilterSection("levels-filter", nameof(Levels), LevelsSectionHeading, null, GenerateLevelFilterItems(), LevelInformationDisplayText, LevelInformationUrl),
+                    CreateCheckboxListFilterSection(
+                        "levels-filter",
+                        nameof(Levels),
+                        LevelsSectionHeading,
+                        LevelsSectionSubHeading,
+                        GenerateLevelFilterItems(),
+                        LevelInformationDisplayText,
+                        LevelInformationUrl
+                    ),
                     CreateCheckboxListFilterSection("categories-filter", nameof(FilterType.Categories), CategoriesSectionHeading, null, GenerateRouteFilterItems())
                 ]
             )
@@ -174,7 +182,7 @@ public class CoursesViewModel : PageLinksViewModelBase
         {
             Value = level.Code.ToString(),
             DisplayText = $"Level {level.Code}",
-            DisplayDescription = $"Equal to {level.Name}",
+            DisplayDescription = $"Similar to {level.Name}",
             IsSelected = SelectedLevels.Contains(level.Code)
         })
         .ToList();

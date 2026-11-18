@@ -36,6 +36,9 @@ public class StandardViewModel
     public string FindProvidersUrl { get; init; }
     public string FindProvidersUrlDescription { get; init; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
+    public string CourseStatusTagText { get; init; }
+    public string CourseStatusTagClass { get; init; }
+    public bool HasCourseStatusTag => !string.IsNullOrEmpty(CourseStatusTagText);
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;
     public bool IsApprenticeshipType => CourseType == CourseType.Apprenticeship;
     public bool HasProviders => ProvidersCount > 0;
@@ -44,8 +47,10 @@ public class StandardViewModel
     public bool ShowNoProvidersRunThisCourseShortCourseMessage => !HasProviders && TotalProvidersCount == 0 && IsShortCourseType;
     public bool ShowNoProvidersBasedOnSearchShortCourseMessage => !HasProviders && TotalProvidersCount > 0 && IsShortCourseType;
 
-    public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels)
+    public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels, DateTime? currentDate = null)
     {
+        var courseStatusTag = CourseStatusTagService.GetTag(source.CourseDates, currentDate ?? DateTime.UtcNow);
+
         Ordering = source.Ordering;
         StandardUId = source.StandardUId;
         IfateReferenceNumber = source.IfateReferenceNumber;
@@ -67,15 +72,16 @@ public class StandardViewModel
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
         FindProvidersUrl = GetFindProvidersUrl(urlHelper);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
+        CourseStatusTagText = CourseStatusTagService.GetTagText(courseStatusTag);
+        CourseStatusTagClass = CourseStatusTagService.GetTagClass(courseStatusTag);
     }
 
     private string GetLevelName(List<LevelViewModel> levels)
     {
         LevelViewModel level = levels.Find(a => a.Code == Level);
 
-        return $"{Level} - equal to {level.Name}";
+        return $"{Level} - similar to {level.Name}";
     }
-
 
     private string GetRequestApprenticeshipTrainingUrl(FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, string location)
     {

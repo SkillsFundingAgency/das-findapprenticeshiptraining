@@ -7,6 +7,9 @@
     <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
         @Model.LearningType.GetDescription().Singularize()
     </strong>
+    <strong asp-show="Model.HasCourseStatusTag" class="govuk-!-margin-bottom-2 govuk-tag @Model.CourseStatusTagClass app-tag">
+        @Model.CourseStatusTagText
+    </strong>
                                
     <h2 class="govuk-heading-m das-search-results__heading">
         <a class="das-search-results__link"

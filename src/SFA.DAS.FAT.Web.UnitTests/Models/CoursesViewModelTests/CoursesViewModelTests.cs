@@ -400,8 +400,23 @@ public class CoursesViewModelTests
 
         item.Value.Should().Be("4");
         item.DisplayText.Should().Be("Level 4");
-        item.DisplayDescription.Should().Be($"Equal to {level.Name}");
+        item.DisplayDescription.Should().Be($"Similar to {level.Name}");
         item.IsSelected.Should().BeTrue();
+    }
+
+    [Test]
+    public void WhenCreatingFilterSections_AndTrainingLevelFilterExists_ThenTrainingLevelSubHeadingIsShown()
+    {
+        var vm = new CoursesViewModel
+        {
+            Levels = new List<LevelViewModel> { new(new Level { Code = 2, Name = "A levels" }, []) }
+        };
+
+        var filters = vm.CreateFilterSections();
+        var accordion = (AccordionFilterSectionViewModel)Enumerable.First(filters.FilterSections, s => s.Id == "multi-select");
+        var levelsSection = (CheckboxListFilterSectionViewModel)Enumerable.First(accordion.Children, c => c.Id == "levels-filter");
+
+        Assert.That(levelsSection.SubHeading, Is.EqualTo("We use levels to reflect the knowledge, skills and understanding needed to complete training."));
     }
 
     [Test]
