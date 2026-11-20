@@ -13,7 +13,6 @@ public class CourseProvidersDetails
     public string StandardName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
-    public bool IsActiveAvailable { get; set; }
     public StandardDates CourseDates { get; set; }
     public string QarPeriod { get; set; }
     public string ReviewPeriod { get; set; }

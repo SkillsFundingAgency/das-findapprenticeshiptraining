@@ -24,7 +24,6 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
-    public bool IsActiveAvailable { get; set; }
     public string CourseStatusTagText { get; set; }
     public string CourseStatusTagClass { get; set; }
     public string CourseStatusDescription { get; set; }

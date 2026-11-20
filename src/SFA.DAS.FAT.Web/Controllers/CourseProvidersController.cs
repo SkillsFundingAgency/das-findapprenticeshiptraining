@@ -158,7 +158,6 @@ public class CourseProvidersController : Controller
         courseProvidersViewModel.CourseTitleAndLevel = result.StandardName;
         courseProvidersViewModel.CourseType = result.CourseType;
         courseProvidersViewModel.LearningType = result.LearningType;
-        courseProvidersViewModel.IsActiveAvailable = result.IsActiveAvailable;
         courseProvidersViewModel.CourseStatusTagText = CourseStatusTagService.GetCourseStatusTagText(courseStatusTag);
         courseProvidersViewModel.CourseStatusTagClass = CourseStatusTagService.GetCourseStatusTagClass(courseStatusTag);
         courseProvidersViewModel.CourseStatusDescription = CourseStatusTagService.GetCourseStatusTagDescription(courseStatusTag, result.CourseDates?.LastDateStarts);
