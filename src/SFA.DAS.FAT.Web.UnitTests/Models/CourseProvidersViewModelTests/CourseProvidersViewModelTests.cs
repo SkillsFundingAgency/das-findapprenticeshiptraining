@@ -24,6 +24,20 @@ public class CourseProvidersViewModelTests
         };
     }
 
+    [TestCase(LearningType.Apprenticeship, "govuk-tag--blue")]
+    [TestCase(LearningType.FoundationApprenticeship, "govuk-tag--pink")]
+    [TestCase(LearningType.ApprenticeshipUnit, "govuk-tag--purple")]
+    [TestCase((LearningType)999, "")]
+    public void WhenGettingLearningTypeTagClass_AndLearningTypeSet_ThenReturnsExpectedTagClass(LearningType learningType, string expected)
+    {
+        var sut = new CourseProvidersViewModel(_config)
+        {
+            LearningType = learningType
+        };
+
+        sut.LearningTypeTagClass.Should().Be(expected);
+    }
+
     [TestCase("2223", "2022")]
     [TestCase("2324", "2023")]
     [TestCase("2425", "2024")]
