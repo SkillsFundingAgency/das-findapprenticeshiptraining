@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Domain.CourseProviders;
+
 public class ProviderData
 {
     public long Ordering { get; set; }
@@ -18,4 +19,6 @@ public class ProviderData
     public string ApprenticeReviews { get; set; }
     public string ApprenticeStars { get; set; }
     public ProviderRating ApprenticeRating { get; set; }
+    public DateTime ProviderCourseAddedDate { get; set; }
+    public DateTime? LastDateStarts { get; set; }
 }

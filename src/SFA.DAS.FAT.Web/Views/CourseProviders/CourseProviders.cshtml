@@ -1,5 +1,7 @@
-﻿@using SFA.DAS.FAT.Domain.CourseProviders
+﻿@using Humanizer
+@using SFA.DAS.FAT.Domain.CourseProviders
 @using SFA.DAS.FAT.Domain.Courses
+@using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
 @using SFA.DAS.FAT.Web.Models.CourseProviders
 @using SFA.DAS.FAT.Web.Models.Shared
@@ -9,16 +11,25 @@
     ViewData["Title"] = $"Training providers for {Model.CourseTitleAndLevel}";
     ViewData["Description"] = $"Compare training providers who offer apprenticeship training for {Model.CourseTitleAndLevel}. You can check their available training options, employer reviews and pass rates.";
 }
-<div asp-show="@(!Model.IsActiveAvailable)">
-    <partial name="_standardNotAcceptingNewApprenticesBanner" />
-</div>
 <main class="govuk-main-wrapper" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
+            <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
+                @Model.LearningType.GetDescription().Singularize()
+            </strong>
+            <strong asp-show="Model.HasCourseStatusTag" class="govuk-!-margin-bottom-4 govuk-tag @Model.CourseStatusTagClass app-tag">
+                @Model.CourseStatusTagText
+            </strong>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
                 <span>Training providers for</span>
                 <span>@Model.CourseTitleAndLevel</span>
             </h1>
+            <div asp-show="Model.HasCourseStatusTag" class="app-course-status-warning govuk-!-margin-bottom-6">
+                <div class="govuk-warning-text govuk-!-margin-bottom-0">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">@Model.CourseStatusDescription</strong>
+                </div>
+            </div>
             @if (Model.Providers.Count > 0)
             {
                 <p class="govuk-body-l  govuk-!-margin-bottom-8">Select the training provider name to view more details.</p>
@@ -173,7 +184,19 @@
                                                     @provider.AchievementRateMessage
                                                 </dd>
                                             </div>
+                                            <div asp-show="provider.ShowProviderCourseAddedDate" class="govuk-summary-list__row">
+                                                <dt class="govuk-summary-list__key">Course added</dt>
+                                                <dd class="govuk-summary-list__value">
+                                                    This course was added by the training provider on <strong>@provider.ProviderCourseAddedDateDisplay</strong>.
+                                                </dd>
+                                            </div>
                                         </dl>
+                                        <div asp-show="provider.HasProviderCourseClosingDate" class="app-provider-closing-warning">
+                                            <div class="govuk-warning-text govuk-!-margin-bottom-0">
+                                                <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                                                    <strong class="govuk-warning-text__text">@provider.ProviderCourseClosingDescription</strong>
+                                            </div>
+                                        </div>
                                     }
 
                                     </div>
