@@ -84,14 +84,14 @@ public static class CourseStatusTagService
         return string.Format(CultureInfo.InvariantCulture, ProviderCourseAddedDescriptionText, FormatDate(providerCourseAddedDate));
     }
 
-    public static bool ShouldShowProviderCourseClosingWarning(DateTime? lastDateStarts, DateTime currentDate)
+    public static bool HasProviderCourseClosingDate(DateTime? lastDateStarts, DateTime currentDate)
     {
         return lastDateStarts.HasValue && lastDateStarts.Value.Date >= currentDate.Date;
     }
 
     public static string GetProviderCourseClosingDescription(DateTime? lastDateStarts, DateTime currentDate)
     {
-        return ShouldShowProviderCourseClosingWarning(lastDateStarts, currentDate)
+        return HasProviderCourseClosingDate(lastDateStarts, currentDate)
             ? string.Format(CultureInfo.InvariantCulture, ProviderCourseClosingDescriptionText, FormatDate(lastDateStarts.Value))
             : string.Empty;
     }

@@ -205,7 +205,7 @@ public class CourseProvidersControllerCourseProvidersTests
             actualModel.IsNewCourse.Should().BeFalse();
             actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeFalse();
             actualModel.Providers[0].HasProviderCourseClosingDate.Should().BeTrue();
-            actualModel.Providers[0].ProviderClosingDescription.Should().Be(
+            actualModel.Providers[0].ProviderCourseClosingDescription.Should().Be(
                 $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(providerLastDateStarts)}");
         }
     }

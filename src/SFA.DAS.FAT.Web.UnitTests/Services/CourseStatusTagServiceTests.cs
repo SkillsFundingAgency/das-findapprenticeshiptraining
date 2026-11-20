@@ -166,21 +166,21 @@ public class CourseStatusTagServiceTests
     }
 
     [Test]
-    public void WhenCheckingProviderCourseClosingWarning_AndDateIsToday_ThenReturnsTrue()
+    public void WhenHasProviderCourseClosingDate_AndDateIsToday_ThenReturnsTrue()
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.ShouldShowProviderCourseClosingWarning(currentDate, currentDate);
+        var result = CourseStatusTagService.HasProviderCourseClosingDate(currentDate, currentDate);
 
         result.Should().BeTrue();
     }
 
     [Test]
-    public void WhenCheckingProviderCourseClosingWarning_AndDateIsInThePast_ThenReturnsFalse()
+    public void WhenHasProviderCourseClosingDate_AndDateIsInThePast_ThenReturnsFalse()
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.ShouldShowProviderCourseClosingWarning(
+        var result = CourseStatusTagService.HasProviderCourseClosingDate(
             currentDate.AddDays(-1),
             currentDate);
 

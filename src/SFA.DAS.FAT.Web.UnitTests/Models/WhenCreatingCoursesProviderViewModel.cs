@@ -41,7 +41,7 @@ public class WhenCreatingCoursesProviderViewModel
         using (new AssertionScope())
         {
             actual.HasProviderCourseClosingDate.Should().BeTrue();
-            actual.ProviderClosingDescription.Should().Be(
+            actual.ProviderCourseClosingDescription.Should().Be(
                 $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(source.LastDateStarts.Value)}");
         }
     }
@@ -60,7 +60,7 @@ public class WhenCreatingCoursesProviderViewModel
         using (new AssertionScope())
         {
             actual.HasProviderCourseClosingDate.Should().BeFalse();
-            actual.ProviderClosingDescription.Should().BeEmpty();
+            actual.ProviderCourseClosingDescription.Should().BeEmpty();
         }
     }
 

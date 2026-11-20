@@ -87,8 +87,8 @@ public class CoursesProviderViewModel
     public DateTime? LastDateStarts { get; set; }
     public bool ShowProviderCourseAddedDate { get; set; }
     public string ProviderCourseAddedDateDisplay => CourseStatusTagService.FormatDate(ProviderCourseAddedDate);
-    public bool HasProviderCourseClosingDate => CourseStatusTagService.ShouldShowProviderCourseClosingWarning(LastDateStarts, DateTime.UtcNow);
-    public string ProviderClosingDescription => CourseStatusTagService.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
+    public bool HasProviderCourseClosingDate => CourseStatusTagService.HasProviderCourseClosingDate(LastDateStarts, DateTime.UtcNow);
+    public string ProviderCourseClosingDescription => CourseStatusTagService.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
 
     public TrainingOptionsViewModel TrainingOptionsViewModel
     {
