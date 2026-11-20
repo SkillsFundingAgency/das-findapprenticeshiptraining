@@ -14,6 +14,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
+using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
 using SFA.DAS.FAT.Domain.Interfaces;
 using SFA.DAS.FAT.Domain.Shortlist;
@@ -73,6 +74,7 @@ public class CourseProvidersControllerCourseProvidersTests
         var reviewPeriod = $"{reviewStart}{reviewEnd}";
         response.QarPeriod = qarPeriod;
         response.ReviewPeriod = reviewPeriod;
+        response.CourseDates = null;
 
         shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
             .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
@@ -136,7 +138,201 @@ public class CourseProvidersControllerCourseProvidersTests
             actualModel.QarPeriodEndYear.Should().Be($"20{qarEnd}");
             actualModel.ReviewPeriodStartYear.Should().Be($"20{reviewStart}");
             actualModel.ReviewPeriodEndYear.Should().Be($"20{reviewEnd}");
+            actualModel.HasCourseStatusTag.Should().BeFalse();
+            actualModel.IsNewCourse.Should().BeFalse();
             actualModel.Providers.Should().BeEquivalentTo(expectedProviders);
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingCourseProviders_AndCourseIsClosingSoon_ThenMapsClosingCourseStatusTag(
+        CourseProvidersFiltersRequestModel request,
+        CourseProvidersDetails response,
+        string serviceStartUrl,
+        string shortlistUrl,
+        string courseDetailsUrl,
+        string location,
+        Guid shortlistUserId,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
+        [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Greedy] CourseProvidersController controller)
+    {
+        validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
+            .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+        controller.TempData = tempDataMock.Object;
+
+        response.QarPeriod = "2122";
+        response.ReviewPeriod = "2223";
+        response.CourseDates = new StandardDates
+        {
+            LastDateStarts = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+        var providerLastDateStarts = DateTime.UtcNow.Date.AddMonths(4);
+        response.Providers[0].LastDateStarts = providerLastDateStarts;
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetCourseLocationQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { LocationName = location, Distance = DistanceService.DefaultDistance.ToString() });
+
+        mediator.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var sut = await controller.CourseProviders(request) as ViewResult;
+        var actualModel = sut!.Model as CourseProvidersViewModel;
+
+        using (new AssertionScope())
+        {
+            actualModel.Should().NotBeNull();
+            actualModel!.HasCourseStatusTag.Should().BeTrue();
+            actualModel.CourseStatusTagText.Should().Be("Closing to new learners soon");
+            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--orange");
+            actualModel.CourseStatusDescription.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
+            actualModel.IsNewCourse.Should().BeFalse();
+            actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeFalse();
+            actualModel.Providers[0].HasProviderCourseClosingDate.Should().BeTrue();
+            actualModel.Providers[0].ProviderClosingDescription.Should().Be(
+                $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(providerLastDateStarts)}");
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingCourseProviders_AndCourseIsNew_ThenMapsNewCourseStatusTagAndCourseAdded(
+        CourseProvidersFiltersRequestModel request,
+        CourseProvidersDetails response,
+        string serviceStartUrl,
+        string shortlistUrl,
+        string courseDetailsUrl,
+        string location,
+        Guid shortlistUserId,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
+        [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Greedy] CourseProvidersController controller)
+    {
+        validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
+            .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+        controller.TempData = tempDataMock.Object;
+
+        var courseAddedDate = new DateTime(2026, 6, 13, 0, 0, 0, DateTimeKind.Utc);
+        response.QarPeriod = "2122";
+        response.ReviewPeriod = "2223";
+        response.CourseDates = new StandardDates
+        {
+            LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
+        };
+        response.Providers[0].ProviderCourseAddedDate = courseAddedDate;
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetCourseLocationQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { LocationName = location, Distance = DistanceService.DefaultDistance.ToString() });
+
+        mediator.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var sut = await controller.CourseProviders(request) as ViewResult;
+        var actualModel = sut!.Model as CourseProvidersViewModel;
+
+        using (new AssertionScope())
+        {
+            actualModel.Should().NotBeNull();
+            actualModel!.HasCourseStatusTag.Should().BeTrue();
+            actualModel.CourseStatusTagText.Should().Be("New course");
+            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
+            actualModel.CourseStatusDescription.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
+            actualModel.IsNewCourse.Should().BeTrue();
+            actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeTrue();
+            actualModel.Providers[0].ProviderCourseAddedDateDisplay.Should().Be("13 Jun 2026");
+        }
+    }
+
+    [Test, MoqAutoData]
+    public async Task WhenGettingCourseProviders_AndCourseIsClosed_ThenMapsClosedCourseStatusTag(
+        CourseProvidersFiltersRequestModel request,
+        CourseProvidersDetails response,
+        string serviceStartUrl,
+        string shortlistUrl,
+        string courseDetailsUrl,
+        string location,
+        Guid shortlistUserId,
+        [Frozen] Mock<IMediator> mediator,
+        [Frozen] Mock<IValidator<GetCourseQuery>> validatorMock,
+        [Frozen] Mock<ICookieStorageService<ShortlistCookieItem>> shortlistCookieService,
+        [Frozen] Mock<ICookieStorageService<LocationCookieItem>> locationCookieService,
+        [Frozen] Mock<IValidator<GetCourseLocationQuery>> locationValidatorMock,
+        [Frozen] Mock<ITempDataDictionary> tempDataMock,
+        [Greedy] CourseProvidersController controller)
+    {
+        validatorMock
+            .Setup(v => v.ValidateAsync(It.IsAny<GetCourseQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        controller.AddUrlHelperMock()
+            .AddUrlForRoute(RouteNames.ServiceStart, serviceStartUrl)
+            .AddUrlForRoute(RouteNames.ShortLists, shortlistUrl)
+            .AddUrlForRoute(RouteNames.CourseDetails, courseDetailsUrl);
+        controller.TempData = tempDataMock.Object;
+
+        response.QarPeriod = "2122";
+        response.ReviewPeriod = "2223";
+        response.CourseDates = new StandardDates
+        {
+            LastDateStarts = new DateTime(2026, 6, 30, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        shortlistCookieService.Setup(x => x.Get(Constants.ShortlistCookieName))
+            .Returns(new ShortlistCookieItem { ShortlistUserId = shortlistUserId });
+
+        locationValidatorMock.Setup(v => v.ValidateAsync(It.IsAny<GetCourseLocationQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(new ValidationResult());
+
+        locationCookieService.Setup(x => x.Get(Constants.LocationCookieName))
+            .Returns(new LocationCookieItem { LocationName = location, Distance = DistanceService.DefaultDistance.ToString() });
+
+        mediator.Setup(x => x.Send(It.IsAny<GetCourseProvidersQuery>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(response);
+
+        var sut = await controller.CourseProviders(request) as ViewResult;
+        var actualModel = sut!.Model as CourseProvidersViewModel;
+
+        using (new AssertionScope())
+        {
+            actualModel.Should().NotBeNull();
+            actualModel!.HasCourseStatusTag.Should().BeTrue();
+            actualModel.CourseStatusTagText.Should().Be("Closed to new learners");
+            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--grey");
+            actualModel.CourseStatusDescription.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
+            actualModel.IsNewCourse.Should().BeFalse();
         }
     }
 

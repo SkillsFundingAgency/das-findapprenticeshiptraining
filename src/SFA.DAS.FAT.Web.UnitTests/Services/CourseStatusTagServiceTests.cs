@@ -1,4 +1,5 @@
 ﻿using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Services;
@@ -121,5 +122,80 @@ public class CourseStatusTagServiceTests
             new DateTime(2026, 6, 30, 0, 0, 0, DateTimeKind.Utc));
 
         result.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseAddedDescription_AndDateProvided_ThenReturnsFormattedDescription()
+    {
+        var result = CourseStatusTagService.GetProviderCourseAddedDescription(
+            new DateTime(2026, 6, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        result.Should().Be("This course was added by the training provider on 13 Jun 2026.");
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseClosingDescription_AndDateIsInTheFuture_ThenReturnsFormattedDescription()
+    {
+        var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
+        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+            new DateTime(2027, 3, 27, 0, 0, 0, DateTimeKind.Utc),
+            currentDate);
+
+        result.Should().Be("This training provider will stop offering this course on 27 Mar 2027");
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseClosingDescription_AndDateIsInThePast_ThenReturnsEmptyString()
+    {
+        var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
+        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+            new DateTime(2026, 3, 27, 0, 0, 0, DateTimeKind.Utc),
+            currentDate);
+
+        result.Should().BeEmpty();
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseClosingDescription_AndDateIsNull_ThenReturnsEmptyString()
+    {
+        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+            null,
+            new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc));
+
+        result.Should().BeEmpty();
+    }
+
+    [Test]
+    public void WhenCheckingProviderCourseClosingWarning_AndDateIsToday_ThenReturnsTrue()
+    {
+        var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
+
+        var result = CourseStatusTagService.ShouldShowProviderCourseClosingWarning(currentDate, currentDate);
+
+        result.Should().BeTrue();
+    }
+
+    [Test]
+    public void WhenCheckingProviderCourseClosingWarning_AndDateIsInThePast_ThenReturnsFalse()
+    {
+        var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
+
+        var result = CourseStatusTagService.ShouldShowProviderCourseClosingWarning(
+            currentDate.AddDays(-1),
+            currentDate);
+
+        result.Should().BeFalse();
+    }
+
+    [Test]
+    public void WhenFormattingDate_ThenReturnsDayMonthYearFormat()
+    {
+        using (new AssertionScope())
+        {
+            CourseStatusTagService.FormatDate(new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc))
+                .Should().Be("16 Jul 2027");
+            CourseStatusTagService.FormatDate(new DateTime(2026, 3, 27, 0, 0, 0, DateTimeKind.Utc))
+                .Should().Be("27 Mar 2026");
+        }
     }
 }

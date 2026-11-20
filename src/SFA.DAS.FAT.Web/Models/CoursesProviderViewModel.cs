@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -83,6 +83,12 @@ public class CoursesProviderViewModel
     public string ApprenticeReviews { get; set; }
     public string ApprenticeStars { get; set; }
     public ProviderRating ApprenticeRating { get; set; }
+    public DateTime ProviderCourseAddedDate { get; set; }
+    public DateTime? LastDateStarts { get; set; }
+    public bool ShowProviderCourseAddedDate { get; set; }
+    public string ProviderCourseAddedDateDisplay => CourseStatusTagService.FormatDate(ProviderCourseAddedDate);
+    public bool HasProviderCourseClosingDate => CourseStatusTagService.ShouldShowProviderCourseClosingWarning(LastDateStarts, DateTime.UtcNow);
+    public string ProviderClosingDescription => CourseStatusTagService.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
 
     public TrainingOptionsViewModel TrainingOptionsViewModel
     {
@@ -160,6 +166,8 @@ public class CoursesProviderViewModel
             ApprenticeReviews = source.ApprenticeReviews,
             ApprenticeStars = source.ApprenticeStars,
             ApprenticeRating = source.ApprenticeRating,
+            ProviderCourseAddedDate = source.ProviderCourseAddedDate,
+            LastDateStarts = source.LastDateStarts,
 
             IsOnlineAvailable = source.Locations.Any(x => x.LocationType == LocationType.Online),
 

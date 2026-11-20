@@ -5,6 +5,7 @@ using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Extensions;
+using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
@@ -22,7 +23,13 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
     public string CourseTitleAndLevel { get; set; } = string.Empty;
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
+    public string LearningTypeTagClass => LearningType.GetTagClass();
     public bool IsActiveAvailable { get; set; }
+    public string CourseStatusTagText { get; set; }
+    public string CourseStatusTagClass { get; set; }
+    public string CourseStatusDescription { get; set; }
+    public bool HasCourseStatusTag => !string.IsNullOrWhiteSpace(CourseStatusTagText);
+    public bool IsNewCourse { get; set; }
     public IEnumerable<string> SelectedDeliveryModes { get; set; } = [];
     public IEnumerable<string> SelectedEmployerApprovalRatings { get; set; } = [];
     public IEnumerable<string> SelectedApprenticeApprovalRatings { get; set; } = [];
