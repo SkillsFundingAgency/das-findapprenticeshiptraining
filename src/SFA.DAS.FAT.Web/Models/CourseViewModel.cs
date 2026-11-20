@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -43,7 +43,6 @@ public class CourseViewModel : PageLinksViewModelBase
     public string TypicalJobTitles { get; set; }
     public string StandardPageUrl { get; set; }
     public LearningType LearningType { get; set; }
-    public bool IsActiveAvailable { get; set; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
     public bool IsApprenticeship { get; set; }
     public bool IsFoundationApprenticeship { get; set; }
@@ -51,6 +50,10 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsShortCourseType { get; set; }
     public int IncentivePayment { get; set; }
     public string IncentivePaymentDisplayValue => IncentivePayment.ToString("C0", new CultureInfo("en-GB"));
+    public string CourseStatusTagText { get; set; }
+    public string CourseStatusTagClass { get; set; }
+    public string CourseStatusDescription { get; set; }
+    public bool HasCourseStatusTag => !string.IsNullOrWhiteSpace(CourseStatusTagText);
     public List<Level> Levels { get; set; } = [];
     public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
@@ -58,6 +61,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
         var learningType = source.LearningType;
+        var courseStatusTag = CourseStatusTagService.GetCourseStatusTag(source.CourseDates, DateTime.UtcNow);
 
         return new CourseViewModel
         {
@@ -86,10 +90,12 @@ public class CourseViewModel : PageLinksViewModelBase
             IsApprenticeshipUnit = learningType == LearningType.ApprenticeshipUnit,
             LearningType = learningType,
 
-            IsActiveAvailable = source.IsActiveAvailable,
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
-            IsShortCourseType = source.CourseType == CourseType.ShortCourse
+            IsShortCourseType = source.CourseType == CourseType.ShortCourse,
+            CourseStatusTagText = CourseStatusTagService.GetCourseStatusTagText(courseStatusTag),
+            CourseStatusTagClass = CourseStatusTagService.GetCourseStatusTagClass(courseStatusTag),
+            CourseStatusDescription = CourseStatusTagService.GetCourseStatusTagDescription(courseStatusTag, source.CourseDates?.LastDateStarts)
         };
     }
     public string LevelEquivalentToDisplayText => GetLevelEquivalentToDisplayText();
