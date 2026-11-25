@@ -11,6 +11,7 @@ using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Services;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
 using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
 
@@ -29,7 +30,14 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
-    public bool IsActiveAvailable { get; set; }
+    public DateTime? LastDateStarts { get; set; }
+    public StandardDates CourseDates { get; set; }
+    public bool HasProviderCourseClosingDate =>
+        CourseStatusTagService.HasProviderCourseClosingDate(
+            CourseStatusTagService.GetProviderCourseDetailsClosingDate(LastDateStarts, CourseDates),
+            DateTime.UtcNow);
+    public string ProviderCourseClosingDescription =>
+        CourseStatusTagService.GetProviderCourseDetailsClosingDescription(LastDateStarts, CourseDates, DateTime.UtcNow);
     public int Level { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
@@ -152,7 +160,8 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
             CourseName = source.CourseName,
             CourseType = source.CourseType,
             LearningType = source.LearningType,
-            IsActiveAvailable = source.IsActiveAvailable,
+            LastDateStarts = source.LastDateStarts,
+            CourseDates = source.CourseDates,
             Level = source.Level,
             LarsCode = source.LarsCode,
             IFateReferenceNumber = source.IFateReferenceNumber,

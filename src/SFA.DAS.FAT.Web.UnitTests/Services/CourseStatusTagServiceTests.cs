@@ -198,4 +198,86 @@ public class CourseStatusTagServiceTests
                 .Should().Be("27 Mar 2026");
         }
     }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndProviderAndCourseDatesExist_ThenReturnsProviderDate()
+    {
+        var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
+        var courseDates = new StandardDates
+        {
+            LastDateStarts = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(providerDate, courseDates);
+
+        result.Should().Be(providerDate);
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndOnlyProviderDateExists_ThenReturnsProviderDate()
+    {
+        var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(providerDate, null);
+
+        result.Should().Be(providerDate);
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndOnlyCourseDateExists_ThenReturnsCourseDate()
+    {
+        var courseDate = new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc);
+        var courseDates = new StandardDates
+        {
+            LastDateStarts = courseDate,
+            EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+
+        result.Should().Be(courseDate);
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndCourseDateMatchesEffectiveFrom_ThenReturnsNull()
+    {
+        var courseDates = new StandardDates
+        {
+            LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
+            EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDescription_AndProviderDateIsInTheFuture_ThenReturnsFormattedDescription()
+    {
+        var currentDate = new DateTime(2026, 9, 1, 0, 0, 0, DateTimeKind.Utc);
+        var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDescription(
+            providerDate,
+            null,
+            currentDate);
+
+        result.Should().Be("This training provider will stop offering this course to new learners on 16 Oct 2026");
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDescription_AndClosingDateIsInThePast_ThenReturnsEmptyString()
+    {
+        var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
+        var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDescription(
+            providerDate,
+            null,
+            currentDate);
+
+        result.Should().BeEmpty();
+    }
 }

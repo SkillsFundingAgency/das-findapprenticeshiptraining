@@ -21,6 +21,7 @@ public static class CourseStatusTagService
     public const string ClosedToNewLearnersDescriptionText = "This course stopped accepting new learners on {0}. Apprentices who are already on this course can still change training providers.";
     public const string ProviderCourseAddedDescriptionText = "This course was added by the training provider on {0}.";
     public const string ProviderCourseClosingDescriptionText = "This training provider will stop offering this course on {0}";
+    public const string ProviderCourseDetailsClosingDescriptionText = "This training provider will stop offering this course to new learners on {0}";
 
     public static CourseStatusTag? GetCourseStatusTag(StandardDates courseDates, DateTime currentDate)
     {
@@ -84,15 +85,44 @@ public static class CourseStatusTagService
         return string.Format(CultureInfo.InvariantCulture, ProviderCourseAddedDescriptionText, FormatDate(providerCourseAddedDate));
     }
 
+    public static string GetProviderCourseClosingDescription(DateTime? lastDateStarts, DateTime currentDate)
+    {
+        return HasProviderCourseClosingDate(lastDateStarts, currentDate)
+            ? string.Format(CultureInfo.InvariantCulture, ProviderCourseClosingDescriptionText, FormatDate(lastDateStarts.Value))
+            : string.Empty;
+    }
+
     public static bool HasProviderCourseClosingDate(DateTime? lastDateStarts, DateTime currentDate)
     {
         return lastDateStarts.HasValue && lastDateStarts.Value.Date >= currentDate.Date;
     }
 
-    public static string GetProviderCourseClosingDescription(DateTime? lastDateStarts, DateTime currentDate)
+    public static DateTime? GetProviderCourseDetailsClosingDate(DateTime? providerLastDateStarts, StandardDates courseDates)
     {
-        return HasProviderCourseClosingDate(lastDateStarts, currentDate)
-            ? string.Format(CultureInfo.InvariantCulture, ProviderCourseClosingDescriptionText, FormatDate(lastDateStarts.Value))
+        if (providerLastDateStarts.HasValue)
+        {
+            return providerLastDateStarts;
+        }
+
+        if (courseDates?.LastDateStarts == null)
+        {
+            return null;
+        }
+
+        if (courseDates.LastDateStarts.Value.Date == courseDates.EffectiveFrom.Date)
+        {
+            return null;
+        }
+
+        return courseDates.LastDateStarts;
+    }
+
+    public static string GetProviderCourseDetailsClosingDescription(DateTime? providerLastDateStarts, StandardDates courseDates, DateTime currentDate)
+    {
+        var closingDate = GetProviderCourseDetailsClosingDate(providerLastDateStarts, courseDates);
+
+        return HasProviderCourseClosingDate(closingDate, currentDate)
+            ? string.Format(CultureInfo.InvariantCulture, ProviderCourseDetailsClosingDescriptionText, FormatDate(closingDate.Value))
             : string.Empty;
     }
 
