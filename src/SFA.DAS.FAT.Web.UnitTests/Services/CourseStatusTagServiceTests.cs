@@ -65,6 +65,16 @@ public class CourseStatusTagServiceTests
     }
 
     [Test]
+    public void WhenGettingTag_AndCourseDatesIsNull_ThenReturnsNoTag()
+    {
+        var result = CourseStatusTagService.GetCourseStatusTag(
+            null,
+            new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
+
+        result.Should().BeNull();
+    }
+
+    [Test]
     public void WhenGettingTagText_AndTagIsNewCourse_ThenReturnsNewCourseText()
     {
         var result = CourseStatusTagService.GetCourseStatusTagText(CourseStatusTag.NewCourse);
@@ -246,6 +256,28 @@ public class CourseStatusTagServiceTests
         {
             LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
             EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndCourseDatesIsNull_ThenReturnsNull()
+    {
+        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, null);
+
+        result.Should().BeNull();
+    }
+
+    [Test]
+    public void WhenGettingProviderCourseDetailsClosingDate_AndCourseLastDateStartsIsNull_ThenReturnsNull()
+    {
+        var courseDates = new StandardDates
+        {
+            LastDateStarts = null,
+            EffectiveFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
 
         var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
