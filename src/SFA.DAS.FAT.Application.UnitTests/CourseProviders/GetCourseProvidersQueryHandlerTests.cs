@@ -42,7 +42,7 @@ public class GetCourseProvidersQueryHandlerTests
             StandardName = courseProvidersDetails.StandardName,
             CourseType = courseProvidersDetails.CourseType,
             LearningType = courseProvidersDetails.LearningType,
-            IsActiveAvailable = courseProvidersDetails.IsActiveAvailable,
+            CourseDates = courseProvidersDetails.CourseDates,
             QarPeriod = academicYearsLatestResponse.QarPeriod,
             ReviewPeriod = academicYearsLatestResponse.ReviewPeriod,
             Providers = courseProvidersDetails.Providers

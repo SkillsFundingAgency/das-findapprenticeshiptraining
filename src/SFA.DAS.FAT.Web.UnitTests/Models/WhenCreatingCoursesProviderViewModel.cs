@@ -1,8 +1,10 @@
 ﻿using AutoFixture.NUnit4;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
@@ -12,10 +14,91 @@ public class WhenCreatingCoursesProviderViewModel
     private const string NoAchievementRateMessage = "No achievement rate - not enough data";
 
     [Test, AutoData]
-    public void Then_The_Fields_Are_Correctly_Mapped(ProviderData source)
+    public void WhenCastingFromProviderData_ThenMapsFields(ProviderData source)
     {
         var actual = (CoursesProviderViewModel)source;
-        actual.Should().BeEquivalentTo(source);
+
+        using (new AssertionScope())
+        {
+            actual.Should().BeEquivalentTo(source, options => options
+                .ExcludingMissingMembers());
+            actual.ProviderCourseAddedDate.Should().Be(source.ProviderCourseAddedDate);
+            actual.LastDateStarts.Should().Be(source.LastDateStarts);
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromProviderData_AndLastDateStartsIsInTheFuture_ThenExposesClosingDescription()
+    {
+        var source = new ProviderData
+        {
+            Locations = [],
+            LastDateStarts = DateTime.UtcNow.Date.AddDays(30)
+        };
+
+        var actual = (CoursesProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            actual.HasProviderCourseClosingDate.Should().BeTrue();
+            actual.ProviderCourseClosingDescription.Should().Be(
+                $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(source.LastDateStarts.Value)}");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromProviderData_AndLastDateStartsIsInThePast_ThenDoesNotExposeClosingDescription()
+    {
+        var source = new ProviderData
+        {
+            Locations = [],
+            LastDateStarts = DateTime.UtcNow.Date.AddDays(-1)
+        };
+
+        var actual = (CoursesProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            actual.HasProviderCourseClosingDate.Should().BeFalse();
+            actual.ProviderCourseClosingDescription.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromProviderData_AndProviderCourseAddedDateExists_AndShowCourseAdded_ThenShowsCourseAdded()
+    {
+        var source = new ProviderData
+        {
+            Locations = [],
+            ProviderCourseAddedDate = new DateTime(2026, 6, 13, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var actual = (CoursesProviderViewModel)source;
+        actual.ShowProviderCourseAddedDate = true;
+
+        using (new AssertionScope())
+        {
+            actual.ShowProviderCourseAddedDate.Should().BeTrue();
+            actual.ProviderCourseAddedDateDisplay.Should().Be("13 Jun 2026");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromProviderData_AndProviderCourseAddedDateExists_AndShowCourseAddedIsFalse_ThenDoesNotShowCourseAdded()
+    {
+        var source = new ProviderData
+        {
+            Locations = [],
+            ProviderCourseAddedDate = new DateTime(2026, 6, 13, 0, 0, 0, DateTimeKind.Utc)
+        };
+
+        var actual = (CoursesProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            actual.ShowProviderCourseAddedDate.Should().BeFalse();
+            actual.ProviderCourseAddedDateDisplay.Should().Be("13 Jun 2026");
+        }
     }
 
     [Test]
