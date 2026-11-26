@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @using SFA.DAS.FAT.Domain.Extensions
 @using SFA.DAS.FAT.Web.Infrastructure
 @model SFA.DAS.FAT.Web.Models.StandardViewModel
@@ -7,8 +7,8 @@
     <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
         @Model.LearningType.GetDescription().Singularize()
     </strong>
-    <strong asp-show="Model.HasCourseStatusTag" class="govuk-!-margin-bottom-2 govuk-tag @Model.CourseStatusTagClass app-tag">
-        @Model.CourseStatusTagText
+    <strong asp-show="Model.HasCourseFundingStatus" class="govuk-!-margin-bottom-2 govuk-tag @Model.CourseFundingStatusTagClass app-tag">
+        @Model.CourseFundingStatusDescription
     </strong>
                                
     <h2 class="govuk-heading-m das-search-results__heading">

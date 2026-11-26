@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using SFA.DAS.FAT.Domain.Configuration;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -11,6 +12,7 @@ using SFA.DAS.FAT.Web.Models.BreadCrumbs;
 using SFA.DAS.FAT.Web.Models.Filters;
 using SFA.DAS.FAT.Web.Models.Filters.FilterComponents;
 using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 using static SFA.DAS.FAT.Web.Services.FilterService;
 
@@ -18,16 +20,20 @@ namespace SFA.DAS.FAT.Web.Models.CourseProviders;
 
 public class CourseProvidersViewModel : PageLinksViewModelBase
 {
+    public const string NewCourseDescription = "This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.";
+    public const string ClosingToNewLearnersSoonDescription = "This course is closing on {0}. Government funding will not be available for learners who start after this date.";
+    public const string ClosedToNewLearnersDescription = "This course stopped accepting new learners on {0}. Apprentices who are already on this course can still change training providers.";
+
     public int ShortlistCount { get; set; }
     public ProviderOrderBy OrderBy { get; set; }
     public string CourseTitleAndLevel { get; set; } = string.Empty;
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
-    public string CourseStatusTagText { get; set; }
-    public string CourseStatusTagClass { get; set; }
-    public string CourseStatusDescription { get; set; }
-    public bool HasCourseStatusTag => !string.IsNullOrWhiteSpace(CourseStatusTagText);
+    public string CourseFundingStatusDescription { get; set; }
+    public string CourseFundingStatusTagClass { get; set; }
+    public string CourseFundingStatusMessage { get; set; }
+    public bool HasCourseFundingStatus => !string.IsNullOrWhiteSpace(CourseFundingStatusDescription);
     public bool IsNewCourse { get; set; }
     public IEnumerable<string> SelectedDeliveryModes { get; set; } = [];
     public IEnumerable<string> SelectedEmployerApprovalRatings { get; set; } = [];
@@ -404,5 +410,16 @@ public class CourseProvidersViewModel : PageLinksViewModelBase
             .Where(rating => rating.Description == filterValue)
             .Select(rating => rating.ProviderRatingType.ToString())
             .FirstOrDefault(filterValue);
+    }
+
+    public static string GetCourseFundingStatusMessage(CourseFundingStatus? courseFundingStatus, DateTime? lastDateStarts)
+    {
+        return courseFundingStatus switch
+        {
+            CourseFundingStatus.NewCourse => NewCourseDescription,
+            CourseFundingStatus.ClosingToNewLearnersSoon when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosingToNewLearnersSoonDescription, CourseFundingStatusHelper.FormatDate(lastDateStarts.Value)),
+            CourseFundingStatus.ClosedToNewLearners when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosedToNewLearnersDescription, CourseFundingStatusHelper.FormatDate(lastDateStarts.Value)),
+            _ => string.Empty
+        };
     }
 }

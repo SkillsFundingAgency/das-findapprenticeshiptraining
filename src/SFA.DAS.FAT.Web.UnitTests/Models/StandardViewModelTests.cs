@@ -148,7 +148,7 @@ public class StandardViewModelTests
             sut.TypicalDuration.Should().Be(standardModel.TypicalDuration);
             sut.LearningType.Should().Be(standardModel.LearningType);
             sut.CourseType.Should().Be(standardModel.CourseType);
-            sut.HasCourseStatusTag.Should().BeFalse();
+            sut.HasCourseFundingStatus.Should().BeFalse();
         }
     }
 
@@ -289,9 +289,9 @@ public class StandardViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("New course");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("New course");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--yellow");
         }
     }
 
@@ -312,9 +312,9 @@ public class StandardViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("Closing to new learners soon");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--orange");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("Closing to new learners soon");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--orange");
         }
     }
 
@@ -335,14 +335,14 @@ public class StandardViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("Closed to new learners");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--grey");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("Closed to new learners");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--grey");
         }
     }
 
     [Test]
-    public void WhenCreatingStandardViewModel_AndLastDateStartsIsNull_ThenDoesNotShowCourseStatusTag()
+    public void WhenCreatingStandardViewModel_AndLastDateStartsIsNull_ThenDoesNotShowCourseFundingStatus()
     {
         var standard = new StandardModel
         {
@@ -358,9 +358,9 @@ public class StandardViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeFalse();
-            sut.CourseStatusTagText.Should().BeEmpty();
-            sut.CourseStatusTagClass.Should().BeEmpty();
+            sut.HasCourseFundingStatus.Should().BeFalse();
+            sut.CourseFundingStatusDescription.Should().BeEmpty();
+            sut.CourseFundingStatusTagClass.Should().BeEmpty();
         }
     }
 

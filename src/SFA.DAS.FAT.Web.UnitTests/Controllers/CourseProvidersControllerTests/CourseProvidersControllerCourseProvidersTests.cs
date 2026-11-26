@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentValidation;
@@ -22,6 +22,7 @@ using SFA.DAS.FAT.Web.Controllers;
 using SFA.DAS.FAT.Web.Infrastructure;
 using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.FAT.Web.UnitTests.TestHelpers;
 using SFA.DAS.FAT.Web.Validators;
@@ -138,14 +139,14 @@ public class CourseProvidersControllerCourseProvidersTests
             actualModel.QarPeriodEndYear.Should().Be($"20{qarEnd}");
             actualModel.ReviewPeriodStartYear.Should().Be($"20{reviewStart}");
             actualModel.ReviewPeriodEndYear.Should().Be($"20{reviewEnd}");
-            actualModel.HasCourseStatusTag.Should().BeFalse();
+            actualModel.HasCourseFundingStatus.Should().BeFalse();
             actualModel.IsNewCourse.Should().BeFalse();
             actualModel.Providers.Should().BeEquivalentTo(expectedProviders);
         }
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGettingCourseProviders_AndCourseIsClosingSoon_ThenMapsClosingCourseStatusTag(
+    public async Task WhenGettingCourseProviders_AndCourseIsClosingSoon_ThenMapsClosingCourseFundingStatus(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -198,20 +199,20 @@ public class CourseProvidersControllerCourseProvidersTests
         using (new AssertionScope())
         {
             actualModel.Should().NotBeNull();
-            actualModel!.HasCourseStatusTag.Should().BeTrue();
-            actualModel.CourseStatusTagText.Should().Be("Closing to new learners soon");
-            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--orange");
-            actualModel.CourseStatusDescription.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
+            actualModel!.HasCourseFundingStatus.Should().BeTrue();
+            actualModel.CourseFundingStatusDescription.Should().Be("Closing to new learners soon");
+            actualModel.CourseFundingStatusTagClass.Should().Be("govuk-tag--orange");
+            actualModel.CourseFundingStatusMessage.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
             actualModel.IsNewCourse.Should().BeFalse();
             actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeFalse();
-            actualModel.Providers[0].HasProviderCourseClosingDate.Should().BeTrue();
-            actualModel.Providers[0].ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(providerLastDateStarts)}");
+            actualModel.Providers[0].IsLastDateStartsInFuture.Should().BeTrue();
+            actualModel.Providers[0].ProviderCourseClosingMessage.Should().Be(
+                $"This training provider will stop offering this course on {CourseFundingStatusHelper.FormatDate(providerLastDateStarts)}");
         }
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGettingCourseProviders_AndCourseIsNew_ThenMapsNewCourseStatusTagAndCourseAdded(
+    public async Task WhenGettingCourseProviders_AndCourseIsNew_ThenMapsNewCourseFundingStatusAndCourseAdded(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -265,10 +266,10 @@ public class CourseProvidersControllerCourseProvidersTests
         using (new AssertionScope())
         {
             actualModel.Should().NotBeNull();
-            actualModel!.HasCourseStatusTag.Should().BeTrue();
-            actualModel.CourseStatusTagText.Should().Be("New course");
-            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
-            actualModel.CourseStatusDescription.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
+            actualModel!.HasCourseFundingStatus.Should().BeTrue();
+            actualModel.CourseFundingStatusDescription.Should().Be("New course");
+            actualModel.CourseFundingStatusTagClass.Should().Be("govuk-tag--yellow");
+            actualModel.CourseFundingStatusMessage.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
             actualModel.IsNewCourse.Should().BeTrue();
             actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeTrue();
             actualModel.Providers[0].ProviderCourseAddedDateDisplay.Should().Be("13 Jun 2026");
@@ -276,7 +277,7 @@ public class CourseProvidersControllerCourseProvidersTests
     }
 
     [Test, MoqAutoData]
-    public async Task WhenGettingCourseProviders_AndCourseIsClosed_ThenMapsClosedCourseStatusTag(
+    public async Task WhenGettingCourseProviders_AndCourseIsClosed_ThenMapsClosedCourseFundingStatus(
         CourseProvidersFiltersRequestModel request,
         CourseProvidersDetails response,
         string serviceStartUrl,
@@ -328,10 +329,10 @@ public class CourseProvidersControllerCourseProvidersTests
         using (new AssertionScope())
         {
             actualModel.Should().NotBeNull();
-            actualModel!.HasCourseStatusTag.Should().BeTrue();
-            actualModel.CourseStatusTagText.Should().Be("Closed to new learners");
-            actualModel.CourseStatusTagClass.Should().Be("govuk-tag--grey");
-            actualModel.CourseStatusDescription.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
+            actualModel!.HasCourseFundingStatus.Should().BeTrue();
+            actualModel.CourseFundingStatusDescription.Should().Be("Closed to new learners");
+            actualModel.CourseFundingStatusTagClass.Should().Be("govuk-tag--grey");
+            actualModel.CourseFundingStatusMessage.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
             actualModel.IsNewCourse.Should().BeFalse();
         }
     }

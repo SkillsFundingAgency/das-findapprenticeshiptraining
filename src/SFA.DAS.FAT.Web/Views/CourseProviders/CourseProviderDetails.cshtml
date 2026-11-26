@@ -6,9 +6,6 @@
     ViewData["Title"] = $"{Model.ProviderName} - training provider";
     ViewData["Description"] = $"View {Model.ProviderName}'s available training options, pass rate and contact details for {Model.CourseNameAndLevel}. You can also check their employer reviews and any other apprenticeship training courses that they offer.";
 }
-<div asp-show="@(!Model.IsActiveAvailable)">
-    <partial name="_standardNotAcceptingNewApprenticesBanner" />
-</div>
 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content">
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
@@ -25,6 +22,12 @@
                 @Model.CourseNameAndLevel
             </h2>
 
+            <div asp-show="Model.IsLastDateStartsInFuture" class="app-course-status-warning govuk-!-margin-bottom-6">
+                <div class="govuk-warning-text govuk-!-margin-bottom-0">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text">@Model.ProviderCourseClosingMessage</strong>
+                </div>
+            </div>
             @* Search courses by location *@
 
             <h3 class="govuk-heading-m govuk-!-margin-bottom-3">

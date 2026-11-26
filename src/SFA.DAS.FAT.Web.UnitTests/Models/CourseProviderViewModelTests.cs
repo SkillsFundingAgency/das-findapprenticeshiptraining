@@ -1,10 +1,13 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
+using FluentAssertions.Execution;
+using NUnit.Framework;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
 using SFA.DAS.FAT.Domain;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.Testing.AutoFixture;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Models;
@@ -12,7 +15,7 @@ namespace SFA.DAS.FAT.Web.UnitTests.Models;
 public class CourseProviderViewModelTests
 {
     [Test, MoqAutoData]
-    public void ImplicitOperator_FromGetCourseProviderQueryResult_MapsPropertiesCorrectly(GetCourseProviderQueryResult source)
+    public void WhenCastingFromQueryResult_ThenMapsPropertiesCorrectly(GetCourseProviderQueryResult source)
     {
         source.AnnualEmployerFeedbackDetails = new List<EmployerFeedbackAnnualSummaries>();
         source.AnnualApprenticeFeedbackDetails = new List<ApprenticeFeedbackAnnualSummaries>();
@@ -20,23 +23,249 @@ public class CourseProviderViewModelTests
 
         var expectedCoursesAlphabetically = source.Courses.ToList().OrderBy(c => c.CourseName).ThenBy(c => c.Level);
 
-        using (Assert.EnterMultipleScope())
+        using (new AssertionScope())
         {
-            Assert.That(sut.Ukprn, Is.EqualTo(source.Ukprn));
-            Assert.That(sut.ProviderName, Is.EqualTo(source.ProviderName));
-            Assert.That(sut.ProviderAddress, Is.EqualTo(source.ProviderAddress));
-            Assert.That(sut.Contact, Is.EqualTo(source.Contact));
-            Assert.That(sut.CourseName, Is.EqualTo(source.CourseName));
-            Assert.That(sut.Level, Is.EqualTo(source.Level));
-            Assert.That(sut.LarsCode, Is.EqualTo(source.LarsCode));
-            Assert.That(sut.IFateReferenceNumber, Is.EqualTo(source.IFateReferenceNumber));
-            Assert.That(sut.Qar, Is.EqualTo(source.Qar));
-            Assert.That(sut.Reviews, Is.EqualTo(source.Reviews));
-            Assert.That(sut.EndpointAssessments, Is.EqualTo(source.EndpointAssessments));
-            Assert.That(sut.TotalProvidersCount, Is.EqualTo(source.TotalProvidersCount));
-            Assert.That(sut.ShortlistId, Is.EqualTo(source.ShortlistId));
-            Assert.That(sut.Locations, Is.EqualTo(source.Locations));
-            Assert.That(sut.Courses, Is.EqualTo(expectedCoursesAlphabetically));
+            sut.Ukprn.Should().Be(source.Ukprn);
+            sut.ProviderName.Should().Be(source.ProviderName);
+            sut.ProviderAddress.Should().Be(source.ProviderAddress);
+            sut.Contact.Should().Be(source.Contact);
+            sut.CourseName.Should().Be(source.CourseName);
+            sut.CourseType.Should().Be(source.CourseType);
+            sut.LearningType.Should().Be(source.LearningType);
+            sut.Level.Should().Be(source.Level);
+            sut.LarsCode.Should().Be(source.LarsCode);
+            sut.IFateReferenceNumber.Should().Be(source.IFateReferenceNumber);
+            sut.Qar.Should().Be(source.Qar);
+            sut.Reviews.Should().Be(source.Reviews);
+            sut.EndpointAssessments.Should().Be(source.EndpointAssessments);
+            sut.TotalProvidersCount.Should().Be(source.TotalProvidersCount);
+            sut.ShortlistId.Should().Be(source.ShortlistId);
+            sut.Locations.Should().BeEquivalentTo(source.Locations);
+            sut.Courses.Should().BeEquivalentTo(expectedCoursesAlphabetically);
+            sut.LastDateStarts.Should().Be(source.LastDateStarts);
+            sut.CourseDates.Should().Be(source.CourseDates);
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndProviderAndCourseClosingDatesExist_ThenUsesProviderDate()
+    {
+        var providerDate = DateTime.UtcNow.Date.AddDays(30);
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = providerDate,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = DateTime.UtcNow.Date.AddDays(60),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndOnlyProviderClosingDateExists_ThenUsesProviderDate()
+    {
+        var providerDate = DateTime.UtcNow.Date.AddDays(30);
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = providerDate,
+            CourseDates = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndOnlyCourseClosingDateExists_ThenUsesCourseDate()
+    {
+        var courseDate = DateTime.UtcNow.Date.AddDays(45);
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = null,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = courseDate,
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(courseDate)}");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDateMatchesEffectiveFrom_ThenDoesNotShowClosingWarning()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = null,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = DateTime.UtcNow.Date.AddDays(10),
+                EffectiveFrom = DateTime.UtcNow.Date.AddDays(10)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndNoClosingDatesExist_ThenDoesNotShowClosingWarning()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = null,
+            CourseDates = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseDatesExistWithoutLastDateStarts_ThenDoesNotShowClosingWarning()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = null,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = null,
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndProviderClosingDateIsInThePast_ThenDoesNotShowClosingWarning()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = DateTime.UtcNow.Date.AddDays(-1),
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = DateTime.UtcNow.Date.AddDays(30),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndCourseClosingDateIsInThePast_ThenDoesNotShowClosingWarning()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = null,
+            CourseDates = new StandardDates
+            {
+                LastDateStarts = DateTime.UtcNow.Date.AddDays(-5),
+                EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            }
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndProviderClosingDateIsToday_ThenShowsClosingWarning()
+    {
+        var providerDate = DateTime.UtcNow.Date;
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            LastDateStarts = providerDate,
+            CourseDates = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
+        }
+    }
+
+    [Test]
+    public void WhenCastingFromQueryResult_AndProviderAddressIsNull_ThenUsesEmptyAddress()
+    {
+        var source = new GetCourseProviderQueryResult
+        {
+            Courses = [],
+            Locations = [],
+            ProviderAddress = null
+        };
+
+        var sut = (CourseProviderViewModel)source;
+
+        using (new AssertionScope())
+        {
+            sut.ProviderAddress.Should().NotBeNull();
+            sut.ContactAddress.Should().BeEmpty();
         }
     }
 

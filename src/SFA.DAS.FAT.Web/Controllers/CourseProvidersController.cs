@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,6 +22,7 @@ using SFA.DAS.FAT.Web.Models;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Controllers;
@@ -153,15 +154,15 @@ public class CourseProvidersController : Controller
 
         var courseProvidersViewModel = CreateBaseCourseProvidersViewModel();
 
-        var courseStatusTag = CourseStatusTagService.GetCourseStatusTag(result.CourseDates, DateTime.UtcNow);
+        var courseFundingStatus = CourseFundingStatusHelper.GetCourseFundingStatus(result.CourseDates, DateTime.UtcNow);
 
         courseProvidersViewModel.CourseTitleAndLevel = result.StandardName;
         courseProvidersViewModel.CourseType = result.CourseType;
         courseProvidersViewModel.LearningType = result.LearningType;
-        courseProvidersViewModel.CourseStatusTagText = CourseStatusTagService.GetCourseStatusTagText(courseStatusTag);
-        courseProvidersViewModel.CourseStatusTagClass = CourseStatusTagService.GetCourseStatusTagClass(courseStatusTag);
-        courseProvidersViewModel.CourseStatusDescription = CourseStatusTagService.GetCourseStatusTagDescription(courseStatusTag, result.CourseDates?.LastDateStarts);
-        courseProvidersViewModel.IsNewCourse = courseStatusTag == CourseStatusTag.NewCourse;
+        courseProvidersViewModel.CourseFundingStatusDescription = courseFundingStatus.GetCourseFundingStatusDescription();
+        courseProvidersViewModel.CourseFundingStatusTagClass = courseFundingStatus.GetCourseFundingStatusTagClass();
+        courseProvidersViewModel.CourseFundingStatusMessage = CourseProvidersViewModel.GetCourseFundingStatusMessage(courseFundingStatus, result.CourseDates?.LastDateStarts);
+        courseProvidersViewModel.IsNewCourse = courseFundingStatus == CourseFundingStatus.NewCourse;
         courseProvidersViewModel.ShowSearchCrumb = true;
         courseProvidersViewModel.ShowShortListLink = true;
         courseProvidersViewModel.ShowApprenticeTrainingCoursesCrumb = true;

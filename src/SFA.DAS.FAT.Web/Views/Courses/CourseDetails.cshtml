@@ -16,14 +16,14 @@
             <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
                 @Model.LearningType.GetDescription().Singularize()
             </strong>
-            <strong asp-show="Model.HasCourseStatusTag" class="govuk-!-margin-bottom-4 govuk-tag @Model.CourseStatusTagClass app-tag">
-                @Model.CourseStatusTagText
+            <strong asp-show="Model.HasCourseFundingStatus" class="govuk-!-margin-bottom-4 govuk-tag @Model.CourseFundingStatusTagClass app-tag">
+                @Model.CourseFundingStatusDescription
             </strong>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">@Model.TitleAndLevel</h1>
-            <div asp-show="Model.HasCourseStatusTag" class="app-course-status-warning govuk-!-margin-bottom-6">
+            <div asp-show="Model.HasCourseFundingStatus" class="app-course-status-warning govuk-!-margin-bottom-6">
                 <div class="govuk-warning-text govuk-!-margin-bottom-0">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">@Model.CourseStatusDescription</strong>
+                    <strong class="govuk-warning-text__text">@Model.CourseFundingStatusMessage</strong>
                 </div>
             </div>
         </div>
@@ -269,16 +269,16 @@
                         </ul>
                     </dd>
                 </div>
-                <div asp-show="@Model.HasCourseStatusTag" class="govuk-summary-list__row">
+                <div asp-show="@Model.HasCourseFundingStatus" class="govuk-summary-list__row">
                     <dt class="govuk-summary-list__key">
                         Course availability
                     </dt>
                     <dd class="govuk-summary-list__value">
-                        <strong class="govuk-tag @Model.CourseStatusTagClass app-tag">
-                            @Model.CourseStatusTagText
+                        <strong class="govuk-tag @Model.CourseFundingStatusTagClass app-tag">
+                            @Model.CourseFundingStatusDescription
                         </strong><br/>
                         <span class="govuk-!-font-size-16 das-text--muted">
-                            @Model.CourseStatusDescription
+                            @Model.CourseFundingStatusMessage
                         </span>
                     </dd>
                 </div>
