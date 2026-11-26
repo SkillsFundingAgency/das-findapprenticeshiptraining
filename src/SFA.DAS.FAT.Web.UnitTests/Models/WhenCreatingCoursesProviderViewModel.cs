@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
@@ -42,7 +42,7 @@ public class WhenCreatingCoursesProviderViewModel
         {
             actual.HasProviderCourseClosingDate.Should().BeTrue();
             actual.ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(source.LastDateStarts.Value)}");
+                $"This training provider will stop offering this course on {CourseFundingStatusHelper.FormatDate(source.LastDateStarts.Value)}");
         }
     }
 

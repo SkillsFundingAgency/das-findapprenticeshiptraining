@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.Courses;
@@ -6,12 +6,12 @@ using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.UnitTests.Services;
 
-public class CourseStatusTagServiceTests
+public class CourseFundingStatusHelperTests
 {
     [Test]
     public void WhenGettingTag_AndLastDateStartsMatchesEffectiveFrom_ThenReturnsNewCourseTag()
     {
-        var result = CourseStatusTagService.GetCourseStatusTag(
+        var result = CourseFundingStatusHelper.GetCourseStatusTag(
             new StandardDates
             {
                 LastDateStarts = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc),
@@ -19,13 +19,13 @@ public class CourseStatusTagServiceTests
             },
             new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
 
-        result.Should().Be(CourseStatusTag.NewCourse);
+        result.Should().Be(CourseFundingStatus.NewCourse);
     }
 
     [Test]
     public void WhenGettingTag_AndLastDateStartsIsInFutureAndDiffersFromEffectiveFrom_ThenReturnsClosingSoonTag()
     {
-        var result = CourseStatusTagService.GetCourseStatusTag(
+        var result = CourseFundingStatusHelper.GetCourseStatusTag(
             new StandardDates
             {
                 LastDateStarts = new DateTime(2026, 11, 20, 0, 0, 0, DateTimeKind.Utc),
@@ -33,13 +33,13 @@ public class CourseStatusTagServiceTests
             },
             new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
 
-        result.Should().Be(CourseStatusTag.ClosingToNewLearnersSoon);
+        result.Should().Be(CourseFundingStatus.ClosingToNewLearnersSoon);
     }
 
     [Test]
     public void WhenGettingTag_AndLastDateStartsIsInPastAndDiffersFromEffectiveFrom_ThenReturnsClosedTag()
     {
-        var result = CourseStatusTagService.GetCourseStatusTag(
+        var result = CourseFundingStatusHelper.GetCourseStatusTag(
             new StandardDates
             {
                 LastDateStarts = new DateTime(2026, 11, 1, 0, 0, 0, DateTimeKind.Utc),
@@ -47,13 +47,13 @@ public class CourseStatusTagServiceTests
             },
             new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
 
-        result.Should().Be(CourseStatusTag.ClosedToNewLearners);
+        result.Should().Be(CourseFundingStatus.ClosedToNewLearners);
     }
 
     [Test]
     public void WhenGettingTag_AndLastDateStartsIsNull_ThenReturnsNoTag()
     {
-        var result = CourseStatusTagService.GetCourseStatusTag(
+        var result = CourseFundingStatusHelper.GetCourseStatusTag(
             new StandardDates
             {
                 LastDateStarts = null,
@@ -67,7 +67,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTag_AndCourseDatesIsNull_ThenReturnsNoTag()
     {
-        var result = CourseStatusTagService.GetCourseStatusTag(
+        var result = CourseFundingStatusHelper.GetCourseStatusTag(
             null,
             new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc));
 
@@ -77,15 +77,15 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTagText_AndTagIsNewCourse_ThenReturnsNewCourseText()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagText(CourseStatusTag.NewCourse);
+        var result = CourseFundingStatusHelper.GetCourseStatusTagText(CourseFundingStatus.NewCourse);
 
-        result.Should().Be(CourseStatusTagService.NewCourseText);
+        result.Should().Be(CourseFundingStatusHelper.NewCourseText);
     }
 
     [Test]
     public void WhenGettingTagClass_AndTagIsClosedToNewLearners_ThenReturnsGreyTagClass()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagClass(CourseStatusTag.ClosedToNewLearners);
+        var result = CourseFundingStatusHelper.GetCourseStatusTagClass(CourseFundingStatus.ClosedToNewLearners);
 
         result.Should().Be("govuk-tag--grey");
     }
@@ -93,7 +93,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTagClass_AndTagIsClosingToNewLearnersSoon_ThenReturnsOrangeTagClass()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagClass(CourseStatusTag.ClosingToNewLearnersSoon);
+        var result = CourseFundingStatusHelper.GetCourseStatusTagClass(CourseFundingStatus.ClosingToNewLearnersSoon);
 
         result.Should().Be("govuk-tag--orange");
     }
@@ -101,7 +101,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTagClass_AndTagIsNewCourse_ThenReturnsYellowTagClass()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagClass(CourseStatusTag.NewCourse);
+        var result = CourseFundingStatusHelper.GetCourseStatusTagClass(CourseFundingStatus.NewCourse);
 
         result.Should().Be("govuk-tag--yellow");
     }
@@ -109,16 +109,16 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTagDescription_AndTagIsNewCourse_ThenReturnsNewCourseDescription()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagDescription(CourseStatusTag.NewCourse, null);
+        var result = CourseFundingStatusHelper.GetCourseStatusTagDescription(CourseFundingStatus.NewCourse, null);
 
-        result.Should().Be(CourseStatusTagService.NewCourseDescriptionText);
+        result.Should().Be(CourseFundingStatusHelper.NewCourseDescriptionText);
     }
 
     [Test]
     public void WhenGettingTagDescription_AndTagIsClosingToNewLearnersSoon_ThenReturnsClosingDescriptionWithFormattedDate()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagDescription(
-            CourseStatusTag.ClosingToNewLearnersSoon,
+        var result = CourseFundingStatusHelper.GetCourseStatusTagDescription(
+            CourseFundingStatus.ClosingToNewLearnersSoon,
             new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc));
 
         result.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
@@ -127,8 +127,8 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingTagDescription_AndTagIsClosedToNewLearners_ThenReturnsClosedDescriptionWithFormattedDate()
     {
-        var result = CourseStatusTagService.GetCourseStatusTagDescription(
-            CourseStatusTag.ClosedToNewLearners,
+        var result = CourseFundingStatusHelper.GetCourseStatusTagDescription(
+            CourseFundingStatus.ClosedToNewLearners,
             new DateTime(2026, 6, 30, 0, 0, 0, DateTimeKind.Utc));
 
         result.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
@@ -137,7 +137,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingProviderCourseAddedDescription_AndDateProvided_ThenReturnsFormattedDescription()
     {
-        var result = CourseStatusTagService.GetProviderCourseAddedDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseAddedDescription(
             new DateTime(2026, 6, 13, 0, 0, 0, DateTimeKind.Utc));
 
         result.Should().Be("This course was added by the training provider on 13 Jun 2026.");
@@ -147,7 +147,7 @@ public class CourseStatusTagServiceTests
     public void WhenGettingProviderCourseClosingDescription_AndDateIsInTheFuture_ThenReturnsFormattedDescription()
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
-        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseClosingDescription(
             new DateTime(2027, 3, 27, 0, 0, 0, DateTimeKind.Utc),
             currentDate);
 
@@ -158,7 +158,7 @@ public class CourseStatusTagServiceTests
     public void WhenGettingProviderCourseClosingDescription_AndDateIsInThePast_ThenReturnsEmptyString()
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
-        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseClosingDescription(
             new DateTime(2026, 3, 27, 0, 0, 0, DateTimeKind.Utc),
             currentDate);
 
@@ -168,7 +168,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingProviderCourseClosingDescription_AndDateIsNull_ThenReturnsEmptyString()
     {
-        var result = CourseStatusTagService.GetProviderCourseClosingDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseClosingDescription(
             null,
             new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc));
 
@@ -180,7 +180,7 @@ public class CourseStatusTagServiceTests
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.HasProviderCourseClosingDate(currentDate, currentDate);
+        var result = CourseFundingStatusHelper.HasProviderCourseClosingDate(currentDate, currentDate);
 
         result.Should().BeTrue();
     }
@@ -190,7 +190,7 @@ public class CourseStatusTagServiceTests
     {
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.HasProviderCourseClosingDate(
+        var result = CourseFundingStatusHelper.HasProviderCourseClosingDate(
             currentDate.AddDays(-1),
             currentDate);
 
@@ -202,9 +202,9 @@ public class CourseStatusTagServiceTests
     {
         using (new AssertionScope())
         {
-            CourseStatusTagService.FormatDate(new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc))
+            CourseFundingStatusHelper.FormatDate(new DateTime(2027, 7, 16, 0, 0, 0, DateTimeKind.Utc))
                 .Should().Be("16 Jul 2027");
-            CourseStatusTagService.FormatDate(new DateTime(2026, 3, 27, 0, 0, 0, DateTimeKind.Utc))
+            CourseFundingStatusHelper.FormatDate(new DateTime(2026, 3, 27, 0, 0, 0, DateTimeKind.Utc))
                 .Should().Be("27 Mar 2026");
         }
     }
@@ -219,7 +219,7 @@ public class CourseStatusTagServiceTests
             EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(providerDate, courseDates);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(providerDate, courseDates);
 
         result.Should().Be(providerDate);
     }
@@ -229,7 +229,7 @@ public class CourseStatusTagServiceTests
     {
         var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(providerDate, null);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(providerDate, null);
 
         result.Should().Be(providerDate);
     }
@@ -244,7 +244,7 @@ public class CourseStatusTagServiceTests
             EffectiveFrom = new DateTime(2020, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(null, courseDates);
 
         result.Should().Be(courseDate);
     }
@@ -258,7 +258,7 @@ public class CourseStatusTagServiceTests
             EffectiveFrom = new DateTime(2026, 11, 13, 0, 0, 0, DateTimeKind.Utc)
         };
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(null, courseDates);
 
         result.Should().BeNull();
     }
@@ -266,7 +266,7 @@ public class CourseStatusTagServiceTests
     [Test]
     public void WhenGettingProviderCourseDetailsClosingDate_AndCourseDatesIsNull_ThenReturnsNull()
     {
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, null);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(null, null);
 
         result.Should().BeNull();
     }
@@ -280,7 +280,7 @@ public class CourseStatusTagServiceTests
             EffectiveFrom = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)
         };
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDate(null, courseDates);
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(null, courseDates);
 
         result.Should().BeNull();
     }
@@ -291,7 +291,7 @@ public class CourseStatusTagServiceTests
         var currentDate = new DateTime(2026, 9, 1, 0, 0, 0, DateTimeKind.Utc);
         var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDescription(
             providerDate,
             null,
             currentDate);
@@ -305,7 +305,7 @@ public class CourseStatusTagServiceTests
         var currentDate = new DateTime(2026, 11, 18, 0, 0, 0, DateTimeKind.Utc);
         var providerDate = new DateTime(2026, 10, 16, 0, 0, 0, DateTimeKind.Utc);
 
-        var result = CourseStatusTagService.GetProviderCourseDetailsClosingDescription(
+        var result = CourseFundingStatusHelper.GetProviderCourseDetailsClosingDescription(
             providerDate,
             null,
             currentDate);

@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using FluentValidation;
@@ -206,7 +206,7 @@ public class CourseProvidersControllerCourseProvidersTests
             actualModel.Providers[0].ShowProviderCourseAddedDate.Should().BeFalse();
             actualModel.Providers[0].HasProviderCourseClosingDate.Should().BeTrue();
             actualModel.Providers[0].ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course on {CourseStatusTagService.FormatDate(providerLastDateStarts)}");
+                $"This training provider will stop offering this course on {CourseFundingStatusHelper.FormatDate(providerLastDateStarts)}");
         }
     }
 

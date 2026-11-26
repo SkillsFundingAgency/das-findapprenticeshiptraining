@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Humanizer;
@@ -49,7 +49,7 @@ public class StandardViewModel
 
     public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels, DateTime? currentDate = null)
     {
-        var courseStatusTag = CourseStatusTagService.GetCourseStatusTag(source.CourseDates, currentDate ?? DateTime.UtcNow);
+        var courseStatusTag = CourseFundingStatusHelper.GetCourseStatusTag(source.CourseDates, currentDate ?? DateTime.UtcNow);
 
         Ordering = source.Ordering;
         StandardUId = source.StandardUId;
@@ -72,8 +72,8 @@ public class StandardViewModel
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
         FindProvidersUrl = GetFindProvidersUrl(urlHelper);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
-        CourseStatusTagText = CourseStatusTagService.GetCourseStatusTagText(courseStatusTag);
-        CourseStatusTagClass = CourseStatusTagService.GetCourseStatusTagClass(courseStatusTag);
+        CourseStatusTagText = CourseFundingStatusHelper.GetCourseStatusTagText(courseStatusTag);
+        CourseStatusTagClass = CourseFundingStatusHelper.GetCourseStatusTagClass(courseStatusTag);
     }
 
     private string GetLevelName(List<LevelViewModel> levels)

@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Globalization;
 using SFA.DAS.FAT.Domain.Courses;
 
 namespace SFA.DAS.FAT.Web.Services;
 
-public enum CourseStatusTag
+public enum CourseFundingStatus
 {
     NewCourse,
     ClosingToNewLearnersSoon,
     ClosedToNewLearners
 }
 
-public static class CourseStatusTagService
+public static class CourseFundingStatusHelper
 {
     public const string NewCourseText = "New course";
     public const string ClosingToNewLearnersSoonText = "Closing to new learners soon";
@@ -23,7 +23,7 @@ public static class CourseStatusTagService
     public const string ProviderCourseClosingDescriptionText = "This training provider will stop offering this course on {0}";
     public const string ProviderCourseDetailsClosingDescriptionText = "This training provider will stop offering this course to new learners on {0}";
 
-    public static CourseStatusTag? GetCourseStatusTag(StandardDates courseDates, DateTime currentDate)
+    public static CourseFundingStatus? GetCourseStatusTag(StandardDates courseDates, DateTime currentDate)
     {
         if (courseDates?.LastDateStarts == null)
         {
@@ -36,46 +36,46 @@ public static class CourseStatusTagService
 
         if (lastDateStarts == effectiveFrom)
         {
-            return CourseStatusTag.NewCourse;
+            return CourseFundingStatus.NewCourse;
         }
 
         if (lastDateStarts < today)
         {
-            return CourseStatusTag.ClosedToNewLearners;
+            return CourseFundingStatus.ClosedToNewLearners;
         }
 
-        return CourseStatusTag.ClosingToNewLearnersSoon;
+        return CourseFundingStatus.ClosingToNewLearnersSoon;
     }
 
-    public static string GetCourseStatusTagText(CourseStatusTag? courseStatusTag)
+    public static string GetCourseStatusTagText(CourseFundingStatus? courseStatusTag)
     {
         return courseStatusTag switch
         {
-            CourseStatusTag.NewCourse => NewCourseText,
-            CourseStatusTag.ClosingToNewLearnersSoon => ClosingToNewLearnersSoonText,
-            CourseStatusTag.ClosedToNewLearners => ClosedToNewLearnersText,
+            CourseFundingStatus.NewCourse => NewCourseText,
+            CourseFundingStatus.ClosingToNewLearnersSoon => ClosingToNewLearnersSoonText,
+            CourseFundingStatus.ClosedToNewLearners => ClosedToNewLearnersText,
             _ => string.Empty
         };
     }
 
-    public static string GetCourseStatusTagClass(CourseStatusTag? courseStatusTag)
+    public static string GetCourseStatusTagClass(CourseFundingStatus? courseStatusTag)
     {
         return courseStatusTag switch
         {
-            CourseStatusTag.NewCourse => "govuk-tag--yellow",
-            CourseStatusTag.ClosingToNewLearnersSoon => "govuk-tag--orange",
-            CourseStatusTag.ClosedToNewLearners => "govuk-tag--grey",
+            CourseFundingStatus.NewCourse => "govuk-tag--yellow",
+            CourseFundingStatus.ClosingToNewLearnersSoon => "govuk-tag--orange",
+            CourseFundingStatus.ClosedToNewLearners => "govuk-tag--grey",
             _ => string.Empty
         };
     }
 
-    public static string GetCourseStatusTagDescription(CourseStatusTag? courseStatusTag, DateTime? lastDateStarts)
+    public static string GetCourseStatusTagDescription(CourseFundingStatus? courseStatusTag, DateTime? lastDateStarts)
     {
         return courseStatusTag switch
         {
-            CourseStatusTag.NewCourse => NewCourseDescriptionText,
-            CourseStatusTag.ClosingToNewLearnersSoon when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosingToNewLearnersSoonDescriptionText, FormatDate(lastDateStarts.Value)),
-            CourseStatusTag.ClosedToNewLearners when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosedToNewLearnersDescriptionText, FormatDate(lastDateStarts.Value)),
+            CourseFundingStatus.NewCourse => NewCourseDescriptionText,
+            CourseFundingStatus.ClosingToNewLearnersSoon when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosingToNewLearnersSoonDescriptionText, FormatDate(lastDateStarts.Value)),
+            CourseFundingStatus.ClosedToNewLearners when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosedToNewLearnersDescriptionText, FormatDate(lastDateStarts.Value)),
             _ => string.Empty
         };
     }

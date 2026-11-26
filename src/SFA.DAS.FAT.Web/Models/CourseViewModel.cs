@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -61,7 +61,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
         var learningType = source.LearningType;
-        var courseStatusTag = CourseStatusTagService.GetCourseStatusTag(source.CourseDates, DateTime.UtcNow);
+        var courseStatusTag = CourseFundingStatusHelper.GetCourseStatusTag(source.CourseDates, DateTime.UtcNow);
 
         return new CourseViewModel
         {
@@ -93,9 +93,9 @@ public class CourseViewModel : PageLinksViewModelBase
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
             IsShortCourseType = source.CourseType == CourseType.ShortCourse,
-            CourseStatusTagText = CourseStatusTagService.GetCourseStatusTagText(courseStatusTag),
-            CourseStatusTagClass = CourseStatusTagService.GetCourseStatusTagClass(courseStatusTag),
-            CourseStatusDescription = CourseStatusTagService.GetCourseStatusTagDescription(courseStatusTag, source.CourseDates?.LastDateStarts)
+            CourseStatusTagText = CourseFundingStatusHelper.GetCourseStatusTagText(courseStatusTag),
+            CourseStatusTagClass = CourseFundingStatusHelper.GetCourseStatusTagClass(courseStatusTag),
+            CourseStatusDescription = CourseFundingStatusHelper.GetCourseStatusTagDescription(courseStatusTag, source.CourseDates?.LastDateStarts)
         };
     }
     public string LevelEquivalentToDisplayText => GetLevelEquivalentToDisplayText();

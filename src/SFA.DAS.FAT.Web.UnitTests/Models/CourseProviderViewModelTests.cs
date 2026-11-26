@@ -66,7 +66,7 @@ public class CourseProviderViewModelTests
         {
             sut.HasProviderCourseClosingDate.Should().BeTrue();
             sut.ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course to new learners on {CourseStatusTagService.FormatDate(providerDate)}");
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
         }
     }
 
@@ -87,7 +87,7 @@ public class CourseProviderViewModelTests
         {
             sut.HasProviderCourseClosingDate.Should().BeTrue();
             sut.ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course to new learners on {CourseStatusTagService.FormatDate(providerDate)}");
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
         }
     }
 
@@ -112,7 +112,7 @@ public class CourseProviderViewModelTests
         {
             sut.HasProviderCourseClosingDate.Should().BeTrue();
             sut.ProviderCourseClosingDescription.Should().Be(
-                $"This training provider will stop offering this course to new learners on {CourseStatusTagService.FormatDate(courseDate)}");
+                $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(courseDate)}");
         }
     }
 

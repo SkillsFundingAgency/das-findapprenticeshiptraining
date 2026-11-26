@@ -33,11 +33,11 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public DateTime? LastDateStarts { get; set; }
     public StandardDates CourseDates { get; set; }
     public bool HasProviderCourseClosingDate =>
-        CourseStatusTagService.HasProviderCourseClosingDate(
-            CourseStatusTagService.GetProviderCourseDetailsClosingDate(LastDateStarts, CourseDates),
+        CourseFundingStatusHelper.HasProviderCourseClosingDate(
+            CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(LastDateStarts, CourseDates),
             DateTime.UtcNow);
     public string ProviderCourseClosingDescription =>
-        CourseStatusTagService.GetProviderCourseDetailsClosingDescription(LastDateStarts, CourseDates, DateTime.UtcNow);
+        CourseFundingStatusHelper.GetProviderCourseDetailsClosingDescription(LastDateStarts, CourseDates, DateTime.UtcNow);
     public int Level { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
@@ -86,9 +86,9 @@ public class CoursesProviderViewModel
     public DateTime ProviderCourseAddedDate { get; set; }
     public DateTime? LastDateStarts { get; set; }
     public bool ShowProviderCourseAddedDate { get; set; }
-    public string ProviderCourseAddedDateDisplay => CourseStatusTagService.FormatDate(ProviderCourseAddedDate);
-    public bool HasProviderCourseClosingDate => CourseStatusTagService.HasProviderCourseClosingDate(LastDateStarts, DateTime.UtcNow);
-    public string ProviderCourseClosingDescription => CourseStatusTagService.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
+    public string ProviderCourseAddedDateDisplay => CourseFundingStatusHelper.FormatDate(ProviderCourseAddedDate);
+    public bool HasProviderCourseClosingDate => CourseFundingStatusHelper.HasProviderCourseClosingDate(LastDateStarts, DateTime.UtcNow);
+    public string ProviderCourseClosingDescription => CourseFundingStatusHelper.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
 
     public TrainingOptionsViewModel TrainingOptionsViewModel
     {
