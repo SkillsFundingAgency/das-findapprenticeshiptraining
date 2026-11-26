@@ -13,7 +13,6 @@ using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.FAT.Web.Models.Shared;
 using SFA.DAS.FAT.Web.Helpers;
-using SFA.DAS.FAT.Web.Services;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
 using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
 
