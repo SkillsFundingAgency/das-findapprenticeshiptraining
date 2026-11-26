@@ -7,6 +7,7 @@ using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Providers.Api.Responses;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -64,8 +65,8 @@ public class CourseProviderViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasProviderCourseClosingDate.Should().BeTrue();
-            sut.ProviderCourseClosingDescription.Should().Be(
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
                 $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
         }
     }
@@ -85,8 +86,8 @@ public class CourseProviderViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasProviderCourseClosingDate.Should().BeTrue();
-            sut.ProviderCourseClosingDescription.Should().Be(
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
                 $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(providerDate)}");
         }
     }
@@ -110,8 +111,8 @@ public class CourseProviderViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasProviderCourseClosingDate.Should().BeTrue();
-            sut.ProviderCourseClosingDescription.Should().Be(
+            sut.IsLastDateStartsInFuture.Should().BeTrue();
+            sut.ProviderCourseClosingMessage.Should().Be(
                 $"This training provider will stop offering this course to new learners on {CourseFundingStatusHelper.FormatDate(courseDate)}");
         }
     }
@@ -134,8 +135,8 @@ public class CourseProviderViewModelTests
 
         using (new AssertionScope())
         {
-            sut.HasProviderCourseClosingDate.Should().BeFalse();
-            sut.ProviderCourseClosingDescription.Should().BeEmpty();
+            sut.IsLastDateStartsInFuture.Should().BeFalse();
+            sut.ProviderCourseClosingMessage.Should().BeEmpty();
         }
     }
 

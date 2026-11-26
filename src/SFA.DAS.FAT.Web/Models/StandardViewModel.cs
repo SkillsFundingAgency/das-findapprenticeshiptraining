@@ -8,6 +8,7 @@ using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Domain.Courses.Api.Responses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Infrastructure;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -36,9 +37,9 @@ public class StandardViewModel
     public string FindProvidersUrl { get; init; }
     public string FindProvidersUrlDescription { get; init; }
     public string LearningTypeTagClass => LearningType.GetTagClass();
-    public string CourseStatusTagText { get; init; }
-    public string CourseStatusTagClass { get; init; }
-    public bool HasCourseStatusTag => !string.IsNullOrEmpty(CourseStatusTagText);
+    public string CourseFundingStatusDescription { get; init; }
+    public string CourseFundingStatusTagClass { get; init; }
+    public bool HasCourseFundingStatus => !string.IsNullOrEmpty(CourseFundingStatusDescription);
     public bool IsShortCourseType => CourseType == CourseType.ShortCourse;
     public bool IsApprenticeshipType => CourseType == CourseType.Apprenticeship;
     public bool HasProviders => ProvidersCount > 0;
@@ -49,7 +50,7 @@ public class StandardViewModel
 
     public StandardViewModel(StandardModel source, string location, string distance, FindApprenticeshipTrainingWeb findApprenticeshipTrainingWebConfiguration, IUrlHelper urlHelper, List<LevelViewModel> levels, DateTime? currentDate = null)
     {
-        var courseStatusTag = CourseFundingStatusHelper.GetCourseStatusTag(source.CourseDates, currentDate ?? DateTime.UtcNow);
+        var courseFundingStatus = CourseFundingStatusHelper.GetCourseFundingStatus(source.CourseDates, currentDate ?? DateTime.UtcNow);
 
         Ordering = source.Ordering;
         StandardUId = source.StandardUId;
@@ -72,8 +73,8 @@ public class StandardViewModel
         RequestApprenticeshipTrainingUrl = GetRequestApprenticeshipTrainingUrl(findApprenticeshipTrainingWebConfiguration, location);
         FindProvidersUrl = GetFindProvidersUrl(urlHelper);
         FindProvidersUrlDescription = GetFindProvidersUrlDescription(location, distance);
-        CourseStatusTagText = CourseFundingStatusHelper.GetCourseStatusTagText(courseStatusTag);
-        CourseStatusTagClass = CourseFundingStatusHelper.GetCourseStatusTagClass(courseStatusTag);
+        CourseFundingStatusDescription = courseFundingStatus.GetCourseFundingStatusDescription();
+        CourseFundingStatusTagClass = courseFundingStatus.GetCourseFundingStatusTagClass();
     }
 
     private string GetLevelName(List<LevelViewModel> levels)

@@ -6,6 +6,7 @@ using SFA.DAS.FAT.Application.Courses.Queries.GetCourse;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Extensions;
 using SFA.DAS.FAT.Web.Models.BreadCrumbs;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
@@ -24,6 +25,9 @@ public class CourseViewModel : PageLinksViewModelBase
     public const string MultipleProvidersWithinDistanceMessage = "There are {{ProvidersCountWithinDistance}} training providers who offer this course.";
     public const string SingleProviderOutsideDistanceMessage = "There is 1 training provider who offers this course. Check if a training provider can deliver this training in the learner's work location.";
     public const string MultipleProviderOutsideDistanceMessage = "There are {{TotalProvidersCount}} training providers who offer this course. Check if a training provider can deliver this training in the learner's work location.";
+    public const string NewCourseDescription = "This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.";
+    public const string ClosingToNewLearnersSoonDescription = "This course is closing on {0}. Government funding will not be available for learners who start after this date.";
+    public const string ClosedToNewLearnersDescription = "This course stopped accepting new learners on {0}. Apprentices who are already on this course can still change training providers.";
     public string RequestApprenticeshipTrainingUrl { get; set; }
     public string EmployerAccountsUrl { get; set; }
     public string StandardUId { get; set; }
@@ -50,10 +54,10 @@ public class CourseViewModel : PageLinksViewModelBase
     public bool IsShortCourseType { get; set; }
     public int IncentivePayment { get; set; }
     public string IncentivePaymentDisplayValue => IncentivePayment.ToString("C0", new CultureInfo("en-GB"));
-    public string CourseStatusTagText { get; set; }
-    public string CourseStatusTagClass { get; set; }
-    public string CourseStatusDescription { get; set; }
-    public bool HasCourseStatusTag => !string.IsNullOrWhiteSpace(CourseStatusTagText);
+    public string CourseFundingStatusDescription { get; set; }
+    public string CourseFundingStatusTagClass { get; set; }
+    public string CourseFundingStatusMessage { get; set; }
+    public bool HasCourseFundingStatus => !string.IsNullOrWhiteSpace(CourseFundingStatusDescription);
     public List<Level> Levels { get; set; } = [];
     public IEnumerable<KsbGroup> KsbDetails { get; set; } = [];
     public List<RelatedOccupation> RelatedOccupations { get; set; } = [];
@@ -61,7 +65,7 @@ public class CourseViewModel : PageLinksViewModelBase
     public static implicit operator CourseViewModel(GetCourseQueryResult source)
     {
         var learningType = source.LearningType;
-        var courseStatusTag = CourseFundingStatusHelper.GetCourseStatusTag(source.CourseDates, DateTime.UtcNow);
+        var courseFundingStatus = CourseFundingStatusHelper.GetCourseFundingStatus(source.CourseDates, DateTime.UtcNow);
 
         return new CourseViewModel
         {
@@ -93,9 +97,20 @@ public class CourseViewModel : PageLinksViewModelBase
             IncentivePayment = source.IncentivePayment,
             RelatedOccupations = source.RelatedOccupations,
             IsShortCourseType = source.CourseType == CourseType.ShortCourse,
-            CourseStatusTagText = CourseFundingStatusHelper.GetCourseStatusTagText(courseStatusTag),
-            CourseStatusTagClass = CourseFundingStatusHelper.GetCourseStatusTagClass(courseStatusTag),
-            CourseStatusDescription = CourseFundingStatusHelper.GetCourseStatusTagDescription(courseStatusTag, source.CourseDates?.LastDateStarts)
+            CourseFundingStatusDescription = courseFundingStatus.GetCourseFundingStatusDescription(),
+            CourseFundingStatusTagClass = courseFundingStatus.GetCourseFundingStatusTagClass(),
+            CourseFundingStatusMessage = GetCourseFundingStatusMessage(courseFundingStatus, source.CourseDates?.LastDateStarts)
+        };
+    }
+
+    public static string GetCourseFundingStatusMessage(CourseFundingStatus? courseFundingStatus, DateTime? lastDateStarts)
+    {
+        return courseFundingStatus switch
+        {
+            CourseFundingStatus.NewCourse => NewCourseDescription,
+            CourseFundingStatus.ClosingToNewLearnersSoon when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosingToNewLearnersSoonDescription, CourseFundingStatusHelper.FormatDate(lastDateStarts.Value)),
+            CourseFundingStatus.ClosedToNewLearners when lastDateStarts.HasValue => string.Format(CultureInfo.InvariantCulture, ClosedToNewLearnersDescription, CourseFundingStatusHelper.FormatDate(lastDateStarts.Value)),
+            _ => string.Empty
         };
     }
     public string LevelEquivalentToDisplayText => GetLevelEquivalentToDisplayText();

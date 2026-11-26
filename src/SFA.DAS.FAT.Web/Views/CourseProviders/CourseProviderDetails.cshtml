@@ -22,10 +22,10 @@
                 @Model.CourseNameAndLevel
             </h2>
 
-            <div asp-show="Model.HasProviderCourseClosingDate" class="app-course-status-warning govuk-!-margin-bottom-6">
+            <div asp-show="Model.IsLastDateStartsInFuture" class="app-course-status-warning govuk-!-margin-bottom-6">
                 <div class="govuk-warning-text govuk-!-margin-bottom-0">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">@Model.ProviderCourseClosingDescription</strong>
+                    <strong class="govuk-warning-text__text">@Model.ProviderCourseClosingMessage</strong>
                 </div>
             </div>
             @* Search courses by location *@

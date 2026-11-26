@@ -1,4 +1,4 @@
-﻿using AutoFixture.NUnit4;
+using AutoFixture.NUnit4;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
@@ -199,10 +199,10 @@ public class CourseViewModelFromQueryResultTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("Closing to new learners soon");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--orange");
-            sut.CourseStatusDescription.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("Closing to new learners soon");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--orange");
+            sut.CourseFundingStatusMessage.Should().Be("This course is closing on 16 Jul 2027. Government funding will not be available for learners who start after this date.");
         }
     }
 
@@ -223,10 +223,10 @@ public class CourseViewModelFromQueryResultTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("New course");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--yellow");
-            sut.CourseStatusDescription.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("New course");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--yellow");
+            sut.CourseFundingStatusMessage.Should().Be("This is a new course. It isn't accepting learners yet. Contact a training provider to find out when it may start.");
         }
     }
 
@@ -247,10 +247,10 @@ public class CourseViewModelFromQueryResultTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeTrue();
-            sut.CourseStatusTagText.Should().Be("Closed to new learners");
-            sut.CourseStatusTagClass.Should().Be("govuk-tag--grey");
-            sut.CourseStatusDescription.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
+            sut.HasCourseFundingStatus.Should().BeTrue();
+            sut.CourseFundingStatusDescription.Should().Be("Closed to new learners");
+            sut.CourseFundingStatusTagClass.Should().Be("govuk-tag--grey");
+            sut.CourseFundingStatusMessage.Should().Be("This course stopped accepting new learners on 30 Jun 2026. Apprentices who are already on this course can still change training providers.");
         }
     }
 
@@ -267,10 +267,10 @@ public class CourseViewModelFromQueryResultTests
 
         using (new AssertionScope())
         {
-            sut.HasCourseStatusTag.Should().BeFalse();
-            sut.CourseStatusTagText.Should().BeEmpty();
-            sut.CourseStatusTagClass.Should().BeEmpty();
-            sut.CourseStatusDescription.Should().BeEmpty();
+            sut.HasCourseFundingStatus.Should().BeFalse();
+            sut.CourseFundingStatusDescription.Should().BeEmpty();
+            sut.CourseFundingStatusTagClass.Should().BeEmpty();
+            sut.CourseFundingStatusMessage.Should().BeEmpty();
         }
     }
 }

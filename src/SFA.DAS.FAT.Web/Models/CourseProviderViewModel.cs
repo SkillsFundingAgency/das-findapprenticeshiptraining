@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using SFA.DAS.FAT.Application.Courses.Queries.GetCourseProviderDetails;
@@ -11,6 +12,7 @@ using SFA.DAS.FAT.Web.Models.CourseProviders;
 using SFA.DAS.FAT.Web.Models.FeedbackSurvey;
 using SFA.DAS.FAT.Web.Models.Providers;
 using SFA.DAS.FAT.Web.Models.Shared;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 using EndpointAssessmentModel = SFA.DAS.FAT.Domain.Courses.EndpointAssessmentModel;
 using ReviewsModel = SFA.DAS.FAT.Domain.Courses.ReviewsModel;
@@ -21,7 +23,7 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
 {
     public const string AtLearnerWorkplaceWithNoLocationNational = "The training provider can travel to you to deliver this course.";
     public const string AtLearnerWorkplaceWithNoLocationRegional = "Training is provided at learner's workplaces in certain regions. Search for a city or postcode to see if the provider offers training at the learner's workplace in your location.";
-
+    public const string ProviderCourseClosingDescription = "This training provider will stop offering this course to new learners on {0}";
     public int ShortlistCount { get; set; }
     public int Ukprn { get; set; }
     public string ProviderName { get; set; }
@@ -30,14 +32,21 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
     public string CourseName { get; set; }
     public CourseType CourseType { get; set; }
     public LearningType LearningType { get; set; }
+
     public DateTime? LastDateStarts { get; set; }
     public StandardDates CourseDates { get; set; }
-    public bool HasProviderCourseClosingDate =>
-        CourseFundingStatusHelper.HasProviderCourseClosingDate(
-            CourseFundingStatusHelper.GetProviderCourseDetailsClosingDate(LastDateStarts, CourseDates),
-            DateTime.UtcNow);
-    public string ProviderCourseClosingDescription =>
-        CourseFundingStatusHelper.GetProviderCourseDetailsClosingDescription(LastDateStarts, CourseDates, DateTime.UtcNow);
+    public bool IsLastDateStartsInFuture =>
+        CourseFundingStatusHelper.IsLastDateStartsInFuture(GetProviderCourseClosingDate());
+    public string ProviderCourseClosingMessage
+    {
+        get
+        {
+            var closingDate = GetProviderCourseClosingDate();
+            return CourseFundingStatusHelper.IsLastDateStartsInFuture(closingDate)
+                ? string.Format(CultureInfo.InvariantCulture, ProviderCourseClosingDescription, CourseFundingStatusHelper.FormatDate(closingDate.Value))
+                : string.Empty;
+        }
+    }
     public int Level { get; set; }
     public string IFateReferenceNumber { get; set; }
     public QarModel Qar { get; set; }
@@ -341,5 +350,25 @@ public class CourseProviderViewModel : PageLinksViewModelBase, ICourseGroupModel
         {
             return string.Empty;
         }
+    }
+
+    private DateTime? GetProviderCourseClosingDate()
+    {
+        if (LastDateStarts.HasValue)
+        {
+            return LastDateStarts;
+        }
+
+        if (CourseDates?.LastDateStarts == null)
+        {
+            return null;
+        }
+
+        if (CourseDates.LastDateStarts.Value.Date == CourseDates.EffectiveFrom.Date)
+        {
+            return null;
+        }
+
+        return CourseDates.LastDateStarts;
     }
 }

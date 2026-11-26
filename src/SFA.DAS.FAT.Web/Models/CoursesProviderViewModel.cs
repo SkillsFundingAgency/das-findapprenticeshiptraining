@@ -1,15 +1,19 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Domain.Courses;
 using SFA.DAS.FAT.Web.Models.CourseProviders;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 
 namespace SFA.DAS.FAT.Web.Models;
 
 public class CoursesProviderViewModel
 {
+    public const string ProviderCourseClosingDescription = "This training provider will stop offering this course on {0}";
+
     public int Ukprn { get; set; }
     public long Ordering { get; set; }
     public string ProviderName { get; set; }
@@ -86,9 +90,13 @@ public class CoursesProviderViewModel
     public DateTime ProviderCourseAddedDate { get; set; }
     public DateTime? LastDateStarts { get; set; }
     public bool ShowProviderCourseAddedDate { get; set; }
+
     public string ProviderCourseAddedDateDisplay => CourseFundingStatusHelper.FormatDate(ProviderCourseAddedDate);
-    public bool HasProviderCourseClosingDate => CourseFundingStatusHelper.HasProviderCourseClosingDate(LastDateStarts, DateTime.UtcNow);
-    public string ProviderCourseClosingDescription => CourseFundingStatusHelper.GetProviderCourseClosingDescription(LastDateStarts, DateTime.UtcNow);
+    public bool IsLastDateStartsInFuture => CourseFundingStatusHelper.IsLastDateStartsInFuture(LastDateStarts);
+    public string ProviderCourseClosingMessage =>
+        IsLastDateStartsInFuture
+            ? string.Format(CultureInfo.InvariantCulture, ProviderCourseClosingDescription, CourseFundingStatusHelper.FormatDate(LastDateStarts.Value))
+            : string.Empty;
 
     public TrainingOptionsViewModel TrainingOptionsViewModel
     {

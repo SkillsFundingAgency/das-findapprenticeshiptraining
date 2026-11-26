@@ -1,4 +1,4 @@
-﻿@using Humanizer
+@using Humanizer
 @using SFA.DAS.FAT.Domain.CourseProviders
 @using SFA.DAS.FAT.Domain.Courses
 @using SFA.DAS.FAT.Domain.Extensions
@@ -17,17 +17,17 @@
             <strong class="govuk-!-margin-bottom-4 govuk-tag @Model.LearningTypeTagClass app-tag">
                 @Model.LearningType.GetDescription().Singularize()
             </strong>
-            <strong asp-show="Model.HasCourseStatusTag" class="govuk-!-margin-bottom-4 govuk-tag @Model.CourseStatusTagClass app-tag">
-                @Model.CourseStatusTagText
+            <strong asp-show="Model.HasCourseFundingStatus" class="govuk-!-margin-bottom-4 govuk-tag @Model.CourseFundingStatusTagClass app-tag">
+                @Model.CourseFundingStatusDescription
             </strong>
             <h1 class="govuk-heading-xl govuk-!-margin-bottom-5">
                 <span>Training providers for</span>
                 <span>@Model.CourseTitleAndLevel</span>
             </h1>
-            <div asp-show="Model.HasCourseStatusTag" class="app-course-status-warning govuk-!-margin-bottom-6">
+            <div asp-show="Model.HasCourseFundingStatus" class="app-course-status-warning govuk-!-margin-bottom-6">
                 <div class="govuk-warning-text govuk-!-margin-bottom-0">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text">@Model.CourseStatusDescription</strong>
+                    <strong class="govuk-warning-text__text">@Model.CourseFundingStatusMessage</strong>
                 </div>
             </div>
             @if (Model.Providers.Count > 0)
@@ -191,10 +191,10 @@
                                                 </dd>
                                             </div>
                                         </dl>
-                                        <div asp-show="provider.HasProviderCourseClosingDate" class="app-provider-closing-warning">
+                                        <div asp-show="provider.IsLastDateStartsInFuture" class="app-provider-closing-warning">
                                             <div class="govuk-warning-text govuk-!-margin-bottom-0">
                                                 <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                                                    <strong class="govuk-warning-text__text">@provider.ProviderCourseClosingDescription</strong>
+                                                    <strong class="govuk-warning-text__text">@provider.ProviderCourseClosingMessage</strong>
                                             </div>
                                         </div>
                                     }

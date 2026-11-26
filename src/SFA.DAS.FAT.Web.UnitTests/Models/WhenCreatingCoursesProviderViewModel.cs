@@ -4,6 +4,7 @@ using FluentAssertions.Execution;
 using NUnit.Framework;
 using SFA.DAS.FAT.Domain.CourseProviders;
 using SFA.DAS.FAT.Web.Models;
+using SFA.DAS.FAT.Web.Helpers;
 using SFA.DAS.FAT.Web.Services;
 using SFA.DAS.Testing.AutoFixture;
 
@@ -40,8 +41,8 @@ public class WhenCreatingCoursesProviderViewModel
 
         using (new AssertionScope())
         {
-            actual.HasProviderCourseClosingDate.Should().BeTrue();
-            actual.ProviderCourseClosingDescription.Should().Be(
+            actual.IsLastDateStartsInFuture.Should().BeTrue();
+            actual.ProviderCourseClosingMessage.Should().Be(
                 $"This training provider will stop offering this course on {CourseFundingStatusHelper.FormatDate(source.LastDateStarts.Value)}");
         }
     }
@@ -59,8 +60,8 @@ public class WhenCreatingCoursesProviderViewModel
 
         using (new AssertionScope())
         {
-            actual.HasProviderCourseClosingDate.Should().BeFalse();
-            actual.ProviderCourseClosingDescription.Should().BeEmpty();
+            actual.IsLastDateStartsInFuture.Should().BeFalse();
+            actual.ProviderCourseClosingMessage.Should().BeEmpty();
         }
     }
 
